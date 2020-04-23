@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  recipient_id: 1
+  message: MyText
+  read_at: 2019-12-23 18:12:44
+  user: one
+
+two:
+  recipient_id: 1
+  message: MyText
+  read_at: 2019-12-23 18:12:44
+  user: two

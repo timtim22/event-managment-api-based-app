@@ -1,0 +1,50 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+   <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+     <div class="card-body">
+      <%= render "shared/notice" %>
+     <br>
+    <h4 class="card-title">Passes</h4>
+    <div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>Title</th>
+          <th>Descripiton</th>
+          <th>Validity</th>
+          <th>Event</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @passes.each do |pass| %>
+        <tr>
+          <td><%= link_to pass.title[0...30], admin_pass_path(pass) %></td>
+          <td><%= pass.description[0...39] %></td>
+          <td><%= pass.validity %></td>
+          <td><%= link_to pass.event.name[0...25], admin_event_path(pass.event.id) %></td>
+          <td>
+          <a href="<%= admin_pass_path(pass.id) %>" data-toggle="tooltip" title="View pass"><i class="fa fa-eye"></i></a>
+          |
+          <a href="<%= edit_admin_pass_path(pass.id) %>" data-toggle="tooltip" title="Edit pass"><i class="fa fa-edit"></i></a>
+          |
+          <%= link_to admin_pass_path(pass), method: :delete, data: { confirm: 'Are you sure you want to delete?'} do %>
+            <i class="fa fa-trash" data-toggle="tooltip" title="Delete pass"></i>
+            <% end %>
+          </td>
+       </tr>
+        <% end %>
+        </tbody>
+    </table>
+    </div>
+</div>
+</div>
+</div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

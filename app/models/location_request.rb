@@ -1,0 +1,2 @@
+class LocationRequest < ApplicationRecord
+end

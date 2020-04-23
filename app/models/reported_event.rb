@@ -1,0 +1,2 @@
+class ReportedEvent < ApplicationRecord
+end

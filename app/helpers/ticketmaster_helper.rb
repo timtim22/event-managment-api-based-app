@@ -1,0 +1,2 @@
+module TicketmasterHelper
+end

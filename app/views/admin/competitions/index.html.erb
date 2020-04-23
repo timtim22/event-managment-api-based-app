@@ -1,0 +1,61 @@
+<div class="container-scroller">
+
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+   <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+     <div class="card-body">
+     <%= render "shared/notice" %>
+     <br>
+    <h4 class="card-title">Competitions List</h4>
+    <div class="table-responsive">
+    <table class="table table-striped dataTable stripe ui celled table" id="competition_listing_table">
+        <thead>
+        <tr>
+          <th>Image</th>
+          <th>Title</th>
+          <th>Start date</th>
+          <th>End date</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Host</th>
+          <th>Location</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @competitions.each do |competition| %>
+        <tr>
+            <td><a href="<%= admin_competition_path(competition) %>" ><img src="<%= competition.image.url %>" onError='this.onerror=null;this.src="<%= competition.placeholder %>" ' style="border-radius:3px;"></a></td>
+            <td><%= competition.title[0...25] %></td>
+            <td><%= competition.start_date.to_date.to_s %></td>
+            <td><%= competition.end_date.to_date.to_s  %></td>
+            <td><%= competition.start_time.to_time.to_s %></td>
+            <td><%= competition.end_time.to_time.to_s %></td>
+            <td><%= competition.host %></td>
+            <td><%= competition.location[0...15] %></td>
+            <td>
+            <a href="<%= admin_competition_path(competition.id) %>" data-toggle="tooltip" title="View competition"><i class="fa fa-eye"></i></a>
+            |
+            <a href="<%= edit_admin_competition_path(competition.id) %>" data-toggle="tooltip" title="Edit competition"><i class="fa fa-edit"></i></a>
+            |
+            <%= link_to admin_competition_path(competition), method: :delete, data: {confirm: 'Are you sure you want to delete?'} do %>
+              <i class="fa fa-trash" data-toggle="tooltip" title="Delete competition"></i>
+              <% end %>
+            </td>
+        </tr>
+        <% end %>
+        
+        </tbody>
+    </table>
+
+    </div>
+</div>
+</div>
+</div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  mute_notifications: false
+  mute_chat: false
+
+two:
+  mute_notifications: false
+  mute_chat: false

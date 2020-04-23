@@ -1,0 +1,23 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+ <div class="container" style="min-height:550px;">
+
+   <h3><strong>Title: </stong><span class="unbold"><%= @ticket.title %></span></h3>
+ 
+   <p class="so_p"><strong>Price: </strong><span class="unbold"><%= @ticket.price %></span></p>
+
+   <p class="so_p"><strong>Quantity: </strong><span class="unbold"><%= @ticket.quantity %></span> </p>
+
+   <p class="so_p"><strong>Per Head: </strong><span class="unbold"><%= @ticket.per_head %></span> </p>
+
+   <p class="so_p"><strong>Event: </strong><%= link_to @ticket.event.name, admin_event_path(@ticket.event) %></p>
+
+   <p class="so_p"><strong>QRcode: <br> </strong><span class="unbold"><img src="<%= render_qr_code(@ticket.redeem_code) %>" class="qr"></p>
+ </div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

@@ -1,0 +1,26 @@
+<li class="nav-item dropdown mr-4 show">
+<a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center notification-dropdown" id="notificationDropdown" href="#" data-toggle="dropdown" aria-expanded="true">
+  <i class="fa fa-bell"></i>
+  <% if current_user.notifications.unread.count > 0 %>
+  <span class="count" style="top: -9px;left: 10px;width: 20px;height: 20px;background:#53c2ba;color:#000;line-height: 18px;"><%= current_user.notifications.unread.size %></span>
+  <% end %>
+</a>
+<div class="dropdown-menu dropdown-menu-right navbar-dropdown show" aria-labelledby="notificationDropdown">
+  <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
+  <% current_user.notifications.each do |notification| %>
+  <a class="dropdown-item">
+    <div class="item-thumbnail">
+      <div class="item-icon">
+        <img src="<% notification.actor.avatar %>" onerror="this.onerror=null;this.src='/assets/avatar.png';">
+      </div>
+    </div>
+    <div class="item-content">
+      <h6 class="font-weight-normal"><%= notification.action %></h6>
+      <p class="font-weight-light small-text mb-0 text-muted">
+       <%= time_ago_in_words(notification.created_at) %>
+      </p>
+    </div>
+  </a>
+  <% end %>
+</div>
+</li>

@@ -1,0 +1,54 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+   <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+     <div class="card-body">
+      <%= render "shared/notice" %>
+     <br>
+    <h4 class="card-title">Friend Requests</h4>
+    <div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>User</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Time</th>
+          <th>Role</th>
+          <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @requests.each do |request| %>
+          <tr>
+          <td class="py-1"><img src='<%= asset_path "#{request.user.avatar}" %>'' onError="this.onerror=null;this.src='/assets/avatar.png';" alt="image" class="user_list_img"></td>
+          <td><%= request.user.first_name + " " + request.user.last_name %></td>
+          <td><%= request.user.email %></td>
+          <td><%= time_ago_in_words(request.created_at) %></td>
+          <% if !request.user.role.blank? %>
+          <td><%= request.user.role.name %></td>
+          <% else %>
+          <td>No role assigned</td>
+          <% end %>
+           <td>
+           <% if request.status == 'accepted' %>
+           <p>Accepted</p>
+           <% else %>
+           <a href="<%= admin_accept_request_path + "?id=#{request.id}" %>"><buttn class="btn btn-primary btn-sm">Accept</button></a>
+           <% end %>
+          </td>
+      </tr>
+        <% end %>
+        </tbody>
+    </table>
+    </div>
+</div>
+</div>
+</div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

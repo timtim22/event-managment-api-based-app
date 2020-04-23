@@ -1,0 +1,76 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel" style="height:100%">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Edit Pass</h4>
+         <%= render "shared/form_errors", object: @pass %>
+         <%= render "shared/notice" %>
+        <form method="post" action="<%= admin_pass_path(@pass) %>" class="forms-sample" enctype="multipart/form-data">
+        <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
+        <input type="hidden" name="_method" value="patch">
+        <div class="form-group">
+        <label for="categories">Your events</label><br>
+        <select class="form-control events_select" data-placeholder="Select an event..." multiple class="chosen-select" name="event_ids[]" id="event_select">
+         <% current_user.events.each do |event| %>
+         <option value="<%= event.id %>" <%= event.id == @pass.event.id ? ' selected' : '' %> ><%= event.name[0...30] %></option>
+         <% end %>s
+         </select>
+        </div>
+        <div class="form-group">
+          <label for="name">Title</label>
+          <input type="text" class="form-control" id="name" name="title" value="<%= @pass.title %>">
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea name="description" class="form-control" rows="12"><%= @pass.description %></textarea>
+       </div>
+
+       
+        <div class="form-group">
+           <label for="validity">Validity</label>
+           <input type="text" class="form-control date" id="Validity" name="validity" value="<%= @pass.validity %>">
+        </div>
+
+        <div class="form-group">
+          <label for="no_of_passes">No of Passes</label>
+          <input type="text" class="form-control date" id="no_of_passes" name="no_of_passes" value="<%= @pass.number_of_passes %>">
+      </div>
+
+        <div class="form-group">
+          <label for="validity_time">Validy time</label>
+          <input type="text" class="form-control" id="validity_time" name="validity_time" value="<%= @pass.validity_time %>">
+        </div>
+
+        <div class="form-group">
+          <label for="ambassador_name">Ambassador Name</label>
+          <input type="text" class="form-control" id="ambassador_name" name="ambassador_name" value="<%= @pass.ambassador_name %>">
+       </div>
+
+      <div class="form-group">
+        <label for="redeem_code">Redeem Code(Max three digits)</label>
+        <input type="number" class="form-control" id="redeem_code" name="redeem_code" value="<%= @pass.redeem_code %>">
+      </div>
+
+       <div class="form-group">
+        <label for="terms_conditions">Terms and Conditions</label>
+        <textarea name="terms_conditions" class="form-control" id="terms_conditions" rows="12"><%= @pass.terms_conditions %></textarea>
+       </div>
+       <div class="form-group">
+       <label for="terms_conditions">Terms and Conditions</label>
+       <textarea name="terms_conditions" class="form-control" id="terms_conditions" rows="12"><%= @pass.terms_conditions %></textarea>
+      </div>
+        <button type="submit" class="btn btn-primary mr-2">Update</button>
+        </form>
+    </div>
+    </div>
+</div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->
+
+

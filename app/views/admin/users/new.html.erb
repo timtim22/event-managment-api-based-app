@@ -1,0 +1,67 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel" style="height:100%">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Create new user</h4>
+        <%= render "shared/form_errors", object: @user %>
+         <%= render "shared/notice" %>
+        <form method="post" action="<%= admin_users_path %>" class="forms-sample">
+         <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
+        <div class="form-group">
+        <label for="first_name">First Name</label>
+        <input type="text" class="form-control" id="first_name" name="first_name" placeholder="First Name">
+        </div>
+            <div class="form-group">
+            <label for="last_name">Last Name</label>
+            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last Name">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+        </div>
+        <div class="form-group">
+          <label for="phone_number">Phone Number</label>
+          <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Phone Number">
+      </div>
+        <div class="form-group">
+            <label for="email">Type</label>
+            <select class="form-control" id="type" name="type">
+            <option value="0" selected>Select Type</option>
+            <% @roles.each do |role| %>
+                <option value="<%= role.id %>"><%= role.name %></option>
+            <% end %>
+            </select>
+        </div>
+          <div class="business_details" style="display: none;">
+                   <div class="form-group">
+                    <label for="business_name">Business Name</label>
+                    <input type="text" class="form-control" name="business_name" id="business_name" placeholder="Business Name">
+                </div>
+                 <div class="form-group">
+                   <label for="business_type">Business Type</label>
+                    <input type="text" class="form-control" name="business_type" id="business_type" placeholder="Business Type">
+                </div>
+                </div><!-- business detail-->
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+        </div>
+         <div class="form-group">
+            <label for="password_confirmation">Confirm Password</label>
+            <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" placeholder="Confirm Password">
+        </div>
+        <button type="submit" class="btn btn-primary mr-2">Submit</button>
+        </form>
+    </div>
+    </div>
+</div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->
+
+

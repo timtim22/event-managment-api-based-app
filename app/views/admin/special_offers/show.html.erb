@@ -1,0 +1,24 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+ <div class="container" style="min-height:550px;">
+
+   <h3><strong>Title: </stong><span class="unbold"><%= @special_offer.title %></span></h3>
+   <hr>
+   <!-- Preview Image -->
+   <img src="<%= @special_offer.image.url  %>"  style="border-radius:3px;max-height: 300px;width: 50%;">
+   <hr>
+   <p class="so_p"><strong>Sub title: </strong><span class="unbold"><%= @special_offer.sub_title %></span></p>
+   <p class="so_p"><strong>Description: </strong><span class="unbold"><%= @special_offer.description %></span></p>
+
+   <p class="so_p"><strong>Validity: </strong><span class="unbold"><%= @special_offer.validity %></span> </p>
+
+   <p class="so_p"><strong>Terms and conditions: </strong><span class="unbold"><%= @special_offer.terms_conditions %></span></p>
+   <p class="so_p"><strong>QRcode: <br> </strong><span class="unbold"><img src="<%= render_qr_code(@special_offer.redeem_code) %>" class="qr"></p>
+ </div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

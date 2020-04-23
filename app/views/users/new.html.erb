@@ -1,0 +1,80 @@
+<div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+      <div class="content-wrapper d-flex align-items-center auth px-0">
+        <div class="row w-100 mx-0">
+          <div class="col-lg-6 mx-auto">
+            <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+              <div class="brand-logo">
+                <img src="<%= asset_path 'logo.png' %>" alt="logo">
+              </div>
+                <h4> Registration form </h4><br>
+                <%= render "shared/form_errors", object: @user %>
+                <%= render "shared/notice" %>
+               <form method="post" action="<%= users_path %>" class="forms-sample">
+                 <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
+                 <input type="hidden" name="app_user" value="false">
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" class="form-control" id="first_name" name="first_name" placeholder="First Name">
+                </div>
+                 <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last Name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+                </div>
+                <div class="form-group">
+                  <label for="phone_number">Phone Number</label>
+                  <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="+925086777">
+               </div>
+             
+               <div class="form-group">
+               <label data-error="wrong" data-success="right"  for="birth_date">Birth Date</label>
+               <input type="text"  class="form-control validate date" name="dob">
+            </div>
+                <div class="form-group">
+                    <label for="email">Type</label>
+                    <select class="form-control" id="type" name="type">
+                      <option value="0" selected>Select Type</option>
+                    <% getRoles.each do |role| %>
+                     <option value="<%= role.id %>"><%= role.name %></option>
+                    <% end %>
+                    </select>
+                </div>
+                <div class="form-group">
+                  <label for="gender">Gender</label>
+                  <select class="form-control" id="gender" name="gender">
+                     <option>Select gender </option> 
+                     <option value="male">Male</option>
+                     <option value="female">Female</option>
+                     <option value="gay">Gay</option>
+                  </select>
+               </div>
+                <div class="business_details" style="display: none;">
+                   <div class="form-group">
+                    <label for="business_name">Business Name</label>
+                    <input type="text" class="form-control" name="business_name" id="business_name" placeholder="Business Name">
+                </div>
+                 <div class="form-group">
+                   <label for="business_address">Business Address</label>
+                    <input type="text" class="form-control" name="business_address" id="business_address" placeholder="Business Address">
+                </div>
+                </div><!-- business detail-->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+                </div>
+                 <div class="form-group">
+                    <label for="password_confirmation">Confirm Password</label>
+                    <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" placeholder="Confirm Password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>
+                <p style="margin-top:10px;">Already member? <a href="<%= new_admin_session_path %>">Login</a></p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- content-wrapper ends -->

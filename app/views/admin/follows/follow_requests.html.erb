@@ -1,0 +1,41 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+   <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+     <div class="card-body">
+      <%= render "shared/notice" %>
+     <br>
+    <h4 class="card-title">Follow Requests</h4>
+    <div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>User</th>
+          <th>Name</th>
+          <th>Time</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @requests.each do |request| %>
+          <tr>
+          <td class="py-1"><img src='<%= asset_path "#{request.sender_avatar}" %>'' onError="this.onerror=null;this.src='/assets/avatar.png';" alt="image" class="user_list_img"></td>
+          <td><%= request.sender_name %></td>
+          <td><%= time_ago_in_words(request.created_at) %></td>
+           <td> <a href="<%= admin_accept_follow_request_path + "?user_id=#{request.sender_id}" %>"><buttn class="btn btn-primary btn-sm">Accept</button></a>
+          </td>
+       </tr>
+        <% end %>
+        </tbody>
+    </table>
+    </div>
+</div>
+</div>
+</div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

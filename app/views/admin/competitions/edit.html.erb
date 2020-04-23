@@ -1,0 +1,71 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel" style="height:100%">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Create competition</h4>
+         <%= render "shared/form_errors", object: @competition %>
+         <%= render "shared/notice" %>
+        <form method="post" action="<%= admin_competition_path(@competition.id) %>" id="competition_update_form" class="forms-sample" enctype="multipart/form-data">
+        <input type="hidden" name="_method" value="patch">
+        <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
+        <div class="form-group">
+          <label for="name">Title</label>
+          <input type="text" class="form-control" id="name" name="title" placeholder="Title" value="<%= @competition.title %>">
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea name="description" class="form-control" rows="12"><%= @competition.description %></textarea>
+       </div>
+         <div class="form-group">
+            <input type="file" id="image" name="image">
+        </div>
+        <div class="form-group">
+          <input type="hidden" name="lat" id="lat">
+          <input type="hidden" name="lng" id="lng">
+          <label for="location">Location</label>
+          <input type="text" class="form-control" name="location" id="competition_location" placeholder="Location" value="<%= @competition.location %>">
+       </div>
+       <div class="form-group">
+       <label for="start_date">Start date</label>
+       <input type="text" class="form-control date" id="start_date" name="start_date" placeholder="Start date" value="<%= @competition.start_date %>">
+   </div>
+   <div class="form-group">
+      <label for="end_date">End date</label>
+      <input type="text" class="form-control date" id="end_date" name="end_date" placeholder="End date" value="<%= @competition.end_date %>">
+   </div>
+   
+   <div class="price_div">
+   <div class="form-group">
+     <label for="price">Price (Coins)</label>
+     <input type="text" class="form-control price" id="price" name="price" placeholder="Price" value="<%= @competition.price %>">
+    </div>
+   </div><!-- price div-->
+        <div class="form-group">
+          <div id="time_start">
+          <label for="email">Start Time</label>
+          <input type="text" class="form-control time ui-timepicker-input" id="start_time" name="start_time" placeholder="start_Time"  value="<%= @competition.start_time %>">
+          </div><!--time start-->
+          <div id="time_end">
+            <label for="email">End Time</label>
+            <input type="text" class="form-control time ui-timepicker-input" id="end_time" name="end_time" placeholder="End Time" value="<%= @competition.end_time %>">
+          </div><!--time end-->
+        </div>
+        <div class="form-group">
+          <label for="validity">Validity</label>
+          <input type="text" class="form-control date" id="validity" name="validity" value="<%= @competition.validity %>">
+       </div>
+        <button type="submit" class="btn btn-primary mr-2" id="competition_update_btn">Update</button>
+        </form>
+    </div>
+    </div>
+</div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->
+
+

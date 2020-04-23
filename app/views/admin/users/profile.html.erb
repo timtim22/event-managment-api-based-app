@@ -1,0 +1,295 @@
+ <div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+   <div class="container">
+     <%= render 'shared/form_errors', object: current_user %>
+     <%= render 'shared/notice' %>
+     <div class="alert-danger" style="display:none;"></div>
+     <div class="flash_alert" style="display:none;"></div>
+   </div><!-- container -->
+         <div class="container emp-profile">
+            <form method="post" id="profile_form" action="<%= admin_user_update_avatar_path %>" enctype="multipart/form-data">
+               <input type="hidden" name="authenticity_token" value ="<%= form_authenticity_token %>">
+               <input type="hidden" id="main_form_old_password" name="old_password">
+               <input type="hidden" id="main_form_new_password" name="password">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="profile-img">
+                 <img src='<%= asset_path "#{current_user.avatar}" %>' onError="this.onerror=null;this.src='/assets/avatar.png';" class="profile_img"" alt=""/>
+                            <div class="file btn btn-lg btn-primary">
+                                Change Photo
+                                <input type="file" name="avatar"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="profile-head">
+                                    <h5>
+                                       <%= current_user.first_name + " " + current_user.last_name %>
+                                    </h5>
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">About</a>
+                                </li>
+                               <!--  <li class="nav-item">
+                                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Events</a>
+                                </li> -->
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Update"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-8">
+                        <div class="tab-content profile-tab" id="myTabContent">
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                           
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>First Name</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                            <a href="#" data-toggle="modal" data-target="#modalUpdateInfo"><i class="fa fa-edit" data-toggle="tooltip" title="Edit Info" style="cursor:pointer;float:right;"></i></a>
+                                                <p><%= current_user.first_name %></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Last Name</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><%= current_user.last_name %></p>
+                                        </div>
+                                    </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Email</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><%= current_user.email %></p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>User Type</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><%= current_user.role.name %></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Birth Date</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                        <p><%= InfoData(current_user)['dob'] %>
+                                      
+                                        </p>
+                                        </div>
+                                       </div>
+
+                                       <div class="row">
+                                       <div class="col-md-6">
+                                           <label>Phone</label>
+                                       </div>
+                                       <div class="col-md-6">
+                                       <p><%= current_user.phone_number %>
+                                      
+                                       </p>
+                                       </div>
+                                      </div>
+
+                                      <div class="row">
+                                      <div class="col-md-6">
+                                          <label>Personal Info</label>
+                                      </div>
+                                      <div class="col-md-6">
+                                      <p><%= InfoData(current_user)['about'] %>
+                                  
+                                      </p>
+                                      </div>
+                                     </div>
+
+                                          <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Password</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                            <a href="#" data-toggle="modal" data-target="#modalChangePassword">
+                                             <button type="button" class="btn btn-outline-secondary btn-sm">Change</button>
+                                            </a>
+                                            
+                                            </div>
+                                        </div>
+                                    <br><br><br>
+                                    <a href="/admin/view-activity">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm">My Activity</button>
+                                    </a>
+                            </div>
+                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Experience</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>Expert</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Hourly Rate</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>10$/hr</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Total Projects</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>230</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>English Level</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>Expert</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Availability</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p>6 months</p>
+                                            </div>
+                                        </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>Your Bio</label><br/>
+                                        <p>Your detail description</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>           
+        </div>
+
+ <!--modal-->
+   <div class="modal fade" id="modalChangePassword" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Change Password</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" id="change_password_form">
+      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+         <label data-error="wrong" data-success="right"  for="old_password">Old password</label>
+          <input type="password" id="old_password" class="form-control validate" name="old_password">
+        </div>
+
+        <div class="md-form mb-4">
+          <label data-error="wrong" data-success="right" for="defaultForm-pass">New Password</label>
+          <input type="password" id="new_password" name="new_password" class="form-control validate">
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button class="btn btn-default" id="update_password_modal_btn">Update</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- modal end-->
+
+  <!--modal-->
+   <div class="modal fade" id="modalUpdateInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+   
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Update Info</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="post" id="update_user_info_form">
+      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+        <label data-error="wrong" data-success="right"  for="birth_date">Birth Date</label>
+          <input type="text" id="birth_date" class="form-control validate date" name="dob" value="<%= current_user.dob %>">
+        </div>
+
+        <div class="md-form mb-4">
+        <label data-error="wrong" data-success="right" for="moble">Gender</label>
+           <select name="gender" class="form-control" data-chosen=" <%= InfoData(current_user)['gender'] %>">
+             <option value="male" <%= InfoData(current_user)['gender'] == 'male' ? 'selected' : '' %> >Male</option>
+             <option value="female" <%= InfoData(current_user)['gender'] == 'female' ? 'selected' : '' %> >Female</option>
+           </select>   
+      </div>
+
+        <div class="md-form mb-4">
+           <label data-error="wrong" data-success="right" for="phone_number">Phone number</label>
+          <input type="text" id="phone_number" name="phone_number" class="form-control validate" value="<%= current_user.phone_number %>">    
+        </div>
+    
+
+      <div class="md-form mb-4">
+      <label data-error="wrong" data-success="right" for="about">About</label>
+        <textarea id="about" name="about" class="form-control"><%= InfoData(current_user)['about'] %></textarea> 
+      </div>
+
+      <div class="md-form mb-4">
+       <input type="checkbox" name='strip_account'>&nbsp;Stripe Account
+    </div>
+
+    <div class="md-form mb-4">
+      <input type="checkbox" name='add_social_media_links' id="add_social_media_links">&nbsp;Add Social Media Links
+      <div class="social_wrapper" style="display:none;">
+      <br>
+        <p>Facebook: &nbsp&nbsp <input type="text" id="facebook" class="form-control validate" name="facebook" placeholder="Insert profile link" value="<%= InfoData(current_user)['facebook'] %>"> </p>
+        <br>
+        <p>Twitter: &nbsp&nbsp <input type="text" id="twitter" class="form-control validate" name="twitter" placeholder="Insert profile link" value="<%= InfoData(current_user)['twitter'] %>"> </p>
+        <br>
+        <p>Snapchat: &nbsp&nbsp <input type="text" id="snapchat" class="form-control validate" name="snapchat" placeholder="Insert profile link" value="<%= InfoData(current_user)['snapchat'] %>"> </p>
+        <br>
+        <p>Instagram: &nbsp&nbsp <input type="text" id="instagram" class="form-control validate" name="instagram" placeholder="Insert profile link" value="<%= InfoData(current_user)['instagram'] %>"> </p>
+      </div><!--social wrapper-->
+    </div>
+
+      <div class="modal-footer d-flex justify-content-center">
+        <button class="btn btn-default" id="update_user_info_modal_btn">Update</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+        <!-- modal end-->
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->
+
+

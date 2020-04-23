@@ -1,0 +1,39 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+  <div class="container">
+   <%= render 'shared/notice' %>
+    <div class="row">
+      <!-- Post Content Column -->
+      <div class="col-lg-10">
+        <!-- Title -->
+        <h3 class="mt-4"><%= @competition.title %></h3>
+        <!-- Author -->
+        <hr>
+        <!-- Date/Time -->
+        <p><i class="fa fa-clock"></i> Posted: <%= time_ago_in_words(@competition.created_at) %> &nbsp;&nbsp;&nbsp; <i class="fa fa-map-marker"></i> <%= @competition.location %></p>
+        <hr>
+        <!-- Preview Image -->
+        <% if(@competition.image.url.blank? != true) %>
+        <img class="img-fluid rounded competition_img" src="<%= @competition.image.url %>" alt="">
+        <% else %>
+         <img class="img-fluid rounded" src="<%= @competition.placeholder %>" alt="">
+        <% end %>
+        <hr>
+        <!-- competition Content -->
+        <p><%= @competition.description %></p>
+        <hr>
+      </div>
+      <!-- Sidebar Widgets Column -->
+      <div class="col-md-4"></div>
+    <!-- /.row --></div>
+    <div class="container">  
+  </div>
+
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->
+

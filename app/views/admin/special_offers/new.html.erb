@@ -1,0 +1,90 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel" style="height:100%">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Create special_offer</h4>
+         <%= render "shared/form_errors", object: @special_offer %>
+         <%= render "shared/notice" %>
+        <form method="post" action="<%= admin_special_offers_path %>" class="forms-sample" enctype="multipart/form-data">
+        <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
+       
+        <div class="form-group">
+          <label for="name">Title</label>
+          <input type="text" class="form-control" id="name" name="title" placeholder="Title">
+        </div>
+
+        <div class="form-group">
+          <label for="sub_title">Sub title</label>
+        <input type="text" class="form-control" id="sub_title" name="sub_title" placeholder="Sub Title">
+       </div>
+
+       <div class="form-group">
+       <label for="image" class="control-label">Offer Image</label>
+        <br>
+       <input type="file" id="image" name="image">
+      </div>
+
+      <div class="form-group">
+        <label for="location">Location</label><br>
+        <input type="hidden" name="lat" id="lat">
+        <input type="hidden" name="lng" id="lng">
+        <input type="hidden" name="creator_name" value="<%= current_user.first_name + ' ' + current_user.last_name %>">
+        <input type="hidden" name="creator_image" value="<%= current_user.avatar.url %>">
+        <input type="hidden" name="event_type" value="mygo">
+        <span class="error" id="location_error"></span><br>
+        <input type="text" class="form-control" name="location" id="location" placeholder="Location">
+     </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea name="description" class="form-control" rows="12"></textarea>
+       </div>
+
+       <div class="form-group">
+          <label for="date">Date</label>
+          <input type="text" class="form-control date" id="date" name="date" placeholder="Date" data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true">
+       </div>
+
+       <div class="form-group">
+          <label for="time">Time</label>
+          <input type="text" class="form-control time ui-timepicker-input" id="end_time" name="time" placeholder="Time">
+      </div>
+       
+        <div class="form-group">
+           <label for="validity">Validity Date</label>
+           <input type="text" class="form-control date" id="validity" name="validity" placeholder="Validity">
+        </div>
+
+        <div class="form-group">
+          <label for="validity_time">Validy time</label>
+          <input type="text" class="form-control" id="validity_time" name="validity_time" placeholder="Validity Time">
+        </div>
+
+        <div class="form-group">
+          <label for="ambassador_name">Ambassador Name</label>
+          <input type="text" class="form-control" id="ambassador_name" name="ambassador_name" placeholder="John">
+       </div>
+
+        <div class="form-group">
+          <label for="redeem_code">Redeem Code(Max three digits)</label>
+          <input type="number" class="form-control" id="redeem_code" name="redeem_code" placeholder="567">
+       </div>
+       <div class="form-group">
+       <label for="terms_conditions">Terms and Conditions</label>
+       <textarea name="terms_conditions" class="form-control" id="terms_conditions" rows="12"></textarea>
+      </div>
+        <button type="submit" class="btn btn-primary mr-2">Create</button>
+        </form>
+    </div>
+    </div>
+</div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->
+
+

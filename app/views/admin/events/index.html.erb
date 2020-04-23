@@ -1,0 +1,64 @@
+<div class="container-scroller">
+
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+   <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+     <div class="card-body">
+     <%= render "shared/notice" %>
+     <br>
+    <h4 class="card-title">Events List</h4>
+    <div class="table-responsive">
+    <table class="table table-striped dataTable stripe ui celled table" id="event_listing_table">
+        <thead>
+        <tr>
+          <th>Image</th>
+          <th>Title</th>
+          <th>Start date</th>
+          <th>End date</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Host</th>
+          <th>Location</th>
+          <th>Participants</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @events.each do |event| %>
+        <tr>
+            <td><a href="<%= admin_event_path(event) %>" ><img src="<%= !event.image.url.blank? ? event.image.url : event.eventbrite_image %>" onError='this.onerror=null;this.src="<%= event.placeholder %>" ' style="border-radius:3px;"></a></td>
+            <td><%= event.name[0...25] %></td>
+            <td><%= event.start_date.to_date.to_s %></td>
+            <td><%= event.end_date.to_date.to_s  %></td>
+            <td><%= event.start_time %></td>
+            <td><%= event.end_time %></td>
+            <td><%= event.host %></td>
+            <td><%= event.location[0...15] %></td>
+            <td><%= event.invitees %></td>
+            <td>
+            <a href="<%= admin_event_path(event.id) %>" data-toggle="tooltip" title="View event"><i class="fa fa-eye"></i></a>
+            |
+            <a href="<%= edit_admin_event_path(event.id) %>" data-toggle="tooltip" title="Edit event"><i class="fa fa-edit"></i></a>
+            |
+            <%= link_to admin_event_path(event), method: :delete, data: {confirm: 'Are you sure you want to delete?'} do %>
+              <i class="fa fa-trash" data-toggle="tooltip" title="Delete Event"></i>
+              <% end %>
+            </td>
+        </tr>
+        <% end %>
+        
+        </tbody>
+    </table>
+    <p style="margin:20px 0"><%= link_to_next_page @events, 'Next Page',class: 'pagination_btn' %> &nbsp; <%= link_to_prev_page @events, 'Previous Page', class: 'pagination_btn' %>
+  </p>
+    </div>
+</div>
+</div>
+</div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

@@ -1,0 +1,88 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel" style="height:100%">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Create Special Offer</h4>
+         <%= render "shared/form_errors", object: @special_offer %>
+         <%= render "shared/notice" %>
+        <form method="post" action="<%= admin_special_offer_path(@special_offer) %>" class="forms-sample" enctype="multipart/form-data">
+        <input type="hidden" name="_method" value="patch">
+        <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
+        <div class="form-group">
+          <label for="name">Title</label>
+          <input type="text" class="form-control" id="name" name="title" value="<%= @special_offer.title  %>">
+        </div>
+        <div class="form-group">
+           <label for="sub_title">Sub title</label>
+          <input type="text" class="form-control" id="sub_title" name="sub_title" value="<%= @special_offer.sub_title %>">
+        </div>
+       <div class="form-group">
+         <label for="image" class="control-label">Offer Image</label>
+          <br>
+         <input type="file" id="image" name="image">
+        </div>
+        <div class="form-group">
+          <label for="location">Location</label><br>
+          <input type="hidden" name="lat" id="lat">
+          <input type="hidden" name="lng" id="lng">
+          <input type="hidden" name="creator_name" value="<%= current_user.first_name + ' ' + current_user.last_name %>">
+          <input type="hidden" name="creator_image" value="<%= current_user.avatar.url %>">
+          <input type="hidden" name="event_type" value="mygo">
+          <span class="error" id="location_error"></span><br>
+          <input type="text" class="form-control" name="location" id="location" value="<%= @special_offer.location %>">
+       </div>
+
+     <div class="form-group">
+        <label for="date">Date</label>
+        <input type="text" class="form-control date" id="date" name="date" value="<%= @special_offer.date %>" data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true">
+     </div>
+
+       <div id="time_end">
+           <label for="time">Time</label>
+           <input type="text" class="form-control time ui-timepicker-input" id="validity_time" name="time" value="<%= @special_offer.time %>">
+        </div>
+
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea name="description" class="form-control" rows="12"><%= @special_offer.description %></textarea>
+       </div>
+       
+        <div class="form-group">
+           <label for="validity">Validity Date</label>
+           <input type="text" class="form-control date" id="Validity" name="validity" value="<%= @special_offer.validity %>">
+        </div>
+
+        <div id="time_end">
+           <label for="validity_time">Validity Time</label>
+           <input type="text" class="form-control time ui-timepicker-input" id="validity_time" name="validity_time" value="<%= @special_offer.validity_time %>">
+           </div><!--time end-->
+        </div>
+
+        <div class="form-group">
+          <label for="redeem_code">Redeem Code(Max three digits)</label>
+          <input type="number" class="form-control" id="redeem_code" name="redeem_code" value="<%= @special_offer.redeem_code %>">
+       </div>
+
+       <div class="form-group">
+         <label for="terms_conditions">Terms and Conditions</label>
+         <textarea name="terms_conditions" class="form-control" id="terms_conditions" rows="12"><%= @special_offer.terms_conditions %></textarea>
+       </div>
+       <button type="submit" class="btn btn-primary mr-2" style="width: 14%;">Update</button>
+        </form>
+    </div>
+  
+</div>
+</div>
+</div>
+</div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->
+
+

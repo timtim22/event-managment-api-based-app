@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  dob: MyString
+  mobile: MyString
+  about: MyString
+  genderstripe_account: false
+  add_social_media_links: false
+  facebook: MyString
+  twitter: MyString
+  snapchat: MyString
+  instagram: MyString
+  user: one
+
+two:
+  dob: MyString
+  mobile: MyString
+  about: MyString
+  genderstripe_account: false
+  add_social_media_links: false
+  facebook: MyString
+  twitter: MyString
+  snapchat: MyString
+  instagram: MyString
+  user: two

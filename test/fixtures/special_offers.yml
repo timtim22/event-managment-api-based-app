@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title,: MyString
+  description: MyText
+  validity: MyString
+  event_id: MyString
+  terms_conditions: MyText
+  agreed_to_terms: false
+
+two:
+  title,: MyString
+  description: MyText
+  validity: MyString
+  event_id: MyString
+  terms_conditions: MyText
+  agreed_to_terms: false

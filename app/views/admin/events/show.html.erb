@@ -1,0 +1,78 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+ <div class="container" style="min-height:550px;">
+ <div class="col-lg-10">
+ <!-- Title -->
+ <h3 class="mt-4"><%= @event.name %></h3>
+ <!-- Author -->
+ <hr>
+ <!-- Date/Time -->
+ <p><i class="fa fa-clock"></i> Posted: <%= time_ago_in_words(@event.created_at) %> &nbsp;&nbsp;&nbsp; <i class="fa fa-map-marker"></i> <%= @event.location %></p>
+ <hr>
+ <!-- Preview Image -->
+ <img src="<%= !@event.image.url.blank? ? @event.image.url : @event.eventbrite_image %>" onError='this.onerror=null;this.src="<%= @event.placeholder %>" ' style="border-radius:3px;width: 692px;">
+ <hr>
+ <!-- event Content -->
+ <p><%= @event.description %></p>
+ <hr>
+ <% if !@event.passes.blank? %>
+  <h5> Passes: </h5>
+  <% @event.passes.each do |pass| %>
+  <p><strong>Pass title: </strong><%= link_to pass.title, admin_pass_path(pass) %></p>
+  <% end %>
+ <% end %>
+<hr>
+<% if !@event.categories.blank? %>
+<h5> Categories: </h5>
+<% @event.categories.each do |cat| %>
+<li><%= cat.name %></li>
+<% end %>
+<% end %>
+</div>
+ </div><!--container -->
+ <div class="container">
+    <div class="row">
+        <div class="panel panel-default widget">
+            <div class="panel-heading"></div>
+            <div class="panel-body">
+                <ul class="list-group">
+                <% @event.comments.each do |comment| %>
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-2 col-md-2">
+                                <img src="<%= comment.user.avatar.url %>" class="img-circle img-responsive" style="border-radius:3px;max-width:100%;width: 58px;border-radius: 50%;height: 58px;" alt="" />
+                              </div>
+                            <div class="col-xs-10 col-md-10">
+                                <div>
+                                    <h5><%= comment.user.first_name + ' ' + comment.user.last_name %></h5>
+                                    <div class="mic-info">
+                                      <i class="fa fa-clock"></i>
+                                         <a href="#"> <%= time_ago_in_words(comment.created_at) %> ago</a> 
+                                    </div>
+                                </div>
+                                <div class="comment-text">
+                                  <%= comment.comment %>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <% end %>
+                </ul>
+                <hr>
+                <form action='<%= "/admin/events/#{@event.id}/comments" %>' method="post" class="form-inline" style="width: 513px;">
+                <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                <textarea placeholder="Write your comment here!" class="pb-cmnt-textarea" style="border:1px solid #ccc;margin-bottom:10px;" name="comment" rows="15"></textarea>
+                    <button type="submit" class="btn btn-primary pull-right" type="button" style="width: 100%;">Post</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

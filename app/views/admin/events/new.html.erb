@@ -1,0 +1,127 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel" style="height:100%">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Create Event</h4>
+         <%= render "shared/form_errors", object: @event %>
+         <%= render "shared/notice" %>
+        <form method="post" action="<%= admin_events_path %>" class="forms-sample" enctype="multipart/form-data">
+        <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
+        <div class="form-group">
+        <label for="categories">Categories (Maximum three categories)</label><br>
+        <select class="form-control categories_select select_multi" data-placeholder="Select a category..." multiple class="chosen-select" name="category_ids[]" id="categories_select">
+         <% @categories.each do |cat| %>
+         <option value="<%= cat.id %>"><%= cat.name %></option>
+         <% end %>
+         </select>
+        </div>
+        <div class="form-group">
+        <label for="name">Title</label>
+        <input type="text" class="form-control" id="name" name="name" placeholder="Title">
+        </div>
+        <div class="form-group">
+          <label for="password_confirmation">Description</label>
+          <textarea name="description" class="form-control" rows="12"></textarea>
+       </div>
+         <div class="form-group">
+            <label for="image" class="control-label">Event Image</label>
+            <br>
+            <input type="file" id="image" name="image">
+        </div>
+        <div class="form-group">
+          <label for="location">Location</label><br>
+          <input type="hidden" name="lat" id="lat">
+          <input type="hidden" name="lng" id="lng">
+          <input type="hidden" name="creator_name" value="<%= current_user.first_name + ' ' + current_user.last_name %>">
+          <input type="hidden" name="creator_image" value="<%= current_user.avatar.url %>">
+          <input type="hidden" name="event_type" value="mygo">
+          <span class="error" id="location_error"></span><br>
+          <input type="text" class="form-control location" name="location" id="location" placeholder="Location">
+       </div>
+        <div class="form-group">
+            <label for="start_date">Start date</label>
+            <input type="text" class="form-control date" id="start_date" name="start_date" placeholder="Start date" data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true">
+        </div>
+        <div class="form-group">
+           <label for="end_date">End date</label>
+           <input type="text" class="form-control date" id="end_date" name="end_date" placeholder="End date" data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true">
+        </div>
+          <div class="form-group">
+          <label for="price_type">Price Type</label>
+          <select class="form-control" id="price_type" name="price_type">
+            <option value="free">Free</option>
+            <option value="pay_at_door">Pay  at door</option>
+          </select>
+        </div>
+        <div class="price_div">
+        <div class="form-group">
+          <label for="price">Price (USD)</label>
+          <input type="text" class="form-control price" id="price" name="price" placeholder="Price">
+         </div>
+        </div><!-- price div-->
+        <div class="form-group">
+        <div id="time_start">
+            <label for="email">Start Time</label>
+            <input type="text" class="form-control time ui-timepicker-input" id="start_time" name="start_time" placeholder="start_Time">
+        </div><!--time start-->
+        <div id="time_end">
+              <label for="email">End Time</label>
+              <input type="text" class="form-control time ui-timepicker-input" id="end_time" name="end_time" placeholder="End Time">
+            </div><!--time end-->
+        </div>
+        <div class="form-group">
+            <label for="envitees">Maximum Participants</label>
+            <input type="number" class="form-control" id="envitees" name="invitees" placeholder="100">
+        </div>
+       <!--  <div class="form-group">
+            <label for="password">Exernal Link (If ticket master link is available)</label>
+            <input type="text" class="form-control" name="external_link" id="external_link" placeholder="External link">
+        </div> -->
+         <div class="form-group" style="display:none;">
+            <label for="password_confirmation">Host</label>
+            <input type="text" class="form-control" name="host" id="host" value="<%= current_user.first_name + ' ' + current_user.last_name %>">
+         </div>
+         
+       
+       <!--  <div class="form-group">
+            <label for="password_confirmation">Feature Media link</label>
+            <input type="text" class="form-control" name="feature_media_link" id="feature_media_link" placeholder="Feature Media link">
+        </div> -->
+         <div class="form-group">
+            <label for="over_18">Over 18</label>
+            <input type="checkbox" id="over_18" name="over_18">
+        </div>
+         <div class="form-group">
+            <label for="event_forwarding">Event Forwarding</label>
+            <input type="checkbox" id="event_forwarding" name="event_forwarding">
+        </div>
+         <div class="form-group">
+            <label for="allow_chat">Allow Chat</label>
+            <input type="checkbox" id="allow_chat" name="allow_chat">
+        </div>
+            <div class="form-group">
+            <label for="allow_additional_media">Allow Additional Media</label>
+            <input type="checkbox" id="allow_additional_media" name="allow_additional_media">
+        </div>
+         <div class="additional_media_wrapper" style="display: none;">
+          <div class="form-group">
+            <label for="password_confirmation">Additional Media</label>
+            <br>
+             <input type="file" name="event_attachments[media][]" multiple id="additional_media">
+          </div>
+        </div><!--additional media wrapper-->
+        <button type="submit" class="btn btn-primary mr-2">Create</button>
+        </form>
+    </div>
+    </div>
+</div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->
+
+

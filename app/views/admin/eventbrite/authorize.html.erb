@@ -1,0 +1,17 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+  <div class="container" style="min-height:600px;">
+   <div class="content" style="margin:80px auto;">
+   <h3>Here you can import your events from eventbrite by authorizing our app.</h3><br><br>
+<p><a href="https://www.eventbrite.com/oauth/authorize?response_type=code&client_id=J7Y34HZ67LBQBCERPC&redirect_uri=http://localhost:3000/admin/oauth/authorize"><button type="submit" class="btn btn-primary pull-right">Authorize</button></a></p>
+   </div>
+    <br><br>
+  </div><!-- container -->
+
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

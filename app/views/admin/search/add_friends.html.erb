@@ -1,0 +1,61 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+   <div class="container" id="content_conainter">
+   <%= render "shared/notice" %>
+   <div class="alert-danger" style="display:none;"></div>
+   <div class="alert-success" style="display:none;"></div>
+    <div class="page-title">
+    <h3>Add friends</h3>
+    <div class="search_wrapper">
+       <form id="friend_search">
+       <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+         <div class="form-group">
+           <label for='search_friends'>Seach Friends</label>
+           <input type="text" class="form-control" id="search_friends_input" name="q" placeholder="Search friends">
+         </div><!--form-group-->
+       </form>
+       <p>Here you can search for friends and add them to your friends list.</p>
+    </div><!--search wrapper-->
+    </div><!-- page title-->
+
+    <!--modal-->
+    <div class="modal fade" id="add_friend_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog" role="document">
+     <div class="modal-content">
+       <div class="modal-header text-center">
+         <h4 class="modal-title w-100 font-weight-bold">Add Friend</h4>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+       </div>
+       <div class="row">
+       <div class="col-md-4">
+        <div class="friend_profile_wrapper">
+       <img src="<%= asset_path 'avatar.png' %>"  class="add_friend_avatar" 
+       />
+       <br>
+       <h4 style="margin: 7px 3px;color: #656262;" id="add_friend_modal_heading"></h4>
+       </div><!-- profile wrapper -->
+       </div><!-- col-->
+       <div class="col-md-4">
+        
+       </div><!-- col-->
+       <div class="col-md-4">
+       <button data-url="" id="add_friend_btn" class="btn btn-primary mr-2" style="position: relative;top: 90px;">Add Friend</button>
+       </div><!-- col-->
+       </div><!--row-->
+     
+     
+     </div>
+   </div>
+ </div>
+ <!-- modal end-->
+   </div><!-- container-->
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

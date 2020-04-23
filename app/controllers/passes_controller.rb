@@ -1,0 +1,2 @@
+class PassesController < ApplicationController
+end

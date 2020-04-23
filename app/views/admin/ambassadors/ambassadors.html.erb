@@ -1,0 +1,60 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+   <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+     <div class="card-body">
+      <%= render "shared/notice" %>
+     <br>
+    <h4 class="card-title">Ambassadors</h4>
+    <div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>Profile image</th>
+          <th>Profile Name</th>
+          <th>Join Date</th>
+          <th>Their Ranking</th>
+          <th>Mygo friends</th>
+          <th>Facebook</th>
+          <th>Instagram</th>
+          <th>Twitter</th>
+          <th>Worked Events</th>
+          <th>Total earned</th>
+          <th>Members</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @requests.each do |request| %>
+          <tr>
+          <td class="py-1"><a href="/admin/ambassadors/view?id=<%= request.user.id %>&&r_id=<%=request.id %>"><img src='<%= asset_path "#{request.user.avatar}" %>'' onError="this.onerror=null;this.src='/assets/avatar.png';" alt="image" class="user_list_img"></a></td>
+          <td> <%= request.user.first_name + " " + request.user.last_name %></td>
+          <td><%= request.user.created_at.strftime("%A %-d %B,%Y-%H:%M") %></td>
+          <td><%= request.user.profile.ranking %></td>
+          <td><%= request.user.friends.size %></td>
+          <td><%= request.user.profile.facebook.blank? ? "Not Connected" : request.user.profile.facebook   %></td>
+          <td><%= request.user.profile.instagram.blank? ? "Not Connected" : request.user.profile.instagram   %></td>
+          <td><%= request.user.profile.twitter.blank? ? "Not Connected" : request.user.profile.twitter   %></td>
+          <td>to be created</td>
+          <td><%= request.user.earning %></td>
+           <td>
+           <% if request.status == 'accepted' %>
+           <a href="<%= admin_ambassadors_remove_path + "?id=#{request.id}" %>"><buttn class="btn btn-primary btn-sm">Remove</button></a>
+           <% else %>
+           <a href="<%= admin_ambassadors_approve_path + "?id=#{request.id}" %>"><buttn class="btn btn-primary btn-sm">Approve</button></a>
+           <% end %>
+          </td>
+      </tr>
+        <% end %>
+        </tbody>
+    </table>
+    </div>
+</div>
+</div>
+</div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

@@ -1,0 +1,173 @@
+  <!-- partial:partials/_sidebar.html -->
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/dashboard">
+              <i class="mdi mdi-home menu-icon"></i>
+              <span class="menu-title">Dashboard</span>
+            </a>
+          </li>
+          <% if current_user && current_user.role.id == 4 %>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
+              <i class="mdi mdi-circle-outline menu-icon"></i>
+              <span class="menu-title">Users</span>
+              <i class="fa fa-angle-down sidebar-fa"></i>
+            </a>
+            <div class="collapse" id="ui-basic">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="<%= admin_users_path %>">Users List</a></li>
+                <li class="nav-item"> <a class="nav-link" href="<%= new_admin_user_path %>">Add User</a></li>
+                <li class="nav-item"> <a class="nav-link" href="<%= admin_roles_path %>">User Roles</a></li>
+              </ul>
+            </div>
+          </li>
+          <% end %>
+
+          <% if current_user && current_user.role.id == 3 || current_user.role.id == 4 %>  
+          <!-- business user relevant -->
+          <li class="nav-item">
+            <a class="nav-link collapsed" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
+              <i class="mdi mdi-account menu-icon"></i>
+              <span class="menu-title">Business Account</span>
+              <i class="fa fa-angle-down sidebar-fa"></i>
+            </a>
+            <div class="collapse" id="auth" style="">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="#">Discounts</a></li>
+                <li class="nav-item"> <a class="nav-link" href="#">Passes</a></li>
+                <li class="nav-item"> <a class="nav-link" href="#">Team</a></li>
+              </ul>
+            </div>
+            <% end %>
+            <!-- end-->
+            <li class="nav-item">
+            <a class="nav-link collapsed" data-toggle="collapse" href="#ui-basic2" aria-expanded="false" aria-controls="ui-basic">
+              <i class="mdi mdi-circle-outline menu-icon"></i>
+              <span class="menu-title">Events</span>
+              <i class="fa fa-angle-down sidebar-fa"></i>
+            </a>
+            <div class="collapse" id="ui-basic2" style="">
+              <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="<%= new_admin_event_path %>">Add Event</a></li>
+                <li class="nav-item"> <a class="nav-link" href="<%= admin_events_path %>">Events List</a></li>
+                <li class="nav-item">
+                 <a class="nav-link" href="/admin/eventbrite-authorize">Import Events </a>
+                 </li>
+              </ul>
+            </div>
+          </li>
+          <!-- friends -->
+          <li class="nav-item">
+          <a class="nav-link collapsed" data-toggle="collapse" href="#friends" aria-expanded="false" aria-controls="ui-basic">
+            <i class="mdi mdi-circle-outline menu-icon"></i>
+            <span class="menu-title">Friends</span>
+            <i class="fa fa-angle-down sidebar-fa"></i>
+          </a>
+          <div class="collapse" id="friends" style="">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="<%= admin_user_add_friends_page_path %>">Add friends</a></li>
+              <li class="nav-item"> <a class="nav-link" href="<%= admin_friend_requests_path %>">Friend Requests</a></li>
+              <li class="nav-item"> <a class="nav-link" href="<%= admin_my_friends_path %>">My Friends</a></li>
+            </ul>
+          </div>
+          </li>
+          <!-- friends end -->
+
+          <!-- followers -->
+          <li class="nav-item">
+          <a class="nav-link collapsed" data-toggle="collapse" href="#followers" aria-expanded="false" aria-controls="ui-basic">
+            <i class="mdi mdi-circle-outline menu-icon"></i>
+            <span class="menu-title">Followers</span>
+            <i class="fa fa-angle-down sidebar-fa"></i>
+          </a>
+          <div class="collapse" id="followers" style="">
+            <ul class="nav flex-column sub-menu">
+              <!--<li class="nav-item"> <a class="nav-link" href="<%= admin_follow_requests_path %>">Follow Requests</a></li> -->
+              <li class="nav-item"> <a class="nav-link" href="<%= admin_my_followers_path %>">My Followers</a></li>
+            </ul>
+          </div>
+          </li>
+          <!-- followers end -->
+
+          <!-- passes -->
+          <li class="nav-item">
+          <a class="nav-link collapsed" data-toggle="collapse" href="#passes" aria-expanded="false" aria-controls="ui-basic">
+            <i class="mdi mdi-circle-outline menu-icon"></i>
+            <span class="menu-title">Passes</span>
+            <i class="fa fa-angle-down sidebar-fa"></i>
+          </a>
+          <div class="collapse" id="passes" style="">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="<%= admin_passes_path %>">Passes list</a></li>
+              <li class="nav-item"> <a class="nav-link" href="<%= new_admin_pass_path %>">Add a pass</a></li>
+            </ul>
+          </div>
+          </li>
+          <!-- passes end -->
+
+          <!-- special offers -->
+          <li class="nav-item">
+          <a class="nav-link collapsed" data-toggle="collapse" href="#special_offers" aria-expanded="false" aria-controls="ui-basic">
+            <i class="mdi mdi-circle-outline menu-icon"></i>
+            <span class="menu-title">Special Offers</span>
+            <i class="fa fa-angle-down sidebar-fa"></i>
+          </a>
+          <div class="collapse" id="special_offers" style="">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="<%= admin_special_offers_path %>">Offers List</a></li>
+              <li class="nav-item"> <a class="nav-link" href="<%= new_admin_special_offer_path %>">Add special offer</a></li>
+            </ul>
+          </div>
+          </li>
+          <!-- passes end -->
+
+          <!-- passes end -->
+
+          <!-- Competitions -->
+          <li class="nav-item">
+          <a class="nav-link collapsed" data-toggle="collapse" href="#competitions" aria-expanded="false" aria-controls="ui-basic">
+            <i class="mdi mdi-circle-outline menu-icon"></i>
+            <span class="menu-title">Competitions</span>
+            <i class="fa fa-angle-down sidebar-fa"></i>
+          </a>
+          <div class="collapse" id="competitions" style="">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="<%= admin_competitions_path %>">Competitions List</a></li>
+              <li class="nav-item"> <a class="nav-link" href="<%= new_admin_competition_path %>">Add competition</a></li>
+            </ul>
+          </div>
+          </li>
+          <!-- Competitionses end -->
+          <!-- ambassadors -->
+          <li class="nav-item">
+          <a class="nav-link collapsed" data-toggle="collapse" href="#ambassadors" aria-expanded="false" aria-controls="ui-basic">
+            <i class="mdi mdi-circle-outline menu-icon"></i>
+            <span class="menu-title">Ambassadors</span>
+            <i class="fa fa-angle-down sidebar-fa"></i>
+          </a>
+          <div class="collapse" id="ambassadors" style="">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="<%= admin_ambassadors_path %>">Ambassadors</a></li>
+            </ul>
+          </div>
+          </li>
+          <!-- Competitionses end -->
+          <!-- Tickets -->
+          <li class="nav-item">
+          <a class="nav-link collapsed" data-toggle="collapse" href="#tickets" aria-expanded="false" aria-controls="ui-basic">
+            <i class="mdi mdi-circle-outline menu-icon"></i>
+            <span class="menu-title">Tickets</span>
+            <i class="fa fa-angle-down sidebar-fa"></i>
+          </a>
+          <div class="collapse" id="tickets" style="">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="<%= new_admin_ticket_path %>">Add Ticket</a></li>
+              <li class="nav-item"> <a class="nav-link" href="<%= admin_tickets_path %>">Tickets list</a></li>
+            </ul>
+          </div>
+          </li>
+          <!-- Tickets end -->
+          </li>
+        </ul>
+      </nav>

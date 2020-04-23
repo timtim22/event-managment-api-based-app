@@ -1,0 +1,46 @@
+<div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+      <div class="content-wrapper d-flex align-items-center auth px-0">
+        <div class="row w-100 mx-0">
+          <div class="col-lg-4 mx-auto">
+            <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+              <div class="brand-logo">
+                <img src="<%= asset_path 'logo.png' %>" alt="logo">
+              </div>
+               <%= render "shared/notice" %>
+               <div class="alert alert-danger" id="phone_verification_error" style="display:none;"></div>
+               <div class="alert alert-success" id="phone_verification_success" style="display:none;"></div>
+              <form class="pt-3" action="<%= admin_session_path %>" method="post">
+                <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
+                <div class="form-group">
+                <div class="alert-danger" id="invalid_phone_number" style="display:none;">Invalid phone number </div>
+                 <input type="tel" id="phoneNumber" class="form-control" disabled="disabled" placeholder="Phone Number"  value="<%=  session[:phone_number] %>" id="phone_number_input" />
+                  <input type="tel" id="code" class="form-control" placeholder="Verification Code"   style="display:none;" />
+                </div>
+                <div class="form-group">
+                <div id="recaptcha-container_new"></div>            
+                </div><!-- form group-->
+              
+                <div class="my-3">
+                
+                  <input type="button" class="btn btn-block btn-primary btn-lg font-weight-medium" value="Verify" id="verify_phone_number">
+                    <input type="button" class="btn btn-block btn-primary btn-lg font-weight-medium" value="Confirm" id="confirm-code" style="display:none;">
+                    <p id="resend_p" style="display:none;">Not recieved? <a href="#" id="resend_code">Send again</a></p>
+                    <% if !current_user %>
+                    <a href="<%= new_admin_session_path %>" style="display: none;" id="login_link">
+                    <% else %>
+                     <a href="/admin/dashboard" style="display: none;" id="login_link">
+                    <% end %>
+                    <input type="button" class="btn btn-block btn-primary btn-lg font-weight-medium" value="Continue">
+                    </a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- content-wrapper ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+

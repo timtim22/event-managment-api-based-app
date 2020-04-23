@@ -1,0 +1,2 @@
+class InterestLevelsController < ApplicationController
+end

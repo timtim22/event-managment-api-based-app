@@ -1,0 +1,2 @@
+class SpecialOffersController < ApplicationController
+end

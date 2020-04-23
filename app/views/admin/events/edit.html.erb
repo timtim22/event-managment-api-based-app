@@ -1,0 +1,126 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel" style="height:100%">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Create Event</h4>
+         <%= render "shared/form_errors", object: @event %>
+         <%= render "shared/notice" %>
+        <form method="post" action="<%= admin_event_path(@event.id) %>" id="event_update_form" class="forms-sample" enctype="multipart/form-data">
+        <input type="hidden" name="_method" value="patch">
+        <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
+        <div class="form-group">
+        <select class="form-control categories_select select_multi" data-placeholder="Select a category..." multiple class="chosen-select" name="category_ids[]" id="categories_select">
+        <% @categories.each do |cat| %>
+          <% @event.categories.each do |e_cat| %>
+        <option value="<%= cat.id %>" <%= e_cat.id == cat.id ? 'selected' : '' %>><%= cat.name %></option>
+        <% end %>
+        <% end %>
+        </select>
+        </div>
+        <div class="form-group">
+          <label for="name">Title</label>
+          <input type="text" class="form-control" id="name" name="name" placeholder="Title" value="<%= @event.name %>">
+        </div>
+        <div class="form-group">
+          <label for="password_confirmation">Description</label>
+          <textarea name="description" class="form-control" rows="12"><%= @event.description %></textarea>
+       </div>
+         <div class="form-group">
+            <input type="file" id="image" name="image">
+        </div>
+        <div class="form-group">
+        <input type="hidden" name="lat" id="lat">
+        <input type="hidden" name="lng" id="lng">
+          <label for="location">Location</label>
+          <input type="text" class="form-control location" name="location" id="location" placeholder="Location" value="<%= @event.location %>">
+       </div>
+       <div class="form-group">
+       <label for="start_date">Start date</label>
+       <input type="text" class="form-control date" id="start_date" name="start_date" placeholder="Start date" value="<%= @event.start_date %>">
+   </div>
+   <div class="form-group">
+      <label for="end_date">End date</label>
+      <input type="text" class="form-control date" id="end_date" name="end_date" placeholder="End date" value="<%= @event.end_date %>">
+   </div>
+     <div class="form-group">
+     <label for="price_type">Price Type</label>
+     <select class="form-control" id="price_type">
+       <option value="free" <%= @event.price_type == 'free' ? 'selected' : '' %> >Free</option>
+       <option value="pay_at_door" <%= @event.price_type == 'pay_at_door' ? 'selected' : '' %> >Pay  at door</option>
+     </select>
+   </div>
+   <div class="price_div" style="display:none;">
+   <div class="form-group">
+     <label for="price">Price (USD)</label>
+     <input type="text" class="form-control price" id="price" name="price" placeholder="Price" value="<%= @event.price %>">
+    </div>
+   </div><!-- price div-->
+        <div class="form-group">
+          <div id="time_start">
+          <label for="email">Start Time</label>
+          <input type="text" class="form-control time ui-timepicker-input" id="start_time" name="start_time" placeholder="start_Time"  value="<%= @event.start_time %>">
+          </div><!--time start-->
+          <div id="time_end">
+            <label for="email">End Time</label>
+            <input type="text" class="form-control time ui-timepicker-input" id="end_time" name="end_time" placeholder="End Time" value="<%= @event.end_time %>">
+          </div><!--time end-->
+        </div>
+        <div class="form-group">
+            <label for="envitees">Maximum Participants</label>
+            <input type="number" class="form-control" id="envitees" name="invitees" placeholder="100" value="<%= @event.invitees %>">
+        </div>
+       <!--  <div class="form-group">
+            <label for="password">Exernal Link (If ticket master link is available)</label>
+            <input type="text" class="form-control" name="external_link" id="external_link" placeholder="External link" value="<%= @event.external_link %>">
+        </div> -->
+         <div class="form-group" style="display=none;">
+            <label for="password_confirmation">Host</label>
+            <input type="text" class="form-control" name="host" id="host" value="<%= current_user.first_name + ' ' + current_user.last_name %>" value="<%= @event.host %>">
+         </div>
+  
+       <!--  <div class="form-group">
+            <label for="password_confirmation">Feature Media link</label>
+            <input type="text" class="form-control" name="feature_media_link" id="feature_media_link" placeholder="Feature Media link" value="<%= @event.feature_media_link %>">
+        </div> -->
+         <div class="form-group">
+            <label for="over_18">Over 18</label>
+            <input type="checkbox" class="edit_event_checkbox over_18"  <%= BoolTocheckBox(@event.over_18) %> >
+            <input type="hidden" name='over_18' id="over_18" value="<%= @event.over_18 %>">
+        </div>
+         <div class="form-group">
+            <label for="event_forwarding">Event Forwarding</label>
+            <input type="checkbox" class="edit_event_checkbox event_forwarding" <%= BoolTocheckBox(@event.event_forwarding) %> >
+            <input type="hidden" name='event_forwarding' id="event_forwarding" value="<%= @event.event_forwarding %>">
+        </div>
+         <div class="form-group">
+            <label for="allow_chat">Allow Chat</label>
+            <input type="checkbox" class="edit_event_checkbox allow_chat" <%= BoolTocheckBox(@event.allow_chat) %> value="<%= BoolToNumber(@event.allow_chat) %>" >
+            <input type="hidden" name='allow_chat' id="allow_chat"  value="<%= @event.allow_chat %>">
+        </div>
+            <div class="form-group">
+            <label for="allow_additional_media">Allow Additional Media</label>
+            <input type="checkbox" class="edit_event_checkbox allow_additional_media" <%= BoolTocheckBox(@event.allow_additional_media) %> >
+            <input type="hidden" name='allow_additional_media' id="allow_additional_media" value="<%= @event.allow_additional_media %>">
+        </div>
+         <div class="additional_media_wrapper" style="display: none;">
+          <div class="form-group">
+           <label for="password_confirmation">Additional Media</label>
+           <br>
+           <input type="file" name="additional_media" id="additional_media">
+          </div>
+        </div><!--additional media wrapper-->
+        <button type="submit" class="btn btn-primary mr-2" id="event_update_btn">Update</button>
+        </form>
+    </div>
+    </div>
+</div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->
+
+
