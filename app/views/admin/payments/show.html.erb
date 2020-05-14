@@ -1,0 +1,31 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+ <div class="container" style="min-height:550px;">
+
+   <h3><strong>Ticket: </stong><span class="unbold"><%= @transaction.ticket.title %></span></h3>
+   <br>
+   <p class="so_p"><strong>Event: </strong><%= link_to @transaction.ticket.event.name, admin_event_path(@transaction.ticket.event) %></p>
+
+   <p class="so_p"><strong>Ticket price: </strong><%= @transaction.ticket.price %> <i class="fas fa-euro-sign"></i></p>
+
+   <p class="so_p"><strong>Current Amount: </strong><%= @transaction.amount %> <i class="fas fa-euro-sign"></i></p>
+
+   <p class="so_p"><strong>Application Fee: </strong> 5%</p>
+
+   <p class="so_p"><strong>Payment Date: </strong><span class="unbold"><%= local_time(@transaction.created_at) %></span> </p>
+
+   <p class="so_p"><strong>Details: </strong><span class="unbold"></span> </p>
+ 
+   <% @json = @transaction.stripe_response.to_json %>
+   <p><%= JSON.parse(@transaction.stripe_response.to_json, :quirks_mode => true) %> </p>
+  
+
+  
+ </div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

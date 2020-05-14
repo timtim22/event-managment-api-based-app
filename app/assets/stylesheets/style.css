@@ -157,6 +157,10 @@ Div.mygo_index_wrapper {
   background-size: cover;
 }
 
+i.fas.fa-euro-sign {
+  color: #9b9b9b !important;
+}
+
 img.add_friend_avatar {
   max-height: 100px;
   width: 100px;

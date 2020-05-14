@@ -16,7 +16,9 @@
 //= require custom
 //= require firebase
 //= require bootstrap
+//= require local-time
 //= require bootstrap-sprockets
+//= require stripe
 // require turbolinks
 
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_15_115013) do
+ActiveRecord::Schema.define(version: 2020_05_14_072420) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -312,6 +312,16 @@ ActiveRecord::Schema.define(version: 2020_04_15_115013) do
     t.string "offer_type"
   end
 
+  create_table "refund_requests", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "business_id"
+    t.integer "ticket_id"
+    t.string "status", default: "pending"
+    t.text "reason"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "registrations", force: :cascade do |t|
     t.string "user_id"
     t.string "event_id"
@@ -475,6 +485,18 @@ ActiveRecord::Schema.define(version: 2020_04_15_115013) do
     t.string "redeem_code"
   end
 
+  create_table "transactions", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "status", default: "pending"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.json "payment_intent"
+    t.json "stripe_response"
+    t.integer "ticket_id"
+    t.integer "payee_id"
+    t.integer "amount"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
@@ -497,6 +519,8 @@ ActiveRecord::Schema.define(version: 2020_04_15_115013) do
     t.string "lng", default: ""
     t.integer "earning", default: 0
     t.boolean "is_ambassador", default: false
+    t.string "stripe_state", default: "no state"
+    t.string "connected_account_id", default: "no account"
   end
 
   create_table "wallets", force: :cascade do |t|

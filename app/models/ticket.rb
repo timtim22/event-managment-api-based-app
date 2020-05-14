@@ -4,6 +4,8 @@ class Ticket < ApplicationRecord
  
   has_many :wallets, dependent: :destroy, as: :offer
   has_many :ticket_purchases, dependent: :destroy
+  has_many :transactions, dependent: :destroy
+  has_many :refund_requests, dependent: :destroy
 
   validates :title, presence: true
   validates :price, presence: true

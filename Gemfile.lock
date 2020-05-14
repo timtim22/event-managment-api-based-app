@@ -197,6 +197,7 @@ GEM
       activerecord
       kaminari-core (= 1.2.0)
     kaminari-core (1.2.0)
+    local_time (2.1.0)
     loofah (2.4.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -355,6 +356,7 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     sqlite3 (1.4.2)
+    stripe (5.18.0)
     thor (1.0.1)
     thread_safe (0.3.6)
     ticketmaster-sdk (0.0.06)
@@ -414,6 +416,7 @@ DEPENDENCIES
   jquery-rails
   jwt
   kaminari
+  local_time
   mail_form
   pry
   pubnub (~> 4.2.2)
@@ -428,6 +431,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   selenium-webdriver
   sqlite3
+  stripe
   ticketmaster-sdk
   turbolinks (~> 5)
   tzinfo-data

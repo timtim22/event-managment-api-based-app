@@ -35,7 +35,12 @@ class ApplicationController < ActionController::Base
    })
   end
 
+   def generate_code
+    code = SecureRandom.hex
+   end
+
   helper_method :SetJsVariables
   helper_method :create_activity
+  helper_method :generate_code
 
 end

@@ -17,6 +17,7 @@ class UsersController < ApplicationController
         @user.phone_number = params[:phone_number]
         @user.dob = params[:dob]
         @user.gender = params[:gender]
+        @user.stripe_state = generate_code
         @user.password = params[:password]
         @user.remote_avatar_url = 'https://pickaface.net/gallery/avatar/45425654_200117_1657_v2hx2.png'  
         if @user.save
@@ -33,9 +34,10 @@ class UsersController < ApplicationController
               business_detail.type = params[:business_type]
               business_detail.save
             end
-         flash[:notice] = "Registered successfully, Please verify your phone."
+        # flash[:notice] = "Registered successfully, Please verify your phone."
+         flash[:notice] = "Registered successfully, please login now."
          session[:phone_number] = @user.phone_number
-         redirect_to verify_phone_path
+         redirect_to new_admin_session_path
         else
          render :new
         end

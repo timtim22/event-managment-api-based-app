@@ -74,6 +74,9 @@ Rails.application.routes.draw do
        post '/events/report-event' =>  "events#report_event"
        post '/events/update-setting' => "events#update_setting"
        post '/events/purchase-ticket' => 'payments#purchase_ticket'
+       post '/payments/get-secret' => 'payments#get_secret'
+       post '/payments/confirm-payment' => 'payments#confirm_payment'
+     
       # get '/*a', to: 'applic ation#not_found'
      end
    end
@@ -113,9 +116,18 @@ Rails.application.routes.draw do
      get '/ambassadors/approve' => 'ambassadors#approve'
      get '/ambassadors/remove' => 'ambassadors#remove'
      get '/ambassadors/view' => 'ambassadors#view_ambassador'
+     get '/add-payment-account' => 'payments#add_payment_account'
+     get '/stripe/oauth' => 'payments#stripe_oauth_redirect'
+     get '/payments/received-payments' => "payments#received_payments"
+     delete '/payments/delete' => "payments#delete_payment"
+     get '/payments/refund-requests' => "payments#refund_requests"
+     get '/payments/approve-refund' => "payments#approve_refund"
+
      resources :events do
        resources :comments
      end
+
+     resources :transactions, :controller => "payments"
      resources :users
      resources :roles
      resource :session

@@ -171,8 +171,6 @@ class Admin::PassesController < Admin::AdminMasterController
     params.permit(:title,:description, :validity,:user_id)
    end
 
-   def generate_code
-    code = SecureRandom.hex
-   end
+  
 
 end

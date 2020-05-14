@@ -49,6 +49,8 @@ gem 'carrierwave', '~> 1.0'
 gem 'carrierwave-base64'
 gem 'barby',  '~> 0.6.2'
 gem 'rqrcode'
+gem 'stripe'
+gem 'local_time'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'ransack', github: 'activerecord-hackery/ransack'

@@ -43,6 +43,9 @@ class User < ApplicationRecord
   has_many :reported_events, dependent: :destroy
   has_many :ticket_purchases, dependent: :destroy
   has_many :tickets, dependent: :destroy
+  has_many :received_payments, foreign_key: :payee_id, class_name: 'Transaction', dependent: :destroy
+  has_many :refund_requests, dependent: :destroy
+  has_many :business_refund_requests, foreign_key: :business_id, class_name: 'RefundRequest', dependent: :destroy
 
   validates :first_name, presence: true
   validates :last_name, presence: true
@@ -77,5 +80,7 @@ class User < ApplicationRecord
   def self.get_full_name(user)
     name = user.first_name + " " + user.last_name
   end
+
+  
 
 end

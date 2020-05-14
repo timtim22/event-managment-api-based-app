@@ -168,6 +168,24 @@
           </div>
           </li>
           <!-- Tickets end -->
+          <!-- Payment -->
+          <li class="nav-item">
+          <a class="nav-link collapsed" data-toggle="collapse" href="#payment" aria-expanded="false" aria-controls="ui-basic">
+            <i class="mdi mdi-circle-outline menu-icon"></i>
+            <span class="menu-title">Payment</span>
+            <i class="fa fa-angle-down sidebar-fa"></i>
+          </a>
+          <div class="collapse" id="payment" style="">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="<%= admin_add_payment_account_path %>">Add payment Account</a></li>
+              <li class="nav-item"> <a class="nav-link" href="<%= admin_payments_received_payments_path %>">Payments</a></li>
+
+              <li class="nav-item"> <a class="nav-link" href="<%= admin_payments_refund_requests_path %>">Refund Requests</a></li>
+              
+            </ul>
+          </div>
+          </li>
+          <!-- payment end -->
           </li>
         </ul>
       </nav>

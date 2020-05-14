@@ -21,11 +21,13 @@ class Admin::TicketsController < Admin::AdminMasterController
     success = false
     if !ids.blank?
     ids.each do |id|
+      @event = Event.find(id)
       @ticket = Ticket.find_by(event_id: id)
       @ticket.title = params[:title]
       @ticket.price = params[:price]
       @ticket.quantity = params[:quantity]
       @ticket.event_id = id
+      @ticket.ticket_type = @event.price_type
       @ticket.user_id = current_user.id
       @ticket.redeem_code = generate_code
       @ticket.per_head = params[:per_head]
@@ -57,11 +59,13 @@ class Admin::TicketsController < Admin::AdminMasterController
     if !ids.blank?
     success = false
     ids.each do |id|
+      @event = Event.find(id)
       @ticket = Ticket.new
       @ticket.title = params[:title]
       @ticket.price = params[:price]
       @ticket.quantity = params[:quantity]
       @ticket.event_id = id
+      @ticket.ticket_type = @event.price_type
       @ticket.user_id = current_user.id
       @ticket.redeem_code = generate_code
       @ticket.per_head = params[:per_head]

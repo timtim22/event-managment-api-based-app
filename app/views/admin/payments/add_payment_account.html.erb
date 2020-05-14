@@ -1,0 +1,18 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+  <div class="container" style="min-height:600px;">
+   <div class="content" style="margin:80px auto;">
+   <%= render 'shared/notice' %>
+   <h4>Here you can add your payment account on stripe by authorizing MyGo. We are using stripe as our payment gateway in order to process payments and transfer them to relevant businesses accounts on stripe.</h4><br><br>
+<p><a href="<%= @oauth_url %>"><button type="submit" class="btn btn-primary pull-right">Authorize</button></a></p>
+   </div>
+    <br><br>
+  </div><!-- container -->
+
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

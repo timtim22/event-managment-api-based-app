@@ -1,0 +1,56 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+   <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+     <div class="card-body">
+      <%= render "shared/notice" %>
+     <br>
+    <h4 class="card-title">Refund Requests</h4>
+    <div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>Profile image</th>
+          <th>Profile Name</th>
+          <th>Event</th>
+          <th>Ticket Price</th>
+          <th>Reason</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @refund_requests.each do |request| %>
+        <tr>
+          <td class="py-1"><a href="/admin/ambassadors/view?id=<%= request.user.id %>&&r_id=<%=request.id %>"><img src='<%= asset_path "#{request.user.avatar}" %>'' onError="this.onerror=null;this.src='/assets/avatar.png';" alt="image" class="user_list_img"></a></td>
+          <td> <%= request.user.first_name + " " + request.user.last_name %></td>
+          <td><%= link_to request.ticket.event.name, admin_events_path(request.ticket.event) %></td>
+          <td><%= request.ticket.price %> <i class="fas fa-euro-sign"></i></td>
+          <td><%= request.reason %></td>
+          <td><%= request.status %></td>
+          <td>
+          <%= link_to admin_payments_approve_refund_path(request), data: { confirm: 'Are you sure you want to approve?'} do %>
+             <i class="fas fa-check" data-toggle="tooltip" title="Approve Refund"></i>
+          <% end %>
+          |
+
+          <%= link_to admin_payments_approve_refund_path(request), data: { confirm: 'Are you sure you want to reject?'} do %>
+            <i class="fa fa-window-close" data-toggle="tooltip" title="Reject Refund"></i>
+         <% end %>
+         
+          </td>
+       </tr>
+        <% end %>
+        </tbody>
+    </table>
+    </div>
+</div>
+</div>
+</div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

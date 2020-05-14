@@ -49,8 +49,9 @@
      <div class="form-group">
      <label for="price_type">Price Type</label>
      <select class="form-control" id="price_type">
-       <option value="free" <%= @event.price_type == 'free' ? 'selected' : '' %> >Free</option>
-       <option value="pay_at_door" <%= @event.price_type == 'pay_at_door' ? 'selected' : '' %> >Pay  at door</option>
+     <option value="free">Free</option>
+     <option value="pay_at_door">Pay  at door</option>
+     <option value="buy">Buy Now</option>
      </select>
    </div>
    <div class="price_div" style="display:none;">
