@@ -77,7 +77,7 @@ class Admin::UsersController < Admin::AdminMasterController
      else
       @user.password = new_password
       if @user.save()
-        create_activity("updated password", @user, "User")
+        create_activity("updated password", @user, "User", '', '', 'post')
         render json: {
           success: true,
           message: "Password updated successfully."
@@ -136,6 +136,111 @@ class Admin::UsersController < Admin::AdminMasterController
       render :my_activity
      end
 
+     def send_email_page
+       
+     end
+
+     def send_reset_email
+      if !params[:email].blank?
+         @user = User.find_by(email: params[:email])
+        if @user
+          @token = generate_code
+
+          @user.password_resets.create!(token: @token)
+
+          @url = "#{ENV['BASE_URL']}/admin/reset-password-page?email=#{@user.email}&&token=#{@token}"
+          if PasswordResetMailer.with(user: @user).password_reset_email(@user,@url).deliver_now#UserMailer.deliver_now
+            render json: {
+            code:200,
+            success: true,
+            message: "Email successfully sent. Please check your inbox to follow the instructions.",
+            data: nil
+          } 
+        else
+          render json: {
+            code:400,
+            success: false,
+            message: "Email was not sent, Please try again.",
+            data: nil
+          }
+        end
+        else
+          render json: {
+            code:400,
+            success: false,
+            message: "The email is not registered with us.",
+            data: nil
+          }
+        end
+        else
+          render json: {
+            code:400,
+            success: false,
+            message: "Please provide and email",
+            data: nil
+          }
+        end
+       end
+    
+       def reset_password_page
+        @email = params[:email]
+        @token = params[:token]
+        @user = User.find_by(email: @email)
+        @reset_token = @user.password_resets.where(token: @token)
+        if !@user.blank? && !@reset_token.blank?
+          @can_reset = true
+        else
+          @cant_reset = false
+          flash.now[:alert_danger] = "Either the link is expired or link is incorrect."
+        end
+       end
+
+       def reset_password
+        if !params[:new_password].blank?
+          if params[:new_password] ==  params[:confirm_password]
+            @user = User.find_by(email: params[:email])
+            @user.password = params[:new_password]
+          if @user.save()
+            render json: {
+              code: 200,
+              success: true,
+              message: "Password updated successfully.",
+              data: nil
+            }
+          else
+            render json: {
+              code: 400,
+              success: false,
+              message: @user.errors.full_messages,
+              data: nil
+            }
+          end
+          else
+            render json: {
+              code: 400,
+              success: false,
+              message: "Password confirmation failed.",
+             
+              data: nil
+            }
+
+          end
+        else
+          render json: {
+            code: 400,
+            success: false,
+            message: "Password can't be blank.",
+            p: params[:new_password],
+            data: nil
+          }
+        end
+      
+      end
+    
+
+
+     ####################################### Privae ########################################3
+
     private
 
     def user_params
@@ -153,7 +258,4 @@ class Admin::UsersController < Admin::AdminMasterController
     def getRoles
        @roles = Role.all
    end
-
-  
-
 end

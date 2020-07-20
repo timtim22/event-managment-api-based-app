@@ -27,7 +27,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
       @special_offer.lng = params[:lng]
       @special_offer.date = params[:date]
       @special_offer.time = params[:time]
-      @special_offer.validity_time = params[:validity_time]
+      @special_offer.end_time = params[:end_time]
       @special_offer.image = params[:image]
       @special_offer.redeem_code = params[:redeem_code]
       @special_offer.is_redeemed = false
@@ -42,6 +42,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
             uuid: @username
             )
           current_user.followers.each do |follower|
+     if follower.special_offers_notifications_setting.is_on == true 
         if @notification = Notification.create!(recipient: follower, actor: current_user, action: User.get_full_name(current_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event') 
           @channel = "event" #encrypt later
           @current_push_token = @pubnub.add_channels_to_push(
@@ -77,6 +78,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
                puts envelope.status
           end
          end # notificatiob end
+        end #special offer setting end
         end #each
         end # not blank
         flash[:notice] = "special_offer created successfully."
@@ -93,6 +95,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
 
 
   def update
+     validity = params[:validity] + params[:validity_time]
      @special_offer = SpecialOffer.find(params[:id])
      @special_offer.title = params[:title]
      @special_offer.description = params[:description]
@@ -103,16 +106,17 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
      @special_offer.lng = params[:lng]
      @special_offer.date = params[:date]
      @special_offer.time = params[:time]
-     @special_offer.validity_time = params[:validity_time]
+     @special_offer.end_time = params[:end_time]
      @special_offer.image = params[:image]
      @special_offer.redeem_code = generate_code
      @special_offer.is_redeemed = false
      @special_offer.terms_conditions = params[:terms_conditions]
-     @special_offer.validity = params[:validity]
+     @special_offer.validity = params[:validity] 
     if @special_offer.save
       create_activity("updated special offer", @special_offer, "SpecialOffer", admin_special_offer_path(@special_offer),@special_offer.title, 'patch')
       if !current_user.followers.blank?
         current_user.followers.each do |follower|
+    if follower.special_offers_notifications_setting.is_on == true 
       if @notification = Notification.create!(recipient: follower, actor: current_user, action: User.get_full_name(current_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'update_special_offer') 
         @channel = "event" #encrypt later
         @pubnub = Pubnub.new(
@@ -153,12 +157,13 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
              puts envelope.status
         end
        end # notificatiob end
+      end #special offer setting end
       end #each
       end # not blank
       flash[:notice] = "special_offer update successfully."
       redirect_to admin_special_offers_path
     else
-      flash[:alert_danger] = "special_offer update failed."
+      flash[:alert_danger] = @special_offer.errors.full_messages
       redirect_to admin_special_offers_path
     end 
   end

@@ -18,8 +18,12 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
         lat: user.lat,
         lng: user.lng,
         created_at: user.created_at,
-        phone_verified: user.phone_verified
-        
+        phone_verified: user.phone_verified,
+        is_ambassador: user.is_ambassador,
+        is_my_friend: is_my_friend?(user),
+        is_my_following: if user.role.id ==  2 then is_my_following?(user) else false end,
+        mutual_friends_count: user.friends.size,
+        is_request_sent: request_status(request_user, user)
       }
     end
 
@@ -41,6 +45,10 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
 
   # POST /users
   def create
+    if params[:contact_name].blank?
+      errors.add(:contact_name, " must exist.")
+      false
+    end
     @user = User.new
     @user.first_name = params[:first_name]
     @user.last_name = params[:last_name]
@@ -58,10 +66,27 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     @user.gender = params[:gender]
     @user.lat = params[:lat]
     @user.lng = params[:lng]
+    @user.is_subscribed = params[:is_subscribed]
+    @user.verification_code = generate_code
     if @user.save
        profile = Profile.new
        profile.user_id = @user.id
        profile.save
+
+       #Also save default setting
+       setting_name_values = ['all_chat_notifications','event_notifications','special_offers_notifications','passes_notifications','competitions_notifications','location']
+       
+       setting_name_values.each do |name|     
+         new_setting = Setting.create!(user_id: @user.id, name: name, is_on: true)
+       end #each
+     
+       if params[:is_subscribed] ==  'true'
+       #send verification email
+        email_sent =  send_verification_email(@user)
+       else
+        email_sent = "No email was sent"
+       end      
+
        #applicable only if user is invited
        if !params[:inviter_phone].blank?
          inviter = User.where(phone_number: params[:inviter_phone]).first
@@ -70,17 +95,19 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
           auto_friendship(inviter, invitee)
          end
        end
-      @role = Assignment.new
-      @role.role_id = params[:type]
-      @role.user_id = @user.id
-      @role.save
+        @role = Assignment.new
+        @role.role_id = params[:type]
+        @role.user_id = @user.id
+        @role.save
       render json: { 
             code: 200,
             success: true,
             message: "Registered successfully.",
             data: {
               user: @user,
-              token: encode(user_id: @user.id)
+              token: encode(user_id: @user.id),
+              email_sent: email_sent,
+              params: params
             }
           }
     else
@@ -210,7 +237,7 @@ end
       friends_participants_count: competition.registrations.map {|reg| if(request_user.friends.include? reg.user) then reg.user end }.size,
       creator_name: competition.user.first_name + " " + competition.user.last_name,
       creator_image: competition.user.avatar.url,
-      validity: competition.validity + "T" + competition.validity_time.strftime("%H:%M:%S") + ".000Z"
+      validity: competition.validity.strftime(get_time_format)
       }
       end
       profile['first_name'] = user.first_name 
@@ -299,7 +326,7 @@ end
     friends_participants_count: competition.registrations.map {|reg| if(request_user.friends.include? reg.user) then reg.user end }.size,
     creator_name: competition.user.first_name + " " + competition.user.last_name,
     creator_image: competition.user.avatar.url,
-    validity: competition.validity + "T" + competition.validity_time.strftime("%H:%M:%S") + ".000Z"
+    validity: competition.validity.strftime(get_time_format)
     }
     end
   profile['user_id'] = user.id
@@ -431,7 +458,7 @@ end
         friends_participants_count: competition.registrations.map {|reg| if(request_user.friends.include? reg.user) then reg.user end }.size,
         creator_name: competition.user.first_name + " " + competition.user.last_name,
         creator_image: competition.user.avatar.url,
-        validity: competition.validity + "T" + competition.validity_time.strftime("%H:%M:%S") + ".000Z"
+        validity: competition.validity.strftime(get_time_format)
         }
         end
       offers['special_offers'] = user.special_offers
@@ -630,4 +657,18 @@ end
  def getRoles
    @roles = Role.all
  end
+
+ def send_verification_email(user)
+    @code = user.verification_code 
+    @url = "#{ENV['BASE_URL']}/api/v1/auth/verify-code?email=#{user.email}&&verification_code=#{@code}"
+    if UserMailer.with(user: user).verification_email(user,@url).deliver_now#UserMailer.deliver_now
+     true   
+  else
+    false
+  end
+end
+
+# def generate_code
+#   (SecureRandom.random_number(9e5) + 1e5).to_i
+# end
 end

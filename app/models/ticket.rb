@@ -8,7 +8,6 @@ class Ticket < ApplicationRecord
   has_many :refund_requests, dependent: :destroy
 
   validates :title, presence: true
-  validates :price, presence: true
   validates :quantity, presence: true
   validates :per_head, presence: true
 end

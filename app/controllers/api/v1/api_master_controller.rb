@@ -47,8 +47,10 @@ class Api::V1::ApiMasterController < ApplicationController
       def request_user
         header = request.headers['Authorization']
         token = header.split(' ').last if header
-        @decoded = decode(token)
-        @current_user = User.find(@decoded[:user_id])
+        if token
+         @decoded = decode(token)
+         @current_user = User.find(@decoded[:user_id])
+        end
       end
 
       def get_user_from_token(token)
@@ -95,16 +97,39 @@ class Api::V1::ApiMasterController < ApplicationController
          end #each
          
           demographics['males_percentage'] = if males.size > 0 then males.uniq.size.to_f / total_count.to_f * 100.0 else 0 end
-   
+    
           demographics['females_percentage'] = if females.size > 0 then females.uniq.size.to_f / total_count.to_f * 100.0  else 0 end
-   
+    
           demographics['gays_percentage'] = if gays.size > 0 then gays.uniq.size.to_f / total_count.to_f * 100.0  else 0 end
-   
+    
           demographics
      end
-   
 
-      #chat specific
+     def get_time_format
+      format = "%Y-%m-%dT%H:%M:%S.%d0Z"
+     end
+
+     def not_me?(user)
+      user != request_user
+     end
+  
+     def is_my_friend?(user)
+      request_user.friends.include?  user
+     end
+  
+     def is_my_following?(user)
+       request_user.followings.include? user
+     end
+
+     def is_expired?(offer)
+      if offer.validity > DateTime.now
+        false
+      else
+        true
+      end
+    end
+  
+   #chat specific
       
 end
 

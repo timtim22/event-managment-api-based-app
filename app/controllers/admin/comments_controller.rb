@@ -26,9 +26,11 @@ class Admin::CommentsController < Admin::AdminMasterController
           end ##each
           users_array.uniq.each do |id|
           user = User.find(id)
-          @setting = EventSetting.where(event_id: @event.id).where(user_id: user.id)
-          if !@setting.blank? && !@setting.mute_notifications 
-          if @notification = Notification.create(recipient: user, actor: current_user, action: User.get_full_name(current_user) + " posted a new comment on event '#{@event.name}'.", notifiable: @comment, url: "/admin/events/#{@event.id}", notification_type: 'mobile') 
+          #setting is applicable
+          if user.all_chat_notifications_setting.is_on == true && user.event_notifications_setting.is_on == true && !blocked_event?(user, @event) && !event_chat_muted?(user,@event)
+          
+     
+          if @notification = Notification.create(recipient: user, actor: current_user, action: User.get_full_name(current_user) + " posted a new comment on event '#{@event.name}'.", notifiable: @comment, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'post_comment_web') 
          
           @current_push_token = @pubnub.add_channels_to_push(
            push_token: user.device_token,
@@ -49,6 +51,7 @@ class Admin::CommentsController < Admin::AdminMasterController
               "notifiable_id": @notification.notifiable_id,
               "notifiable_type": @notification.notifiable_type,
               "action": @notification.action,
+              "action_type": @notification.action_type,
               "created_at": @notification.created_at,
               "body": @comment.comment  
              }
@@ -62,7 +65,8 @@ class Admin::CommentsController < Admin::AdminMasterController
                puts envelope.status
           end
          end # notificatiob end
-         end #setting 
+   
+        end #all chat and event chat true
         end
        redirect_to admin_event_path(@event), :notice => "Comment successfully posted." 
     else 

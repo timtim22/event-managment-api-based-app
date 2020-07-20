@@ -1,4 +1,5 @@
 class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
+  before_action :authorize_request
   require 'json'
   require 'pubnub'
   require 'action_view'
@@ -75,14 +76,14 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
       render json: {
         code: 200,
         success: true,
-        message: 'Interest created successfully.',
+        message: 'You showed your interest.',
         data: nil
       }
     else
       render json: {
         code: 400,
         success: false,
-        message: 'Create interest failed.',
+        message: @interest_level.errors.full_messages,
         data: nil
       }
     end
@@ -90,7 +91,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
     render json: {
       code: 400,
       success: false,
-      message: 'Already created interest.',
+      message: 'Already shown your interest.',
       data: nil
     }
   end

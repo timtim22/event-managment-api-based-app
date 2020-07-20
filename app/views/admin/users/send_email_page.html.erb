@@ -1,0 +1,40 @@
+<div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+      <div class="content-wrapper d-flex align-items-center auth px-0">
+        <div class="row w-100 mx-0">
+          <div class="col-lg-4 mx-auto">
+            <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+              <div class="brand-logo">
+                <img src="<%= asset_path 'logo.png' %>" alt="logo">
+              </div>
+               <div class="flash_alert email_success" style="display:none;"></div>
+               <div class="alert_danger email_danger" style="display:none;"></div><br>
+               <p> Please enter your registered email to send password reset link. </p>
+              <form class="pt-3" action="<%= admin_session_path %>" method="post">
+                <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
+                <div class="form-group">
+                  <label for="email">Email</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend bg-transparent">
+                      <span class="input-group-text bg-transparent border-right-0">
+                        <i class="mdi mdi-account-outline text-primary"></i>
+                      </span>
+                    </div>
+                    <input type="text" class="form-control form-control-lg border-left-0" id="email" placeholder="Email" name="email">
+                  </div>
+                </div>
+              
+                <div class="my-3">
+                  <input type="submit" class="btn btn-block btn-primary btn-lg font-weight-medium" value="Send Email" id="send_reset_email">
+                </div>
+               
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- content-wrapper ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+

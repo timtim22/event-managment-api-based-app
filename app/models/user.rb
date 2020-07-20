@@ -1,6 +1,8 @@
 class User < ApplicationRecord
   has_secure_password(validations: false) 
+  
   has_many :messages, dependent: :destroy
+  has_many :incoming_messages, foreign_key: :recipient_id, class_name: 'Message', dependent: :destroy
   has_one :assignment, dependent: :destroy
   has_many :events, dependent: :destroy
   has_one :role, through: :assignment
@@ -8,9 +10,9 @@ class User < ApplicationRecord
   has_one :business_detail, dependent: :destroy
   has_one :profile, dependent: :destroy
   has_many :friend_requests, dependent: :destroy
+  
   has_many :accepted_friend_requests, -> {where(status: 'accepted') }, foreign_key: :friend_id, class_name: 'FriendRequest',dependent: :destroy
   has_many :friends, through: :accepted_friend_requests, source: :user
-  
   has_many :chat_channels, dependent: :destroy
   has_many :notifications, foreign_key: :recipient_id, dependent: :destroy
   has_many :followers_relationships, -> { where(status: true ) }, foreign_key: :following_id, class_name: 'Follow', dependent: :destroy 
@@ -25,6 +27,8 @@ class User < ApplicationRecord
   has_many :special_offers, dependent: :destroy
   has_many :own_competitions, dependent: :destroy, foreign_key: :user_id, class_name: 'Competition'
   has_many :wallets, dependent: :destroy
+  has_many :owned_passes, through: :wallets, source: :offer, source_type: "Pass"
+  has_many :owned_special_offers, through: :wallets, source: :offer, source_type: "SpecialOffer"
   has_many :activity_logs, dependent: :destroy
   has_many :registrations
   has_many :competitions
@@ -46,25 +50,50 @@ class User < ApplicationRecord
   has_many :received_payments, foreign_key: :payee_id, class_name: 'Transaction', dependent: :destroy
   has_many :refund_requests, dependent: :destroy
   has_many :business_refund_requests, foreign_key: :business_id, class_name: 'RefundRequest', dependent: :destroy
+  has_one :location_setting, -> { where(name: 'location') }, class_name: 'Setting', dependent: :destroy
+  has_one :all_chat_notifications_setting, -> { where(name: 'all_chat_notifications') }, class_name: 'Setting', dependent: :destroy
+  has_one :event_notifications_setting, -> { where(name: 'event_notifications') }, class_name: 'Setting', dependent: :destroy
+  has_one :special_offers_notifications_setting, -> { where(name: 'special_offers_notifications') }, class_name: 'Setting', dependent: :destroy
+  has_one :passes_notifications_setting, -> { where(name: 'passes_notifications') }, class_name: 'Setting', dependent: :destroy
+  has_one :competitions_notifications_setting, -> { where(name: 'competitions_notifications') },  class_name: 'Setting', dependent: :destroy
+  has_many  :mute_chat_for_events, -> { where(name: 'mute_chat') }, class_name: 'UserSetting', dependent: :destroy, source_type: :event
+  has_many  :mute_notifications_for_events, -> { where(name: 'mute_notifications') }, class_name: 'UserSetting', dependent: :destroy, source_type: :event
+  has_many  :block_events, -> { where(name: 'block')}, class_name: 'UserSetting', dependent: :destroy, source: :event
+  has_many  :mute_chat_for_users, -> { where(name: 'mute_chat')}, class_name: 'UserSetting', dependent: :destroy, source_type: :user
+  has_many  :block_users, -> { where(name: 'block')}, class_name: 'UserSetting', dependent: :destroy, source_type: :user
+
+  has_many :password_resets, dependent: :destroy
+  has_many :event_shares, dependent: :destroy
+  has_many :event_forwardings, dependent: :destroy
+  has_many :offer_views, dependent: :destroy
+  has_many :comments, dependent: :destroy
+  has_many :user_settings, dependent: :destroy
+  has_one  :business_profile, dependent: :destroy
 
   validates :first_name, presence: true
   validates :last_name, presence: true
-  validates :gender, presence: true
+  validates :gender, presence: true, :if => :app_user?
+
+  # validates :is_subscribed, presence: true
+  validates :email, presence: true, uniqueness: true, on: :create
+  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, on: :create
+
   validates :phone_number, presence: true, uniqueness: true,on: :create,
   :length => { :minimum => 10, :maximum => 15 }, format: { with: /(^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0-9\-\s]{10}$)/ }
-  validates :dob, presence:true
+  validates :dob, presence:true, :if => :app_user?
   validates :password, :presence => true,
                        :confirmation => true,
                        :on => :create,
                        :length => {:within => 6..40},
                        :unless => :app_user?
-  
 
-  # validates :email, presence: true, uniqueness: true
-  # validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
- 
+  validates :contact_name, presence: true, unless: :app_user
+  
   mount_uploader :avatar, ImageUploader
   mount_base64_uploader :avatar, ImageUploader
+
+
+  
   
   #validate :password_for_web
 
@@ -81,6 +110,14 @@ class User < ApplicationRecord
     name = user.first_name + " " + user.last_name
   end
 
-  
+  def self.businesses_list
+    self.all.map {|user| if user.role.id == 2 then user end }
+  end
 
+  def has_business_contact_name
+    if BusinessProfile.contact_name.empty?
+      errors.add(:contact, " is required field.")
+    end
+  end
+  
 end

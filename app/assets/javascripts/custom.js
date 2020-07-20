@@ -421,6 +421,7 @@ $input.on('keydown', function () {
 //user is "finished typing," do something
 function doneTyping () {
   if($("input#location").val() != '') {
+    localStorage.setItem('got_latlng', false);
     $.ajax({
      type: 'post',
      url: '/admin/get-latlng',
@@ -428,6 +429,7 @@ function doneTyping () {
        name: $("input#location").val(),
      },
      success: function(resp) {
+      localStorage.setItem('got_latlng', true);
        console.log(resp.data);
         if(resp.success == true) {
           $('input#lat').val(resp.data.lat);
@@ -442,6 +444,12 @@ function doneTyping () {
     });//ajax  
 }
 }
+// Don't submit form until lat lng are received.
+$(document).on('click','.event_create_button', function(e){
+   if(localStorage.getItem('got_latlng') == false) {
+    e.preventDefault();
+   }
+});
 
 $(document).on('change','input#competition_location',function(event){
   if($("input#location").val() != '') {
@@ -612,12 +620,12 @@ $(document).on('change','#price_type',function(e){
             event['category'] = p_resp.data.category['name'];
             event['location'] = resp.data.venue['localized_address_display'];
             
-            console.log('ajx',resp.data.venue['localized_address_display']);
-            console.log('lat',resp.data.venue['latitude']);
-            console.log('long', resp.data.venue['longitude']);
-            console.log('location', resp.data.venue['localized_address_display']);
-            console.log('eventbrite_image',eventbrite_image);
-            console.log('ajx_cat',p_resp);
+            // console.log('ajx',resp.data.venue['localized_address_display']);
+            // console.log('lat',resp.data.venue['latitude']);
+            // console.log('long', resp.data.venue['longitude']);
+            // console.log('location', resp.data.venue['localized_address_display']);
+            // console.log('eventbrite_image',eventbrite_image);
+            // console.log('ajx_cat',p_resp);
             $(".modal-body #eventbrite_image").val(eventbrite_image);
             $(".modal-body #name").val(event['name']);
             $(".modal-body #description").val(event['description']);
@@ -788,5 +796,65 @@ function phonenumber(inputtxt) {
     return false;
   }
 }
+
+// send reset password email
+$(document).on('click','#send_reset_email', function(event){
+  event.preventDefault();
+  var url = "/admin/send-reset-email";
+  $.ajax({
+    url: url, 
+    type: "POST",             
+    data: {
+      authenticity_token: gon.authenticity_token,
+      email: $('#email').val()
+    },   
+    success: function(data) {
+      if(data.code ==  200) {
+        $(".email_success").show();
+        $(".email_danger").hide();
+        $(".email_success").html(data.message);
+      }
+       else if(data.code == 400){
+        $(".email_danger").show();
+        $(".email_success").hide();
+       $(".email_danger").html(data.message);
+       }
+      }  
+    });//ajax
+});//click
+
+$(document).on('click','#reset_password', function(event){
+  event.preventDefault();
+  var form = $("#reset_password_form");
+  $(form).submit();
+});//click
+
+// reset password 
+$(document).on('submit','#reset_password_form', function(event){
+  event.preventDefault();
+  var formData = new FormData(this);
+  var url = "/admin/reset-password";
+  $.ajax({
+    url: url, 
+    type: "POST",             
+    data: formData, 
+    contentType: false,        
+    cache: false,           
+    processData:false,       
+    success: function(data) {
+      if(data.code ==  200) {
+        $(".email_success").show();
+        $(".email_danger").hide();
+        $(".email_success").html(data.message + ' <a href="/admin/session/new">Please login now</a>');
+      }
+       else if(data.code == 400){
+        $(".email_danger").show();
+        $(".email_success").hide();
+       $(".email_danger").html(data.message);
+       }
+       
+      }  
+    });//ajax
+});//click
 
 });//ready

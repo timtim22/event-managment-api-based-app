@@ -1,4 +1,6 @@
 class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
+  before_action :authorize_request
+
   require "pubnub"
   require 'action_view'
   require 'action_view/helpers'
@@ -69,7 +71,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
     Assignment.all.map {|as| if as.role_id == 2 then @businesses.push(as.user) end } 
 
     @businesses.each do |business|
-      business.passes.order(created_at: 'DESC').each do |pass| 
+      business.passes.not_expired.order(created_at: 'DESC').each do |pass| 
         @passes << {
           id: pass.id,
           type: 'pass',
@@ -84,7 +86,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           event_date: pass.event.start_date,
           ambassador_name: pass.ambassador_name,
           is_added_to_wallet: is_added_to_wallet?(pass.id),
-          validity: pass.validity + " " + pass.validity_time.strftime("%H:%M:%S").to_s,
+          validity: pass.validity.strftime(get_time_format).to_s,
           grabbers_count: pass.wallets.size,
           ambassador_rate: pass.ambassador_rate,
           number_of_passes: pass.number_of_passes,
@@ -94,7 +96,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
         }
         end
 
-        business.special_offers.order(created_at: 'DESC').each do |offer|
+        business.special_offers.not_expired.order(created_at: 'DESC').each do |offer|
         @special_offers << {
           id: offer.id,
           type: 'special_offer',
@@ -109,7 +111,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           creator_name: offer.user.first_name + " " + offer.user.last_name,
           creator_image: offer.user.avatar.url,
           description: offer.description,
-          validity: offer.validity + " " + offer.validity_time.strftime("%H:%M:%S"),
+          validity: offer.validity.strftime(get_time_format),
           grabbers_count: offer.wallets.size,
           is_added_to_wallet: is_added_to_wallet?(offer.id),
           grabbers_friends_count: offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
@@ -147,7 +149,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
     @special_offers = []
     @offers = []
     @businesses.each do |business|
-      business.passes.order(created_at: 'DESC').each do |pass| 
+      business.passes.not_expired.order(created_at: 'DESC').each do |pass| 
         @passes << {
           id: pass.id,
           type: 'pass',
@@ -162,7 +164,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           event_date: pass.event.start_date,
           ambassador_name: pass.ambassador_name,
           is_added_to_wallet: is_added_to_wallet?(pass.id),
-          validity: pass.validity + " " + pass.validity_time.strftime("%H:%M:%S").to_s,
+          validity: pass.validity.strftime(get_time_format).to_s,
           grabbers_count: pass.wallets.size,
           ambassador_stats: ambassador_stats(pass, request_user),
           ambassador_rate: pass.ambassador_rate,
@@ -173,7 +175,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
         }
         end
 
-        business.special_offers.order(created_at: 'DESC').each do |offer|
+        business.special_offers.not_expired.order(created_at: 'DESC').each do |offer|
         @special_offers << {
           id: offer.id,
           type: 'special_offer',
@@ -188,7 +190,8 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           creator_name: offer.user.first_name + " " + offer.user.last_name,
           creator_image: offer.user.avatar.url,
           description: offer.description,
-          validity: offer.validity + " " + offer.validity_time.strftime("%H:%M:%S"),
+          validity: offer.validity.strftime(get_time_format),
+          end_time: DateTime.parse(offer.end_time).strftime(get_time_format), 
           grabbers_count: offer.wallets.size,
           ambassador_stats: ambassador_stats(offer, request_user),
           is_added_to_wallet: is_added_to_wallet?(offer.id),
@@ -196,7 +199,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           ambassador_rate: offer.ambassador_rate,
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: offer.created_at,
-          business: business 
+          business: business
         }
         end
     end

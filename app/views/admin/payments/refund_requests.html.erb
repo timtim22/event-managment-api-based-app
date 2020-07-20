@@ -27,17 +27,17 @@
         <tr>
           <td class="py-1"><a href="/admin/ambassadors/view?id=<%= request.user.id %>&&r_id=<%=request.id %>"><img src='<%= asset_path "#{request.user.avatar}" %>'' onError="this.onerror=null;this.src='/assets/avatar.png';" alt="image" class="user_list_img"></a></td>
           <td> <%= request.user.first_name + " " + request.user.last_name %></td>
-          <td><%= link_to request.ticket.event.name, admin_events_path(request.ticket.event) %></td>
+          <td><%= link_to request.ticket.event.name, admin_event_path(request.ticket.event) %></td>
           <td><%= request.ticket.price %> <i class="fas fa-euro-sign"></i></td>
           <td><%= request.reason %></td>
           <td><%= request.status %></td>
           <td>
-          <%= link_to admin_payments_approve_refund_path(request), data: { confirm: 'Are you sure you want to approve?'} do %>
+          <%= link_to admin_payments_approve_refund_path(:id => request.id), data: { confirm: 'Are you sure you want to approve?'} do %>
              <i class="fas fa-check" data-toggle="tooltip" title="Approve Refund"></i>
           <% end %>
           |
 
-          <%= link_to admin_payments_approve_refund_path(request), data: { confirm: 'Are you sure you want to reject?'} do %>
+          <%= link_to admin_payments_reject_refund_path(:id => request.id), data: { confirm: 'Are you sure you want to reject?'} do %>
             <i class="fa fa-window-close" data-toggle="tooltip" title="Reject Refund"></i>
          <% end %>
          

@@ -1,0 +1,9 @@
+<h1>Welcome to MyGo, <%= User.get_full_name(@user) %></h1>
+    <p>
+      You have successfully signed up for MGo,
+      your email is: <%= @user.email %>.<br>
+    </p>
+    <p>
+      To verify your email click the link: <%= link_to 'Verify',@url %>.
+    </p>
+    <p>Thanks for joining and have a great day!</p>

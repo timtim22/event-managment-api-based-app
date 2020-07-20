@@ -25,7 +25,7 @@
         <% @tickets.each do |ticket| %>
         <tr>
           <td><%= link_to ticket.title[0...30], admin_ticket_path(ticket) %></td>
-          <td><%= ticket.price %></td>
+          <td><%= ticket.event.price %></td>
           <td><%= ticket.quantity %></td>
           <td><%= ticket.per_head %></td>
           <td><%= link_to ticket.event.name, admin_events_path(ticket.event.id) %></td>

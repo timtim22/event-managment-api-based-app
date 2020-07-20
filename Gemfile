@@ -51,6 +51,9 @@ gem 'barby',  '~> 0.6.2'
 gem 'rqrcode'
 gem 'stripe'
 gem 'local_time'
+gem 'redis'
+gem 'sidekiq'
+gem 'sidekiq-cron'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'ransack', github: 'activerecord-hackery/ransack'

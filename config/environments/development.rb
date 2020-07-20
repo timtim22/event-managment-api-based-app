@@ -73,8 +73,8 @@ Rails.application.configure do
     address:              'smtp.mailtrap.io',
     port:                  2525,
     domain:               'https://mygo.io',
-    user_name:            ENV['MAIL_USERNAME'],
-    password:             ENV['MAIL_PASSWORD'],
-    authentication:       'plain',
+    user_name:            ENV['MAILTRAP_USERNAME'],
+    password:             ENV['MAILTRAP_PASSWORD'],
+    authentication:       'cram_md5',
     enable_starttls_auto: true  }
 end

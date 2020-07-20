@@ -129,6 +129,8 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
 
 
   private
+
+  
   #  def pass_params
   #   params.permit(:title,:description, :validity)
   #  end

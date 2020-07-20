@@ -165,7 +165,14 @@ end
   end
 
   def followings
-    @followings = request_user.followings
+    @followings = [] 
+    request_user.followings.each do |following|
+      @followings << {
+        "business" => following,
+        "friends_follwoing_count" =>  get_following_friends_count(following)
+      }
+    end#each
+
     render json: {
       code: 200,
       success: true,
@@ -292,5 +299,79 @@ end
       }
     end
    end
+
+   def suggest_businesses
+    @businesses_suggestions = []
+   
+   if !request_user.friends.blank?
+     request_user.friends.each do |friend|
+      # 1. If an ambassador is my friend his/her business should be in my business suggestion.
+         if friend.is_ambassador ==  true
+            friend.ambassador_businesses.each do |business|
+              @businesses_suggestions.push(business)
+            end
+         end #if
+         # 2. businesses who are being followed by my friends`
+         friend.followings.each do |follwoing|
+           @businesses_suggestions.push(follwoing)
+         end #each
+         # 3. Businesses followed by my friends of friends.
+         friend.friends.each do |friend|
+           friend.followings.each do |follwoing|
+               @businesses_suggestions.push(follwoing)
+           end#each
+         end #each
+     end #each
+   end #if
+
+ #if there are no users based on the above principle then suggest poineer user upto 7 
+  if @businesses_suggestions.blank?
+    User.businesses_list[1..7].each do |business|
+    if not_me?(business) && !business.blank?
+     @businesses_suggestions.push(business)
+    end #if 
+   end#each
+  end
+
+# I want to see that how many of my friends are already following a suggested business
+# So that I can see the business credibility.
+ @businesses = []
+ @friends_following = []
+   @businesses_suggestions.uniq.each do |business|
+     if not_me?(business) && !is_my_following?(business)
+      @businesses << {
+        "business" => business,
+        "friends_follwoing_count" =>  get_following_friends_count(business)
+      }
+    end #if    
+   end #each
+
+  render json: {
+    code: 200,
+    success: true,
+    message: "",
+    data:  {
+      suggested_businesses: @businesses
+    }
+  }
+  end
+
+  private
+  
+  def get_following_friends_count(business)
+    friends_following = []
+     request_user.friends.each do |friend|
+       if business.followers.include? friend
+         friends_following.push(friend)
+       end# each 
+    end#each
+
+    friends_following.size
+  end
+
+  def is_business?(user)
+    user.role.id == 2  
+  end
+ 
 
 end# class

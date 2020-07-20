@@ -15,7 +15,6 @@
 
    <p class="so_p"><strong>Event: </strong><%= link_to @ticket.event.name, admin_event_path(@ticket.event) %></p>
 
-   <p class="so_p"><strong>QRcode: <br> </strong><span class="unbold"><img src="<%= render_qr_code(@ticket.redeem_code) %>" class="qr"></p>
  </div>
   <%=  render 'shared/footer' %>
  </div><!--main panel-->

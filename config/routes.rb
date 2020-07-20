@@ -15,7 +15,7 @@ Rails.application.routes.draw do
        post '/auth/login', to: 'authentication#login'
        post '/auth/logout', to: 'authentication#logout'
        post '/auth/send-verification-email', to: 'authentication#send_verification_email'
-       post '/auth/verify-code', to: 'authentication#verify_code'
+       get '/auth/verify-code', to: 'authentication#verify_code'
        post '/auth/update-password', to: 'authentication#update_password'
        post '/chat/send-message', to: 'chats#send_message'
        post '/chat/chat-history', to: 'chats#chat_history'
@@ -49,6 +49,7 @@ Rails.application.routes.draw do
        post '/event/create-interest' => "interest_levels#create_interest"
        post '/event/create-going' => "interest_levels#create_going"
        post '/event/redeem-pass' => "passes#redeem_it"
+       post '/events/create-view' => 'events#create_view'
        post '/redeem-special-offer' => "special_offers#redeem_it"
        post '/event/redeem-ticket' => "tickets#redeem_it"
        get '/competitions' => "competitions#index"
@@ -59,25 +60,36 @@ Rails.application.routes.draw do
        post '/ask-location' => "notifications#ask_location"
        post '/get-location' => "notifications#get_location"
        post '/send-location' => "notifications#send_location"
-       get '/get-notifications' => "notifications#index"
-       get '/mark-as-read' => "notifications#mark_as_read"
+       get '/notifications/get-notifications' => "notifications#index"
+       get '/notifications/mark-as-read' => "notifications#mark_as_read"
+       post '/chats/mark-as-read' => "chats#mark_as_read"
+       post '/comments/mark-as-read' => "comments#mark_as_read"
        get '/send-events-reminder' => "notifications#send_events_reminder"
        post '/update-device-token' => "users#update_device_token"
        post '/chat/clear-conversation' => 'chats#clear_conversation'
+       post '/chat/clear-chat' => 'chats#clear_chat'
+       post '/comments/delete-event-comments' => 'comments#delete_event_comments'
        post '/ambassadors/send-request' => "ambassadors#send_request"
        get '/ambassadors/businesses-list' => "ambassadors#businesses_list"
        get '/ambassadors/my-businesses' => "ambassadors#my_businesses"
        post '/update-current-location' => "users#update_current_location"
-       post '/forward-offer' => "notifications#forward_offer"
-       post '/share-offer' => "notifications#share_offer"
+       post '/forward-offer' => "forwarding#forward_offer"
+       post '/share-offer' => "forwarding#share_offer"
        post '/view-offer' => "wallets#view_offer"
        post '/events/report-event' =>  "events#report_event"
-       post '/events/update-setting' => "events#update_setting"
+       post '/settings/update' => 'settings#update_global_setting'
+       post '/settings/update-user-setting' => 'settings#update_user_setting'
        post '/events/purchase-ticket' => 'payments#purchase_ticket'
        post '/payments/get-secret' => 'payments#get_secret'
        post '/payments/confirm-payment' => 'payments#confirm_payment'
-     
-      # get '/*a', to: 'applic ation#not_found'
+       post '/payments/place-refund-request' => 'payments#place_refund_request'
+       post '/analytics/get-dashboard' => 'analytics#get_dashboard'
+       post '/events/share' => 'forwarding#share_event'
+       post '/events/forward' => 'forwarding#forward_event'
+       get '/competitions/get-winner' => 'competitions#get_winner_and_notify'
+       get '/friendships/suggest-friends' => 'friendships#suggest_friends'
+       get '/follows/suggest-businesses' => 'follows#suggest_businesses'
+      # get '/*a', to: 'application#not_found'
      end
    end
    get 'send-email' => 'contact_form#send_email'
@@ -85,6 +97,10 @@ Rails.application.routes.draw do
      get 'dashboard' => 'dashboard#index'
      get 'user/get-profile' => 'users#get_profile'
      post '/user/update-password' => "users#update_password"
+     get '/reset-password' => 'users#send_email_page'
+     post '/send-reset-email' => 'users#send_reset_email'
+     get  '/reset-password-page' => 'users#reset_password_page'
+     post '/reset-password' => 'users#reset_password'
      post '/user/update-avatar' => "users#update_avatar"
      post '/user/update-info' => 'users#update_info'
      get '/user/search-friends' => 'search#search_friends'
@@ -122,6 +138,7 @@ Rails.application.routes.draw do
      delete '/payments/delete' => "payments#delete_payment"
      get '/payments/refund-requests' => "payments#refund_requests"
      get '/payments/approve-refund' => "payments#approve_refund"
+     get '/payments/reject-refund' => "payments#reject_refund"
 
      resources :events do
        resources :comments
@@ -137,9 +154,22 @@ Rails.application.routes.draw do
      resources :tickets
   
    end
+
+
+   namespace :dashboard do
+    namespace :api do
+      namespace :v1 do
+        resources :users, param: :email
+        post '/auth/login', to: 'authentication#login'
+        post '/send-verification-code', to: 'users#send_verification_code'
+      end
+    end
+   end
  
    namespace :business do
    end
+
+
  
    namespace :college_society do
    end

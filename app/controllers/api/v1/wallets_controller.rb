@@ -27,7 +27,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         creator_name: wallet.offer.user.first_name + " " + wallet.offer.user.last_name,
         creator_image: wallet.offer.user.avatar.url,
         description: wallet.offer.description,
-        validity: wallet.offer.validity + " " + wallet.offer.validity_time.strftime("%H:%M:%S"),
+        validity: wallet.offer.validity.strftime(get_time_format),
+        is_expired: is_expired?(wallet.offer),
         grabbers_count: wallet.offer.wallets.size,
         is_redeemed: is_redeemed(wallet.offer.id, 'SpecialOffer', request_user.id),
         grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size
@@ -46,7 +47,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         event_end_time: wallet.offer.event.end_time,
         event_date: wallet.offer.event.start_date,
         ambassador_name: wallet.offer.ambassador_name,
-        validity: wallet.offer.validity + " " + wallet.offer.validity_time.strftime("%H:%M:%S").to_s,
+        validity: wallet.offer.validity.strftime(get_time_format).to_s,
+        is_expired: is_expired?(wallet.offer),
         grabbers_count: wallet.offer.wallets.size,
         is_redeemed: is_redeemed(wallet.offer.id, 'Pass', request_user.id),
         grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size
@@ -200,7 +202,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
       event_date: pass.event.start_date,
       ambassador_name: pass.ambassador_name,
       is_added_to_wallet: is_added_to_wallet?(pass.id),
-      validity: pass.validity + " " + pass.validity_time.strftime("%H:%M:%S").to_s,
+      validity: pass.validity.strftime(get_time_format).to_s,
+      is_expired: is_expired?(pass),
       grabbers_count: pass.wallets.size
     } 
    elsif(params[:offer_type] == 'SpecialOffer')
@@ -218,7 +221,9 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
       creator_name: offer.user.first_name + " " + offer.user.last_name,
       creator_image: offer.user.avatar.url,
       description: offer.description,
-      validity: offer.validity + " " + offer.validity_time.strftime("%H:%M:%S"),
+      validity: offer.validity.strftime(get_time_format),
+      end_time: DateTime.parse(offer.end_time).strftime(get_time_format), 
+      is_expired: is_expired?(offer),
       grabbers_count: offer.wallets.size,
       is_added_to_wallet: is_added_to_wallet?(offer.id),
       grabbers_friends_count: offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size

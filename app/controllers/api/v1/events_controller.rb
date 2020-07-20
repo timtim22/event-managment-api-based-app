@@ -1,5 +1,5 @@
 class Api::V1::EventsController < Api::V1::ApiMasterController
-  before_action :authorize_request, except:  ['events_list_by_date']
+  before_action :authorize_request, except:  ['events_list_by_date','index']
 
   def initialize
     
@@ -12,8 +12,8 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
     events.each do |e|
       @passes = []
       @ticket = []
-      e.passes.each do |pass|
-      @passes << {
+      e.passes.not_expired.each do |pass|
+        @passes << {
         id: pass.id,
         title: pass.title,
         host_name: e.user.first_name + " " + e.user.last_name,
@@ -26,10 +26,11 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         event_date: e.start_date,
         ambassador_name: pass.ambassador_name,
         is_added_to_wallet: is_added_to_wallet?(pass.id),
-        validity: pass.validity + " " + pass.validity_time.strftime("%H:%M:%S").to_s,
+        validity: pass.validity.strftime(get_time_format).to_s,
         grabbers_count: pass.wallets.size
       }
-    end
+
+  end#each
 
     if e.ticket
       @ticket << {
@@ -71,13 +72,17 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         'demographics' => get_demographics(e),
         'passes' =>  @passes,
         'ticket' => @ticket,
-        'passes_grabbers_friends_count' =>  e.passes.map {|pass| pass.wallets.map { |wallet| if (request_user.friends.include? wallet.user) then wallet.user end } }.size,
-        # 'going_users' => e.going_users,
+        'passes_grabbers_friends_count' =>  get_passes_grabbers_friends_count(e),
+        'going_users' => e.going_users,
         "interested_users" => getInterestedUsers(e),
         'creator_name' => e.user.first_name + " " + e.user.last_name,
         'creator_id' => e.user.id,
         'creator_image' => e.user.avatar.url,
-        'categories' => !e.categories.blank? ? e.categories : @empty 
+        'categories' => !e.categories.blank? ? e.categories : @empty,
+        'grabbers' => get_event_passes_grabbers(e),
+        'sponsors' => e.sponsors,
+        "mute_chat" => get_mute_chat_status(e),
+        "mute_notifications" => get_mute_notifications_status(e) 
      }
      
     end #each
@@ -90,6 +95,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
        "events" =>  @events
      }
   }
+ 
 	end
 
 	def events_list_by_date
@@ -183,56 +189,21 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 
   end
 
-  def update_setting
+  def create_view
     if !params[:event_id].blank?
-      @event = Event.find(params[:event_id])
-    if !params[:mute_notifications].blank?
-         mute_notifications = params[:mute_notifications]
-      if  @event.event_setting.update!(mute_notifications: mute_notifications,user_id: request_user.id)
+      event = Event.find(params[:event_id])
+    if event_view = event.event_views.create!(user_id: request_user.id)
       render json: {
         code: 200,
         success: true,
-        message: 'setting successfully updated.',
+        message: "Event view successfully created.",
         data: nil
       }
-    else
-      render json: {
+      else
+        render json: {
         code: 400,
         success: false,
-        message: 'setting was not updated.',
-        data: nil
-      }
-    end
-    elsif  !params[:mute_chat].blank?
-         mute_chat = params[:mute_chat]
-      if  @event.event_setting.update!(mute_chat: mute_chat,user_id: request_user.id)
-      render json: {
-        code: 200,
-        success: true,
-        message: 'setting successfully updated.',
-        data: nil
-      }
-    else
-      render json: {
-        code: 400,
-        success: false,
-        message: 'setting was not updated.',
-        data: nil
-      }
-    end
-    elsif(!params[:mute_chat].blank? && !params[:mute_notifications].blank?)
-      if  @event.event_setting.update!(mute_chat: mute_chat, mute_notifications: mute_notifications,user_id: request_user.id)
-      render json: {
-        code: 200,
-        success: true,
-        message: 'setting successfully updated.',
-        data: nil
-      }
-    else
-      render json: {
-        code: 400,
-        success: false,
-        message: 'setting was not updated.',
+        message: event.errors.full_messages,
         data: nil
       }
     end
@@ -240,21 +211,11 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       render json: {
         code: 400,
         success: false,
-        message: 'Either mute_notifications or mute_chat is required.',
+        message: "event_id is requried field.",
         data: nil
       }
     end
-  else
-    render json: {
-      code: 400,
-      success: false,
-      message: 'event_id is required.',
-      data: nil
-    }
   end
-  end
-
-  
 
 
   private 
@@ -264,56 +225,132 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
     @interested_followers = []
     @interested_others = []
     event.interested_users.uniq.each do |user|
-     if (request_user.friends.include? user)
+   if request_user
+    if request_user.friends.include? user
        @interested_followers.push(user) 
     else
        @interested_others.push(user)
-     end
+    end
   end
+  end #each
   @interested_users << {
     "interested_friends" => @interested_followers,
     "interested_others" => @interested_others
   }
   @interested_users
+ 
   end
 
   def is_attending?(event)
+   if request_user
     if request_user.events_to_attend.include? event
       true
     else
       false
     end
+  else
+    false
+  end
   end
 
   def is_interested?(event)
+   if request_user
     if request_user.interested_in_events.include? event
       true
     else
       false
     end
+  else
+     false
+  end
   end
 
   def is_added_to_wallet?(pass_id)
+    if request_user
     wallet = request_user.wallets.where(offer_id: pass_id).where(offer_type: 'Pass')
     if !wallet.blank?
       true
     else
       false
     end
+  else
+     false
+  end
   end
 
   def is_followed(event)
-   request_user.followings.include? event.user
+   if request_user
+    request_user.followings.include? event.user
+   else
+    false
+   end
   end
 
    def is_ticket_purchased(ticket_id)
+     if request_user
       ticket = TicketPurchase.where(user_id: request_user.id).where(ticket_id: ticket_id)
       if !ticket.blank?
         true
       else
         false
       end
+    else
+      false
+    end
    end
+
+  def get_event_passes_grabbers(e)
+     @grabbers_avatars = []
+     @total_count = 0
+    e.passes.each do |pass|
+      @total_count  = @total_count + pass.wallets.size
+      pass.wallets.each do |w|
+        @grabbers_avatars.push(w.user.avatar.url)
+      end      
+    end
+    stats = []
+    stats << {
+      "grabbers_avatars" => @grabbers_avatars,
+      "total_grabbers_count" => @total_count
+    }
+    stats
+  end
+
+ 
+
+ def get_passes_grabbers_friends_count(e)
+  if request_user
+    e.passes.map {|pass| pass.wallets.map { |wallet| if (request_user.friends.include? wallet.user) then wallet.user end } }.size
+  else
+    @empty = []
+  end
+ end
+
+ def get_mute_chat_status(event)
+  if request_user  
+    setting = request_user.mute_chat_for_events.where(resource: event).first
+    if setting
+     is_mute = setting.is_on
+    else
+     false
+    end
+  else
+    false
+  end
+ end
+
+ def get_mute_notifications_status(event)
+   if request_user
+     setting = request_user.mute_notifications_for_events.where(resource: event).first
+     if setting
+       is_mute = setting.is_on
+     else
+       false
+     end
+   else
+    false
+   end
+ end
 
   # calculates interest level demographics interested + going
  

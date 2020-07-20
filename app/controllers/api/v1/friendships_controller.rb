@@ -1,5 +1,5 @@
 class Api::V1::FriendshipsController < Api::V1::ApiMasterController
-  before_action :authorize_request, except:  ['events_list_by_date', 'remove_request']
+  before_action :authorize_request
   require "pubnub"
   require 'action_view'
   require 'action_view/helpers'
@@ -12,7 +12,7 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
   def send_request
     @friend = User.find(params[:friend_id])
     @sender = request_user
-    if(request_status(@sender,@friend) == nil)
+    if(request_status(@sender,@friend) == false)
     @friend_request = @sender.friend_requests.new(friend: @friend)
     @friend_request.status = "pending"
     if @friend_request.save
@@ -107,7 +107,8 @@ def friend_requests
       "avatar" => sender.avatar.url,
       "status" => request.status,
       "user_id" => request.user_id,
-      "friend_id" => request.friend_id
+      "friend_id" => request.friend_id,
+      'mutual_friends_count' =>  sender.friends.size
     }
   end
   render json: {
@@ -217,7 +218,11 @@ def my_friends
   requests = FriendRequest.where(user_id: request_user.id).where(status: 'accepted')
   friends_array = []
   requests.each do |request|
-    friends_array.push(User.find(request.friend_id))
+    @friend = User.find(request.friend_id)
+    friend = {}
+    friend['friend'] = @friend
+    friend['friends_count'] = @friend.friends.size
+    friends_array.push(friend)
   end
   render json: {
     code: 200,
@@ -253,4 +258,109 @@ def remove_friend
   end # main  
 end# #func
 
+def suggest_friends
+  @friends_suggestions = []
+  # 1. Friends of my friends
+ if !request_user.friends.blank?
+  request_user.friends.each do |friend|
+    friend.friends.each do |s_friend|
+      if not_me?(s_friend) == true && is_my_friend?(s_friend) == false
+        @friends_suggestions.push(s_friend)
+      end
+    end
+  end #each
+end #if
+
+  # 2. Poeple who are attending same event as logged in user
+  if !request_user.events_to_attend.blank? 
+       request_user.events_to_attend.each do  |event|
+       event.going_users.each do |user|
+        if not_me?(user) == true && is_my_friend?(user) == false
+          @friends_suggestions.push(user)
+        end# if
+       end #each
+      end #each
+    end #if
+    
+    # 3. Poeple who are interested in same event as logged in user
+   if !request_user.interested_in_events.blank?
+       request_user.interested_in_events.each do |event|
+       event.interested_users.each do |user|
+         if not_me?(user) == true && is_my_friend?(user) == false
+          @friends_suggestions.push(user)
+        end#if
+       end #each
+    end#each
+ end #if
+
+ # 4. People who has same passes in their wallet as logged in user
+  if !request_user.owned_passes.blank?
+      request_user.owned_passes.each do |pass|
+        #users who added it to wallet
+        pass.owners.each do |owner|
+         if not_me?(owner) == true && is_my_friend?(owner) == false
+          @friends_suggestions.push(owner)
+         end#if
+        end
+      end #each
+  end#if
+  
+  # 5. People who has same special offers in their wallet as logged in user
+  if !request_user.owned_special_offers.blank?
+    request_user.owned_special_offers.each do |special_offer|
+      #users who added it to wallet
+      special_offer.owners.each do |owner|
+       if not_me?(owner) == true && is_my_friend?(owner) == false
+        @friends_suggestions.push(owner)
+       end#if
+      end
+    end #each
+end#if
+
+#  6. people who are going to attend same competition.
+ if !request_user.competitions_to_attend.blank? 
+  request_user.competitions_to_attend.each do  |competition|
+    competition.participants.each do |participant|
+   if not_me?(participant) == true && is_my_friend?(participant) == false
+     @friends_suggestions.push(participant)
+   end# if
+  end #each
+ end #each
+end #if
+
+#if there are no users based on the above principle then suggest poineer user upto 7 
+if @friends_suggestions.blank?
+  User.where(id: [1..7]).each do |user|
+  if not_me?(user)
+    @friends_suggestions.push(user)
+  end #if 
+  end#each
+end
+
+ @all_suggessions = [] 
+ @friends_suggestions.each do  |user| 
+   @all_suggessions << {
+     user:  user,
+     mutual_friends_count: user.friends.size,
+     is_request_sent: request_status(request_user, user)
+    }
+  end #each 
+ 
+
+ render json: {
+   code: 200,
+   success: true,
+   message: "",
+   data:  {
+     suggested_friends: @all_suggessions
+   }
+ }
+  
+ end #func
+
+
+  
+  private
+  
+  
 end

@@ -31,6 +31,15 @@
 <li><%= cat.name %></li>
 <% end %>
 <% end %>
+<% if !@event.sponsors.blank? %>
+<br>
+<h5>Sponsers:</h5>
+<% @event.sponsors.each do |s| %>
+  <li><%= s.name %>
+  <img src="<%= s.sponsor_image.url %> " class="logo">
+  </li>
+  <% end %>
+  <% end %>
 </div>
  </div><!--container -->
  <div class="container">

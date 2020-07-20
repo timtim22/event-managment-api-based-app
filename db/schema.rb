@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_14_072420) do
+ActiveRecord::Schema.define(version: 2020_07_15_075810) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -51,6 +51,21 @@ ActiveRecord::Schema.define(version: 2020_05_14_072420) do
     t.index ["user_id"], name: "index_business_details_on_user_id"
   end
 
+  create_table "business_profiles", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "address", default: ""
+    t.string "website", default: ""
+    t.text "about", default: ""
+    t.string "vat_number", default: ""
+    t.string "charity_number", default: ""
+    t.string "twitter", default: ""
+    t.string "facebook", default: ""
+    t.string "linkedin", default: ""
+    t.string "instagram", default: ""
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -84,6 +99,8 @@ ActiveRecord::Schema.define(version: 2020_05_14_072420) do
     t.datetime "updated_at", null: false
     t.string "from"
     t.string "user_avatar"
+    t.datetime "read_at"
+    t.integer "reader_id"
     t.index ["event_id"], name: "index_comments_on_event_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
@@ -91,6 +108,13 @@ ActiveRecord::Schema.define(version: 2020_05_14_072420) do
   create_table "competition_participants", force: :cascade do |t|
     t.string "user_id"
     t.string "ccompetition_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "competition_winners", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "competition_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -107,7 +131,7 @@ ActiveRecord::Schema.define(version: 2020_05_14_072420) do
     t.string "location"
     t.string "lat"
     t.string "lng"
-    t.string "validity"
+    t.date "validity"
     t.string "price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -124,10 +148,24 @@ ActiveRecord::Schema.define(version: 2020_05_14_072420) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "event_settings", force: :cascade do |t|
+  create_table "event_forwardings", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "recipient_id"
     t.integer "event_id"
-    t.boolean "mute_chat", default: false
-    t.boolean "mute_notifications", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "event_shares", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "recipient_id"
+    t.integer "event_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "event_views", force: :cascade do |t|
+    t.integer "event_id"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -187,6 +225,7 @@ ActiveRecord::Schema.define(version: 2020_05_14_072420) do
     t.integer "friend_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "read_at"
     t.index ["friend_id"], name: "index_friend_requests_on_friend_id"
     t.index ["user_id"], name: "index_friend_requests_on_user_id"
   end
@@ -257,6 +296,7 @@ ActiveRecord::Schema.define(version: 2020_05_14_072420) do
     t.integer "offer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_ambassador", default: false
   end
 
   create_table "offer_shares", force: :cascade do |t|
@@ -266,12 +306,20 @@ ActiveRecord::Schema.define(version: 2020_05_14_072420) do
     t.integer "offer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_ambassador", default: false
+  end
+
+  create_table "offer_views", force: :cascade do |t|
+    t.integer "offer_id"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "passes", force: :cascade do |t|
     t.string "title"
     t.text "description"
-    t.string "validity", default: "0"
+    t.date "validity"
     t.integer "event_id"
     t.string "redeem_code", default: "0"
     t.datetime "created_at", null: false
@@ -284,6 +332,13 @@ ActiveRecord::Schema.define(version: 2020_05_14_072420) do
     t.datetime "validity_time"
     t.string "ambassador_rate", default: "1"
     t.integer "number_of_passes", default: 1
+  end
+
+  create_table "password_resets", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -320,6 +375,7 @@ ActiveRecord::Schema.define(version: 2020_05_14_072420) do
     t.text "reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.json "stripe_refund_response"
   end
 
   create_table "registrations", force: :cascade do |t|
@@ -432,10 +488,18 @@ ActiveRecord::Schema.define(version: 2020_05_14_072420) do
     t.index ["delivered", "failed", "processing", "deliver_after", "created_at"], name: "index_rpush_notifications_multi", where: "NOT delivered AND NOT failed"
   end
 
+  create_table "settings", force: :cascade do |t|
+    t.string "name"
+    t.boolean "is_on", default: true
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "special_offers", force: :cascade do |t|
     t.string "title"
     t.text "description"
-    t.string "validity"
+    t.date "validity"
     t.text "terms_conditions", default: ""
     t.boolean "agreed_to_terms", default: false
     t.datetime "created_at", null: false
@@ -446,12 +510,20 @@ ActiveRecord::Schema.define(version: 2020_05_14_072420) do
     t.string "image"
     t.string "location"
     t.datetime "date"
-    t.datetime "validity_time"
+    t.string "end_time"
     t.string "lat"
     t.string "lng"
     t.integer "user_id"
     t.datetime "time"
     t.string "ambassador_rate", default: "1"
+  end
+
+  create_table "sponsors", force: :cascade do |t|
+    t.integer "event_id"
+    t.string "name"
+    t.string "sponsor_image"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "student_details", force: :cascade do |t|
@@ -497,6 +569,16 @@ ActiveRecord::Schema.define(version: 2020_05_14_072420) do
     t.integer "amount"
   end
 
+  create_table "user_settings", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "name", default: "setting"
+    t.integer "resource_id"
+    t.boolean "is_on", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "resource_type"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
@@ -505,7 +587,7 @@ ActiveRecord::Schema.define(version: 2020_05_14_072420) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "verification_code"
-    t.string "device_token"
+    t.string "device_token", default: ""
     t.string "avatar", default: "avatar.png"
     t.string "dob"
     t.string "phone_number"
@@ -521,6 +603,9 @@ ActiveRecord::Schema.define(version: 2020_05_14_072420) do
     t.boolean "is_ambassador", default: false
     t.string "stripe_state", default: "no state"
     t.string "connected_account_id", default: "no account"
+    t.boolean "is_subscribed", default: false
+    t.boolean "is_email_verified", default: false
+    t.string "contact_name"
   end
 
   create_table "wallets", force: :cascade do |t|

@@ -1,5 +1,5 @@
 class Admin::AdminMasterController < ApplicationController
-before_action :require_signin, except: [:new,:create]
+before_action :require_signin, except: [:new,:create,:send_email_page,:send_reset_email,:reset_password_page,:reset_password]
 #before_action :require_phone_verification, except: [:new, :create]
 before_action :SetJsVariables
 # Admin master logic goes here

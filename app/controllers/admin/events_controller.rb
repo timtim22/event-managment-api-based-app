@@ -69,8 +69,9 @@ class Admin::EventsController < Admin::AdminMasterController
             end #if
           # notifiy all users about new event creation
         
-           if !current_user.followers.blank?
+       if !current_user.followers.blank?
             current_user.followers.each do |follower|
+        if follower.all_chat_notifications_setting.is_on == true && follower.event_notifications_setting.is_on == true
           if @notification = Notification.create!(recipient: follower, actor: current_user, action: User.get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event') 
             @channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
@@ -106,6 +107,7 @@ class Admin::EventsController < Admin::AdminMasterController
                  puts envelope.status
             end
            end # notificatiob end
+          end #all chat and event chat true
           end #each
           end # not blank
         end #date end
@@ -144,6 +146,9 @@ class Admin::EventsController < Admin::AdminMasterController
         @event_attachment = @event.event_attachments.create!(:media => m,:event_id => @event.id, media_type: 'image')
        end
       end #if
+      if !params[:sponsor_name].blank? && !params[:sponsor_image].blank?
+        @event_sponsor = @event.sponsors.create!(:name => params[:sponsor_name],:sponsor_image => params[:sponsor_image])
+      end#if
       if !params[:event_attachments].blank?
         params[:event_attachments]['media'].each do |m|
           @event_attachment = @event.event_attachments.new(:media => m,:event_id => @event.id, media_type: 'image')
@@ -154,6 +159,7 @@ class Admin::EventsController < Admin::AdminMasterController
      
        if !current_user.followers.blank?
         current_user.followers.each do |follower|
+      if follower.all_chat_notifications_setting.is_on == true && follower.event_notifications_setting.is_on == true
       if @notification = Notification.create!(recipient: follower, actor: current_user, action: User.get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event') 
         @channel = "event" #encrypt later
         @current_push_token = @pubnub.add_channels_to_push(
@@ -189,6 +195,7 @@ class Admin::EventsController < Admin::AdminMasterController
              puts envelope.status
         end
        end # notificatiob end
+      end #all chat and event chat true
       end #each
       end # not blank
       flash[:notice] = "Event successfully created."

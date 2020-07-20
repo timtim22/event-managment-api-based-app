@@ -26,6 +26,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
       create_activity("created competition", @competition, "Competition", admin_competition_path(@competition),@competition.title, 'post')
       if !current_user.followers.blank?
         current_user.followers.each do |follower|
+   if follower.competitions_notifications_setting.is_on == true
       if @notification = Notification.create!(recipient: follower, actor: current_user, action: User.get_full_name(current_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition') 
   
         @current_push_token = @pubnub.add_channels_to_push(
@@ -61,6 +62,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
              puts envelope.status
         end
        end # notification end
+      end #competition setting
       end #each
       end # not blank
       redirect_to admin_competitions_path, notice: "Competition created successfully."

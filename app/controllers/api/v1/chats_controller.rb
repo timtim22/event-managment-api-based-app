@@ -1,79 +1,20 @@
 class Api::V1::ChatsController < Api::V1::ApiMasterController
-before_action :authorize_request
-      require 'pubnub'
-      require 'json'
-      
-      def initialize
-      end
-
-    #  def send_message_old
-    #     @sender = request_user
-    #      notification_title = @sender.username + " has sent you a message!"
-    #      notification_body = params[:message][0...37]
-    #     @recipient = User.find(params[:recipient_id])
-    #      message = "This is test message"#params[:message]
-    #      #get all devices registered in our db and loop through each of them
-    #     n = Rpush::Gcm::Notification.new
-    #           # use the pushme_droid app we previously registered in our initializer file to send the notification
-    #     n.app = Rpush::Gcm::App.find_by_name("MyGo")
-    #     n.registration_ids = [@recipient.device_token]
-    #           # parameter for the notification
-    #     n.notification = {
-    #       body: notification_body,
-    #              title: notification_title,
-    #              sound: 'default'
-    #          }
-    #          n.data = { message: message }
-    #           #save notification entry in the db
-    #     n.save!
-
-    #     if Rpush.push
-    #         message = @sender.messages.new(recipient_id: @recipient.id, message: message, created_at: Time.now)
-    #         if message.save
-    #            chat = Message.get_messages(@sender.id,@recipient.id)
-    #            render json: {sent: true, messages: chat }, status: :ok
-    #         else
-    #            render json: {save: false,message: "couldn't be saved."}
-    #         end
-    #         render json: true
-    #     else
-    #         render json: {sent: false,message: "couldn't be sent."}
-    #     end 
-    # end
-
-    ###### pubnub chat 
- @@my_callback = lambda { |envelope|
-   render json: {
-     status: envelope.status
-   }
-}
-
-def index
-@channel = params[:channel]
-@username = params[:username]
-@history_messages = nil
-@pubnub = Pubnub.new(
-  publish_key: ENV['PUBLISH_KEY'],
-  subscribe_key: ENV['SUBSCRIBE_KEY'],
-  uuid: @username
- )
-# Only for passing it to JS on client side
-#  gon.sub_key = @pubnub_subscribe_key
-#  gon.pub_key = @pubnub_publish_key
-#  gon.channel = @channel
-#  gon.uuid = @username
-end
-
+  before_action :authorize_request, except:  ['chat_people']
+  require 'pubnub'
+  require 'json'
+ 
+  
 def send_message
-
-  if !params[:recipient_id].blank?
+ @recipient = User.find(params[:recipient_id])
+  if !blocked_user?(request_user, @recipient)
+ if !params[:recipient_id].blank?
   @pubnub = Pubnub.new(
     publish_key: ENV['PUBLISH_KEY'],
     subscribe_key: ENV['SUBSCRIBE_KEY'],
-    uuid: @username
     )
+
   @sender  = request_user
-  @recipient = User.find(params[:recipient_id])
+ 
   @username = @sender.first_name + " " + @sender.last_name
   @has_mutual_channel = ChatChannel.check_for_mutual_channel(@sender,@recipient)
   if !@has_mutual_channel.blank?
@@ -95,12 +36,11 @@ def send_message
  @message = @sender.messages.new(recipient_id: @recipient.id, message: params[:message], from: User.get_full_name(@sender), user_avatar: @sender.avatar.url)
 
 if @message.save
-  
- @recipient_device_token = @recipient.device_token
+
  @current_push_token = @pubnub.add_channels_to_push(
-   push_token: @recipient_device_token,
+   push_token: @recipient.device_token,
    type: 'gcm',
-   add: @recipient_device_token
+   add: @recipient.device_token
    ).value
 
 payload = { 
@@ -113,32 +53,38 @@ payload = {
     "id": @message.id,
     "actor_id": request_user.id,
     "actor_image": request_user.avatar.url,
+    "sender_name": User.get_full_name(request_user),
     "notifiable_id": '',
     "notifiable_type": 'chat',
     "action": '',
     "action_type": 'chat',
     "created_at": @message.created_at,
-    "body": params[:message]    
+    "body": params[:message] ,
+    "last_message": @message   
    }
   }
  }
  
- @pubnub.publish(
- channel: @recipient_device_token,
- message: payload
- ) do |envelope|
-     puts envelope.status
-end
+
+if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(request_user, @recipient)
+  @pubnub.publish(
+    channel: @recipient.device_token,
+    message: payload
+    ) do |envelope|
+        puts envelope.status
+   end #publish
+  end #all chat and event chat true
+
    chat = Message.get_messages(@sender.id,@recipient.id)
   
    render json: {
      code: 200,
      success: true,
-     message: 'message sent successfully.',
+     message: 'Message sent successfully.',
      data: {
        chat: chat
-     }
    }
+  }
 
 else
   render json: {
@@ -155,6 +101,14 @@ else
     message: "Recipient Id is required."
   }
  end
+else
+  render json: {
+    code: 400,
+    success: false,
+    message: "You have blocked the user, first unblock to send a message",
+    data:nil
+  }
+end
 end
 
 
@@ -177,6 +131,7 @@ def chat_history
      }
     }
 end
+
 end
 
 
@@ -210,27 +165,31 @@ render json: true
 end
 
 def chat_people
+
   @chat_people = []
-  @IncomingMessages = Message.where(recipient_id: request_user.id)
-  @OutgoingMessages = Message.where(user_id: request_user.id)
-  @IncomingMessages.map {|msg|
-    @chat_people << {
-      :user => msg.user,
-      :last_message => Message.where(user_id: msg.user.id).where(recipient_id: request_user.id).or(Message.where(user_id: request_user.id).where(recipient_id: msg.user.id)).order(created_at: 'DESC').first
-    }
-}
-  @OutgoingMessages.map {|msg| 
-  @chat_people << {
-    :user => msg.recipient,
-    :last_message => Message.where(user_id: request_user.id).where(recipient_id: msg.recipient.id).or(Message.where(user_id: msg.recipient.id).where(recipient_id: request_user.id)).order(created_at: 'DESC').first
-  } 
-}
+  @users = []
+ 
+  request_user.incoming_messages.map {|msg| @users.push(msg.user) }
+  request_user.messages.map {|msg| @users.push(msg.user) }
+
+ @users.uniq.each do |user|
+    if request_user != user
+        @chat_people << {
+        :user => user,
+        :last_message => Message.last_message(request_user, user),
+        :is_mute => user_chat_muted?(request_user, user),
+        :is_blocked => blocked_user?(request_user, user),
+        :unread_count => get_unread_message_count(user.id)
+      }
+    end
+ end
+
   render json: {
   code: 200,
   success: true,
   message: '',
   data: {
-    chat_people: if @chat_people.size > 1 then @chat_people.uniq! {|e| e[:user] }  else @chat_people end
+    chat_people: @chat_people
   }
 }
 end
@@ -249,7 +208,7 @@ def clear_conversation
     render json: {
       code: 400,
       success: false,
-      message: "Converstaion couldn't be cleard.",
+      message: "conversation couldn't be cleard.",
       data: nil
     }
   end
@@ -261,6 +220,80 @@ else
       data: nil
     }
 end
+end
+
+def clear_chat #specific chat
+  message = Message.find(params[:message_id])
+  if message.destroy
+    render json: {
+      code: 200,
+      success: true,
+      message: "Message successfully deleted.",
+      data: nil
+    }
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "Message deletion failed.",
+      data: nil
+    }
+  end
+end
+
+
+
+def mark_as_read
+  if !params[:sender_id].blank?
+     success = false
+     incoming_messages = request_user.incoming_messages.where(user_id: params[:sender_id]).unread
+     if !incoming_messages.blank? 
+     incoming_messages.each do |msg|
+      if msg.update!(read_at: Time.zone.now)
+        success = true
+      else
+        success = false
+      end
+     end#each
+
+     if success == true
+      render json: {
+        code: 200,
+        success: true,
+        message: "Messages read successfully.",
+        data: nil
+      }
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "Message read failed.",
+        data: nil
+      }
+    end
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "No unread messages.",
+      data: nil
+    }
+  end
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "sender_id is required field.",
+      data: nil
+    }
+  end
+end
+
+
+private
+
+def get_unread_message_count(sender_id)
+  count = request_user.incoming_messages.unread.where(user_id: sender_id).size
 end
 
 end

@@ -172,6 +172,12 @@ img.add_friend_avatar {
   width: 100px !important;
   height: 68px !important;
 }
+img.logo {
+  max-width: 150px;
+  max-height: 150px;
+  width: 63px;
+  height: auto;
+}
 img.user_list_img {
   border-radius: 4px !important;
 }

@@ -7,21 +7,30 @@ class Admin::NotificationsController < Admin::AdminMasterController
   def mark_as_read
     @notifications = Notification.where(recipient: current_user).unread
     @notifications.update_all(read_at: Time.zone.now)
-    render json: {success: true}
+    render json: {
+     code: 200,
+     success: true,
+     message: 'Mark as read is successfull.',
+     data: nil
+    }
   end
 
   def clear_notifications
     @notifications = current_user.notifications
     if @notifications.destroy_all
       render json: {
+        code: 200,
         success: true,
-        message: "Notification cleared successfully."
+        message: "Notification cleared successfully.",
+        data: nil
       }
 
     else
       render json: {
+        code: 400,
         success: false,
-        message: "Notification deletion failed."
+        message: "Notification deletion failed.",
+        data: nil
       }
     end
   end

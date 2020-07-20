@@ -1,9 +1,9 @@
 class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
-  before_action :authorize_request
+  before_action :authorize_request, except: ['index','show']
 
   def index
     @special_offers = []
-    SpecialOffer.order(created_at: "DESC").each do |offer|
+    SpecialOffer.not_expired.order(created_at: "DESC").each do |offer|
       @special_offers << {
       id: offer.id,
       title: offer.title,
@@ -17,10 +17,11 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
       creator_name: offer.user.first_name + " " + offer.user.last_name,
       creator_image: offer.user.avatar.url,
       description: offer.description,
-      validity: offer.validity + " " + offer.validity_time.strftime("%H:%M:%S"),
+      validity: offer.validity.strftime(get_time_format),
+      end_time: DateTime.parse(offer.end_time).strftime(get_time_format), 
       grabbers_count: offer.wallets.size,
       is_added_to_wallet: is_added_to_wallet?(offer.id),
-      grabbers_friends_count: offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size
+      grabbers_friends_count: get_grabbers_friends_count(offer)
     }
     end
     render json:  {
@@ -202,13 +203,26 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
   end
 
   def is_added_to_wallet?(special_offer_id)
+   if request_user
     wallet = request_user.wallets.where(offer_id: special_offer_id).where(offer_type: 'SpecialOffer')
     if !wallet.blank?
       true
     else
       false
     end
+  else
+    false
   end
+  end
+
+  def get_grabbers_friends_count(offer)
+    if request_user
+      offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size
+    else
+      0
+    end
+  end
+
 
 
 end

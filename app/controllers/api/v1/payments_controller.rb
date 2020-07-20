@@ -18,7 +18,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
           transaction.stripe_response = params[:stripe_response]
           transaction.save
 
-          if(transaction.status == 'successful') #while tikcet_type ==  'buy' 'can_purchase' is already inmpleted  to 'get_secret' api which the first step of stripe payment, so doesn't need here
+          if(transaction.status == 'successful') #while tikcet_type ==  'buy' 'can_purchase' is already inmpleted  to 'get_secret' api which is the first step of stripe payment, so doesn't need here
            
             @ticket = Ticket.find(params[:ticket_id])
               @check = TicketPurchase.where(ticket_id: params[:ticket_id]).where(user_id: request_user.id)
@@ -332,7 +332,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
 
    @ticket = Ticket.find(params[:ticket_id])
      if can_purchase?(@ticket, params[:quantity]) 
-         @payable = @ticket.price * params[:quantity].to_i
+         @payable = @ticket.event.price * params[:quantity].to_i
          application_fee = calculate_application_fee(@payable,application_fee_percent).ceil
       if @ticket.user.connected_account_id != 'no account' 
         intent = Stripe::PaymentIntent.create({
@@ -342,8 +342,8 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
         }, stripe_account: @ticket.user.connected_account_id)
 
         #save in db as well
-        current_amount = @ticket.price - application_fee
-        @transaction = Transaction.create!(user_id: request_user.id, ticket_id: @ticket.id, payment_intent: intent, payee_id: @tikcet.user.id, amount: current_amount)
+        current_amount = @ticket.event.price - application_fee
+        @transaction = Transaction.create!(user_id: request_user.id, ticket_id: @ticket.id, payment_intent: intent, payee_id: @ticket.user.id, amount: current_amount)
 
     render json: {
       code: 200,
@@ -377,6 +377,34 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
       success: false,
       message: 'currency, quantity and ticket_id are required fields.',
       data: nil
+    }
+  end
+  end
+
+  def place_refund_request
+    if !params[:ticket_id].blank?
+      id = params[:ticket_id]
+      @ticket = Ticket.find(id)
+    if request_user.refund_requests.create!(business_id: @ticket.user.id, ticket_id: params[:ticket_id], reason: params[:reason])
+     render json:  {
+       code: 200,
+       success: true,
+       message: "Refund request successfully placed.",
+       data: nil
+     }
+    else
+      render json:  {
+        code: 400,
+        success: false,
+        message: "Refund request placement failed.",
+        data: nil
+      }
+    end
+  else
+    render json:  {
+      code: 400,
+      success: false,
+      message: "ticket_id is requried field."
     }
   end
   end

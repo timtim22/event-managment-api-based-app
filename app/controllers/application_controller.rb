@@ -8,7 +8,9 @@ class ApplicationController < ActionController::Base
       friend_request = FriendRequest.where(user_id: sender.id).where(friend_id: recipient.id).first
       if friend_request
        friend_request.status
-    end
+      else
+        false
+      end
   end
 
   def current_user
@@ -35,9 +37,55 @@ class ApplicationController < ActionController::Base
    })
   end
 
-   def generate_code
-    code = SecureRandom.hex
-   end
+  def generate_code
+    code = SecureRandom.hex(10)
+  end
+
+  def generate_six_digit_code
+    code = rand(100 ** 6)
+  end
+
+  def blocked_event?(request_user, event)
+    setting = request_user.block_events.where(resource: event).first
+    if setting
+     blocked = setting.is_on
+    else
+      false
+    end      
+  end
+
+
+  def event_chat_muted?(request_user, event)
+    setting = request_user.mute_chat_for_events.where(resource: event).first
+    if setting
+      mute = setting.is_on
+     else
+       false
+     end   
+  end
+
+  def blocked_user?(request_user, user)
+    setting = request_user.block_users.where(resource: user).first
+    if setting
+      blocked = setting.is_on
+     else
+       false
+     end     
+  end
+
+
+  def user_chat_muted?(request_user, user)
+    setting = request_user.mute_chat_for_users.where(resource: user).first
+    if setting
+      mute = setting.is_on
+     else
+       false
+     end   
+  end
+
+  def string_to_sym(string)
+    string.parameterize.underscore.to_sym
+  end
 
   helper_method :SetJsVariables
   helper_method :create_activity
