@@ -1,4 +1,5 @@
 $(document).ready(function(){
+  var autocomplete;
   var checkboxes = [];
    $(document).on('change','select#type', function(event){
    	   if($(this).val() == '2') {
@@ -398,58 +399,8 @@ $(document).on('click','#import_event_btn', function(){
   $("#import_events_modal").modal('show');
 });//click
 
-//setup before functions
-var typingTimer;                //timer identifier
-var doneTypingInterval = 4000;  //time in ms, 5 second for example
-var $input = $('input.location');
-
-//on keyup, start the countdown
-$input.on('keyup', function () {
-  clearTimeout(typingTimer);
-  typingTimer = setTimeout(doneTyping, doneTypingInterval);
-});
-
-$input.on('focusout', function () {
-  clearTimeout(typingTimer);
-  typingTimer = setTimeout(doneTyping, doneTypingInterval);
-});
-//on keydown, clear the countdown 
-$input.on('keydown', function () {
-  clearTimeout(typingTimer);
-});
 
 //user is "finished typing," do something
-function doneTyping () {
-  if($("input#location").val() != '') {
-    localStorage.setItem('got_latlng', false);
-    $.ajax({
-     type: 'post',
-     url: '/admin/get-latlng',
-     data: {
-       name: $("input#location").val(),
-     },
-     success: function(resp) {
-      localStorage.setItem('got_latlng', true);
-       console.log(resp.data);
-        if(resp.success == true) {
-          $('input#lat').val(resp.data.lat);
-          $('input#lng').val(resp.data.lng);
-        }
-        else {
-          $("span#location_error").show();
-          $("span#location_error").text(resp.message);
-        } 
-
-     }
-    });//ajax  
-}
-}
-// Don't submit form until lat lng are received.
-$(document).on('click','.event_create_button', function(e){
-   if(localStorage.getItem('got_latlng') == false) {
-    e.preventDefault();
-   }
-});
 
 $(document).on('change','input#competition_location',function(event){
   if($("input#location").val() != '') {
@@ -505,7 +456,21 @@ $(document).on('change','#price_type',function(e){
 
   function initialize() {
     var input = document.getElementById('location');
-    new google.maps.places.Autocomplete(input);
+    autocomplete = new google.maps.places.Autocomplete(input, { types: ['geocode'] });
+    autocomplete.setFields(["place_id", "geometry"]);
+    // When the user selects an address from the drop-down, populate the
+    // address fields in the form.
+    autocomplete.addListener('place_changed', fillInLatLng);
+       
+  } 
+
+
+  function fillInLatLng() {
+     var lat = autocomplete.getPlace().geometry.location.lat(); 
+     var lng = autocomplete.getPlace().geometry.location.lng(); 
+
+     $('input#lat').val(lat);
+     $('input#lng').val(lng);      
   }
 
   function CompetitionInitialize() {
@@ -856,5 +821,6 @@ $(document).on('submit','#reset_password_form', function(event){
       }  
     });//ajax
 });//click
+
 
 });//ready

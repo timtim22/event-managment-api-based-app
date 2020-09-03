@@ -10,30 +10,30 @@ class UsersController < ApplicationController
     end
 
     def create
-        @user = User.new
-        @user.first_name = params[:first_name]
-        @user.last_name =  params[:last_name]
-        @user.email = params[:email]
-        @user.phone_number = params[:phone_number]
-        @user.dob = params[:dob]
-        @user.gender = params[:gender]
-        @user.stripe_state = generate_code
-        @user.password = params[:password]
-        @user.remote_avatar_url = 'https://pickaface.net/gallery/avatar/45425654_200117_1657_v2hx2.png'  
-        if @user.save
-            profile = Profile.new
-            profile.user_id = @user.id
-            profile.save
-            @role = Assignment.new()
-            @role.role_id = params[:type]
-            @role.user_id = @user.id
-            @role.save
-           if(params[:type] == '3')
-              business_detail = BusinessDetail.new 
-              business_detail.name = params[:business_name]
-              business_detail.type = params[:business_type]
-              business_detail.save
-            end
+      @user = User.new
+      @user.phone_number = params[:phone_number]
+      @user.email = params[:email]
+      @user.web_user = true
+      @user.password = params[:password]
+      @user.verification_code = generate_code
+      @user.stripe_state = generate_code
+      if params[:avatar].blank? 
+         @user.remote_avatar_url = get_dummy_avatar 
+       else
+         @user.avatar= params[:avatar]
+       end
+       if !params[:charity_number].blank?
+        charity_number = params[:charity_number]
+       else
+         charity_number = ''
+        end
+
+        if @user.save    
+          profile = BusinessProfile.create!(profile_name: params[:profile_name], contact_name: params[:contact_name], user: @user, address: params[:address], website: params[:website], about: params[:about], vat_number: params[:vat_number], charity_number: charity_number)
+
+          #create role
+           assignment = @user.assignments.create!(role_id: params[:type])
+
         # flash[:notice] = "Registered successfully, Please verify your phone."
          flash[:notice] = "Registered successfully, please login now."
          session[:phone_number] = @user.phone_number
@@ -56,6 +56,11 @@ class UsersController < ApplicationController
         success: true,
         message: 'Phone number verified successfully.'
       }
+    end
+
+
+    def privacy_policy
+      
     end
 
     private

@@ -7,7 +7,7 @@ class Admin::SessionsController < Admin::AdminMasterController
         render :new
       end
       session[:user_id] = user.id
-      create_activity("signed in", user, "User", '','', 'post')
+      #create_activity("signed in", user, "User", '','', 'post', 'signed_in')
 			redirect_to session[:intended_request] || admin_dashboard_path
          else
          	flash.now[:alert_danger] = "Either username or password is incorrect!"

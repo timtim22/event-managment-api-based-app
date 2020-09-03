@@ -1,7 +1,7 @@
 class Admin::UsersController < Admin::AdminMasterController
     before_action :getRoles, :only => [:new, :create, :edit]
     def index
-        @users = User.all
+        @users = User.order(id: 'DESC')
     end 
     
     def new
@@ -13,18 +13,12 @@ class Admin::UsersController < Admin::AdminMasterController
     end
 
     def create
-        @user = User.new(user_params)
-        profile = Profile.new
-        profile.user_id = @user.id
-        profile.save
+        @user = User.new()
+       
         if @user.save
-          create_activity("registered", @user, "User")
-         if(params[:type] == '3') #change later
-          business_detail = BusinessDetail.new 
-          business_detail.name = params[:business_name]
-          business_detail.type = params[:business_type]
-          business_detail.save
-         end
+           
+          profile = BusinessProfile.create!(name: params[:profile_name], contact_name: params[:contact_name], address: params[:address], about: params[:about], website: params[:website], vat_number: params[:vat_number], charity_number: params[:charity_number])
+
           @role = Assignment.new
           @role.role_id = params[:type]
           @role.user_id = @user.id
@@ -106,19 +100,21 @@ class Admin::UsersController < Admin::AdminMasterController
 
     def update_info
         user = current_user()
-        profile = user.profile
+        profile = user.business_profile
+        profile.profile_name = params[:profile_name]
+        profile.contact_name = params[:contact_name]  
         profile.about = params[:about] 
-        profile.gender = params[:gender]
-        profile.stripe_account = params[:stripe_account]
-        profile.add_social_media_links = params[:add_social_media_links]
+        profile.vat_number = params[:vat_number]
+        profile.charity_number = params[:charity_number]
+        profile.website = params[:website]
+        profile.address = params[:address]
         profile.facebook = params[:facebook]
         profile.twitter = params[:twitter]
-        profile.snapchat = params[:snapchat]
+        profile.linkedin = params[:linkedin]
         profile.instagram = params[:instagram]
       if profile.save
-         create_activity("updated profile", user, "User")
-         @user = User.find(current_user.id)
-         @user.update(phone_number: params[:phone_number],dob: params[:dob])
+        current_user.update!(phone_number: params[:phone_number])
+        create_activity("Updated profile.", profile, "BusinessProfile", '', 'profile', 'post')
         render json: {
           success: true,
           message: "successfully updated."
@@ -244,7 +240,7 @@ class Admin::UsersController < Admin::AdminMasterController
     private
 
     def user_params
-        params.permit(:first_name,:last_name,:avatar, :email, :password, :password_confirmation)
+        params.permit(:profile_name,:contact_name,:avatar, :email, :password, :password_confirmation)
     end
 
     def profile_update_params

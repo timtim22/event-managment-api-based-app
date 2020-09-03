@@ -1,5 +1,5 @@
 class Api::V1::SettingsController < Api::V1::ApiMasterController
-
+  before_action :authorize_request
  
   def update_global_setting
    if !params[:is_on].blank? && !params[:name].blank?
@@ -60,16 +60,21 @@ class Api::V1::SettingsController < Api::V1::ApiMasterController
 
 
   def update_user_setting
-
      #specific setting
-     settings = ['mute_chat','mute_notifications','block']
+     settings = ['mute_chat','mute_notifications','block', 'remove_offers','remove_competitions','remove_passes']
     if !params[:setting_name].blank? && !params[:resource_id].blank? && !params[:resource_type].blank?  && !params[:is_on].blank?
        if settings.include? params[:setting_name]
          #if user doesn't have any setting then create it first (new user)
          setting = request_user.user_settings.where(name: params[:setting_name]).where(resource_id: params[:resource_id]).where(resource_type: params[:resource_type]).first
-       
+         blockee = User.find(params[:resource_id])
          if setting.blank? 
-            if setting = request_user.user_settings.create!(name: params[:setting_name], resource_id: params[:resource_id], resource_type: params[:resource_type], is_on: params[:is_on])
+            if setting = request_user.user_settings.create!(name: params[:setting_name], resource_id: params[:resource_id], resource_type: params[:resource_type], is_on: params[:is_on], blocked_at: Time.zone.now)
+
+            #in order to acheive bi directionsl blocking
+            if(params[:setting_name] == 'block' && params[:resource_type] == 'User')
+               
+               setting_reverse = blockee.user_settings.create!(name: params[:setting_name], resource_id: request_user.id, resource_type: params[:resource_type], is_on: params[:is_on])
+             end 
             
               render json:  {
                 code: 200,
@@ -86,7 +91,11 @@ class Api::V1::SettingsController < Api::V1::ApiMasterController
               }
             end
          else
-             if setting.update!(is_on: params[:is_on])
+             if setting.update!(is_on: params[:is_on], blocked_at: Time.zone.now)
+              if(params[:setting_name] == 'block' && params[:resource_type] == 'User')
+              setting_reverse = UserSetting.where(user_id: blockee.id).where(resource_id: request_user.id).where(resource_type:  params[:resource_type]).where(name: params[:setting_name]).first
+               setting_reverse.update!(is_on: params[:is_on])
+              end
               render json:  {
                 code: 200,
                 success: true,
@@ -107,7 +116,7 @@ class Api::V1::SettingsController < Api::V1::ApiMasterController
             render json: {
               code: 400,
               success: false,
-              message: " Please choose one of the recommended setting names i.e 'mute_chat','mute_notifications','block'",
+              message: " Please choose one of the recommended setting names i.e 'mute_chat','mute_notifications','block', 'remove_offers', 'remove_competitions','remove_passes'",
               data: nil
             }
           end

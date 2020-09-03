@@ -8,8 +8,12 @@ class Admin::AmbassadorsController < Admin::AdminMasterController
   def approve
     ambassador = AmbassadorRequest.find(params[:id])
     ambassador.status = 'accepted'
-    ambassador.user.update!(is_ambassador: true)
+    ambassador.user.profile.update!(is_ambassador: true)
     if ambassador.save
+      #create business activity
+      create_activity(current_user, " approved #{User.get_full_name(ambassador.user)} as an ambassador ", ambassador, 'AmbassadorRequest', '', '', 'post', 'approved_ambassador')
+      create_activity(ambassador.user, "become ambassador ", ambassador, 'AmbassadorRequest', '', '', 'post', 'become_ambassador')
+       #create ambassador activity
       flash[:notice] = "Ambassador successfully approved."
       redirect_to admin_ambassadors_path 
     else
@@ -21,7 +25,7 @@ class Admin::AmbassadorsController < Admin::AdminMasterController
   def remove
     ambassador = AmbassadorRequest.find(params[:id])
     ambassador.status = 'rejected'
-    ambassador.user.update!(is_ambassador: false)
+    ambassador.user.profile.update!(is_ambassador: false)
     if ambassador.save
       flash[:notice]  = "Ambassador successfully removed."
       redirect_to admin_ambassadors_path 

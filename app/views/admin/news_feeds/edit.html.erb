@@ -1,0 +1,39 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel" style="height:100%">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Edit News Feed</h4>
+         <%= render "shared/form_errors", object: @news_feed %>
+         <%= render "shared/notice" %>
+        <form method="post" action="<%= admin_news_feed_path(@news_feed) %>" class="forms-sample" enctype="multipart/form-data">
+        <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
+        <input type="hidden" name="_method" value="patch">
+        <div class="form-group">
+        <label for="name">Title</label>
+        <input type="text" class="form-control" id="title" name="title" value="<%= @news_feed.title %>">
+        </div>
+        <div class="form-group">
+          <label for="password_confirmation">Description</label>
+          <textarea name="description" class="form-control" rows="12"><%= @news_feed.description %></textarea>
+       </div>
+         <div class="form-group">
+            <label for="image" class="control-label">Image</label>
+            <br>
+            <input type="file" id="image" name="image">
+        </div>
+       
+        <button type="submit" class="btn btn-primary mr-2 event_create_button">Update</button>
+        </form>
+    </div>
+    </div>
+</div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->
+
+

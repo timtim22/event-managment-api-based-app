@@ -28,14 +28,14 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
        @recipient = User.find(id)
        if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: User.get_full_name(request_user) + " has sent you #{if params[:offer_type] ==  'Pass' then 'a pass ' + @offer.title else 'a Special Offer ' + @offer.title end }.", notifiable: @offer, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{if params[:offer_type] ==  'Pass' then 'pass_recieved' else 'special_offer_recieved'  end }")
 
-        @offer_forward = OfferForwarding.create!(user_id: request_user.id, is_ambassador: request_user.is_ambassador, recipient_id: id, offer_type:params[:offer_type], offer_id: params[:offer_id])
-
-        create_activity("forwarded '#{@offer.title}' to #{User.get_full_name(@recipient)}. ", @offer_forward, 'OfferForwarding', '', '', 'post')
+        @offer_forward = OfferForwarding.create!(user_id: request_user.id, is_ambassador: request_user.profile.is_ambassador, recipient_id: id, offer_type:params[:offer_type], offer_id: params[:offer_id])
+  
+       # create_activity(request_user, "forwarded '#{if params[:offer_type] == 'SpecialOffer' then 'special offer' else 'pass' end} '", @offer_forward, 'OfferForwarding', '', '', 'post', "forwarded_#{params[:offer_type]}")
 
          @current_push_token = @pubnub.add_channels_to_push(
-           push_token: @recipient.device_token,
+           push_token: @recipient.profile.device_token,
            type: 'gcm',
-           add: @recipient.device_token
+           add: @recipient.profile.device_token
            ).value
 
           payload = { 
@@ -47,10 +47,9 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
             data: {
               "id": @notification.id,
               "actor_id": @notification.actor_id,
-              "actor_image": @notification.actor.avatar.url,
+              "actor_image": @notification.actor.avatar,
               "notifiable_id": @notification.notifiable_id,
               "notifiable_type": @notification.notifiable_type,
-              "action_type": @notification.action_type,
               "offer": @offer,
               "action": @notification.action,
               "action_type": @notification.action_type,
@@ -61,7 +60,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         }
  
           @pubnub.publish(
-            channel: [@recipient.device_token],
+            channel: [@recipient.profile.device_token],
             message: payload
              ) do |envelope|
                puts envelope.status
@@ -130,12 +129,12 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         
           if @notification = Notification.create!(recipient: @recipient, actor: @sender, action: User.get_full_name(@sender) + " has sent you #{if params[:offer_type] ==  'Pass' then 'a pass ' + @offer.title else 'a Special Offer ' + @offer.title end }.", notifiable: @offer, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{if params[:offer_type] ==  'Pass' then 'pass_recieved' else 'special_offer_recieved'  end }")
   
-           @offer_share = OfferShare.create!(user_id: @sender.id, is_ambassador: @sender.is_ambassador, recipient_id: request_user.id, offer_type:params[:offer_type], offer_id: params[:offer_id])
+           @offer_share = OfferShare.create!(user_id: @sender.id, is_ambassador: @sender.profile.is_ambassador, recipient_id: request_user.id, offer_type:params[:offer_type], offer_id: params[:offer_id])
   
             @current_push_token = @pubnub.add_channels_to_push(
-              push_token: @recipient.device_token,
+              push_token: @recipient.profile.device_token,
               type: 'gcm',
-              add: @recipient.device_token
+              add: @recipient.profile.device_token
               ).value
   
              payload = { 
@@ -147,10 +146,9 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
                data: {
                  "id": @notification.id,
                  "actor_id": @notification.actor_id,
-                 "actor_image": @notification.actor.avatar.url,
+                 "actor_image": @notification.actor.avatar,
                  "notifiable_id": @notification.notifiable_id,
                  "notifiable_type": @notification.notifiable_type,
-                 "action_type": @notification.action_type,
                  "offer": @offer,
                  "action": @notification.action,
                  "action_type": @notification.action_type,
@@ -218,7 +216,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
 
         @event_forward = EventForwarding.create!(user_id: request_user.id, recipient_id: id, event_id: params[:event_id])
 
-        create_activity("forwarded '#{@event.name}' to #{User.get_full_name(@recipient)}. ", @event_forward, 'EventForwarding', '', '', 'post')
+        #create_activity(request_user, "forwarded event", @event_forward, 'EventForwarding', '', '', 'post','forward_event')
 
          @current_push_token = @pubnub.add_channels_to_push(
            push_token: @recipient.device_token,
@@ -235,10 +233,9 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
             data: {
               "id": @notification.id,
               "actor_id": @notification.actor_id,
-              "actor_image": @notification.actor.avatar.url,
+              "actor_image": @notification.actor.avatar,
               "notifiable_id": @notification.notifiable_id,
               "notifiable_type": @notification.notifiable_type,
-              "action_type": @notification.action_type,
               "offer": @offer,
               "action": @notification.action,
               "action_type": @notification.action_type,
@@ -333,13 +330,12 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
                data: {
                  "id": @notification.id,
                  "actor_id": @notification.actor_id,
-                 "actor_image": @notification.actor.avatar.url,
+                 "actor_image": @notification.actor.avatar,
                  "notifiable_id": @notification.notifiable_id,
                  "notifiable_type": @notification.notifiable_type,
                  "action_type": @notification.action_type,
                  "offer": @offer,
                  "action": @notification.action,
-                 "action_type": @notification.action_type,
                  "created_at": @notification.created_at,
                  "body": ''   
                }
@@ -347,7 +343,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
            }
     
              @pubnub.publish(
-               channel: [@recipient.device_token],
+               channel: [@recipient.profile.device_token],
                message: payload
                 ) do |envelope|
                   puts envelope.status

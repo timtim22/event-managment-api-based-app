@@ -56,7 +56,7 @@
           <li class="nav-item nav-profile dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
               <img src='<%= asset_path "#{current_user.avatar}" %>' onError="this.onerror=null;this.src='/assets/avatar.png';" alt="profile"/>
-              <span class="nav-profile-name"><%= current_user.first_name %></span>
+              <span class="nav-profile-name"><%= get_full_name(current_user) %></span>
               <i class="fa fa-angle-down"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">

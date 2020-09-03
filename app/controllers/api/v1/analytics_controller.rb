@@ -14,7 +14,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
        "total_offers" => @business.special_offers.size.to_i + @business.passes.size.to_i,
        "total_followers" => @business.followers.size,
        "business_name" => User.get_full_name(@business),
-       "business_logo" => @business.avatar.url,
+       "business_logo" => @business.avatar,
      }
     case resource
       when 'events'
@@ -104,8 +104,8 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
           lat: offer.lat,
           lng: offer.lng,
           image: offer.image.url,
-          creator_name: offer.user.first_name + " " + offer.user.last_name,
-          creator_image: offer.user.avatar.url,
+          creator_name: offer.user.business_profile.profile_name,
+          creator_image: offer.user.avatar,
           description: offer.description,
           validity: offer.validity.strftime(get_time_format),
           grabbers_count: offer.wallets.size,
@@ -147,7 +147,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
             image: competition.image.url,
             friends_participants_count: competition.registrations.map {|reg| if(request_user.friends.include? reg.user) then reg.user end }.size,
             creator_name: competition.user.first_name + " " + competition.user.last_name,
-            creator_image: competition.user.avatar.url,
+            creator_image: competition.user.avatar,
             validity: competition.validity + "T" + competition.validity_time.strftime("%H:%M:%S") + ".000Z",
             stats: stats
           }
@@ -176,7 +176,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
           id: pass.id,
           title: pass.title,
           host_name: pass.event.user.first_name + " " + pass.event.user.last_name,
-          host_image: pass.event.user.avatar.url,
+          host_image: pass.event.user.avatar,
           event_name: pass.event.name,
           event_id: pass.event.id,
           event_image: pass.event.image,
@@ -292,7 +292,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
     current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
     current_dates_array.each do |date|
       p_date = Date.parse(date)
-      @views = event.event_views.where(created_at: p_date.midnight..p_date.end_of_day)
+      @views = event.views.where(created_at: p_date.midnight..p_date.end_of_day)
       if !@views.blank?
         @total_views.push(@views.size)
       end
@@ -312,7 +312,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
     current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
     current_dates_array.each do |date|
       p_date = Date.parse(date)
-      @views = event.event_views.where(created_at: p_date.midnight..p_date.end_of_day)
+      @views = event.views.where(created_at: p_date.midnight..p_date.end_of_day)
       if !@views.blank?
         @current_time_slot_views.push(@views.size)
       end
@@ -320,7 +320,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
       before_current_dates_array = before_current_time_slot_dates.split(',').map {|s| s.to_s }
       before_current_dates_array.each do |date|
         p_date = Date.parse(date)
-        @views = event.event_views.where(created_at: p_date.midnight..p_date.end_of_day)
+        @views = event.views.where(created_at: p_date.midnight..p_date.end_of_day)
         if !@views.blank?
           @before_current_time_slot_views.push(@views.size)
         end
@@ -342,7 +342,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
    @time_slot_dates_stats = {}
    dates_array.each do |date|
     p_date = Date.parse(date)
-    @time_slot_dates_stats[date.to_date] = event.event_views.where(created_at: p_date.midnight..p_date.end_of_day).size
+    @time_slot_dates_stats[date.to_date] = event.views.where(created_at: p_date.midnight..p_date.end_of_day).size
 
    end# each
 
@@ -812,7 +812,7 @@ end
     current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
     current_dates_array.each do |date|
       p_date = Date.parse(date)
-      @views = offer.offer_views.where(created_at: p_date.midnight..p_date.end_of_day)
+      @views = offer.views.where(created_at: p_date.midnight..p_date.end_of_day)
       if !@views.blank?
         @total_views.push(@views.size)
       end
@@ -830,7 +830,7 @@ end
     current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
     current_dates_array.each do |date|
       p_date = Date.parse(date)
-      @views = offer.offer_views.where(created_at: p_date.midnight..p_date.end_of_day)
+      @views = offer.views.where(created_at: p_date.midnight..p_date.end_of_day)
       if !@views.blank?
         @current_time_slot_views.push(@views.size)
       end
@@ -838,7 +838,7 @@ end
       before_current_dates_array = before_current_time_slot_dates.split(',').map {|s| s.to_s }
       before_current_dates_array.each do |date|
         p_date = Date.parse(date)
-        @views = offer.offer_views.where(created_at: p_date.midnight..p_date.end_of_day)
+        @views = offer.views.where(created_at: p_date.midnight..p_date.end_of_day)
         if !@views.blank?
           @before_current_time_slot_views.push(@views.size)
         end
@@ -858,7 +858,7 @@ end
    @time_slot_dates_stats = {}
    dates_array.each do |date|
     p_date = Date.parse(date)
-    # @time_slot_dates_stats[date.to_date] = offer.offer_views.where(created_at: p_date.midnight..p_date.end_of_day).size
+    # @time_slot_dates_stats[date.to_date] = offer.views.where(created_at: p_date.midnight..p_date.end_of_day).size
    end# each
 
    @time_slot_dates_stats
@@ -889,7 +889,7 @@ end
   current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
   current_dates_array.each do |date|
     p_date = Date.parse(date)
-    @redemptions = offer.offer_views.where(created_at: p_date.midnight..p_date.end_of_day)
+    @redemptions = offer.views.where(created_at: p_date.midnight..p_date.end_of_day)
     if !@redemptions.blank?
       @current_time_slot_redemptions.push(@redemptions.size)
     end
@@ -897,7 +897,7 @@ end
     before_current_dates_array = before_current_time_slot_dates.split(',').map {|s| s.to_s }
     before_current_dates_array.each do |date|
       p_date = Date.parse(date)
-      @redemptions = offer.offer_views.where(created_at: p_date.midnight..p_date.end_of_day)
+      @redemptions = offer.views.where(created_at: p_date.midnight..p_date.end_of_day)
       if !@redemptions.blank?
         @before_current_time_slot_redemptions.push(@redemptions.size)
       end

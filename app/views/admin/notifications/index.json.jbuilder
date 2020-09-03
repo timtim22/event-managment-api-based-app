@@ -4,7 +4,7 @@ json.notifications do
   json.unread_notification_count current_user.notifications.unread.size
   json.unread !notification.read_at?
   json.recipient notification.recipient
-  json.actor_avatar  notification.actor.avatar.url
+  json.actor_avatar  notification.actor.avatar
   json.notification_url notification.url
   json.image_link notification.actor.image_link
   json.time time_ago_in_words(notification.created_at)

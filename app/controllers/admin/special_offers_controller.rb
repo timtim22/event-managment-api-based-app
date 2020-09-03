@@ -27,9 +27,9 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
       @special_offer.lng = params[:lng]
       @special_offer.date = params[:date]
       @special_offer.time = params[:time]
-      @special_offer.end_time = params[:end_time]
+      @special_offer.end_time = params[:validity_time]
       @special_offer.image = params[:image]
-      @special_offer.redeem_code = params[:redeem_code]
+      @special_offer.redeem_code = generate_code
       @special_offer.is_redeemed = false
       @special_offer.terms_conditions = params[:terms_conditions]
       @special_offer.validity = params[:validity]
@@ -60,7 +60,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
              data: {
               "id": @notification.id,
               "actor_id": @notification.actor_id,
-              "actor_image": @notification.actor.avatar.url,
+              "actor_image": @notification.actor.avatar,
               "notifiable_id": @notification.notifiable_id,
               "notifiable_type": @notification.notifiable_type,
               "action": @notification.action,
@@ -81,11 +81,11 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
         end #special offer setting end
         end #each
         end # not blank
-        flash[:notice] = "special_offer created successfully."
+        flash[:notice] = "Special offer created successfully."
         redirect_to admin_special_offers_path
       else
-        flash[:alert_danger] = "special_offer creation failed."
-        redirect_to admin_special_offers_path
+       
+        render :new
       end 
   end
 
@@ -95,7 +95,6 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
 
 
   def update
-     validity = params[:validity] + params[:validity_time]
      @special_offer = SpecialOffer.find(params[:id])
      @special_offer.title = params[:title]
      @special_offer.description = params[:description]
@@ -106,7 +105,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
      @special_offer.lng = params[:lng]
      @special_offer.date = params[:date]
      @special_offer.time = params[:time]
-     @special_offer.end_time = params[:end_time]
+     @special_offer.end_time = params[:validity_time]
      @special_offer.image = params[:image]
      @special_offer.redeem_code = generate_code
      @special_offer.is_redeemed = false
@@ -139,7 +138,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
            data: {
             "id": @notification.id,
             "actor_id": @notification.actor_id,
-            "actor_image": @notification.actor.avatar.url,
+            "actor_image": @notification.actor.avatar,
             "notifiable_id": @notification.notifiable_id,
             "notifiable_type": @notification.notifiable_type,
             "action": @notification.action,

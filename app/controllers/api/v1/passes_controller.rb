@@ -61,10 +61,10 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
     if(@pass && @pass.redeem_code == params[:redeem_code].to_s)
       if  @redemption = Redemption.create!(:user_id =>  request_user.id, offer_id: @pass.id, code: params[:redeem_code], offer_type: 'Pass')
       @pass.is_redeemed = true
-      @pass.number_of_passes = @pass.number_of_passes - 1;
+      @pass.quantity = @pass.quantity - 1;
       @pass.save
         # resource should be parent resource in case of api so that event id should be available in order to show event based interest level.
-        create_activity("redeemed pass", @redemption, 'Redemption', '', @pass.title, 'post')
+        #create_activity(request_user, "redeemed pass", @redemption, 'Redemption', '', @pass.title, 'post', 'redeem_pass')
         #ambassador program: also add earning if the pass is shared by an ambassador
         @shared_offers = []
         @forwardings = OfferForwarding.all.each do |forward|
@@ -81,9 +81,9 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
            @share = OfferShare.find_by(offer_id: @pass.id)
           end
           @ambassador = @share.user
-          if @ambassador.is_ambassador ==  true #if user is an ambassador
-          @ambassador.earning = @ambassador.earning + @pass.ambassador_rate.to_i
-          @ambassador.save
+          if @ambassador.profile.is_ambassador ==  true #if user is an ambassador
+          @ambassador.profile.update!(earning:  @ambassador.profile.earning + @pass.ambassador_rate.to_i)
+        
           end
         end
 
@@ -125,6 +125,35 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
       data: nil
     }
   end
+  end
+
+
+  def create_view
+    if !params[:pass_id].blank?
+      pass = Pass.find(params[:pass_id])
+      if view = pass.views.create!(user_id: request_user.id)
+        render json: {
+          code: 200,
+          success: true,
+          message: 'View successfully created.',
+          data: nil
+        }
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: 'View creation failed.',
+          data: nil
+        }
+      end
+    else
+       render json: {
+         code: 400,
+         success: false,
+         message: 'pass_id is requied field.'
+       }
+      
+    end
   end
 
 

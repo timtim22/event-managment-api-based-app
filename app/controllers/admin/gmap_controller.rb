@@ -9,12 +9,12 @@ class Admin::GmapController < Admin::AdminMasterController
     json_data = clnt.get_content(url)
     results    = JSON.parse(json_data);
     if results['status'] != 'ZERO_RESULTS' 
-         data  = results['results'][0]['geometry']['location']
+        #  data  = results['results'][0]['geometry']['location']
          render json: {
             code: 200,
             success: true,
             message: "",
-            data: data,
+            data: results,
             addr: name
          }
     else 
@@ -27,5 +27,12 @@ class Admin::GmapController < Admin::AdminMasterController
     end
   end
   end
+
+  # def getLatLong
+  #   name = params['name'].gsub(' ','+')
+  #   @client = GooglePlaces::Client.new(ENV['GMAP_API_KEY'])
+  #   search = @client.spot(name)
+  #   render json:search 
+  # end
 
 end

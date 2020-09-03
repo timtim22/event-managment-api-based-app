@@ -15,7 +15,7 @@ class Admin::FollowsController < Admin::AdminMasterController
         follow_request = FollowRequest.new
         follow_request.sender_id = current_user.id
         follow_request.recipient_id = params[:following_id]
-        follow_request.sender_avatar = current_user.avatar.url
+        follow_request.sender_avatar = current_user.avatar
         follow_request.sender_name = User.get_full_name(current_user)
         if follow_request.save
         @following = User.find(params[:following_id])
@@ -49,7 +49,7 @@ class Admin::FollowsController < Admin::AdminMasterController
           channel: [@event.user.id.to_s],
           message: { 
             action: @notification.action,
-            avatar: current_user.avatar.url,
+            avatar: current_user.avatar,
             time: time_ago_in_words(@notification.created_at),
             notification_url: @notification.url
            }

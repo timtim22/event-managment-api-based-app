@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   get '/verify-phone' => "users#verify_phone_page"
   post '/verify-phone' => "users#verify_phone"
   post '/send_message' => 'chats#send_message'
- 
+  get '/privacy-policy' => 'users#privacy_policy'
  resources :chats
    # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
  namespace :api do
@@ -89,6 +89,11 @@ Rails.application.routes.draw do
        get '/competitions/get-winner' => 'competitions#get_winner_and_notify'
        get '/friendships/suggest-friends' => 'friendships#suggest_friends'
        get '/follows/suggest-businesses' => 'follows#suggest_businesses'
+       post '/special_offers/create-view' => "special_offers#create_view"
+       post '/passes/create-view' => "passes#create_view"
+       post '/competitions/create-view' => "competitions#create_view"
+       get '/get-users-having-common-fields' => 'users#get_users_having_common_fields'
+       get '/privacy-policy' => 'users#privacy_policy'
       # get '/*a', to: 'application#not_found'
      end
    end
@@ -139,7 +144,11 @@ Rails.application.routes.draw do
      get '/payments/refund-requests' => "payments#refund_requests"
      get '/payments/approve-refund' => "payments#approve_refund"
      get '/payments/reject-refund' => "payments#reject_refund"
+    
 
+     resources :news_feeds
+     resources :categories
+     
      resources :events do
        resources :comments
      end
@@ -159,9 +168,28 @@ Rails.application.routes.draw do
    namespace :dashboard do
     namespace :api do
       namespace :v1 do
-        resources :users, param: :email
+        
+        resources :users
+        resources :news_feeds
+        
+        resources :events do
+          resources :comments
+        end
+
+        resources :special_offers 
         post '/auth/login', to: 'authentication#login'
         post '/send-verification-code', to: 'users#send_verification_code'
+        get  '/get-followers' => 'users#get_followers'
+        get '/get-past-events' => 'events#get_past_events'
+        get '/get-past-offers' => 'special_offers#get_past_offers'
+        get '/get-past-competitions' => 'competitions#get_past_competitions'
+        post '/passes/send-vip-pass' => 'passes#send_vip_pass'
+        post '/passes/remove-vip-pass' => 'passes#remove_vip_pass'
+        get '/get-app-users' => 'users#get_app_users'
+        post '/get-user' => 'users#get_user'
+        get '/get-categories' => 'events#get_categories'
+        post '/cancel-event' => 'events#cancel_event'
+  
       end
     end
    end

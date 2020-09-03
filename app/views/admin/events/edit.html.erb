@@ -48,12 +48,19 @@
    </div>
      <div class="form-group">
      <label for="price_type">Price Type</label>
-     <select class="form-control" id="price_type">
+     <select class="form-control" id="price_type" data-price_type="<%= @event.price_type %>">
      <option value="free">Free</option>
-     <option value="pay_at_door">Pay  at door</option>
+     <option value="pay_at_door" selected>Pay  at door</option>
      <option value="buy">Buy Now</option>
      </select>
    </div>
+   <div class="form-group">
+        <label for="price_type">Event Type</label>
+        <select class="form-control" id="event_type" name="event_type">
+          <option value="public">Public</option>
+          <option value="private">Private</option>
+        </select>
+      </div>
    <div class="price_div" style="display:none;">
    <div class="form-group">
      <label for="price">Price (USD)</label>
@@ -80,7 +87,7 @@
         </div> -->
          <div class="form-group" style="display=none;">
             <label for="password_confirmation">Host</label>
-            <input type="text" class="form-control" name="host" id="host" value="<%= current_user.first_name + ' ' + current_user.last_name %>" value="<%= @event.host %>">
+            <input type="text" class="form-control" name="host" id="host" value="<%= get_full_name(current_user) %>" value="<%= @event.host %>">
          </div>
   
        <!--  <div class="form-group">

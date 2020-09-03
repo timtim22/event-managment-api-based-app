@@ -1,0 +1,26 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+ <div class="container" style="min-height:550px;">
+ <div class="col-lg-10">
+ <!-- Title -->
+ <h3 class="mt-4"><%= @news_feed.title %></h3>
+ <!-- Author -->
+ <hr>
+ <!-- Date/Time -->
+ <p><i class="fa fa-clock"></i> Posted: <%= time_ago_in_words(@news_feed.created_at) %></p>
+ <hr>
+ <!-- Preview Image -->
+ <img src="<%= @news_feed.image.url  %>" style="border-radius:3px;width: 692px;">
+ <hr>
+ <!-- news_feed Content -->
+ <p><%= @news_feed.description %></p>
+ 
+</div>
+ </div><!--container -->
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

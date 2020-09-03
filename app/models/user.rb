@@ -3,9 +3,9 @@ class User < ApplicationRecord
   
   has_many :messages, dependent: :destroy
   has_many :incoming_messages, foreign_key: :recipient_id, class_name: 'Message', dependent: :destroy
-  has_one :assignment, dependent: :destroy
+  has_many :assignments, dependent: :destroy
+  has_many :roles, through: :assignments
   has_many :events, dependent: :destroy
-  has_one :role, through: :assignment
   has_one :student_detail, dependent: :destroy
   has_one :business_detail, dependent: :destroy
   has_one :profile, dependent: :destroy
@@ -45,6 +45,7 @@ class User < ApplicationRecord
   has_many :offer_forwardings, dependent: :destroy
   has_many :offer_shares, dependent: :destroy
   has_many :reported_events, dependent: :destroy
+  has_many :replies, dependent: :destroy
   has_many :ticket_purchases, dependent: :destroy
   has_many :tickets, dependent: :destroy
   has_many :received_payments, foreign_key: :payee_id, class_name: 'Transaction', dependent: :destroy
@@ -56,44 +57,46 @@ class User < ApplicationRecord
   has_one :special_offers_notifications_setting, -> { where(name: 'special_offers_notifications') }, class_name: 'Setting', dependent: :destroy
   has_one :passes_notifications_setting, -> { where(name: 'passes_notifications') }, class_name: 'Setting', dependent: :destroy
   has_one :competitions_notifications_setting, -> { where(name: 'competitions_notifications') },  class_name: 'Setting', dependent: :destroy
-  has_many  :mute_chat_for_events, -> { where(name: 'mute_chat') }, class_name: 'UserSetting', dependent: :destroy, source_type: :event
-  has_many  :mute_notifications_for_events, -> { where(name: 'mute_notifications') }, class_name: 'UserSetting', dependent: :destroy, source_type: :event
-  has_many  :block_events, -> { where(name: 'block')}, class_name: 'UserSetting', dependent: :destroy, source: :event
-  has_many  :mute_chat_for_users, -> { where(name: 'mute_chat')}, class_name: 'UserSetting', dependent: :destroy, source_type: :user
-  has_many  :block_users, -> { where(name: 'block')}, class_name: 'UserSetting', dependent: :destroy, source_type: :user
-
+  has_many  :mute_chat_for_events, -> { where(name: 'mute_chat', resource_type: 'Event') }, class_name: 'UserSetting', dependent: :destroy, source_type: :event
+  has_many  :mute_notifications_for_events, -> { where(name: 'mute_notifications', resource_type: 'Event') }, class_name: 'UserSetting', dependent: :destroy, source_type: :event
+  has_many  :block_events, -> { where(name: 'block', resource_type: 'Event') }, class_name: 'UserSetting', dependent: :destroy, source: :event
+  has_many  :mute_chat_for_users, -> { where(name: 'mute_chat', resource_type: 'User') }, class_name: 'UserSetting', dependent: :destroy, source_type: :user
+  has_many  :block_users, -> { where(name: 'block', resource_type: 'User')}, class_name: 'UserSetting', dependent: :destroy, source_type: :user
+  has_many :remove_competitions, -> { where(name: 'remove_competitions', resource_type: 'Competition') },  class_name: 'UserSetting', source_type: :competition, dependent: :destroy
+  has_many :remove_offers, -> { where(name: 'remove_offers', resource_type: 'SpecialOffer') }, class_name: 'UserSetting', source_type: :special_offer, dependent: :destroy
+  has_many :remove_passes, -> { where(name: 'remove_passes', resource_type: 'Pass') }, class_name: 'UserSetting', source_type: :pass, dependent: :destroy
+  has_many :news_feeds, dependent: :destroy
+  
   has_many :password_resets, dependent: :destroy
   has_many :event_shares, dependent: :destroy
   has_many :event_forwardings, dependent: :destroy
-  has_many :offer_views, dependent: :destroy
+  has_many :views, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :user_settings, dependent: :destroy
   has_one  :business_profile, dependent: :destroy
 
-  validates :first_name, presence: true
-  validates :last_name, presence: true
-  validates :gender, presence: true, :if => :app_user?
+
+
 
   # validates :is_subscribed, presence: true
-  validates :email, presence: true, uniqueness: true, on: :create
-  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, on: :create
+  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }, on: :create, if: :web_user
 
   validates :phone_number, presence: true, uniqueness: true,on: :create,
   :length => { :minimum => 10, :maximum => 15 }, format: { with: /(^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0-9\-\s]{10}$)/ }
-  validates :dob, presence:true, :if => :app_user?
+
   validates :password, :presence => true,
                        :confirmation => true,
                        :on => :create,
                        :length => {:within => 6..40},
-                       :unless => :app_user?
+                       :if => :web_user?
 
-  validates :contact_name, presence: true, unless: :app_user
-  
+
   mount_uploader :avatar, ImageUploader
   mount_base64_uploader :avatar, ImageUploader
 
 
-  
+  scope :app_users, -> { where(app_user: true)  }
+  scope :web_users, -> { where(web_user: true) }
   
   #validate :password_for_web
 
@@ -107,11 +110,17 @@ class User < ApplicationRecord
   end
   
   def self.get_full_name(user)
-    name = user.first_name + " " + user.last_name
+    if user.app_user == true
+     name = user.profile.first_name + " " + user.profile.last_name
+    elsif(user.web_user ==  true)
+      name = user.business_profile.profile_name
+    end
   end
 
   def self.businesses_list
-    self.all.map {|user| if user.role.id == 2 then user end }
+    businesses = []
+    self.all.map {|user| if user.roles.map {|role| role.id }.include?  2 then businesses.push(user) end }
+    businesses
   end
 
   def has_business_contact_name

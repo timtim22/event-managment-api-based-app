@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_15_075810) do
+ActiveRecord::Schema.define(version: 2020_09_02_171413) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 2020_07_15_075810) do
     t.string "resource_title"
     t.string "method"
     t.string "url"
+    t.string "action_type"
   end
 
   create_table "ambassador_requests", force: :cascade do |t|
@@ -64,12 +65,20 @@ ActiveRecord::Schema.define(version: 2020_07_15_075810) do
     t.string "instagram", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "profile_name"
+    t.string "contact_name"
+    t.boolean "is_charity", default: false
+    t.boolean "is_ambassador", default: false
+    t.string "snapchat", default: ""
+    t.string "youtube", default: ""
   end
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "color_code"
+    t.string "icon"
   end
 
   create_table "categorizations", force: :cascade do |t|
@@ -121,21 +130,21 @@ ActiveRecord::Schema.define(version: 2020_07_15_075810) do
 
   create_table "competitions", force: :cascade do |t|
     t.integer "user_id"
-    t.string "title"
-    t.text "description"
-    t.string "image"
+    t.string "title", default: ""
+    t.text "description", default: ""
+    t.string "image", default: ""
     t.datetime "start_date"
     t.datetime "end_date"
     t.datetime "start_time"
     t.datetime "end_time"
-    t.string "location"
-    t.string "lat"
-    t.string "lng"
+    t.string "location", default: ""
+    t.string "lat", default: ""
+    t.string "lng", default: ""
     t.date "validity"
-    t.string "price"
+    t.string "price", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "host"
+    t.string "host", default: ""
     t.string "placeholder", default: "http://placehold.it/900x300"
     t.datetime "validity_time"
   end
@@ -143,7 +152,7 @@ ActiveRecord::Schema.define(version: 2020_07_15_075810) do
   create_table "event_attachments", force: :cascade do |t|
     t.integer "event_id"
     t.string "media"
-    t.string "media_type", default: "0"
+    t.string "media_type", default: "image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -164,25 +173,18 @@ ActiveRecord::Schema.define(version: 2020_07_15_075810) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "event_views", force: :cascade do |t|
-    t.integer "event_id"
-    t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "events", force: :cascade do |t|
-    t.string "name"
+    t.string "name", default: ""
     t.datetime "start_date"
-    t.string "start_time"
+    t.string "start_time", default: ""
     t.string "external_link"
-    t.string "host"
-    t.text "description"
+    t.string "host", default: ""
+    t.text "description", default: ""
     t.string "feature_media_link", default: ""
     t.string "additional_media", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "location"
+    t.string "location", default: ""
     t.boolean "over_18", default: false
     t.boolean "event_forwarding", default: false
     t.boolean "allow_chat", default: false
@@ -192,13 +194,15 @@ ActiveRecord::Schema.define(version: 2020_07_15_075810) do
     t.string "placeholder", default: "http://placehold.it/900x300"
     t.string "end_time"
     t.integer "user_id"
-    t.string "event_type"
+    t.string "event_type", default: "public"
     t.datetime "end_date"
-    t.string "price_type"
+    t.string "price_type", default: "free"
     t.integer "price", default: 0
-    t.string "lat"
-    t.string "lng"
+    t.string "lat", default: ""
+    t.string "lng", default: ""
     t.string "eventbrite_image", default: ""
+    t.boolean "is_private", default: false
+    t.boolean "is_cancelled", default: false
   end
 
   create_table "follow_requests", force: :cascade do |t|
@@ -274,6 +278,15 @@ ActiveRecord::Schema.define(version: 2020_07_15_075810) do
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
+  create_table "news_feeds", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "title"
+    t.text "description"
+    t.string "image"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "notifications", force: :cascade do |t|
     t.integer "recipient_id"
     t.integer "actor_id"
@@ -309,16 +322,9 @@ ActiveRecord::Schema.define(version: 2020_07_15_075810) do
     t.boolean "is_ambassador", default: false
   end
 
-  create_table "offer_views", force: :cascade do |t|
-    t.integer "offer_id"
-    t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "passes", force: :cascade do |t|
-    t.string "title"
-    t.text "description"
+    t.string "title", default: ""
+    t.text "description", default: ""
     t.date "validity"
     t.integer "event_id"
     t.string "redeem_code", default: "0"
@@ -331,7 +337,10 @@ ActiveRecord::Schema.define(version: 2020_07_15_075810) do
     t.string "ambassador_name", default: ""
     t.datetime "validity_time"
     t.string "ambassador_rate", default: "1"
-    t.integer "number_of_passes", default: 1
+    t.integer "quantity", default: 1
+    t.datetime "valid_from"
+    t.datetime "valid_to"
+    t.string "pass_type", default: "ordinary"
   end
 
   create_table "password_resets", force: :cascade do |t|
@@ -344,17 +353,27 @@ ActiveRecord::Schema.define(version: 2020_07_15_075810) do
   create_table "profiles", force: :cascade do |t|
     t.string "about", default: ""
     t.boolean "add_social_media_links", default: false
-    t.string "facebook", default: "Not connected"
-    t.string "twitter", default: "Not connected"
+    t.string "facebook", default: ""
+    t.string "twitter", default: ""
     t.string "snapchat", default: ""
-    t.string "instagram", default: "Not connected"
+    t.string "instagram", default: ""
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "linkedin", default: "Not connected"
-    t.string "youtube", default: "Not connected"
-    t.integer "age"
+    t.string "youtube", default: ""
     t.integer "ranking", default: 1
+    t.string "first_name", default: ""
+    t.string "last_name", default: ""
+    t.string "device_token", default: ""
+    t.datetime "dob"
+    t.string "gender", default: ""
+    t.string "location", default: ""
+    t.string "lat", default: ""
+    t.string "lng", default: ""
+    t.integer "earning", default: 0
+    t.boolean "is_email_subscribed", default: false
+    t.boolean "is_ambassador", default: false
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
@@ -394,15 +413,8 @@ ActiveRecord::Schema.define(version: 2020_07_15_075810) do
     t.string "level"
   end
 
-  create_table "replies", force: :cascade do |t|
-    t.string "msg"
-    t.string "from"
-    t.datetime "read_at"
-    t.integer "message_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["message_id"], name: "index_replies_on_message_id"
-  end
+# Could not dump table "replies" because of following StandardError
+#   Unknown type '' for column 'msg'
 
   create_table "reported_events", force: :cascade do |t|
     t.integer "event_id"
@@ -497,22 +509,22 @@ ActiveRecord::Schema.define(version: 2020_07_15_075810) do
   end
 
   create_table "special_offers", force: :cascade do |t|
-    t.string "title"
-    t.text "description"
+    t.string "title", default: ""
+    t.text "description", default: ""
     t.date "validity"
     t.text "terms_conditions", default: ""
     t.boolean "agreed_to_terms", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "is_redeemed"
-    t.string "redeem_code"
-    t.string "sub_title"
-    t.string "image"
-    t.string "location"
+    t.boolean "is_redeemed", default: false
+    t.string "redeem_code", default: ""
+    t.string "sub_title", default: ""
+    t.string "image", default: ""
+    t.string "location", default: ""
     t.datetime "date"
-    t.string "end_time"
-    t.string "lat"
-    t.string "lng"
+    t.string "end_time", default: ""
+    t.string "lat", default: ""
+    t.string "lng", default: ""
     t.integer "user_id"
     t.datetime "time"
     t.string "ambassador_rate", default: "1"
@@ -524,6 +536,7 @@ ActiveRecord::Schema.define(version: 2020_07_15_075810) do
     t.string "sponsor_image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "external_url"
   end
 
   create_table "student_details", force: :cascade do |t|
@@ -547,14 +560,15 @@ ActiveRecord::Schema.define(version: 2020_07_15_075810) do
   create_table "tickets", force: :cascade do |t|
     t.integer "user_id"
     t.integer "event_id"
-    t.string "ticket_type"
-    t.integer "price"
-    t.integer "quantity"
+    t.string "ticket_type", default: "paid"
+    t.integer "price", default: 0
+    t.integer "quantity", default: 1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "per_head", default: 1
-    t.string "title"
-    t.string "redeem_code"
+    t.string "title", default: ""
+    t.integer "start_price", default: 0
+    t.integer "end_price", default: 0
   end
 
   create_table "transactions", force: :cascade do |t|
@@ -577,35 +591,31 @@ ActiveRecord::Schema.define(version: 2020_07_15_075810) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "resource_type"
+    t.datetime "blocked_at"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "first_name"
-    t.string "last_name"
     t.string "email"
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "verification_code"
-    t.string "device_token", default: ""
     t.string "avatar", default: "avatar.png"
-    t.string "dob"
     t.string "phone_number"
-    t.boolean "app_user"
-    t.string "image_link"
+    t.boolean "app_user", default: false
     t.boolean "phone_verified", default: false
-    t.string "eventbrite_token"
-    t.boolean "follow_request_status"
-    t.string "gender"
-    t.string "lat", default: ""
-    t.string "lng", default: ""
-    t.integer "earning", default: 0
-    t.boolean "is_ambassador", default: false
     t.string "stripe_state", default: "no state"
     t.string "connected_account_id", default: "no account"
-    t.boolean "is_subscribed", default: false
     t.boolean "is_email_verified", default: false
-    t.string "contact_name"
+    t.boolean "web_user", default: false
+  end
+
+  create_table "views", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "resource_id"
+    t.string "resource_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "wallets", force: :cascade do |t|

@@ -34,9 +34,7 @@ def get_friend_from_request(request)
   friend = User.find(request.friend_id)
 end
 
-def create_activity(action, resource, resource_type, resource_url,resrource_title, method)
-  ActivityLog.create(user: current_user, action: action, resource: resource, resource_type: resource_type, browser: request.env['HTTP_USER_AGENT'], ip_address: request.env['REMOTE_ADDR'], params: params.inspect,url: resource_url, method: method, resource_title: resrource_title)  
-end
+
 
 helper_method :correct_user?
 helper_method :get_friend_from_request

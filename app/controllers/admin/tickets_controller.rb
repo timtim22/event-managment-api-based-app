@@ -29,7 +29,6 @@ class Admin::TicketsController < Admin::AdminMasterController
       @ticket.event_id = id
       @ticket.ticket_type = @event.price_type
       @ticket.user_id = current_user.id
-      @ticket.redeem_code = generate_code
       @ticket.per_head = params[:per_head]
       if @ticket.save
         create_activity("updated pass", @ticket, "Pass", admin_pass_path(@ticket),@ticket.title, 'patch')
@@ -67,7 +66,6 @@ class Admin::TicketsController < Admin::AdminMasterController
       @ticket.event_id = id
       @ticket.ticket_type = @event.price_type
       @ticket.user_id = current_user.id
-      @ticket.redeem_code = generate_code
       @ticket.per_head = params[:per_head]
       if @ticket.save
         success = true

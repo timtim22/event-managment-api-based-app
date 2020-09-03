@@ -1,0 +1,28 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+ <div class="container" style="min-height:550px;">
+ <div class="col-lg-10">
+ <!-- Title -->
+ <h3 class="mt-4"><%= @category.name %></h3>
+ <!-- Author -->
+ <hr>
+ <!-- Date/Time -->
+ <p><i class="fa fa-clock"></i> Posted: <%= time_ago_in_words(@category.created_at) %></p>
+ <hr>
+ <!-- Preview Image -->
+ <img src="<%= @category.icon.url  %>" style="border-radius:3px;width: 692px;max-width: 116px;">
+ <hr>
+ <!-- category Content -->
+ <p><strong>Color Code: </strong> <%= @category.color_code %></p>
+ <br><br>
+ <p><strong>Color: </strong><div class="color_code" style="background:<%= @category.color_code %>; width:80px; height:50px;margin-bottom:40px;"></div></p>
+  <br><br>
+</div>
+ </div><!--container -->
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

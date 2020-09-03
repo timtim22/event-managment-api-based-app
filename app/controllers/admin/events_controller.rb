@@ -25,6 +25,7 @@ class Admin::EventsController < Admin::AdminMasterController
 	end
 
   def create
+
     @pubnub = Pubnub.new(
       publish_key: ENV['PUBLISH_KEY'],
       subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -38,7 +39,7 @@ class Admin::EventsController < Admin::AdminMasterController
           @event.end_date = date
           @event.price = params[:price]
           @event.price_type = params[:price_type]
-          @event.event_type = "mygo"
+          @event.event_type = params[:event_type]
           @event.start_time = params[:start_time]
           @event.end_time = params[:end_time]
           @event.external_link = params[:external_link]
@@ -59,8 +60,7 @@ class Admin::EventsController < Admin::AdminMasterController
           @event.save
           # create user activity log
           create_activity("created event", @event, "Event", admin_event_path(@event),@event.name, 'post')
-          #create event setting
-          EventSetting.create!(event_id: @event.id)
+         
           if !params[:event_attachments].blank?
             params[:event_attachments]['media'].each do |m|
               @event_attachment = @event.event_attachments.new(:media => m,:event_id => @event.id, media_type: 'image')
@@ -89,7 +89,7 @@ class Admin::EventsController < Admin::AdminMasterController
                data: {
                 "id": @notification.id,
                 "actor_id": @notification.actor_id,
-                "actor_image": @notification.actor.avatar.url,
+                "actor_image": @notification.actor.avatar,
                 "notifiable_id": @notification.notifiable_id,
                 "notifiable_type": @notification.notifiable_type,
                 "action": @notification.action,
@@ -140,7 +140,7 @@ class Admin::EventsController < Admin::AdminMasterController
     if @event.save
       #creating activity log
       create_activity("created event", @event, "Event", admin_event_path(@event),@event.name, 'post')
-      EventSetting.create!(event_id: @event.id)
+
       if !params[:event_attachments].blank?
       params[:event_attachments]['media'].each do |m|
         @event_attachment = @event.event_attachments.create!(:media => m,:event_id => @event.id, media_type: 'image')
@@ -177,7 +177,7 @@ class Admin::EventsController < Admin::AdminMasterController
            data: {
             "id": @notification.id,
             "actor_id": @notification.actor_id,
-            "actor_image": @notification.actor.avatar.url,
+            "actor_image": @notification.actor.avatar,
             "notifiable_id": @notification.notifiable_id,
             "notifiable_type": @notification.notifiable_type,
             "action": @notification.action,
@@ -221,7 +221,7 @@ class Admin::EventsController < Admin::AdminMasterController
   def destroy
     @event = Event.find(params[:id])
     if @event.destroy
-      create_activity("deleted event", @event, "Event",'',@event.name, 'delete')
+     # create_activity("deleted event", @event, "Event",'',@event.name, 'delete')
       flash[:notice] = "Event deleted successfully."
       redirect_to admin_events_path
     else

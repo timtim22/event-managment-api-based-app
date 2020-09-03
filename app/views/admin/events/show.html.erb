@@ -52,11 +52,11 @@
                     <li class="list-group-item">
                         <div class="row">
                             <div class="col-xs-2 col-md-2">
-                                <img src="<%= comment.user.avatar.url %>" class="img-circle img-responsive" style="border-radius:3px;max-width:100%;width: 58px;border-radius: 50%;height: 58px;" alt="" />
+                                <img src="<%= comment.user.avatar %>" class="img-circle img-responsive" style="border-radius:3px;max-width:100%;width: 58px;border-radius: 50%;height: 58px;" alt="" />
                               </div>
                             <div class="col-xs-10 col-md-10">
                                 <div>
-                                    <h5><%= comment.user.first_name + ' ' + comment.user.last_name %></h5>
+                                    <h5><%= get_full_name(comment.user) %></h5>
                                     <div class="mic-info">
                                       <i class="fa fa-clock"></i>
                                          <a href="#"> <%= time_ago_in_words(comment.created_at) %> ago</a> 

@@ -11,7 +11,7 @@ class Admin::FriendshipsController < Admin::AdminMasterController
       @friend_request = @sender.friend_requests.new(friend: @friend)
       @friend_request.status = "pending"
     if @friend_request.save
-      create_activity("sent friend request to #{@friend.first_name + ' ' + @friend.last_name}", @friend_request, "FriendRequest", '','', 'post')
+      #create_activity("sent friend request to #{@friend.first_name + ' ' + @friend.last_name}", @friend_request, "FriendRequest", '','', 'post')
      if @notification = Notification.create(recipient: @friend, actor: @sender, action: User.get_full_name(@sender) + " sent you a friend request", notifiable: @friend_request, url: '/admin/friend-requests', notification_type: 'web')  
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
@@ -21,7 +21,7 @@ class Admin::FriendshipsController < Admin::AdminMasterController
         channel: [@friend.id.to_s],
         message: { 
           action: @notification.action,
-          avatar: @sender.avatar.url,
+          avatar: @sender.avatar,
           time: time_ago_in_words(@notification.created_at),
           notification_url: "/admin/friend-requests"
          }
@@ -69,7 +69,7 @@ def accept_request
   request = FriendRequest.find(params[:id])
   request.status = 'accepted'
   if request.save
-    create_activity("accepted friend request of #{request.user.first_name + ' ' + request.user.last_name}", request, "FriendRequest", '','', 'get')
+    create_activity("accepted friend request of #{request.user.first_name + ' ' + request.user.last_name}", request, "FriendRequest", '','', 'get', 'accept_request')
     new_request = FriendRequest.new
     new_request.user_id = request.friend_id
     new_request.friend_id = request.user_id
@@ -87,7 +87,7 @@ def accept_request
       channel: [request.user.id.to_s],
       message: { 
         action: @notification.action,
-        avatar: current_user.avatar.url,
+        avatar: current_user.avatar,
         time: time_ago_in_words(@notification.created_at),
         notification_url: "/admin/my-friends"
        }

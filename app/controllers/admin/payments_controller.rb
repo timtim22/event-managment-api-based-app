@@ -135,7 +135,7 @@ class Admin::PaymentsController < Admin::AdminMasterController
             data: {
               "id": @notification.id,
               "actor_id": @notification.actor_id,
-              "actor_image": @notification.actor.avatar.url,
+              "actor_image": @notification.actor.avatar,
               "notifiable_id": @notification.notifiable_id,
               "notifiable_type": @notification.notifiable_type,
               "action": @notification.action,

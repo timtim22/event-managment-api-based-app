@@ -33,9 +33,17 @@
            <input type="text" class="form-control date" id="validity" name="validity" placeholder="Validity">
         </div>
 
+        <div class="form-group">
+        <label for="pass_type">Pass Type</label>
+        <select class="form-control" id="pass_type" name="pass_type">
+          <option value="ordinary">Ordinary</option>
+          <option value="vip">VIP</option>
+        </select>
+      </div>
+
       <div class="form-group">
-        <label for="no_of_passes">No of Passes</label>
-        <input type="text" class="form-control date" id="no_of_passes" name="no_of_passes" placeholder="Number of Passes">
+        <label for="quantity">Quantity</label>
+        <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Quantity" >
      </div>
 
         <div class="form-group">
@@ -43,15 +51,7 @@
           <input type="text" class="form-control" id="validity_time" name="validity_time" placeholder="Validity Time">
         </div>
 
-        <div class="form-group">
-          <label for="ambassador_name">Ambassador Name</label>
-          <input type="text" class="form-control" id="ambassador_name" name="ambassador_name" placeholder="John">
-       </div>
-
-        <div class="form-group">
-          <label for="redeem_code">Redeem Code(Max three digits)</label>
-          <input type="number" class="form-control" id="redeem_code" name="redeem_code" placeholder="567">
-       </div>
+  
        <div class="form-group">
        <label for="terms_conditions">Terms and Conditions</label>
        <textarea name="terms_conditions" class="form-control" id="terms_conditions" rows="12"></textarea>

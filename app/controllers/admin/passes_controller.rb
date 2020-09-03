@@ -33,9 +33,9 @@ class Admin::PassesController < Admin::AdminMasterController
       @pass.description = params[:description]
       @pass.event_id = id
       @pass.validity = params[:validity]
-      @pass.number_of_passes = params[:no_of_passes]
+      @pass.quantity = params[:quantity]
+      @pass.pass_type = params[:pass_type]
       @pass.validity_time = params[:validity_time]
-      @pass.ambassador_name = params[:ambassador_name]
       @pass.terms_conditions = params[:terms_conditions]
       if @pass.save
         create_activity("updated pass", @pass, "Pass", admin_pass_path(@pass),@pass.title, 'patch')
@@ -75,10 +75,10 @@ class Admin::PassesController < Admin::AdminMasterController
       @pass.event_id = id
       @pass.user = current_user
       @pass.redeem_code = generate_code
-      @pass.number_of_passes = params[:no_of_passes]
+      @pass.quantity = params[:quantity]
       @pass.validity = params[:validity]
+      @pass.pass_type = params[:pass_type]
       @pass.validity_time = params[:validity_time]
-      @pass.ambassador_name = params[:ambassador_name]
       @pass.terms_conditions = params[:terms_conditions]
       if @pass.save
         create_activity("created pass", @pass, "Pass", admin_pass_path(@pass),@pass.title, 'post')
@@ -102,7 +102,7 @@ class Admin::PassesController < Admin::AdminMasterController
              data: {
               "id": @notification.id,
               "actor_id": @notification.actor_id,
-              "actor_image": @notification.actor.avatar.url,
+              "actor_image": @notification.actor.avatar,
               "notifiable_id": @notification.notifiable_id,
               "notifiable_type": @notification.notifiable_type,
               "action": @notification.action,
@@ -168,9 +168,13 @@ class Admin::PassesController < Admin::AdminMasterController
   end
 
 
+
+  
+
+
   private
    def pass_params
-    params.permit(:title,:description, :validity,:user_id)
+    params.permit(:title,:description, :validity,:user_id, :pass_type)
    end
 
   

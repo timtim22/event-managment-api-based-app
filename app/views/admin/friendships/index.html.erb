@@ -23,11 +23,11 @@
         <tbody>
         <% current_user.friends.each do |friend| %>
           <tr>
-          <td class="py-1"><img src='<%= friend.avatar.url %>' onError="this.onerror=null;this.src='/assets/avatar.png';" alt="image" class="user_list_img"></td>
-          <td><%= friend.first_name + " " + friend.last_name %></td>
+          <td class="py-1"><img src='<%= friend.avatar %>' onError="this.onerror=null;this.src='/assets/avatar.png';" alt="image" class="user_list_img"></td>
+          <td><%= get_full_name(friend) %></td>
           <td><%= friend.email %></td>
-          <% if !friend.role.blank? %>
-          <td><%= friend.role.name %></td>
+          <% if !friend.roles.blank? %>
+          <td><%= friend.roles.first.name %></td>
           <% else %>
           <td>No role assigned</td>
           <% end %>

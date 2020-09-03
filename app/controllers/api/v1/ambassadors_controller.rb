@@ -12,7 +12,9 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
     check = @business.business_ambassador_requests.where(user_id: request_user.id)
     if check.blank?
     if  @ambassador_request = @business.business_ambassador_requests.create!(user_id: request_user.id)
-      create_activity("sent ambassador request to #{User.get_full_name(@business)}", @ambassador_request, 'AmbassadorRequest', '', '', 'post')
+      
+      #create_activity(request_user, "sent ambassador request to #{User.get_full_name(@business)}", @ambassador_request, 'AmbassadorRequest', '', '', 'post', 'ambassador_request')
+
       if @notification = Notification.create(recipient: @business, actor: request_user, action: User.get_full_name(request_user) + " sent you ambassador request", notifiable: @ambassador_request, url: '/admin/ambassadors', notification_type: 'web', action_type: 'send_request')  
         @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
@@ -22,7 +24,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           channel: [@business.id],
           message: { 
             action: @notification.action,
-            avatar: request_user.avatar.url,
+            avatar: request_user.avatar,
             time: time_ago_in_words(@notification.created_at),
             notification_url: @notification.url
            }
@@ -67,17 +69,15 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
     @passes = []
     @special_offers = []
     @offers = []
-    
-    Assignment.all.map {|as| if as.role_id == 2 then @businesses.push(as.user) end } 
-
-    @businesses.each do |business|
+    User.businesses_list.each do |business|
+   if !business.passes.blank?
       business.passes.not_expired.order(created_at: 'DESC').each do |pass| 
         @passes << {
           id: pass.id,
           type: 'pass',
           title: pass.title,
-          host_name: business.first_name + " " + business.last_name,
-          host_image: business.avatar.url,
+          host_name: business.business_profile.profile_name,
+          host_image: business.avatar,
           event_name: pass.event.name,
           event_image: pass.event.image,
           event_location: pass.event.location,
@@ -89,13 +89,15 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           validity: pass.validity.strftime(get_time_format).to_s,
           grabbers_count: pass.wallets.size,
           ambassador_rate: pass.ambassador_rate,
-          number_of_passes: pass.number_of_passes,
+          quantity: pass.quantity,
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: pass.created_at,
-          business: business 
+          business: get_business_object(business) 
         }
         end
-
+      end #not empty
+        
+      if !business.special_offers.blank?
         business.special_offers.not_expired.order(created_at: 'DESC').each do |offer|
         @special_offers << {
           id: offer.id,
@@ -108,8 +110,8 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           lat: offer.lat,
           lng: offer.lng,
           image: offer.image.url,
-          creator_name: offer.user.first_name + " " + offer.user.last_name,
-          creator_image: offer.user.avatar.url,
+          creator_name: User.get_full_name(offer.user),
+          creator_image: offer.user.avatar,
           description: offer.description,
           validity: offer.validity.strftime(get_time_format),
           grabbers_count: offer.wallets.size,
@@ -118,18 +120,24 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           ambassador_rate: offer.ambassador_rate,
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: offer.created_at,
-          business: business 
+          business: get_business_object(business) 
         }
         end
+      end #not blank
     end
-   
+
+
+   if !@passes.blank?
     @passes.each do  |pass|
       @offers.push(pass)
     end
+  end #not empty
 
+  if !@special_offers.blank?
     @special_offers.each do  |offer|
       @offers.push(offer)
     end
+  end #not blank
 
 
     render json: {
@@ -149,13 +157,14 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
     @special_offers = []
     @offers = []
     @businesses.each do |business|
+      if !business.passes.blank?
       business.passes.not_expired.order(created_at: 'DESC').each do |pass| 
         @passes << {
           id: pass.id,
           type: 'pass',
           title: pass.title,
-          host_name: business.first_name + " " + business.last_name,
-          host_image: business.avatar.url,
+          host_name: business.business_profile.profile_name,
+          host_image: business.avatar,
           event_name: pass.event.name,
           event_image: pass.event.image,
           event_location: pass.event.location,
@@ -168,13 +177,15 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           grabbers_count: pass.wallets.size,
           ambassador_stats: ambassador_stats(pass, request_user),
           ambassador_rate: pass.ambassador_rate,
-          number_of_passes: pass.number_of_passes,
+          quantity: pass.quantity,
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: pass.created_at,
-          business: business 
+          business: get_business_object(business) 
         }
         end
+      end #not empty
 
+      if !business.special_offers.blank?
         business.special_offers.not_expired.order(created_at: 'DESC').each do |offer|
         @special_offers << {
           id: offer.id,
@@ -187,8 +198,8 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           lat: offer.lat,
           lng: offer.lng,
           image: offer.image.url,
-          creator_name: offer.user.first_name + " " + offer.user.last_name,
-          creator_image: offer.user.avatar.url,
+          creator_name: offer.user.business_profile.profile_name,
+          creator_image: offer.user.avatar,
           description: offer.description,
           validity: offer.validity.strftime(get_time_format),
           end_time: DateTime.parse(offer.end_time).strftime(get_time_format), 
@@ -199,24 +210,30 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           ambassador_rate: offer.ambassador_rate,
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: offer.created_at,
-          business: business
+          business: get_business_object(business) 
         }
         end
-    end
-   
-    @passes.each do  |pass|
-      @offers.push(pass)
+      end #not empty
     end
 
+    if !@passes.blank?
+      @passes.each do  |pass|
+        @offers.push(pass)
+      end
+   end #not empty
+
+   if !@passes.blank?
     @special_offers.each do  |offer|
       @offers.push(offer)
     end
+  end#not empty
 
     render json: {
       code: 200,
       success: true,
       message: '',
       data: {
+        total_earning: request_user.profile.earning,
         my_businesses: @offers
       }
     }
@@ -232,38 +249,8 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
     end
   end
 
-  def get_request_status(business_id)
-    ar = AmbassadorRequest.where(business_id: business_id).where(user_id: request_user.id).first
-    if ar
-    ar.status 
-    else
-      'signup'
-    end
-  end
+  
 
-  def ambassador_stats(offer, user)
-    @shared_offers = []
-    @stats = {}
-
-    @forwardings = user.offer_forwardings.each do |forward|
-      @shared_offers.push(forward.offer)
-    end
-
-    @sharings = user.offer_shares.each do |share|
-      @shared_offers.push(share.offer)
-    end
-
-    if @shared_offers.include? offer
-        in_wallet_count = Wallet.where(offer_id: offer.id).size
-        @stats["in_wallet_count"] = in_wallet_count
-        redeemed_count = Redemption.where(offer_id: offer.id).size
-        @stats["redeemed_count"] = redeemed_count
-        @stats['total_earning'] = user.earning
-    else
-      @stats['info'] = "You didn't share this offer."
-    end
-
-   @stats
-  end
+ 
 
 end

@@ -7,7 +7,7 @@
               <span class="menu-title">Dashboard</span>
             </a>
           </li>
-          <% if current_user && current_user.role.id == 4 %>
+          <% if current_user && is_admin_or_super_admin?(current_user) %>
           <li class="nav-item">
             <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
               <i class="mdi mdi-circle-outline menu-icon"></i>
@@ -24,22 +24,6 @@
           </li>
           <% end %>
 
-          <% if current_user && current_user.role.id == 3 || current_user.role.id == 4 %>  
-          <!-- business user relevant -->
-          <li class="nav-item">
-            <a class="nav-link collapsed" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
-              <i class="mdi mdi-account menu-icon"></i>
-              <span class="menu-title">Business Account</span>
-              <i class="fa fa-angle-down sidebar-fa"></i>
-            </a>
-            <div class="collapse" id="auth" style="">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="#">Discounts</a></li>
-                <li class="nav-item"> <a class="nav-link" href="#">Passes</a></li>
-                <li class="nav-item"> <a class="nav-link" href="#">Team</a></li>
-              </ul>
-            </div>
-            <% end %>
             <!-- end-->
             <li class="nav-item">
             <a class="nav-link collapsed" data-toggle="collapse" href="#ui-basic2" aria-expanded="false" aria-controls="ui-basic">
@@ -57,23 +41,7 @@
               </ul>
             </div>
           </li>
-          <!-- friends -->
-          <li class="nav-item">
-          <a class="nav-link collapsed" data-toggle="collapse" href="#friends" aria-expanded="false" aria-controls="ui-basic">
-            <i class="mdi mdi-circle-outline menu-icon"></i>
-            <span class="menu-title">Friends</span>
-            <i class="fa fa-angle-down sidebar-fa"></i>
-          </a>
-          <div class="collapse" id="friends" style="">
-            <ul class="nav flex-column sub-menu">
-              <li class="nav-item"> <a class="nav-link" href="<%= admin_user_add_friends_page_path %>">Add friends</a></li>
-              <li class="nav-item"> <a class="nav-link" href="<%= admin_friend_requests_path %>">Friend Requests</a></li>
-              <li class="nav-item"> <a class="nav-link" href="<%= admin_my_friends_path %>">My Friends</a></li>
-            </ul>
-          </div>
-          </li>
-          <!-- friends end -->
-
+        
           <!-- followers -->
           <li class="nav-item">
           <a class="nav-link collapsed" data-toggle="collapse" href="#followers" aria-expanded="false" aria-controls="ui-basic">
@@ -186,6 +154,36 @@
           </div>
           </li>
           <!-- payment end -->
+          <!-- News Feed -->
+          <li class="nav-item">
+          <a class="nav-link collapsed" data-toggle="collapse" href="#new_feeds" aria-expanded="false" aria-controls="ui-basic">
+            <i class="mdi mdi-circle-outline menu-icon"></i>
+            <span class="menu-title">News Feeds</span>
+            <i class="fa fa-angle-down sidebar-fa"></i>
+          </a>
+          <div class="collapse" id="new_feeds" style="">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="<%= new_admin_news_feed_path %>">Add News Feed</a></li>
+              <li class="nav-item"> <a class="nav-link" href="<%= admin_news_feeds_path %>">News Feeds</a></li>      
+            </ul>
+          </div>
+          </li>
+          <!-- news feed end -->
+          <!-- categories -->
+          <li class="nav-item">
+          <a class="nav-link collapsed" data-toggle="collapse" href="#categories" aria-expanded="false" aria-controls="ui-basic">
+            <i class="mdi mdi-circle-outline menu-icon"></i>
+            <span class="menu-title">Categories</span>
+            <i class="fa fa-angle-down sidebar-fa"></i>
+          </a>
+          <div class="collapse" id="categories" style="">
+            <ul class="nav flex-column sub-menu">
+              <li class="nav-item"> <a class="nav-link" href="<%= new_admin_category_path %>">Add Category</a></li>
+              <li class="nav-item"> <a class="nav-link" href="<%= admin_categories_path %>">All Categories</a></li>      
+            </ul>
+          </div>
+          </li>
+          <!-- news feed end -->
           </li>
         </ul>
       </nav>

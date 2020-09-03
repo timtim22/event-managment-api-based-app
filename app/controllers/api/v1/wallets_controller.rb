@@ -24,8 +24,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         lat: wallet.offer.lat,
         lng: wallet.offer.lng,
         image: wallet.offer.image.url,
-        creator_name: wallet.offer.user.first_name + " " + wallet.offer.user.last_name,
-        creator_image: wallet.offer.user.avatar.url,
+        creator_name: User.get_full_name(wallet.offer.user),
+        creator_image: wallet.offer.user.avatar,
         description: wallet.offer.description,
         validity: wallet.offer.validity.strftime(get_time_format),
         is_expired: is_expired?(wallet.offer),
@@ -37,8 +37,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
       @passes << {
         id: wallet.offer.id,
         title: wallet.offer.title,
-        host_name: wallet.offer.event.user.first_name + " " + wallet.offer.event.user.last_name,
-        host_image: wallet.offer.event.user.avatar.url,
+        host_name: User.get_full_name(wallet.offer.event.user),
+        host_image: wallet.offer.event.user.avatar,
         event_name: wallet.offer.event.name,
         event_id: wallet.offer.event.id,
         event_image: wallet.offer.event.image,
@@ -57,8 +57,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
       @others << {
         id: wallet.offer.id,
         title: wallet.offer.title,
-        host_name: wallet.offer.event.user.first_name + " " + wallet.offer.event.user.last_name,
-        host_image: wallet.offer.event.user.avatar.url,
+        host_name: User.get_full_name(wallet.offer.event.user),
+        host_image: wallet.offer.event.user.avatar,
         event_name: wallet.offer.event.name,
         event_id: wallet.offer.event.id,
         event_image: wallet.offer.event.image,
@@ -70,7 +70,6 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         quantity: wallet.offer.quantity,
         purchased_quantity: getPurchaseQuantity(wallet.offer.id),
         per_head: wallet.offer.per_head,
-        redeem_code: wallet.offer.redeem_code,
         is_redeemed: is_redeemed(wallet.offer.id, "Ticket", request_user.id)
       } 
       end 
@@ -104,7 +103,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
           channel: [@wallet.offer.user.id.to_s],
           message: { 
             action: @notification.action,
-            avatar: request_user.avatar.url,
+            avatar: request_user.avatar,
             time: time_ago_in_words(@notification.created_at),
             notification_url: @notification.url
            }
@@ -118,9 +117,9 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
             if @notification = Notification.create(recipient: friend, actor: request_user, action: User.get_full_name(request_user) + " has grabbed #{@wallet.offer.class.name.downcase} '#{@wallet.offer.title}'.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet') 
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
-               push_token: friend.device_token,
+               push_token: friend.profile.device_token,
                type: 'gcm',
-               add: friend.device_token
+               add: friend.profile.device_token
                ).value
     
              payload = { 
@@ -132,7 +131,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
                data: {
                 "id": @notification.id,
                 "actor_id": @notification.actor_id,
-                "actor_image": @notification.actor.avatar.url,
+                "actor_image": @notification.actor.avatar,
                 "notifiable_id": @notification.notifiable_id,
                 "notifiable_type": @notification.notifiable_type,
                 "action": @notification.action,
@@ -143,7 +142,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
               }
              }
              @pubnub.publish(
-              channel: friend.device_token,
+              channel: friend.profile.device_token,
               message: payload
               ) do |envelope|
                   puts envelope.status
@@ -151,7 +150,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
           end ##notification create
         end #each
       end #if not blank 
-      create_activity("added to wallet '#{@wallet.offer.title}'", @wallet, 'Wallet', '', @wallet.offer.title, 'post')
+      create_activity(request_user, "added to wallet", @wallet.offer, params[:offer_type], '', @wallet.offer.title, 'post',"added_#{params[:offer_type]}_to_wallet")
       render json: {
         code: 200,
         success: true,
@@ -192,8 +191,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
     @offer_array << {
       id: pass.id,
       title: pass.title,
-      host_name: pass.user.first_name + " " + pass.user.last_name,
-      host_image: pass.user.avatar.url,
+      host_name: User.get_full_name(pass.user),
+      host_image: pass.user.avatar,
       event_name: pass.event.name,
       event_image:pass.event.image,
       event_location: pass.event.location,
@@ -218,8 +217,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
       lat: offer.lat,
       lng: offer.lng,
       image: offer.image.url,
-      creator_name: offer.user.first_name + " " + offer.user.last_name,
-      creator_image: offer.user.avatar.url,
+      creator_name: User.get_full_name(offer.user),
+      creator_image: offer.user.avatar,
       description: offer.description,
       validity: offer.validity.strftime(get_time_format),
       end_time: DateTime.parse(offer.end_time).strftime(get_time_format), 

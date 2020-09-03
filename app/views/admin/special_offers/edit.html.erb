@@ -29,8 +29,8 @@
           <label for="location">Location</label><br>
           <input type="hidden" name="lat" id="lat">
           <input type="hidden" name="lng" id="lng">
-          <input type="hidden" name="creator_name" value="<%= current_user.first_name + ' ' + current_user.last_name %>">
-          <input type="hidden" name="creator_image" value="<%= current_user.avatar.url %>">
+          <input type="hidden" name="creator_name" value="<%= get_full_name(current_user) %>">
+          <input type="hidden" name="creator_image" value="<%= current_user.avatar %>">
           <input type="hidden" name="event_type" value="mygo">
           <span class="error" id="location_error"></span><br>
           <input type="text" class="form-control" name="location" id="location" value="<%= @special_offer.location %>">
@@ -62,11 +62,6 @@
            <input type="text" class="form-control time ui-timepicker-input" id="end_time" name="end_time" value="<%= @special_offer.end_time %>">
            </div><!--time end-->
         </div>
-
-        <div class="form-group">
-          <label for="redeem_code">Redeem Code(Max three digits)</label>
-          <input type="number" class="form-control" id="redeem_code" name="redeem_code" value="<%= @special_offer.redeem_code %>">
-       </div>
 
        <div class="form-group">
          <label for="terms_conditions">Terms and Conditions</label>

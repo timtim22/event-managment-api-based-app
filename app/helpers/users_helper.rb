@@ -1,19 +1,18 @@
 module UsersHelper
   def InfoData(user)
       user_info = {}
-    if user.profile
-       user_info['about'] = user.profile.about
-       user_info['add_social_media_links'] = user.profile.add_social_media_links
-       user_info['facebook'] = user.profile.facebook
-       user_info['twitter'] = user.profile.twitter
-       user_info['snapchat'] = user.profile.snapchat
-       user_info['instagram'] = user.profile.instagram 
+    if user.business_profile
+       user_info['about'] = user.business_profile.about
+       user_info['facebook'] = user.business_profile.facebook
+       user_info['twitter'] = user.business_profile.twitter
+       user_info['linkedin'] = user.business_profile.linkedin
+       user_info['instagram'] = user.business_profile.instagram 
     else
       user_info ['about'] = "No record" 
       user_info ['add_social_media_links'] = "No record"
       user_info['facebook'] = "No record"
       user_info['twitter'] = "No record"
-      user_info['snapchat'] = "No record"
+      user_info['linkedin'] = "No record"
       user_info['instagram'] = "No record" 
     end
     user_info

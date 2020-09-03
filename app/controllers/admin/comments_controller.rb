@@ -5,7 +5,7 @@ class Admin::CommentsController < Admin::AdminMasterController
     @event = Event.find(params[:event_id])
     @comment = @event.comments.new()
     @comment.user = current_user
-    @comment.user_avatar = current_user.avatar.url
+    @comment.user_avatar = current_user.avatar
     @comment.from = User.get_full_name(current_user)  
     @comment.comment = params[:comment]
     if @comment.save
@@ -13,8 +13,7 @@ class Admin::CommentsController < Admin::AdminMasterController
       create_activity("posted a comment", @comment, "Comment", admin_event_path(@event),@event.name, 'post')
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
-        subscribe_key: ENV['SUBSCRIBE_KEY'],
-        uuid: @comment.user.first_name
+        subscribe_key: ENV['SUBSCRIBE_KEY']
         )
          
           @channel = "event" #encrypt later
@@ -47,7 +46,7 @@ class Admin::CommentsController < Admin::AdminMasterController
              data: {
               "id": @notification.id,
               "actor_id": @notification.actor_id,
-              "actor_image": @notification.actor.avatar.url,
+              "actor_image": @notification.actor.avatar,
               "notifiable_id": @notification.notifiable_id,
               "notifiable_type": @notification.notifiable_type,
               "action": @notification.action,

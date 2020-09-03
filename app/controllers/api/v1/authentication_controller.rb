@@ -23,19 +23,22 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
     else
     @user = User.find_by(phone_number: @phone_number)
     if @user
+      @profile_data = {}
+      @profile_data["first_name"] = @user.profile.first_name
+      @profile_data["last_name"] = @user.profile.last_name
+      @profile_data["avatar"] = @user.avatar
       # create_activity creates login issue regarding jwt auth token requirements
       #create_activity('logged in.', @user, 'User', '', '', 'post')
       token = encode(user_id: @user.id)
       time = Time.now + 24.hours.to_i
-      @user.device_token = params[:device_token]
-      @user.save()
+      @user.profile.update!(device_token: params[:device_token])
       render json: { 
             code: 200,
             success: true,
             message: "Login is successful.",
             data: {
               token: token,
-              user: @user
+              user: @profile_data
             }
           }
      else

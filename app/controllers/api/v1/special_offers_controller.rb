@@ -3,7 +3,9 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
 
   def index
     @special_offers = []
+    if request_user
     SpecialOffer.not_expired.order(created_at: "DESC").each do |offer|
+     if !is_removed_offer?(request_user, offer)
       @special_offers << {
       id: offer.id,
       title: offer.title,
@@ -14,16 +16,40 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
       lat: offer.lat,
       lng: offer.lng,
       image: offer.image.url,
-      creator_name: offer.user.first_name + " " + offer.user.last_name,
-      creator_image: offer.user.avatar.url,
+      creator_name: User.get_full_name(offer.user),
+      creator_image: offer.user.avatar,
       description: offer.description,
       validity: offer.validity.strftime(get_time_format),
-      end_time: DateTime.parse(offer.end_time).strftime(get_time_format), 
+      end_time: offer.time.strftime(get_time_format), 
       grabbers_count: offer.wallets.size,
       is_added_to_wallet: is_added_to_wallet?(offer.id),
       grabbers_friends_count: get_grabbers_friends_count(offer)
     }
-    end
+    end #if
+    end #each
+    else
+      SpecialOffer.not_expired.order(created_at: "DESC").each do |offer|
+        @special_offers << {
+        id: offer.id,
+        title: offer.title,
+        sub_title: offer.sub_title,
+        location: offer.location,
+        date: offer.date,
+        time: offer.time,
+        lat: offer.lat,
+        lng: offer.lng,
+        image: offer.image.url,
+        creator_name: User.get_full_name(offer.user),
+        creator_image: offer.user.avatar,
+        description: offer.description,
+        validity: offer.validity.strftime(get_time_format),
+        end_time: offer.time.strftime(get_time_format), 
+        grabbers_count: offer.wallets.size,
+        is_added_to_wallet: is_added_to_wallet?(offer.id),
+        grabbers_friends_count: get_grabbers_friends_count(offer)
+      }
+      end #each
+    end#if
     render json:  {
       code: 200,
       success: true,
@@ -133,7 +159,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
       @special_offer.is_redeemed = true
       @special_offer.save
         # resource should be parent resource in case of api so that event id should be available in order to show event based interest level.
-        create_activity("redeemed special offer", @redemption, 'Redemption', '', @special_offer.title, 'post')
+        create_activity("redeemed special offer", @redemption, 'Redemption', '', @special_offer.title, 'post', 'redeem_special_offer')
         #ambassador program: also add earning if the pass is shared by an ambassador
         @shared_offers = []
         @forwardings = OfferForwarding.all.each do |forward|
@@ -150,9 +176,8 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
            @share = OfferShare.find_by(offer_id: @special_offer.id)
           end
           @ambassador = @share.user
-          if @ambassador.is_ambassador ==  true #if user is an ambassador
-          @ambassador.earning = @ambassador.earning + @special_offer.ambassador_rate.to_i
-          @ambassador.save
+          if @ambassador.profile.is_ambassador ==  true #if user is an ambassador
+          @ambassador.profile.update!(earning: @ambassador.profile.earning + @special_offer.ambassador_rate.to_i)
           end
         end
 
@@ -196,6 +221,37 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
   end
   end
 
+
+  def create_view
+    if !params[:offer_id].blank?
+      offer = SpecialOffer.find(params[:offer_id])
+      if view = offer.views.create!(user_id: request_user.id)
+        render json: {
+          code: 200,
+          success: true,
+          message: 'Offer view successfully created.',
+          data: nil
+        }
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: 'Offer view creation failed.',
+          data: nil
+        }
+      end
+    else
+       render json: {
+         code: 400,
+         success: false,
+         message: 'offer_id is requied field.'
+       }
+      
+    end
+  end
+
+
+
   private
 
   def get_friend_grabbers
@@ -215,13 +271,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
   end
   end
 
-  def get_grabbers_friends_count(offer)
-    if request_user
-      offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size
-    else
-      0
-    end
-  end
+
 
 
 

@@ -5,6 +5,8 @@ class Api::V1::ChatsController < Api::V1::ApiMasterController
  
   
 def send_message
+
+ if !params[:recipient_id].blank? 
  @recipient = User.find(params[:recipient_id])
   if !blocked_user?(request_user, @recipient)
  if !params[:recipient_id].blank?
@@ -15,7 +17,7 @@ def send_message
 
   @sender  = request_user
  
-  @username = @sender.first_name + " " + @sender.last_name
+  @username = @sender.profile.first_name + " " + @sender.profile.last_name
   @has_mutual_channel = ChatChannel.check_for_mutual_channel(@sender,@recipient)
   if !@has_mutual_channel.blank?
     @chat_channel = @has_mutual_channel.first
@@ -24,23 +26,23 @@ def send_message
       push_token: @chat_channel.push_token,
       type: 'gcm'
       ).value
-    @chat_channel.push_token = @recipient.device_token
+    @chat_channel.push_token = @recipient.profile.device_token
     @chat_channel.save
     @channel = @has_mutual_channel.first.name
   else
-  @chat_channel = @sender.chat_channels.new(name: @sender.device_token, recipient_id: @recipient.id,push_token: @recipient.device_token)
+  @chat_channel = @sender.chat_channels.new(name: @sender.profile.device_token, recipient_id: @recipient.id,push_token: @recipient.profile.device_token)
   @chat_channel.save
   @channel = @chat_channel.name
   end
   
- @message = @sender.messages.new(recipient_id: @recipient.id, message: params[:message], from: User.get_full_name(@sender), user_avatar: @sender.avatar.url)
+ @message = @sender.messages.new(recipient_id: @recipient.id, message: params[:message], from: User.get_full_name(@sender), user_avatar: @sender.avatar)
 
 if @message.save
 
  @current_push_token = @pubnub.add_channels_to_push(
-   push_token: @recipient.device_token,
+   push_token: @recipient.profile.device_token,
    type: 'gcm',
-   add: @recipient.device_token
+   add: @recipient.profile.device_token
    ).value
 
 payload = { 
@@ -52,7 +54,7 @@ payload = {
    data: {
     "id": @message.id,
     "actor_id": request_user.id,
-    "actor_image": request_user.avatar.url,
+    "actor_image": request_user.avatar,
     "sender_name": User.get_full_name(request_user),
     "notifiable_id": '',
     "notifiable_type": 'chat',
@@ -66,9 +68,9 @@ payload = {
  }
  
 
-if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(request_user, @recipient)
+if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipient, request_user)
   @pubnub.publish(
-    channel: @recipient.device_token,
+    channel: @recipient.profile.device_token,
     message: payload
     ) do |envelope|
         puts envelope.status
@@ -81,6 +83,8 @@ if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(request_
      code: 200,
      success: true,
      message: 'Message sent successfully.',
+     mute_chat: user_chat_muted?(request_user, @recipient),
+     current_user: request_user,
      data: {
        chat: chat
    }
@@ -105,8 +109,17 @@ else
   render json: {
     code: 400,
     success: false,
-    message: "You have blocked the user, first unblock to send a message",
+    message: "The operation has been blocked!",
     data:nil
+  }
+end
+
+else
+  render json: {
+    code: 400,
+    success: false,
+    message: "recipient_id is required field.",
+    data: nil
   }
 end
 end
@@ -170,18 +183,16 @@ def chat_people
   @users = []
  
   request_user.incoming_messages.map {|msg| @users.push(msg.user) }
-  request_user.messages.map {|msg| @users.push(msg.user) }
+  request_user.messages.map {|msg| @users.push(msg.recipient) }
 
  @users.uniq.each do |user|
-    if request_user != user
         @chat_people << {
-        :user => user,
+        :user => get_user_object(user),
         :last_message => Message.last_message(request_user, user),
         :is_mute => user_chat_muted?(request_user, user),
         :is_blocked => blocked_user?(request_user, user),
         :unread_count => get_unread_message_count(user.id)
       }
-    end
  end
 
   render json: {

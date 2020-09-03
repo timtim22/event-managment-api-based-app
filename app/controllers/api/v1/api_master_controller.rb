@@ -68,15 +68,7 @@ class Api::V1::ApiMasterController < ApplicationController
             end
       end
 
-      def create_activity(action, resource, resource_type, resource_url,resrource_title, method)
-        params.permit(:action, :resource,:user_id, :resource_type,:browser, :params, :url, :method, :resource_title, :method)
-       if activity = ActivityLog.create!(user: request_user, action: action, resource: resource, resource_type: resource_type, browser: request.env['HTTP_USER_AGENT'], ip_address: request.env['REMOTE_ADDR'], params: params.inspect,url: resource_url, method: method, resource_title: resrource_title)
-        true
-       else
-        activity.errors.full_messages
-       end
-      end
-
+    
       def get_demographics(event)
         males = []
         females = []
@@ -84,7 +76,7 @@ class Api::V1::ApiMasterController < ApplicationController
         demographics = {}
         total_count = event.interest_levels.size
         event.interest_levels.each do |level| 
-         case level.user.gender
+         case level.user.profile.gender
            when 'male'
              males.push(level.user)
            when 'female'
@@ -105,9 +97,7 @@ class Api::V1::ApiMasterController < ApplicationController
           demographics
      end
 
-     def get_time_format
-      format = "%Y-%m-%dT%H:%M:%S.%d0Z"
-     end
+    
 
      def not_me?(user)
       user != request_user
@@ -118,8 +108,12 @@ class Api::V1::ApiMasterController < ApplicationController
      end
   
      def is_my_following?(user)
+      if request_user
        request_user.followings.include? user
-     end
+      else
+        false
+      end
+      end
 
      def is_expired?(offer)
       if offer.validity > DateTime.now
@@ -127,6 +121,27 @@ class Api::V1::ApiMasterController < ApplicationController
       else
         true
       end
+    end
+
+    def getInterestedUsers(event)
+      @interested_users = []
+      @interested_followers = []
+      @interested_others = []
+      event.interested_users.uniq.each do |user|
+     if request_user
+      if request_user.friends.include? user
+         @interested_followers.push(get_user_object(user)) 
+      else
+         @interested_others.push(get_user_object(user))
+      end
+    end
+    end #each
+    @interested_users << {
+      "interested_friends" => @interested_followers,
+      "interested_others" => @interested_others
+    }
+    @interested_users
+   
     end
   
    #chat specific

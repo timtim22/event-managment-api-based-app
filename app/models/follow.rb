@@ -2,6 +2,7 @@ class Follow < ApplicationRecord
   require 'date'
   belongs_to :follower, foreign_key: 'user_id', class_name: "User"
   belongs_to :following, foreign_key: 'following_id', class_name: "User"
+  has_many :activity_logs, dependent: :destroy, as: :resource
   # belongs_to :follow_request
   # scope :monthly_followers_count, lambda {|user, now, one_moth_before| where("created_at >= ? AND created_at <= ? && following_id = ?", start_date, end_date, user.id ).size}
 

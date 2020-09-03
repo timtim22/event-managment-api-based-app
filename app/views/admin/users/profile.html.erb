@@ -27,7 +27,7 @@
                     <div class="col-md-6">
                         <div class="profile-head">
                                     <h5>
-                                       <%= current_user.first_name + " " + current_user.last_name %>
+                                       <%= get_full_name(current_user) %>
                                     </h5>
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
                                 <li class="nav-item">
@@ -51,22 +51,15 @@
                            
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label>First Name</label>
+                                                <label>Profile Name</label>
                                             </div>
                                             <div class="col-md-6">
                                             <a href="#" data-toggle="modal" data-target="#modalUpdateInfo"><i class="fa fa-edit" data-toggle="tooltip" title="Edit Info" style="cursor:pointer;float:right;"></i></a>
-                                                <p><%= current_user.first_name %></p>
+                                                <p><%= get_full_name(current_user) %></p>
                                             </div>
                                         </div>
 
-                                        <div class="row">
-                                        <div class="col-md-6">
-                                            <label>Last Name</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p><%= current_user.last_name %></p>
-                                        </div>
-                                    </div>
+                                    
 
                                         <div class="row">
                                             <div class="col-md-6">
@@ -81,20 +74,11 @@
                                                 <label>User Type</label>
                                             </div>
                                             <div class="col-md-6">
-                                                <p><%= current_user.role.name %></p>
+                                                <p><%= current_user.roles.first.name %></p>
                                             </div>
                                         </div>
 
-                                        <div class="row">
-                                        <div class="col-md-6">
-                                            <label>Birth Date</label>
-                                        </div>
-                                        <div class="col-md-6">
-                                        <p><%= InfoData(current_user)['dob'] %>
-                                      
-                                        </p>
-                                        </div>
-                                       </div>
+                                       
 
                                        <div class="row">
                                        <div class="col-md-6">
@@ -236,17 +220,20 @@
       <form method="post" id="update_user_info_form">
       <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
       <div class="modal-body mx-3">
-        <div class="md-form mb-5">
-        <label data-error="wrong" data-success="right"  for="birth_date">Birth Date</label>
-          <input type="text" id="birth_date" class="form-control validate date" name="dob" value="<%= current_user.dob %>">
-        </div>
+       
+      <div class="md-form mb-4">
+        <label data-error="wrong" data-success="right" for="moble">Profile Name</label>
+        <input type="text" id="profile_name" name="profile_name" class="form-control validate" value="<%= current_user.business_profile.profile_name %>">  
+      </div>
+
+      <div class="md-form mb-4">
+        <label data-error="wrong" data-success="right" for="moble">Contact Name</label>
+        <input type="text" id="contact_name" name="contact_name" class="form-control validate" value="<%= current_user.business_profile.contact_name %>">  
+      </div>
 
         <div class="md-form mb-4">
-        <label data-error="wrong" data-success="right" for="moble">Gender</label>
-           <select name="gender" class="form-control" data-chosen=" <%= InfoData(current_user)['gender'] %>">
-             <option value="male" <%= InfoData(current_user)['gender'] == 'male' ? 'selected' : '' %> >Male</option>
-             <option value="female" <%= InfoData(current_user)['gender'] == 'female' ? 'selected' : '' %> >Female</option>
-           </select>   
+        <label data-error="wrong" data-success="right" for="moble">Address</label>
+        <input type="text" id="address" name="address" class="form-control validate" value="<%= current_user.business_profile.address %>">  
       </div>
 
         <div class="md-form mb-4">
@@ -272,7 +259,7 @@
         <br>
         <p>Twitter: &nbsp&nbsp <input type="text" id="twitter" class="form-control validate" name="twitter" placeholder="Insert profile link" value="<%= InfoData(current_user)['twitter'] %>"> </p>
         <br>
-        <p>Snapchat: &nbsp&nbsp <input type="text" id="snapchat" class="form-control validate" name="snapchat" placeholder="Insert profile link" value="<%= InfoData(current_user)['snapchat'] %>"> </p>
+        <p>Linkedin: &nbsp&nbsp <input type="text" id="linkedin" class="form-control validate" name="linkedin" placeholder="Insert profile link" value="<%= InfoData(current_user)['linkedin'] %>"> </p>
         <br>
         <p>Instagram: &nbsp&nbsp <input type="text" id="instagram" class="form-control validate" name="instagram" placeholder="Insert profile link" value="<%= InfoData(current_user)['instagram'] %>"> </p>
       </div><!--social wrapper-->

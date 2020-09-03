@@ -32,8 +32,8 @@
         <label for="location">Location</label><br>
         <input type="hidden" name="lat" id="lat">
         <input type="hidden" name="lng" id="lng">
-        <input type="hidden" name="creator_name" value="<%= current_user.first_name + ' ' + current_user.last_name %>">
-        <input type="hidden" name="creator_image" value="<%= current_user.avatar.url %>">
+        <input type="hidden" name="creator_name" value="<%= get_full_name(current_user) %>">
+        <input type="hidden" name="creator_image" value="<%= current_user.avatar %>">
         <input type="hidden" name="event_type" value="mygo">
         <span class="error" id="location_error"></span><br>
         <input type="text" class="form-control" name="location" id="location" placeholder="Location">
@@ -64,15 +64,7 @@
           <input type="text" class="form-control" id="validity_time" name="validity_time" placeholder="Validity Time">
         </div>
 
-        <div class="form-group">
-          <label for="ambassador_name">Ambassador Name</label>
-          <input type="text" class="form-control" id="ambassador_name" name="ambassador_name" placeholder="John">
-       </div>
-
-        <div class="form-group">
-          <label for="redeem_code">Redeem Code(Max three digits)</label>
-          <input type="number" class="form-control" id="redeem_code" name="redeem_code" placeholder="567">
-       </div>
+      
        <div class="form-group">
        <label for="terms_conditions">Terms and Conditions</label>
        <textarea name="terms_conditions" class="form-control" id="terms_conditions" rows="12"></textarea>

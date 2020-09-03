@@ -8,7 +8,7 @@
    <hr>
    <ul>
      <% @activity_logs.each do |log| %>
-      <li><%= if log.user == current_user then "You " else current_user.first_name + ' ' + current_user.last_name end   %><%= log.action %>&nbsp;<%= if log.resource_type == 'Comment' then " on " else '' end %><%= if log.method != 'delete' then link_to log.resource_title, log.url else '"' + log.resource_title + '"' end %> 
+      <li><%= if log.user == current_user then "You " else get_full_name(current_user) end   %><%= log.action %>&nbsp;<%= if log.resource_type == 'Comment' then " on " else '' end %><%= if log.method != 'delete' then link_to log.resource_title, log.url else '"' + log.resource_title + '"' end %> 
         <br>
         <i class="fa fa-clock" style="color: grey;"></i>&nbsp;
           <span style="font-size: 11px;color: grey;"><%= time_ago_in_words(log.created_at) %></span>

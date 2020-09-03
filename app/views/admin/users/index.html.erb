@@ -24,12 +24,12 @@
         <tbody>
         <% @users.each do |u| %>
         <tr>
-            <td class="py-1"><img src='<%= get_user_avatar(u) %>" %>'' onError="this.onerror=null;this.src='/assets/avatar.png';" alt="image" class="user_list_img"></td>
-            <td><%= u.first_name + " " + u.last_name %></td>
+            <td class="py-1"><img src='<%= u.avatar %>" %>'' onError="this.onerror=null;this.src='/assets/avatar.png';" alt="image" class="user_list_img"></td>
+            <td><%= get_full_name(u) %></td>
             <td><%= u.email %></td>
             <td><%= time_ago_in_words(u.created_at) %></td>
-            <% if !u.role.blank? %>
-            <td><%= u.role.name %></td>
+            <% if !u.roles.blank? %>
+            <td><%= u.roles.map {|role| role.name } %></td>
             <% else %>
             <td>No role assigned</td>
             <% end %>

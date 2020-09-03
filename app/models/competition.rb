@@ -3,7 +3,11 @@ class Competition < ApplicationRecord
   mount_uploader :image, ImageUploader
   has_many :registrations,->{ where(event_type: 'Competition') }, foreign_key: :event_id, class_name: "Registration", dependent: :destroy
   has_many :participants, through: :registrations, source: :user
-
+  has_many :competition_winners
+  has_many :views, dependent: :destroy, as: :resource
+  has_many :viewers, through: :views, source: :user
+  has_many :activity_logs, dependent: :destroy, as: :resource
+  
   validates :title, presence: true
   validates :start_date, presence: true
   validates :end_date, presence: true 
@@ -15,4 +19,5 @@ class Competition < ApplicationRecord
   validates :validity, presence: true
 
   scope :not_expired, -> { where(['validity > ?', DateTime.now]) }
+  scope :expired, -> { where(['validity < ?', DateTime.now]) }
 end
