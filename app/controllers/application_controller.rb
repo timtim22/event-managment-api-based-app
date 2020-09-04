@@ -387,7 +387,7 @@ class ApplicationController < ActionController::Base
       creator_image: offer.user.avatar,
       description: offer.description,
       validity: offer.validity.strftime(get_time_format),
-      end_time: offer.time.strftime(get_time_format), 
+      end_time: offer.validity.strftime(get_time_format), 
       grabbers_count: offer.wallets.size,
       is_added_to_wallet: is_added_to_wallet?(offer.id),
       grabbers_friends_count: get_grabbers_friends_count(offer)
@@ -521,7 +521,7 @@ class ApplicationController < ActionController::Base
           creator_image: offer.user.avatar,
           description: offer.description,
           validity: offer.validity.strftime(get_time_format),
-          end_time: DateTime.parse(offer.end_time).strftime(get_time_format), 
+          end_time:  offer.validity.strftime(get_time_format), 
           grabbers_count: offer.wallets.size,
           ambassador_stats: ambassador_stats(offer, request_user),
           is_added_to_wallet: is_added_to_wallet?(offer.id),

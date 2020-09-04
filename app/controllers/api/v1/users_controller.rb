@@ -471,24 +471,7 @@ end
     }
   end
   user.competitions_to_attend.each do |competition|
-    competitions << {
-    id: competition.id,
-    title: competition.title,
-    description: competition.description,
-    location: competition.location,
-    start_date: competition.start_date,
-    end_date: competition.end_date,
-    start_time: competition.start_time,
-    end_time: competition.end_time,
-    price: competition.price,
-    lat: competition.lat,
-    lng: competition.lng,
-    image: competition.image.url,
-    friends_participants_count: competition.registrations.map {|reg| if(request_user.friends.include? reg.user) then reg.user end }.size,
-    creator_name: User.get_full_name(competition.user),
-    creator_image: competition.user.avatar,
-    validity: competition.validity.strftime(get_time_format)
-    }
+    competitions << get_competition_object(competition)
     end
 
     user.activity_logs.each do |log|

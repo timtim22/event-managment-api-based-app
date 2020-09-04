@@ -72,56 +72,13 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
     User.businesses_list.each do |business|
    if !business.passes.blank?
       business.passes.not_expired.order(created_at: 'DESC').each do |pass| 
-        @passes << {
-          id: pass.id,
-          type: 'pass',
-          title: pass.title,
-          host_name: business.business_profile.profile_name,
-          host_image: business.avatar,
-          event_name: pass.event.name,
-          event_image: pass.event.image,
-          event_location: pass.event.location,
-          event_start_time: pass.event.start_time,
-          event_end_time: pass.event.end_time,
-          event_date: pass.event.start_date,
-          ambassador_name: pass.ambassador_name,
-          is_added_to_wallet: is_added_to_wallet?(pass.id),
-          validity: pass.validity.strftime(get_time_format).to_s,
-          grabbers_count: pass.wallets.size,
-          ambassador_rate: pass.ambassador_rate,
-          quantity: pass.quantity,
-          "ambassador_request_status" =>  get_request_status(business.id),
-          created_at: pass.created_at,
-          business: get_business_object(business) 
-        }
+        @passes << get_pass_object(pass)
         end
       end #not empty
         
       if !business.special_offers.blank?
         business.special_offers.not_expired.order(created_at: 'DESC').each do |offer|
-        @special_offers << {
-          id: offer.id,
-          type: 'special_offer',
-          title: offer.title,
-          sub_title: offer.sub_title,
-          location: offer.location,
-          date: offer.date,
-          time: offer.time,
-          lat: offer.lat,
-          lng: offer.lng,
-          image: offer.image.url,
-          creator_name: User.get_full_name(offer.user),
-          creator_image: offer.user.avatar,
-          description: offer.description,
-          validity: offer.validity.strftime(get_time_format),
-          grabbers_count: offer.wallets.size,
-          is_added_to_wallet: is_added_to_wallet?(offer.id),
-          grabbers_friends_count: offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
-          ambassador_rate: offer.ambassador_rate,
-          "ambassador_request_status" =>  get_request_status(business.id),
-          created_at: offer.created_at,
-          business: get_business_object(business) 
-        }
+         @special_offers << get_special_offer_object(offer)
         end
       end #not blank
     end
@@ -159,59 +116,13 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
     @businesses.each do |business|
       if !business.passes.blank?
       business.passes.not_expired.order(created_at: 'DESC').each do |pass| 
-        @passes << {
-          id: pass.id,
-          type: 'pass',
-          title: pass.title,
-          host_name: business.business_profile.profile_name,
-          host_image: business.avatar,
-          event_name: pass.event.name,
-          event_image: pass.event.image,
-          event_location: pass.event.location,
-          event_start_time: pass.event.start_time,
-          event_end_time: pass.event.end_time,
-          event_date: pass.event.start_date,
-          ambassador_name: pass.ambassador_name,
-          is_added_to_wallet: is_added_to_wallet?(pass.id),
-          validity: pass.validity.strftime(get_time_format).to_s,
-          grabbers_count: pass.wallets.size,
-          ambassador_stats: ambassador_stats(pass, request_user),
-          ambassador_rate: pass.ambassador_rate,
-          quantity: pass.quantity,
-          "ambassador_request_status" =>  get_request_status(business.id),
-          created_at: pass.created_at,
-          business: get_business_object(business) 
-        }
+        @passes << get_pass_object(pass)
         end
       end #not empty
 
       if !business.special_offers.blank?
         business.special_offers.not_expired.order(created_at: 'DESC').each do |offer|
-        @special_offers << {
-          id: offer.id,
-          type: 'special_offer',
-          title: offer.title,
-          sub_title: offer.sub_title,
-          location: offer.location,
-          date: offer.date,
-          time: offer.time,
-          lat: offer.lat,
-          lng: offer.lng,
-          image: offer.image.url,
-          creator_name: offer.user.business_profile.profile_name,
-          creator_image: offer.user.avatar,
-          description: offer.description,
-          validity: offer.validity.strftime(get_time_format),
-          end_time: offer.end_time.strftime(get_time_format), 
-          grabbers_count: offer.wallets.size,
-          ambassador_stats: ambassador_stats(offer, request_user),
-          is_added_to_wallet: is_added_to_wallet?(offer.id),
-          grabbers_friends_count: offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
-          ambassador_rate: offer.ambassador_rate,
-          "ambassador_request_status" =>  get_request_status(business.id),
-          created_at: offer.created_at,
-          business: get_business_object(business) 
-        }
+        @special_offers << get_special_offer_object(offer)
         end
       end #not empty
     end
