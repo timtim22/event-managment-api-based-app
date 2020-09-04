@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
 
- 
+  include ActionView::Helpers::NumberHelper
   # include ActionController::MimeResponds
   # require 'ruby-graphviz'
     #protect_from_forgery with: :null_session for api
@@ -709,6 +709,11 @@ end
     else
       'signup'
     end
+  end
+
+
+  def get_formated_price(number)
+    number_with_precision(number, :precision => 2)
   end
 
   helper_method :SetJsVariables

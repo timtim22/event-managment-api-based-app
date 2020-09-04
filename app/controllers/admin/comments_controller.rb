@@ -10,7 +10,7 @@ class Admin::CommentsController < Admin::AdminMasterController
     @comment.comment = params[:comment]
     if @comment.save
       # Shoot notifications to users who commented on an event
-      create_activity("posted a comment", @comment, "Comment", admin_event_path(@event),@event.name, 'post')
+      #create_activity("posted a comment", @comment, "Comment", admin_event_path(@event),@event.name, 'post')
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']

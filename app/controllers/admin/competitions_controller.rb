@@ -23,7 +23,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
        )
-      create_activity("created competition", @competition, "Competition", admin_competition_path(@competition),@competition.title, 'post')
+      #create_activity("created competition", @competition, "Competition", admin_competition_path(@competition),@competition.title, 'post')
       if !current_user.followers.blank?
         current_user.followers.each do |follower|
    if follower.competitions_notifications_setting.is_on == true
@@ -78,7 +78,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
   def update
         @competition = Competition.find(params[:id])
     if @competition.update(competition_params)
-      create_activity("updated competition", @competition, "Competition", admin_competition_path(@competition),@competition.title, 'patch')
+      #create_activity("updated competition", @competition, "Competition", admin_competition_path(@competition),@competition.title, 'patch')
       redirect_to admin_competitions_path, notice: "Competition updated successfully."
     else
       flash[:alert_danger] = "Competition update failed."

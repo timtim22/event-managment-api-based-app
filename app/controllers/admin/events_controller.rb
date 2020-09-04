@@ -6,6 +6,7 @@ class Admin::EventsController < Admin::AdminMasterController
   require 'action_view'
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
+ 
 
 	def index
 		@events = current_user.events.order(:created_at => 'DESC').page(params[:page])
@@ -37,7 +38,7 @@ class Admin::EventsController < Admin::AdminMasterController
           @event.name = params[:name]
           @event.start_date = date
           @event.end_date = date
-          @event.price = params[:price]
+          @event.price = get_formated_price(params[:price])
           @event.price_type = params[:price_type]
           @event.event_type = params[:event_type]
           @event.start_time = params[:start_time]
@@ -59,7 +60,7 @@ class Admin::EventsController < Admin::AdminMasterController
           @event.over_18 = params[:over_18]
           @event.save
           # create user activity log
-          create_activity("created event", @event, "Event", admin_event_path(@event),@event.name, 'post')
+          #create_activity("created event", @event, "Event", admin_event_path(@event),@event.name, 'post')
          
           if !params[:event_attachments].blank?
             params[:event_attachments]['media'].each do |m|
@@ -117,9 +118,9 @@ class Admin::EventsController < Admin::AdminMasterController
       @event.name = params[:name]
       @event.start_date = params[:start_date].to_date.to_s
       @event.end_date = params[:end_date].to_date.to_s
-      @event.price = params[:price]
+      @event.price = get_formated_price(params[:price])
       @event.price_type = params[:price_type]
-      @event.event_type = "mygo"
+      @event.event_type = params[:event_type]
       @event.start_time = params[:start_time]
       @event.end_time = params[:end_time]
       @event.external_link = params[:external_link]
@@ -139,7 +140,7 @@ class Admin::EventsController < Admin::AdminMasterController
       @event.over_18 = params[:over_18]
     if @event.save
       #creating activity log
-      create_activity("created event", @event, "Event", admin_event_path(@event),@event.name, 'post')
+      #create_activity("created event", @event, "Event", admin_event_path(@event),@event.name, 'post')
 
       if !params[:event_attachments].blank?
       params[:event_attachments]['media'].each do |m|
@@ -163,7 +164,7 @@ class Admin::EventsController < Admin::AdminMasterController
       if @notification = Notification.create!(recipient: follower, actor: current_user, action: User.get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event') 
         @channel = "event" #encrypt later
         @current_push_token = @pubnub.add_channels_to_push(
-         push_token: follower.device_token,
+         push_token: follower.profile.device_token,
          type: 'gcm',
          add: @channel
          ).value
@@ -208,7 +209,30 @@ class Admin::EventsController < Admin::AdminMasterController
   
   def update
     @event = Event.find(params[:id])
-    if @event.update(event_params)
+    @event.name = params[:name]
+    @event.start_date = params[:start_date].to_date.to_s
+    @event.end_date = params[:end_date].to_date.to_s
+    @event.price = get_formated_price(params[:price])
+    @event.price_type = params[:price_type]
+    @event.event_type = params[:event_type]
+    @event.start_time = params[:start_time]
+    @event.end_time = params[:end_time]
+    @event.external_link = params[:external_link]
+    @event.host = params[:host]
+    @event.category_ids = params[:category_ids]
+    @event.description = params[:description]
+    @event.location = params[:location]
+    @event.image = params[:image]
+    @event.lat = params[:lat]
+    @event.lng = params[:lng]
+    @event.feature_media_link = params[:feature_media_link]
+    @event.additional_media = params[:additional_media]
+    @event.allow_chat = params[:allow_chat]
+    @event.invitees = params[:invitees]
+    @event.event_forwarding = params[:event_forwarding]
+    @event.allow_additional_media = params[:allow_additional_media]
+    @event.over_18 = params[:over_18]
+  if @event.save
       #create_activity("updated event", @event, "Event", admin_event_path(@event),@event.name, 'patch')
       flash[:notice] = "Event updated successfully."
       redirect_to admin_events_path

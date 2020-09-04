@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_02_171413) do
+ActiveRecord::Schema.define(version: 2020_09_04_103925) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -197,7 +197,7 @@ ActiveRecord::Schema.define(version: 2020_09_02_171413) do
     t.string "event_type", default: "public"
     t.datetime "end_date"
     t.string "price_type", default: "free"
-    t.integer "price", default: 0
+    t.float "price", default: 0.0
     t.string "lat", default: ""
     t.string "lng", default: ""
     t.string "eventbrite_image", default: ""

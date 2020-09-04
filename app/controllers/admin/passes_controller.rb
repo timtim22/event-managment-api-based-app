@@ -29,6 +29,9 @@ class Admin::PassesController < Admin::AdminMasterController
     if !ids.blank?
     ids.each do |id|
       @pass = Pass.find_by(event_id: id)
+      if @pass.blank?
+        @pass = Pass.new
+      end
       @pass.title = params[:title]
       @pass.description = params[:description]
       @pass.event_id = id
@@ -38,7 +41,7 @@ class Admin::PassesController < Admin::AdminMasterController
       @pass.validity_time = params[:validity_time]
       @pass.terms_conditions = params[:terms_conditions]
       if @pass.save
-        create_activity("updated pass", @pass, "Pass", admin_pass_path(@pass),@pass.title, 'patch')
+        #create_activity("updated pass", @pass, "Pass", admin_pass_path(@pass),@pass.title, 'patch')
         success = true
       else
         success = false
@@ -81,16 +84,16 @@ class Admin::PassesController < Admin::AdminMasterController
       @pass.validity_time = params[:validity_time]
       @pass.terms_conditions = params[:terms_conditions]
       if @pass.save
-        create_activity("created pass", @pass, "Pass", admin_pass_path(@pass),@pass.title, 'post')
+       # create_activity("created pass", @pass, "Pass", admin_pass_path(@pass),@pass.title, 'post')
         if !current_user.followers.blank?
           current_user.followers.each do |follower|
       if follower.passes_notifications_setting.is_on == true 
         if @notification = Notification.create!(recipient: follower, actor: current_user, action: User.get_full_name(current_user) + " created a new pass '#{@pass.title}'.", notifiable: @pass, url: "/admin/passes/#{@pass.id}", notification_type: 'mobile', action_type: 'create_pass') 
           @channel = "event" #encrypt later
           @current_push_token = @pubnub.add_channels_to_push(
-           push_token: follower.device_token,
+           push_token: follower.profile.device_token,
            type: 'gcm',
-           add: follower.device_token
+           add: follower.profile.device_token
            ).value
 
            payload = { 
@@ -114,7 +117,7 @@ class Admin::PassesController < Admin::AdminMasterController
            }
           
          @pubnub.publish(
-           channel: follower.device_token,
+           channel: follower.profile.device_token,
            message: payload
            ) do |envelope|
                puts envelope.status
@@ -159,7 +162,7 @@ class Admin::PassesController < Admin::AdminMasterController
   def destroy
     @pass = Pass.find(params[:id])
     if @pass.destroy
-      create_activity("deleted pass", @pass, "Pass", '', @pass.title, 'delete')
+      #create_activity("deleted pass", @pass, "Pass", '', @pass.title, 'delete')
       redirect_to admin_passes_path, notice: "Pass deleted successfully."
     else
       flash[:alert_danger] = "Pass deletetion failed."

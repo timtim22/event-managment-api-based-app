@@ -24,14 +24,14 @@ class Admin::TicketsController < Admin::AdminMasterController
       @event = Event.find(id)
       @ticket = Ticket.find_by(event_id: id)
       @ticket.title = params[:title]
-      @ticket.price = params[:price]
+      @ticket.price = @event.price
       @ticket.quantity = params[:quantity]
       @ticket.event_id = id
       @ticket.ticket_type = @event.price_type
       @ticket.user_id = current_user.id
       @ticket.per_head = params[:per_head]
       if @ticket.save
-        create_activity("updated pass", @ticket, "Pass", admin_pass_path(@ticket),@ticket.title, 'patch')
+        #create_activity("updated ticket", @ticket, "Pass", admin_pass_path(@ticket),@ticket.title, 'patch')
         success = true
       else
         success = false
@@ -61,7 +61,7 @@ class Admin::TicketsController < Admin::AdminMasterController
       @event = Event.find(id)
       @ticket = Ticket.new
       @ticket.title = params[:title]
-      @ticket.price = params[:price]
+      @ticket.price = @event.price
       @ticket.quantity = params[:quantity]
       @ticket.event_id = id
       @ticket.ticket_type = @event.price_type
@@ -91,7 +91,7 @@ class Admin::TicketsController < Admin::AdminMasterController
   def destroy
     @ticket = Ticket.find(params[:id])
     if @ticket.destroy
-      create_activity("deleted ticket", @ticket, "Ticket", '', @ticket.title, 'delete')
+      #create_activity("deleted ticket", @ticket, "Ticket", '', @ticket.title, 'delete')
       redirect_to admin_tickets_path, notice: "Ticket deleted successfully."
     else
       flash[:alert_danger] = "Ticket deletetion failed."

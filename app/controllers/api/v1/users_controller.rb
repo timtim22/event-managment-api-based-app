@@ -576,6 +576,7 @@ end
   profile['follows_count'] = user.followings.size
   profile['followers_count'] = user.followers.size
   profile['gives_away'] = gives_away
+  profile["is_request_sent"] =  request_status(request_user, user)
 
   # if user.is_ambassador to be added later
   #   profile['passes'] = 'to be added after ambassador shcema'

@@ -34,7 +34,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
       @special_offer.terms_conditions = params[:terms_conditions]
       @special_offer.validity = params[:validity]
       if @special_offer.save
-        create_activity("created special offer", @special_offer, "SpecialOffer", admin_special_offer_path(@special_offer),@special_offer.title, 'post')
+        #create_activity("created special offer", @special_offer, "SpecialOffer", admin_special_offer_path(@special_offer),@special_offer.title, 'post')
         if !current_user.followers.blank?
           @pubnub = Pubnub.new(
             publish_key: ENV['PUBLISH_KEY'],
@@ -46,9 +46,9 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
         if @notification = Notification.create!(recipient: follower, actor: current_user, action: User.get_full_name(current_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event') 
           @channel = "event" #encrypt later
           @current_push_token = @pubnub.add_channels_to_push(
-           push_token: follower.device_token,
+           push_token: follower.profile.device_token,
            type: 'gcm',
-           add: follower.device_token
+           add: follower.profile.device_token
            ).value
   
            payload = { 
@@ -72,7 +72,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
            }
           
          @pubnub.publish(
-           channel: follower.device_token,
+           channel: follower.profile.device_token,
            message: payload
            ) do |envelope|
                puts envelope.status
@@ -112,7 +112,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
      @special_offer.terms_conditions = params[:terms_conditions]
      @special_offer.validity = params[:validity] 
     if @special_offer.save
-      create_activity("updated special offer", @special_offer, "SpecialOffer", admin_special_offer_path(@special_offer),@special_offer.title, 'patch')
+      #create_activity("updated special offer", @special_offer, "SpecialOffer", admin_special_offer_path(@special_offer),@special_offer.title, 'patch')
       if !current_user.followers.blank?
         current_user.followers.each do |follower|
     if follower.special_offers_notifications_setting.is_on == true 
@@ -124,9 +124,9 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
           uuid: @username
           )
         @current_push_token = @pubnub.add_channels_to_push(
-         push_token: follower.device_token,
+         push_token: follower.profile.device_token,
          type: 'gcm',
-         add: follower.device_token
+         add: follower.profile.device_token
          ).value
 
          payload = { 
@@ -150,7 +150,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
          }
         
        @pubnub.publish(
-         channel: follower.device_token,
+         channel: follower.profile.device_token,
          message: payload
          ) do |envelope|
              puts envelope.status
@@ -170,7 +170,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
   def destroy
     @special_offer = SpecialOffer.find(params[:id])
     if @special_offer.destroy
-      create_activity("deleted special offer", @special_offer, "SpecialOffer",'',@special_offer.title, 'delete')
+      #create_activity("deleted special offer", @special_offer, "SpecialOffer",'',@special_offer.title, 'delete')
       redirect_to admin_special_offers_path, :notice => "Special offer deleted successfully."
     else
       flash[:alert_danger] = "Special offer deletion failed."
