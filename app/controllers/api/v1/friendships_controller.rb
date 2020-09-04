@@ -403,8 +403,8 @@ end
             "is_friend" => false,
             "mutual_friends_count" => 0,
             "is_my_following" => is_my_following?(following),
-            "app_user" => follower.app_user,
-            "is_self" =>  !not_me?(follower)
+            "app_user" => following.app_user,
+            "is_self" =>  !not_me?(following)
           }
          end #each
        end #not empty
@@ -420,8 +420,8 @@ end
             "is_friend" => is_friend?(request_user, friend),
             "mutual_friends_count" => get_mutual_friends(request_user, friend).size,
             "is_my_following" => false,
-            "app_user" => follower.app_user,
-            "is_self" =>  !not_me?(follower) 
+            "app_user" => friend.app_user,
+            "is_self" =>  !not_me?(friend) 
           }
           end #each
         end #not empty
