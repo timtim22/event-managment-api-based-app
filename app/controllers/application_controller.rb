@@ -129,11 +129,7 @@ class ApplicationController < ActionController::Base
    def is_friend?(request_user,friend)
     friend_request = FriendRequest.where(friend_id: friend.id).where(status: 'accepted').first
     if friend_request
-      if friend_request.friend.id == request_user.id
-       "you"
-      else
       true
-      end
     else
       false
     end
@@ -663,6 +659,10 @@ end
        "total_grabbers_count" => @total_count
      }
      stats
+   end
+
+   def not_me?(user)
+    user != request_user
    end
  
   

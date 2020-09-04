@@ -384,7 +384,9 @@ end
            "is_request_sent" => request_status(request_user, follower),
            "is_friend" => is_friend?(request_user, follower),
            "mutual_friends_count" => get_mutual_friends(request_user, follower).size,
-           "is_my_following" => false 
+           "is_my_following" => false,
+           "app_user" => follower.app_user,
+           "is_self" =>  !not_me?(follower) 
          }
          end #each
       end #not empty
@@ -400,7 +402,9 @@ end
             "is_request_sent" => false,
             "is_friend" => false,
             "mutual_friends_count" => 0,
-            "is_my_following" => is_my_following?(following)
+            "is_my_following" => is_my_following?(following),
+            "app_user" => follower.app_user,
+            "is_self" =>  !not_me?(follower)
           }
          end #each
        end #not empty
@@ -415,7 +419,9 @@ end
             "is_request_sent" => request_status(request_user, friend),
             "is_friend" => is_friend?(request_user, friend),
             "mutual_friends_count" => get_mutual_friends(request_user, friend).size,
-            "is_my_following" => false 
+            "is_my_following" => false,
+            "app_user" => follower.app_user,
+            "is_self" =>  !not_me?(follower) 
           }
           end #each
         end #not empty

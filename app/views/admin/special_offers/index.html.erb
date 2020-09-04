@@ -13,6 +13,7 @@
     <table class="table table-striped">
         <thead>
         <tr>
+          <td>Image</td>
           <th>Title</th>
           <th>Descripiton</th>
           <th>Validity</th>
@@ -22,6 +23,8 @@
         <tbody>
         <% @special_offers.each do |offer| %>
         <tr>
+          <td><a href="<%= admin_special_offer_path(offer) %>" ><img src="<%=  offer.image.url %>"  style="border-radius:3px;"></a></td>
+
           <td><%= link_to offer.title[0...30], admin_special_offer_path(offer.id)  %></td>
           <td><%= offer.description[0...39] %></td>
           <td><%= offer.validity %></td>

@@ -208,6 +208,7 @@ class Admin::EventsController < Admin::AdminMasterController
   end
   
   def update
+   
     @event = Event.find(params[:id])
     @event.name = params[:name]
     @event.start_date = params[:start_date].to_date.to_s

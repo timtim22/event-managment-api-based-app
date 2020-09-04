@@ -99,9 +99,7 @@ class Api::V1::ApiMasterController < ApplicationController
 
     
 
-     def not_me?(user)
-      user != request_user
-     end
+   
   
      def is_my_friend?(user)
       request_user.friends.include?  user

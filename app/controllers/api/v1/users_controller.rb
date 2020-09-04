@@ -89,6 +89,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
       @profile.is_email_subscribed = params[:is_email_subscribed]
       @profile.save
       @profile_data = {}
+      @profile_data['id'] = @user.id
       @profile_data["first_name"] = @user.profile.first_name
       @profile_data["last_name"] = @user.profile.last_name
       @profile_data["avatar"] = @user.avatar
