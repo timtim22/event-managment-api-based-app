@@ -82,10 +82,10 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
       @profile.device_token = params[:device_token]
       @profile.gender = params[:gender]
       if !params[:location].blank?
-       @profile.location = params[:location][:name]
-       @profile.lat = params[:location][:geometry][:lat]
-       @profile.lng = params[:location][:geometry][:lng]
-      end
+        @profile.location = params[:name]
+        @profile.lat = params[:lat]
+        @profile.lng = params[:lng]
+       end
       @profile.is_email_subscribed = params[:is_email_subscribed]
       @profile.save
       @profile_data = {}
@@ -864,6 +864,9 @@ end
     }
   end
 
+
+ 
+
   private
 
   def find_user
@@ -902,6 +905,8 @@ end
 def has_passes?(event)
   !event.passes.blank?
 end
+
+
 
 # def generate_code
 #   (SecureRandom.random_number(9e5) + 1e5).to_i

@@ -32,7 +32,7 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
 
         payload = { 
         "pn_gcm":{
-          "notification":{
+          "notification": {
             "title": User.get_full_name(@friend),
             "body": @notification.action
           },
@@ -365,13 +365,52 @@ end
    data:  {
      suggested_friends: @all_suggessions
    }
- }
-  
+ }  
+
  end #func
 
+ def get_friends_details
+  if !params[:user_id].blank?
+    details = []
+    user = User.find(params[:user_id])
+     friends = user.friends
+     if !friends.blank?
+      friends.each do |friend|
+      details << {
+          "id" => friend.id,
+          "name" => User.get_full_name(friend),
+          "avatar" => friend.avatar,
+          "is_request_sent" => request_status(request_user, friend),
+          "is_friend" => is_friend?(request_user, friend),
+          "mutual_friends_count" => get_mutual_friends(request_user, user).size
+        }
+        end #each
+     end #not empty
 
+    render json: {
+      code: 200,
+      success: true,
+      message: '',
+      data: {
+        details: details
+      }
+    }
+    else
+      render json: {
+      code: 400,
+      success: false,
+      message: 'user_id is required.',
+      data: nil
+    }
+    end
+end
   
   private
   
+  def get_mutual_friends(request_user, user)
+    user_friends = user.friends
+    request_user_friends = request_user.friends
+    mutual = user_friends & request_user_friends
+  end
   
 end

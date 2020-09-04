@@ -30,23 +30,45 @@ class Dashboard::Api::V1::NewsFeedsController < Dashboard::Api::V1::ApiMasterCon
     end
   end
 
+
   def update
-    @news_feed  = NewsFeed.find(params[:id])
+    @news_feed = NewsFeed.find(params[:id])
     if @news_feed.update!(news_feed_parmas)
-    flash[:notice] = "News feed successfully updated."
-     redirect_to admin_news_feeds_path
+     render json:  {
+       code: 200,
+       success:true,
+       message: 'News feed successfully updated.',
+       data: {
+         news_feed: @news_feed
+       }
+     }
     else
-      render :new
+      render json: {
+        code: 400,
+        success: false,
+        message: @news_feed.errors.full_messages,
+        data: nil
+      }
     end
   end
 
+
+
   def destroy
    if @news_feed.destroy
-    flash[:notice] = "News feed successfully removed."
-    redirect_to admin_news_feeds_path 
+    render json:  {
+       code: 200,
+       success:true,
+       message: 'News feed successfully deleted.',
+       data: nil
+     }
   else
-    flash[:alert_danger] = "News feed removal failed."
-    redirect_to admin_news_feeds_path
+    render json: {
+      code: 400,
+      success: false,
+      message: "News feed deletion failed.",
+      data: nil
+    }
    end
   end
 
@@ -62,7 +84,7 @@ class Dashboard::Api::V1::NewsFeedsController < Dashboard::Api::V1::ApiMasterCon
 
   private
 
-  def news_feed_parmas
+ def news_feed_parmas
   params.permit(:title, :description, :image, :user_id) 
  end
 

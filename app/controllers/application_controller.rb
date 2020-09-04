@@ -126,6 +126,19 @@ class ApplicationController < ActionController::Base
     end
    end
 
+   def is_friend?(request_user,friend)
+    friend_request = FriendRequest.where(friend_id: friend.id).where(status: 'accepted').first
+    if friend_request
+      if friend_request.friend.id == request_user.id
+       "you"
+      else
+      true
+      end
+    else
+      false
+    end
+  end
+
    def get_dummy_avatar
      'https://pickaface.net/gallery/avatar/45425654_200117_1657_v2hx2.png'
    end

@@ -94,6 +94,7 @@ Rails.application.routes.draw do
        post '/competitions/create-view' => "competitions#create_view"
        get '/get-users-having-common-fields' => 'users#get_users_having_common_fields'
        get '/privacy-policy' => 'users#privacy_policy'
+       post '/friendships/get-friends-details' => 'friendships#get_friends_details'
       # get '/*a', to: 'application#not_found'
      end
    end

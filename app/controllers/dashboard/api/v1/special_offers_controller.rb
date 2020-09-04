@@ -64,9 +64,6 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
     }
   end
 
-
-
-
   def create
     @special_offer = SpecialOffer.new
     @special_offer.title = params[:title]
