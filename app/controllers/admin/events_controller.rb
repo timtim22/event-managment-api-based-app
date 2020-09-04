@@ -209,7 +209,7 @@ class Admin::EventsController < Admin::AdminMasterController
   def update
     @event = Event.find(params[:id])
     if @event.update(event_params)
-      create_activity("updated event", @event, "Event", admin_event_path(@event),@event.name, 'patch')
+      #create_activity("updated event", @event, "Event", admin_event_path(@event),@event.name, 'patch')
       flash[:notice] = "Event updated successfully."
       redirect_to admin_events_path
     else

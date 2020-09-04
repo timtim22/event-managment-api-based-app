@@ -32,10 +32,8 @@ class Admin::UsersController < Admin::AdminMasterController
 
     def update
       @user = User.find(params[:id])
-      if @user.update(user_params)
-      @role = @user.assignment
-      @role.role_id = params[:type]
-      @role.save
+      if @user.update(user_params) &&  @user.assignments.first.update!(role_id: params[:type])
+    
        flash[:notice] = "User Updated successfully."
        redirect_to admin_users_path
       else

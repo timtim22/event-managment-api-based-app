@@ -373,19 +373,55 @@ end
   if !params[:user_id].blank?
     details = []
     user = User.find(params[:user_id])
-     friends = user.friends
-     if !friends.blank?
-      friends.each do |friend|
-      details << {
-          "id" => friend.id,
-          "name" => User.get_full_name(friend),
-          "avatar" => friend.avatar,
-          "is_request_sent" => request_status(request_user, friend),
-          "is_friend" => is_friend?(request_user, friend),
-          "mutual_friends_count" => get_mutual_friends(request_user, user).size
-        }
-        end #each
-     end #not empty
+    if is_business?(user)
+      followers = user.followers
+      if !followers.blank?
+       followers.each do |follower|
+       details << {
+           "id" => follower.id,
+           "name" => User.get_full_name(follower),
+           "avatar" => follower.avatar,
+           "is_request_sent" => request_status(request_user, follower),
+           "is_friend" => is_friend?(request_user, follower),
+           "mutual_friends_count" => get_mutual_friends(request_user, follower).size,
+           "is_my_following" => false 
+         }
+         end #each
+      end #not empty
+      else
+       if params[:detail_type] == 'followings'
+        followings = user.followings
+        if !followings.blank?
+         followings.each do |following|
+        details << {
+            "id" => following.id,
+            "name" => User.get_full_name(following),
+            "avatar" => following.avatar,
+            "is_request_sent" => false,
+            "is_friend" => false,
+            "mutual_friends_count" => 0,
+            "is_my_following" => is_my_following?(following)
+          }
+         end #each
+       end #not empty
+       else 
+         friends = user.friends
+         if !friends.blank?
+        friends.each do |friend|
+        details << {
+            "id" => friend.id,
+            "name" => User.get_full_name(friend),
+            "avatar" => friend.avatar,
+            "is_request_sent" => request_status(request_user, friend),
+            "is_friend" => is_friend?(request_user, friend),
+            "mutual_friends_count" => get_mutual_friends(request_user, friend).size,
+            "is_my_following" => false 
+          }
+          end #each
+        end #not empty
+      end #if
+    end
+    
 
     render json: {
       code: 200,

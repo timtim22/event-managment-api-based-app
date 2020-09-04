@@ -28,8 +28,8 @@
           <td><%= get_full_name(follower) %></td>
           <td><%= follower.email %></td>
           <td><%= time_ago_in_words(follower.created_at) %></td>
-          <% if !follower.role.blank? %>
-          <td><%= follower.role.name %></td>
+          <% if !follower.roles.first.blank? %>
+          <td><%= follower.roles.first.name %></td>
           <% else %>
           <td>No role assigned</td>
           <% end %>
