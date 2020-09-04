@@ -69,7 +69,7 @@ class Admin::UsersController < Admin::AdminMasterController
      else
       @user.password = new_password
       if @user.save()
-        create_activity("updated password", @user, "User", '', '', 'post')
+       # create_activity("updated password", @user, "User", '', '', 'post')
         render json: {
           success: true,
           message: "Password updated successfully."
@@ -87,7 +87,7 @@ class Admin::UsersController < Admin::AdminMasterController
     def update_avatar
       @user = current_user()      
       if @user.update(profile_update_params)
-        create_activity("updated avatar", @user, "User", admin_users_path(@user), '', 'patch')
+       # create_activity("updated avatar", @user, "User", admin_users_path(@user), '', 'patch')
         flash[:notice] = "Profile updated successfully."
         redirect_to admin_user_get_profile_path
       else
@@ -112,7 +112,7 @@ class Admin::UsersController < Admin::AdminMasterController
         profile.instagram = params[:instagram]
       if profile.save
         current_user.update!(phone_number: params[:phone_number])
-        create_activity("Updated profile.", profile, "BusinessProfile", '', 'profile', 'post')
+        #create_activity("Updated profile.", profile, "BusinessProfile", '', 'profile', 'post')
         render json: {
           success: true,
           message: "successfully updated."

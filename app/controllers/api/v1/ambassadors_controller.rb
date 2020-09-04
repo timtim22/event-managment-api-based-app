@@ -202,7 +202,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           creator_image: offer.user.avatar,
           description: offer.description,
           validity: offer.validity.strftime(get_time_format),
-          end_time: DateTime.parse(offer.end_time).strftime(get_time_format), 
+          end_time: offer.end_time.strftime(get_time_format), 
           grabbers_count: offer.wallets.size,
           ambassador_stats: ambassador_stats(offer, request_user),
           is_added_to_wallet: is_added_to_wallet?(offer.id),
