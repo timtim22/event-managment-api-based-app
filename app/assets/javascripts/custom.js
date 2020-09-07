@@ -20,7 +20,7 @@ $(document).ready(function(){
 
    $(document).on('click','#update_password_modal_btn', function(event){
         event.preventDefault();
-        let validated = false;
+        var validated = false;
         $("#modalChangePassword input").each(function(index,value){
           if($(value).val() == '') {
             $(value).css('border-color','red');
