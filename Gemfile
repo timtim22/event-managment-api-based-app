@@ -32,7 +32,7 @@ gem 'font-awesome-sass', '~> 5.11.2'
 gem 'bootstrap', '~> 4.3.1'
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
-
+gem 'dotenv-rails'
 gem 'pubnub', '~> 4.2.2'
 gem 'rpush'
 gem 'pry'
