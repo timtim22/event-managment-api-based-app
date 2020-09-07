@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
     def request_status(sender,recipient)
       friend_request = FriendRequest.where(user_id: sender.id).where(friend_id: recipient.id).first
       if friend_request
-       if friend_request.status == 'pending'
+       if friend_request.status == 'pending' || friend_request.status == 'accepted'
         true
        end
       else

@@ -52,7 +52,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
   # POST /users
   def create
 
-    required_fields = ['first_name', 'last_name','app_user','dob', 'device_token', 'gender','is_email_subscribed']
+    required_fields = ['first_name', 'last_name','app_user','dob', 'device_token', 'gender','location', 'lat','lng','is_email_subscribed']
     errors = []
     required_fields.each do |field|
       if params[field.to_sym].blank?
@@ -81,15 +81,12 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
       @profile.last_name = params[:last_name]
       @profile.device_token = params[:device_token]
       @profile.gender = params[:gender]
-      if !params[:location].blank?
-        @profile.location = params[:name]
-        @profile.lat = params[:lat]
-        @profile.lng = params[:lng]
-       end
+      @profile.location = params[:location]
+      @profile.lat = params[:lat]
+      @profile.lng = params[:lng]
       @profile.is_email_subscribed = params[:is_email_subscribed]
       @profile.save
       @profile_data = {}
-      @profile_data['id'] = @user.id
       @profile_data["first_name"] = @user.profile.first_name
       @profile_data["last_name"] = @user.profile.last_name
       @profile_data["avatar"] = @user.avatar
@@ -471,7 +468,24 @@ end
     }
   end
   user.competitions_to_attend.each do |competition|
-    competitions << get_competition_object(competition)
+    competitions << {
+    id: competition.id,
+    title: competition.title,
+    description: competition.description,
+    location: competition.location,
+    start_date: competition.start_date,
+    end_date: competition.end_date,
+    start_time: competition.start_time,
+    end_time: competition.end_time,
+    price: competition.price,
+    lat: competition.lat,
+    lng: competition.lng,
+    image: competition.image.url,
+    friends_participants_count: competition.registrations.map {|reg| if(request_user.friends.include? reg.user) then reg.user end }.size,
+    creator_name: User.get_full_name(competition.user),
+    creator_image: competition.user.avatar,
+    validity: competition.validity.strftime(get_time_format)
+    }
     end
 
     user.activity_logs.each do |log|
@@ -560,7 +574,6 @@ end
   profile['follows_count'] = user.followings.size
   profile['followers_count'] = user.followers.size
   profile['gives_away'] = gives_away
-  profile["is_request_sent"] =  request_status(request_user, user)
 
   # if user.is_ambassador to be added later
   #   profile['passes'] = 'to be added after ambassador shcema'
@@ -849,9 +862,6 @@ end
     }
   end
 
-
- 
-
   private
 
   def find_user
@@ -890,8 +900,6 @@ end
 def has_passes?(event)
   !event.passes.blank?
 end
-
-
 
 # def generate_code
 #   (SecureRandom.random_number(9e5) + 1e5).to_i

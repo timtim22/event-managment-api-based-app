@@ -32,7 +32,7 @@ gem 'font-awesome-sass', '~> 5.11.2'
 gem 'bootstrap', '~> 4.3.1'
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
-gem 'dotenv'
+
 gem 'pubnub', '~> 4.2.2'
 gem 'rpush'
 gem 'pry'
@@ -52,8 +52,7 @@ gem 'rqrcode'
 gem 'stripe'
 gem 'local_time'
 gem 'redis'
-gem 'sidekiq'
-gem 'sidekiq-cron'
+
 gem 'google_places'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
