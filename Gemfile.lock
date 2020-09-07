@@ -105,7 +105,6 @@ GEM
     concurrent-ruby (1.1.6)
     concurrent-ruby-edge (0.5.0)
       concurrent-ruby (~> 1.1.5)
-    connection_pool (2.2.2)
     crass (1.0.6)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
@@ -171,7 +170,6 @@ GEM
       request_store (>= 1.0)
     google_places (2.0.0)
       httparty (>= 0.13.1)
-    http-2 (0.10.1)
     http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -227,10 +225,6 @@ GEM
     multi_json (1.14.1)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
-    net-http-persistent (3.1.0)
-      connection_pool (~> 2.2)
-    net-http2 (0.18.2)
-      http-2 (~> 0.10.1)
     netrc (0.11.0)
     nio4r (2.5.2)
     nokogiri (1.10.9)
@@ -286,7 +280,6 @@ GEM
       method_source
       rake (>= 0.8.7)
       thor (>= 0.19.0, < 2.0)
-    rainbow (3.0.0)
     rake (13.0.1)
     rb-fsevent (0.10.3)
     rb-inotify (0.10.1)
@@ -313,15 +306,6 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rexml (3.2.4)
-    rpush (5.0.0)
-      activesupport (>= 5.0)
-      jwt (>= 1.5.6)
-      multi_json (~> 1.0)
-      net-http-persistent
-      net-http2 (~> 0.14)
-      railties
-      rainbow
-      thor (>= 0.18.1, < 2.0)
     rqrcode (1.1.2)
       chunky_png (~> 1.0)
       rqrcode_core (~> 0.1)
@@ -433,7 +417,6 @@ DEPENDENCIES
   rails-erd
   ransack!
   redis
-  rpush
   rqrcode
   ruby-graphviz
   sass-rails (~> 5.0)
