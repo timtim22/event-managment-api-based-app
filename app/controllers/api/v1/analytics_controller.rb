@@ -107,7 +107,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
           creator_name: offer.user.business_profile.profile_name,
           creator_image: offer.user.avatar,
           description: offer.description,
-          validity: offer.validity.strftime(get_time_format),
+          validity: offer.validity,
           grabbers_count: offer.wallets.size,
           stats: stats
         }

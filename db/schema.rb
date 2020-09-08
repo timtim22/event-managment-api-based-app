@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_04_103925) do
+ActiveRecord::Schema.define(version: 2020_09_08_105527) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -140,7 +140,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_103925) do
     t.string "location", default: ""
     t.string "lat", default: ""
     t.string "lng", default: ""
-    t.date "validity"
+    t.datetime "validity"
     t.string "price", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -176,7 +176,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_103925) do
   create_table "events", force: :cascade do |t|
     t.string "name", default: ""
     t.datetime "start_date"
-    t.string "start_time", default: ""
+    t.datetime "start_time"
     t.string "external_link"
     t.string "host", default: ""
     t.text "description", default: ""
@@ -192,7 +192,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_103925) do
     t.integer "invitees", default: 0
     t.string "image", default: ""
     t.string "placeholder", default: "http://placehold.it/900x300"
-    t.string "end_time"
+    t.datetime "end_time"
     t.integer "user_id"
     t.string "event_type", default: "public"
     t.datetime "end_date"
@@ -325,7 +325,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_103925) do
   create_table "passes", force: :cascade do |t|
     t.string "title", default: ""
     t.text "description", default: ""
-    t.date "validity"
+    t.datetime "validity"
     t.integer "event_id"
     t.string "redeem_code", default: "0"
     t.datetime "created_at", null: false
@@ -511,7 +511,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_103925) do
   create_table "special_offers", force: :cascade do |t|
     t.string "title", default: ""
     t.text "description", default: ""
-    t.date "validity"
+    t.datetime "validity"
     t.text "terms_conditions", default: ""
     t.boolean "agreed_to_terms", default: false
     t.datetime "created_at", null: false
@@ -522,7 +522,7 @@ ActiveRecord::Schema.define(version: 2020_09_04_103925) do
     t.string "image", default: ""
     t.string "location", default: ""
     t.datetime "date"
-    t.string "end_time", default: ""
+    t.datetime "end_time"
     t.string "lat", default: ""
     t.string "lng", default: ""
     t.integer "user_id"
@@ -567,8 +567,8 @@ ActiveRecord::Schema.define(version: 2020_09_04_103925) do
     t.datetime "updated_at", null: false
     t.integer "per_head", default: 1
     t.string "title", default: ""
-    t.integer "start_price", default: 0
-    t.integer "end_price", default: 0
+    t.float "start_price", default: 0.0
+    t.float "end_price", default: 0.0
   end
 
   create_table "transactions", force: :cascade do |t|

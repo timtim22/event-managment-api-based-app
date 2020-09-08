@@ -19,8 +19,8 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
       creator_name: User.get_full_name(offer.user),
       creator_image: offer.user.avatar,
       description: offer.description,
-      validity: offer.validity.strftime(get_time_format),
-      end_time: offer.time.strftime(get_time_format), 
+      validity: offer.validity,
+      end_time: offer.time, 
       grabbers_count: offer.wallets.size,
       is_added_to_wallet: is_added_to_wallet?(offer.id),
       grabbers_friends_count: get_grabbers_friends_count(offer)
@@ -42,8 +42,8 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
         creator_name: User.get_full_name(offer.user),
         creator_image: offer.user.avatar,
         description: offer.description,
-        validity: offer.validity.strftime(get_time_format),
-        end_time: offer.time.strftime(get_time_format), 
+        validity: offer.validity,
+        end_time: offer.time, 
         grabbers_count: offer.wallets.size,
         is_added_to_wallet: is_added_to_wallet?(offer.id),
         grabbers_friends_count: get_grabbers_friends_count(offer)

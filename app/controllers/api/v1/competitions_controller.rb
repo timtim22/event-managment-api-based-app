@@ -31,7 +31,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
         creator_image: competition.user.avatar,
         creator_id: competition.user.id,
         is_followed: is_followed(competition.user),
-        validity: competition.validity.strftime(get_time_format),
+        validity: competition.validity,
         }
      end
     end #each
@@ -56,7 +56,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
       creator_image: competition.user.avatar,
       creator_id: competition.user.id,
       is_followed: is_followed(competition.user),
-      validity: competition.validity.strftime(get_time_format) 
+      validity: competition.validity
       }
     end #each
   end #if
