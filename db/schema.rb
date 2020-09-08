@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_08_105527) do
+ActiveRecord::Schema.define(version: 2020_09_08_120806) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -398,8 +398,8 @@ ActiveRecord::Schema.define(version: 2020_09_08_105527) do
   end
 
   create_table "registrations", force: :cascade do |t|
-    t.string "user_id"
-    t.string "event_id"
+    t.integer "user_id"
+    t.integer "event_id"
     t.string "event_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

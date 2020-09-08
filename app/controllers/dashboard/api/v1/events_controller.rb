@@ -128,8 +128,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     @event.image = params[:image]
     @event.start_date = params[:start_date]
     @event.end_date = params[:end_date]
-    @event.start_time = params[:start_time]
-    @event.end_time = params[:end_time]
+    @event.start_time = params['start_time']
+    @event.end_time = params['end_time']
     @event.over_18 = params[:over_18]
     @event.description = params[:description]
     @event.allow_chat = params[:allow_chat]
@@ -142,10 +142,11 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     @event.price = params[:price]
     @event.event_type = "mygo"
     @event.category_ids = params[:category_ids]
+    @error_messages = []
     if @event.save
       success = true
-    end
-    @error_messages = []
+   
+   
     # Admisssion sectiion
     if !params[:admission_resources].blank?
       params[:admission_resources].each do |resource|
@@ -197,6 +198,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
         end #each
       end#if
 
+    end#if
+
 
      if success
         render json:  {
@@ -218,6 +221,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
           data: nil
         }
       end
+    
 
   end
 
