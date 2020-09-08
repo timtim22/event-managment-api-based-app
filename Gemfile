@@ -31,7 +31,7 @@ gem 'font-awesome-sass', '~> 5.11.2'
 gem 'bootstrap', '~> 4.3.1'
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
-gem 'dotenv-rails'
+
 gem 'pubnub', '~> 4.2.2'
 gem 'pry'
 gem 'gon'
@@ -68,9 +68,9 @@ group :development do
   gem 'sqlite3'
 end
 
-group :production do
-  gem 'pg'
-end
+# group :production do
+#   gem 'pg'
+# end
 
 group :test do
   # Adds support for Capybara system testing and selenium driver
