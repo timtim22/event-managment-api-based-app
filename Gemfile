@@ -31,7 +31,7 @@ gem 'font-awesome-sass', '~> 5.11.2'
 gem 'bootstrap', '~> 4.3.1'
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
-
+gem 'dotenv-rails'
 gem 'pubnub', '~> 4.2.2'
 gem 'pry'
 gem 'gon'
@@ -55,7 +55,7 @@ gem 'google_places'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'ransack', github: 'activerecord-hackery/ransack'
 group :development, :test do
-gem 'dotenv-rails'
+
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
