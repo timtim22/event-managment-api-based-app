@@ -26,7 +26,7 @@ class Admin::EventsController < Admin::AdminMasterController
 	end
 
   def create
-
+     fail
     @pubnub = Pubnub.new(
       publish_key: ENV['PUBLISH_KEY'],
       subscribe_key: ENV['SUBSCRIBE_KEY']
