@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_08_131333) do
+ActiveRecord::Schema.define(version: 2020_09_08_131459) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -146,6 +146,7 @@ ActiveRecord::Schema.define(version: 2020_09_08_131333) do
     t.string "host", default: ""
     t.string "placeholder", default: "http://placehold.it/900x300"
     t.datetime "validity_time"
+    t.datetime "validity"
   end
 
   create_table "event_attachments", force: :cascade do |t|
@@ -339,6 +340,7 @@ ActiveRecord::Schema.define(version: 2020_09_08_131333) do
     t.datetime "valid_from"
     t.datetime "valid_to"
     t.string "pass_type", default: "ordinary"
+    t.datetime "validity"
   end
 
   create_table "password_resets", force: :cascade do |t|
@@ -525,6 +527,7 @@ ActiveRecord::Schema.define(version: 2020_09_08_131333) do
     t.datetime "time"
     t.string "ambassador_rate", default: "1"
     t.datetime "end_time"
+    t.datetime "validity"
   end
 
   create_table "sponsors", force: :cascade do |t|
