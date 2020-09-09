@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_08_131459) do
+ActiveRecord::Schema.define(version: 2020_09_02_053447) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -130,22 +130,22 @@ ActiveRecord::Schema.define(version: 2020_09_08_131459) do
     t.datetime "end_date"
     t.datetime "start_time"
     t.datetime "end_time"
-    t.string "location", default: ""
+    t.date "validity"
+    t.datetime "validity_time"
+    t.decimal "price", precision: 8, scale: 2, default: "0.0"
+    t.string "location"
     t.string "lat", default: ""
     t.string "lng", default: ""
-    t.string "price", default: ""
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.string "host", default: ""
     t.string "placeholder", default: "http://placehold.it/900x300"
-    t.datetime "validity_time"
-    t.datetime "validity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "event_attachments", force: :cascade do |t|
     t.integer "event_id"
     t.string "media"
-    t.string "media_type", default: "image"
+    t.string "media_type", default: "0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -167,35 +167,33 @@ ActiveRecord::Schema.define(version: 2020_09_08_131459) do
   end
 
   create_table "events", force: :cascade do |t|
+    t.integer "user_id"
     t.string "name", default: ""
     t.datetime "start_date"
-    t.string "external_link"
-    t.string "host", default: ""
-    t.text "description", default: ""
-    t.string "feature_media_link", default: ""
-    t.string "additional_media", default: ""
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "location", default: ""
-    t.boolean "over_18", default: false
-    t.boolean "event_forwarding", default: false
-    t.boolean "allow_chat", default: false
-    t.boolean "allow_additional_media", default: false
-    t.integer "invitees", default: 0
-    t.string "image", default: "http://via.placeholder.com/640x360"
-    t.string "placeholder", default: "http://placehold.it/900x300"
-    t.integer "user_id"
-    t.string "event_type", default: "public"
     t.datetime "end_date"
-    t.string "price_type", default: "free"
-    t.float "price", default: 0.0
-    t.string "lat", default: ""
-    t.string "lng", default: ""
-    t.string "eventbrite_image", default: ""
-    t.boolean "is_private", default: false
-    t.boolean "is_cancelled", default: false
     t.datetime "start_time"
     t.datetime "end_time"
+    t.text "description", default: ""
+    t.string "host", default: ""
+    t.string "location", default: ""
+    t.string "lat", default: ""
+    t.string "lng", default: ""
+    t.boolean "over_18", default: true
+    t.boolean "event_forwarding", default: false
+    t.boolean "allow_chat", default: true
+    t.boolean "allow_additional_media", default: true
+    t.integer "invitees", default: 0
+    t.string "image", default: ""
+    t.string "placeholder", default: "http://placehold.it/900x300"
+    t.string "feature_media_link", default: ""
+    t.string "event_type", default: "public"
+    t.string "price_type", default: "free"
+    t.decimal "price", precision: 8, scale: 2, default: "0.0"
+    t.decimal "start_price", precision: 8, scale: 2, default: "0.0"
+    t.decimal "end_price", precision: 8, scale: 2, default: "0.0"
+    t.boolean "is_cancelled", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "follow_requests", force: :cascade do |t|
@@ -316,24 +314,22 @@ ActiveRecord::Schema.define(version: 2020_09_08_131459) do
   end
 
   create_table "passes", force: :cascade do |t|
+    t.integer "event_id"
+    t.integer "user_id"
     t.string "title", default: ""
     t.text "description", default: ""
-    t.integer "event_id"
-    t.string "redeem_code", default: "0"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "user_id"
-    t.boolean "is_redeemed", default: false
+    t.date "validity"
+    t.datetime "validity_time"
+    t.integer "redeem_code", default: 0
     t.text "terms_conditions", default: ""
     t.boolean "agreed_to_terms", default: false
-    t.string "ambassador_name", default: ""
-    t.datetime "validity_time"
-    t.string "ambassador_rate", default: "1"
+    t.integer "ambassador_rate", default: 1
     t.integer "quantity", default: 1
     t.datetime "valid_from"
     t.datetime "valid_to"
     t.string "pass_type", default: "ordinary"
-    t.datetime "validity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "password_resets", force: :cascade do |t|
@@ -372,11 +368,10 @@ ActiveRecord::Schema.define(version: 2020_09_08_131459) do
 
   create_table "redemptions", force: :cascade do |t|
     t.integer "user_id"
-    t.string "offer_id"
+    t.string "pass_id"
     t.integer "code", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "offer_type"
   end
 
   create_table "refund_requests", force: :cascade do |t|
@@ -391,8 +386,8 @@ ActiveRecord::Schema.define(version: 2020_09_08_131459) do
   end
 
   create_table "registrations", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "event_id"
+    t.string "user_id"
+    t.string "event_id"
     t.string "event_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -439,25 +434,24 @@ ActiveRecord::Schema.define(version: 2020_09_08_131459) do
   end
 
   create_table "special_offers", force: :cascade do |t|
+    t.integer "user_id"
     t.string "title", default: ""
+    t.string "sub_title", default: ""
+    t.string "redeem_code", default: ""
+    t.string "image", default: ""
+    t.datetime "date"
+    t.datetime "time"
+    t.datetime "end_time"
+    t.date "validity"
     t.text "description", default: ""
+    t.string "location", default: ""
+    t.string "lat", default: ""
+    t.string "lng", default: ""
+    t.integer "ambassador_rate", default: 1
     t.text "terms_conditions", default: ""
     t.boolean "agreed_to_terms", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "is_redeemed", default: false
-    t.string "redeem_code", default: ""
-    t.string "sub_title", default: ""
-    t.string "image", default: ""
-    t.string "location", default: ""
-    t.datetime "date"
-    t.string "lat", default: ""
-    t.string "lng", default: ""
-    t.integer "user_id"
-    t.datetime "time"
-    t.string "ambassador_rate", default: "1"
-    t.datetime "end_time"
-    t.datetime "validity"
   end
 
   create_table "sponsors", force: :cascade do |t|
@@ -490,15 +484,15 @@ ActiveRecord::Schema.define(version: 2020_09_08_131459) do
   create_table "tickets", force: :cascade do |t|
     t.integer "user_id"
     t.integer "event_id"
-    t.string "ticket_type", default: "paid"
-    t.integer "price", default: 0
+    t.string "title", default: ""
+    t.string "ticket_type", default: "buy"
+    t.decimal "price", precision: 8, scale: 2, default: "0.0"
     t.integer "quantity", default: 1
+    t.integer "per_head", default: 1
+    t.decimal "start_price", precision: 8, scale: 2, default: "0.0"
+    t.decimal "end_price", precision: 8, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "per_head", default: 1
-    t.string "title", default: ""
-    t.float "start_price"
-    t.float "end_price"
   end
 
   create_table "transactions", force: :cascade do |t|
