@@ -52,7 +52,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
   # POST /users
   def create
 
-    required_fields = ['first_name', 'last_name','app_user','dob', 'device_token', 'gender','location', 'lat','lng','is_email_subscribed']
+    required_fields = ['first_name', 'last_name','app_user','dob', 'device_token', 'gender','is_email_subscribed']
     errors = []
     required_fields.each do |field|
       if params[field.to_sym].blank?
@@ -81,9 +81,11 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
       @profile.last_name = params[:last_name]
       @profile.device_token = params[:device_token]
       @profile.gender = params[:gender]
-      @profile.location = params[:location]
-      @profile.lat = params[:lat]
-      @profile.lng = params[:lng]
+      if !params{:location].blank?
+        @profile.location = params[:location]
+        @profile.lat = params[:lat]
+        @profile.lng = params[:lng]
+      end
       @profile.is_email_subscribed = params[:is_email_subscribed]
       @profile.save
       @profile_data = {}
