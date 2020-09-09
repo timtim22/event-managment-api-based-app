@@ -345,7 +345,6 @@ ActiveRecord::Schema.define(version: 2020_09_02_053447) do
     t.string "last_name", default: ""
     t.string "device_token", default: ""
     t.datetime "dob"
-    t.string "phone_number", default: ""
     t.text "about", default: ""
     t.string "gender", default: ""
     t.string "location", default: ""
@@ -520,18 +519,19 @@ ActiveRecord::Schema.define(version: 2020_09_02_053447) do
 
   create_table "users", force: :cascade do |t|
     t.string "email"
+    t.string "verification_code", default: ""
+    t.string "avatar", default: "avatar.png"
+    t.string "phone_number", default: ""
+    t.boolean "app_user", default: false
+    t.boolean "phone_verified", default: false
+    t.string "stripe_state", default: ""
+    t.string "connected_account_id", default: ""
+    t.string "is_email_verified", default: "f"
+    t.string "web_user", default: "f"
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "verification_code"
-    t.string "avatar", default: "avatar.png"
-    t.string "phone_number"
-    t.boolean "app_user", default: false
-    t.boolean "phone_verified", default: false
-    t.string "stripe_state", default: "no state"
-    t.string "connected_account_id", default: "no account"
-    t.boolean "is_email_verified", default: false
-    t.boolean "web_user", default: false
+    t.string "contact_name"
   end
 
   create_table "views", force: :cascade do |t|

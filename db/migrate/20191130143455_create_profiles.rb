@@ -6,7 +6,6 @@ class CreateProfiles < ActiveRecord::Migration[5.2]
       t.string :last_name, default: ''
       t.string :device_token, default: ''
       t.datetime :dob
-      t.string :phone_number, default: ''
       t.text :about, default: ''
       t.string :gender, default: ''
       t.string :location, default: ''
