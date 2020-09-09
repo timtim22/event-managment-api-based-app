@@ -340,30 +340,30 @@ ActiveRecord::Schema.define(version: 2020_09_02_053447) do
   end
 
   create_table "profiles", force: :cascade do |t|
-    t.string "about", default: ""
-    t.boolean "add_social_media_links", default: false
-    t.string "facebook", default: ""
-    t.string "twitter", default: ""
-    t.string "snapchat", default: ""
-    t.string "instagram", default: ""
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "linkedin", default: "Not connected"
-    t.string "youtube", default: ""
-    t.integer "ranking", default: 1
     t.string "first_name", default: ""
     t.string "last_name", default: ""
     t.string "device_token", default: ""
     t.datetime "dob"
+    t.string "phone_number", default: ""
+    t.text "about", default: ""
     t.string "gender", default: ""
     t.string "location", default: ""
     t.string "lat", default: ""
     t.string "lng", default: ""
-    t.integer "earning", default: 0
     t.boolean "is_email_subscribed", default: false
+    t.decimal "earning", precision: 8, scale: 2, default: "0.0"
     t.boolean "is_ambassador", default: false
-    t.index ["user_id"], name: "index_profiles_on_user_id"
+    t.integer "ranking", default: 0
+    t.boolean "add_social_media_links"
+    t.string "facebook", default: ""
+    t.string "twitter", default: ""
+    t.string "snapchat", default: ""
+    t.string "instagram", default: ""
+    t.string "linkedin", default: ""
+    t.string "youtube", default: ""
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "redemptions", force: :cascade do |t|
