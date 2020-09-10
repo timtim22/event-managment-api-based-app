@@ -46,6 +46,7 @@ class User < ApplicationRecord
   has_many :offer_shares, dependent: :destroy
   has_many :reported_events, dependent: :destroy
   has_many :replies, dependent: :destroy
+  has_many :to_me_replies, foreign_key: :reply_to_id, class_name: 'Reply', dependent: :destroy
   has_many :ticket_purchases, dependent: :destroy
   has_many :tickets, dependent: :destroy
   has_many :received_payments, foreign_key: :payee_id, class_name: 'Transaction', dependent: :destroy

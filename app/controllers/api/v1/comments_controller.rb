@@ -239,6 +239,14 @@ end
           "read_at" => comment.read_at,
           "reader_id" => comment.reader_id
         }
+        comment.replies.each do |reply|
+        reply_modified = {
+          "id" => reply.id,
+          "from" => get_full_name(reply.user),
+          "avatar" => reply.user.avatar,
+          "reply_to" =>  reply.reply_to_user
+        }
+      end
         @comments << {
           "comment" => comment_modified,
           "replies" => comment.replies
