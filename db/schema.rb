@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_10_110341) do
+ActiveRecord::Schema.define(version: 2020_09_10_140451) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -527,12 +527,11 @@ ActiveRecord::Schema.define(version: 2020_09_10_110341) do
     t.boolean "phone_verified", default: false
     t.string "stripe_state", default: ""
     t.string "connected_account_id", default: ""
-    t.string "is_email_verified", default: "f"
-    t.string "web_user", default: "f"
+    t.boolean "is_email_verified", default: false
+    t.boolean "web_user", default: false
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "contact_name"
   end
 
   create_table "views", force: :cascade do |t|

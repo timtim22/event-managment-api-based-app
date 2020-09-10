@@ -247,6 +247,7 @@ end
           "comment" => reply.msg,
           "from" => get_full_name(reply.user),
           "avatar" => reply.user.avatar,
+          "created_at" => reply.created_at,
           "reply_to" =>  if !reply.reply_to_user.blank?  then reply.reply_to_user else @empty end
         }
       end
@@ -259,6 +260,7 @@ end
       blocked_at = request_user.user_settings.where(resource: @event).first.created_at
       @comments = @event.comments.where(['created_at < ?', blocked_at])
     end
+ 
     render json: {
      code: 200,
      success: true,
