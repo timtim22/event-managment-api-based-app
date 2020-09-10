@@ -229,8 +229,20 @@ end
     ## if event is not blocked by request user
     if !blocked_event?(request_user, @event)
       @event.comments.each do |comment|
+        comment_modified = {
+          "id" =>  comment.id,
+          "comment" => comment.comment,
+          "user_id" => comment.user_id,
+          "event_id" => comment.event_id,
+          "created_at" => comment.created_at,
+          "updated_at" => comment.updated_at,
+          "from" => User.get_full_name(comment.user),
+          "user_avatar" => comment.user.avatar,
+          "read_at" => comment.read_at,
+          "reader_id" => comment.reader_id
+        }
         @comments << {
-          "comment" => comment,
+          "comment" => comment_modified,
           "replies" => comment.replies
         }
       end 
