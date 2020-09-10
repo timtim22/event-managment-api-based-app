@@ -55,7 +55,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
         'admission_resources' => admission_resources, 
         'sponsors' => sponsors,
         'event_attachments' => additional_media,
-        'creator_name' => User.get_full_name(e.user),
+        'creator_name' => get_full_name(e.user),
         'creator_id' => e.user.id,
         'creator_image' => e.user.avatar,
      }

@@ -25,7 +25,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     User.all.each do |user|
      users << {
       "id" =>  user.id,
-      "profile_name" => User.get_full_name(user),
+      "profile_name" => get_full_name(user),
       "email" => user.email,
       "avatar" => user.avatar,
       "phone_number" => user.phone_number,
@@ -52,7 +52,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
   # POST /users
   def create
 
-    required_fields = ['first_name', 'last_name','app_user','dob', 'device_token', 'gender','is_email_subscribed']
+    required_fields = ['first_name', 'last_name','app_user','dob', 'device_token', 'gender','is_email_subscribed', 'type']
     errors = []
     required_fields.each do |field|
       if params[field.to_sym].blank?
@@ -293,7 +293,7 @@ end
       lng: competition.lng,
       image: competition.image.url,
       friends_participants_count: competition.registrations.map {|reg| if(request_user.friends.include? reg.user) then reg.user end }.size,
-      creator_name: User.get_full_name(competition.user),
+      creator_name: get_full_name(competition.user),
       creator_image: competition.user.avatar,
       validity: competition.validity
       }
@@ -305,18 +305,18 @@ end
         when 'Event'
          resource['id'] = log.resource_id
          resource['name'] = log.resource.name
-         resource['host_name'] = User.get_full_name(log.resource.user)
+         resource['host_name'] = get_full_name(log.resource.user)
          resource['location'] = log.resource.location
          resource['start_date'] = log.resource.start_date
          resource['interested_people_count'] = log.resource.interest_levels.size
 
         when 'FriendRequest'
-        resource["friend_name"] = User.get_full_name(log.resource.user)
+        resource["friend_name"] = get_full_name(log.resource.user)
         resource['friends_count'] = log.resource.user.friends.size
         resource['mutual_friends_count'] = request_user.friends.size
 
         when 'Follow'
-        resource['name'] = User.get_full_name(log.resource.following)
+        resource['name'] = get_full_name(log.resource.following)
         resource['followers_count'] = log.resource.following.followers.size
         resource['mututal_followers_count'] = request_user.followings.size
 
@@ -325,28 +325,28 @@ end
 
         when 'Pass'
           resource['title'] = log.resource.title
-          resource['host_name'] = User.get_full_name(log.resource.user)
+          resource['host_name'] = get_full_name(log.resource.user)
           resource['location'] = log.resource.event.location
           resource['start_date'] = log.resource.event.start_date
           resource['grabbers_counts'] = log.resource.wallets.size
 
         when 'SpecialOffer'
           resource['title'] = log.resource.title
-          resource['host_name'] = User.get_full_name(log.resource.user)
+          resource['host_name'] = get_full_name(log.resource.user)
           resource['location'] = log.resource.location
           resource['start_date'] = log.resource.date
           resource['grabbers_counts'] = log.resource.wallets.size
           
         when 'Competition'
           resource['title'] = log.resource.title
-          resource['host_name'] = User.get_full_name(log.resource.user)
+          resource['host_name'] = get_full_name(log.resource.user)
           resource['location'] = log.resource.location
           resource['validity'] = log.resource.validity_time
 
         when 'OfferForwarding'
           resource['title'] = log.resource.offer.title
-          resource['host_name'] = User.get_full_name(log.resource.user)
-          resource['forwarded_to'] =  User.get_full_name(log.resource.recipient)
+          resource['host_name'] = get_full_name(log.resource.user)
+          resource['forwarded_to'] =  get_full_name(log.resource.recipient)
           
         else
           "do nothing"
@@ -485,7 +485,7 @@ end
     lng: competition.lng,
     image: competition.image.url,
     friends_participants_count: competition.registrations.map {|reg| if(request_user.friends.include? reg.user) then reg.user end }.size,
-    creator_name: User.get_full_name(competition.user),
+    creator_name: get_full_name(competition.user),
     creator_image: competition.user.avatar,
     validity: competition.validity
     }
@@ -497,18 +497,18 @@ end
       when 'Event'
        resource['id'] = log.resource_id
        resource['name'] = log.resource.name
-       resource['host_name'] = User.get_full_name(log.resource.user)
+       resource['host_name'] = get_full_name(log.resource.user)
        resource['location'] = log.resource.location
        resource['start_date'] = log.resource.start_date
        resource['interested_people_count'] = log.resource.interest_levels.size
 
       when 'FriendRequest'
-      resource["friend_name"] = User.get_full_name(log.resource.user)
+      resource["friend_name"] = get_full_name(log.resource.user)
       resource['friends_count'] = log.resource.user.friends.size
       resource['mutual_friends_count'] = request_user.friends.size
 
       when 'Follow'
-      resource['name'] = User.get_full_name(log.resource.following)
+      resource['name'] = get_full_name(log.resource.following)
       resource['followers_count'] = log.resource.following.followers.size
       resource['mututal_followers_count'] = request_user.followings.size
 
@@ -517,28 +517,28 @@ end
 
       when 'Pass'
         resource['title'] = log.resource.title
-        resource['host_name'] = User.get_full_name(log.resource.user)
+        resource['host_name'] = get_full_name(log.resource.user)
         resource['location'] = log.resource.event.location
         resource['start_date'] = log.resource.event.start_date
         resource['grabbers_counts'] = log.resource.wallets.size
 
       when 'SpecialOffer'
         resource['title'] = log.resource.title
-        resource['host_name'] = User.get_full_name(log.resource.user)
+        resource['host_name'] = get_full_name(log.resource.user)
         resource['location'] = log.resource.location
         resource['start_date'] = log.resource.date
         resource['grabbers_counts'] = log.resource.wallets.size
         
       when 'Competition'
         resource['title'] = log.resource.title
-        resource['host_name'] = User.get_full_name(log.resource.user)
+        resource['host_name'] = get_full_name(log.resource.user)
         resource['location'] = log.resource.location
         resource['validity'] = log.resource.validity_time
 
       when 'OfferForwarding'
         resource['title'] = log.resource.offer.title
-        resource['host_name'] = User.get_full_name(log.resource.user)
-        resource['forwarded_to'] =  User.get_full_name(log.resource.recipient)
+        resource['host_name'] = get_full_name(log.resource.user)
+        resource['forwarded_to'] =  get_full_name(log.resource.recipient)
         
       else
         "do nothing"

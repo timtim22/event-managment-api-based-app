@@ -88,7 +88,7 @@ class Admin::PassesController < Admin::AdminMasterController
         if !current_user.followers.blank?
           current_user.followers.each do |follower|
       if follower.passes_notifications_setting.is_on == true 
-        if @notification = Notification.create!(recipient: follower, actor: current_user, action: User.get_full_name(current_user) + " created a new pass '#{@pass.title}'.", notifiable: @pass, url: "/admin/passes/#{@pass.id}", notification_type: 'mobile', action_type: 'create_pass') 
+        if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new pass '#{@pass.title}'.", notifiable: @pass, url: "/admin/passes/#{@pass.id}", notification_type: 'mobile', action_type: 'create_pass') 
           @channel = "event" #encrypt later
           @current_push_token = @pubnub.add_channels_to_push(
            push_token: follower.profile.device_token,
@@ -99,7 +99,7 @@ class Admin::PassesController < Admin::AdminMasterController
            payload = { 
             "pn_gcm":{
              "notification":{
-               "title": User.get_full_name(current_user),
+               "title": get_full_name(current_user),
                "body": @notification.action
              },
              data: {

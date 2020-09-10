@@ -22,7 +22,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
      competition.competition_winners.each do |winner|
        winners << {
          "id" => winner.user.id,
-         "name" => User.get_full_name(winner.user),
+         "name" => get_full_name(winner.user),
          "avatar" => winner.user.avatar
        }
      end
@@ -65,7 +65,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
       if !request_user.followers.blank?
         request_user.followers.each do |follower|
    if follower.competitions_notifications_setting.is_on == true
-      if @notification = Notification.create!(recipient: follower, actor: request_user, action: User.get_full_name(request_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition') 
+      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition') 
   
         @current_push_token = @pubnub.add_channels_to_push(
          push_token: follower.device_token,
@@ -76,7 +76,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
          payload = { 
           "pn_gcm":{
            "notification":{
-             "title": User.get_full_name(request_user),
+             "title": get_full_name(request_user),
              "body": @notification.action
            },
            data: {

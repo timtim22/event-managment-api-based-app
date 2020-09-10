@@ -43,7 +43,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
             )
           current_user.followers.each do |follower|
      if follower.special_offers_notifications_setting.is_on == true 
-        if @notification = Notification.create!(recipient: follower, actor: current_user, action: User.get_full_name(current_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event') 
+        if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event') 
           @channel = "event" #encrypt later
           @current_push_token = @pubnub.add_channels_to_push(
            push_token: follower.profile.device_token,
@@ -54,7 +54,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
            payload = { 
             "pn_gcm":{
              "notification":{
-               "title": User.get_full_name(current_user),
+               "title": get_full_name(current_user),
                "body": @notification.action
              },
              data: {
@@ -116,7 +116,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
       if !current_user.followers.blank?
         current_user.followers.each do |follower|
     if follower.special_offers_notifications_setting.is_on == true 
-      if @notification = Notification.create!(recipient: follower, actor: current_user, action: User.get_full_name(current_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'update_special_offer') 
+      if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'update_special_offer') 
         @channel = "event" #encrypt later
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
@@ -132,7 +132,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
          payload = { 
           "pn_gcm":{
            "notification":{
-             "title": User.get_full_name(current_user),
+             "title": get_full_name(current_user),
              "body": @notification.action
            },
            data: {

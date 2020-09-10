@@ -13,9 +13,9 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
     if check.blank?
     if  @ambassador_request = @business.business_ambassador_requests.create!(user_id: request_user.id)
       
-      #create_activity(request_user, "sent ambassador request to #{User.get_full_name(@business)}", @ambassador_request, 'AmbassadorRequest', '', '', 'post', 'ambassador_request')
+      #create_activity(request_user, "sent ambassador request to #{get_full_name(@business)}", @ambassador_request, 'AmbassadorRequest', '', '', 'post', 'ambassador_request')
 
-      if @notification = Notification.create(recipient: @business, actor: request_user, action: User.get_full_name(request_user) + " sent you ambassador request", notifiable: @ambassador_request, url: '/admin/ambassadors', notification_type: 'web', action_type: 'send_request')  
+      if @notification = Notification.create(recipient: @business, actor: request_user, action: get_full_name(request_user) + " sent you ambassador request", notifiable: @ambassador_request, url: '/admin/ambassadors', notification_type: 'web', action_type: 'send_request')  
         @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -110,7 +110,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           lat: offer.lat,
           lng: offer.lng,
           image: offer.image.url,
-          creator_name: User.get_full_name(offer.user),
+          creator_name: get_full_name(offer.user),
           creator_image: offer.user.avatar,
           description: offer.description,
           validity: offer.validity,

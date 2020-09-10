@@ -114,7 +114,7 @@ class Admin::PaymentsController < Admin::AdminMasterController
   def reject_refund
       @refund_request = RefundRequest.find(params[:id])
       if @refund_request.update!(status: 'rejected')
-        if @notification = Notification.create(recipient: @refund_request.user, actor: @refund_request.ticket.user, action: User.get_full_name(@refund_request.ticket.user) + " rejected your refund request.", notifiable: @refund_request, url: '/admin/payments/refund-requests', notification_type: 'mobile', action_type: 'reject_request')  
+        if @notification = Notification.create(recipient: @refund_request.user, actor: @refund_request.ticket.user, action: get_full_name(@refund_request.ticket.user) + " rejected your refund request.", notifiable: @refund_request, url: '/admin/payments/refund-requests', notification_type: 'mobile', action_type: 'reject_request')  
           @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -129,7 +129,7 @@ class Admin::PaymentsController < Admin::AdminMasterController
           payload = { 
           "pn_gcm":{
             "notification":{
-              "title": User.get_full_name(@refund_request.ticket.user),
+              "title": get_full_name(@refund_request.ticket.user),
               "body": @notification.action
             },
             data: {

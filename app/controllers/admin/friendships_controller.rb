@@ -12,7 +12,7 @@ class Admin::FriendshipsController < Admin::AdminMasterController
       @friend_request.status = "pending"
     if @friend_request.save
       #create_activity("sent friend request to #{@friend.first_name + ' ' + @friend.last_name}", @friend_request, "FriendRequest", '','', 'post')
-     if @notification = Notification.create(recipient: @friend, actor: @sender, action: User.get_full_name(@sender) + " sent you a friend request", notifiable: @friend_request, url: '/admin/friend-requests', notification_type: 'web')  
+     if @notification = Notification.create(recipient: @friend, actor: @sender, action: get_full_name(@sender) + " sent you a friend request", notifiable: @friend_request, url: '/admin/friend-requests', notification_type: 'web')  
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -76,7 +76,7 @@ def accept_request
     new_request.status = 'accepted'
     if new_request.save
        # send notifiation as well
-     if @notification = Notification.create(recipient: request.user, actor: current_user, action: User.get_full_name(current_user) + " accepted your friend request", notifiable: request, url: '/admin/my-friends', notification_type: 'web')
+     if @notification = Notification.create(recipient: request.user, actor: current_user, action: get_full_name(current_user) + " accepted your friend request", notifiable: request, url: '/admin/my-friends', notification_type: 'web')
      flash[:notice] = "Friend request accepted."
      #publish notification to pubnub as well
      @pubnub = Pubnub.new(

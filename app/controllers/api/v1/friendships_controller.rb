@@ -17,8 +17,8 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
     @friend_request = @sender.friend_requests.new(friend: @friend)
     @friend_request.status = "pending"
     if @friend_request.save
-      #create_activity("sent friend request to #{User.get_full_name(@friend)}", @friend_request, 'FriendRequest', '', '', 'post', 'send_friend_request')
-      if @notification = Notification.create(recipient: @friend, actor: @sender, action: User.get_full_name(@sender) + " sent you a friend request", notifiable: @friend_request, url: '/admin/friend-requests', notification_type: 'mobile', action_type: 'send_request')  
+      #create_activity("sent friend request to #{get_full_name(@friend)}", @friend_request, 'FriendRequest', '', '', 'post', 'send_friend_request')
+      if @notification = Notification.create(recipient: @friend, actor: @sender, action: get_full_name(@sender) + " sent you a friend request", notifiable: @friend_request, url: '/admin/friend-requests', notification_type: 'mobile', action_type: 'send_request')  
         @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -33,7 +33,7 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
         payload = { 
         "pn_gcm":{
           "notification": {
-            "title": User.get_full_name(@friend),
+            "title": get_full_name(@friend),
             "body": @notification.action
           },
           data: {
@@ -144,7 +144,7 @@ def accept_request
       @notification =  Notification.where(notifiable_id: request.id).where(notifiable_type: 'FriendRequest').first.destroy
      
       
-      if @notification = Notification.create(recipient: request.user, actor: request_user, action: User.get_full_name(request_user) + " accepted your friend request", notifiable: request, url: '/admin/my-friends', notification_type: 'mobile', action_type: 'accept_request')  
+      if @notification = Notification.create(recipient: request.user, actor: request_user, action: get_full_name(request_user) + " accepted your friend request", notifiable: request, url: '/admin/my-friends', notification_type: 'mobile', action_type: 'accept_request')  
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -158,7 +158,7 @@ def accept_request
           payload = { 
             "pn_gcm":{
               "notification":{
-                "title": User.get_full_name(request_user),
+                "title": get_full_name(request_user),
                 "body": @notification.action
               },
               data: {
@@ -213,7 +213,7 @@ def remove_request
    @notification =  Notification.where(notifiable_id: friend_request.id).where(notifiable_type: 'FriendRequest').first.destroy
   if friend_request.destroy
     
-    #create_activity(request_user, "removed friend request of #{User.get_full_name(friend_request.user)}", friend_request, 'FriendRequest', '', '', 'post', 'remove_friend_request')
+    #create_activity(request_user, "removed friend request of #{get_full_name(friend_request.user)}", friend_request, 'FriendRequest', '', '', 'post', 'remove_friend_request')
     
     render json: {
       code: 200,
@@ -265,7 +265,7 @@ def remove_friend
     @requests.destroy_all
     #create activity
     @request = FriendRequest.find_by(friend_id: params[:friend_id])
-    #create_activity("removed #{User.get_full_name(User.find(params[:friend_id]))} from your friend list", @request, 'FriendRequest', '', '', 'post')
+    #create_activity("removed #{get_full_name(User.find(params[:friend_id]))} from your friend list", @request, 'FriendRequest', '', '', 'post')
     render json: {
       code: 200, 
       success: true,
@@ -379,7 +379,7 @@ end
        followers.each do |follower|
        details << {
            "id" => follower.id,
-           "name" => User.get_full_name(follower),
+           "name" => get_full_name(follower),
            "avatar" => follower.avatar,
            "is_request_sent" => request_status(request_user, follower),
            "is_friend" => is_friend?(request_user, follower),
@@ -397,7 +397,7 @@ end
          followings.each do |following|
         details << {
             "id" => following.id,
-            "name" => User.get_full_name(following),
+            "name" => get_full_name(following),
             "avatar" => following.avatar,
             "is_request_sent" => false,
             "is_friend" => false,
@@ -414,7 +414,7 @@ end
         friends.each do |friend|
         details << {
             "id" => friend.id,
-            "name" => User.get_full_name(friend),
+            "name" => get_full_name(friend),
             "avatar" => friend.avatar,
             "is_request_sent" => request_status(request_user, friend),
             "is_friend" => is_friend?(request_user, friend),

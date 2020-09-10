@@ -11,7 +11,7 @@ class Admin::AmbassadorsController < Admin::AdminMasterController
     ambassador.user.profile.update!(is_ambassador: true)
     if ambassador.save
       #create business activity
-      create_activity(current_user, " approved #{User.get_full_name(ambassador.user)} as an ambassador ", ambassador, 'AmbassadorRequest', '', '', 'post', 'approved_ambassador')
+      create_activity(current_user, " approved #{get_full_name(ambassador.user)} as an ambassador ", ambassador, 'AmbassadorRequest', '', '', 'post', 'approved_ambassador')
       create_activity(ambassador.user, "become ambassador ", ambassador, 'AmbassadorRequest', '', '', 'post', 'become_ambassador')
        #create ambassador activity
       flash[:notice] = "Ambassador successfully approved."

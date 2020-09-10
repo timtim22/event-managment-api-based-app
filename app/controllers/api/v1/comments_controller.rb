@@ -15,18 +15,16 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
      @comment = @event.comments.new
      @comment.user = request_user
      @comment.user_avatar = request_user.avatar
-     @comment.from = User.get_full_name(request_user) 
+     @comment.from = get_full_name(request_user) 
      @comment.comment = params[:comment]
      if @comment.save
       # resource should be parent resource in case of api so that event id should be available in order to show event based comment.
-      action_arg = "commented on event '#{@event.name}'";
-      create_activity(action_arg, @event, 'Event', admin_event_path(@event), @event.name, 'post')
       # Notify the event owner as well
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
        )
-     if @notification = Notification.create(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else User.get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')  
+     if @notification = Notification.create(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')  
         @pubnub.publish(
           channel: [@event.user.id.to_s],
           message: { 
@@ -47,7 +45,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
         @comment_users.uniq.each do |comment_user|
       if comment_user != request_user
       
-        if @notification = Notification.create(recipient: comment_user, actor: request_user, action: User.get_full_name(request_user) + " commented on event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')  
+        if @notification = Notification.create(recipient: comment_user, actor: request_user, action: get_full_name(request_user) + " commented on event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')  
 
          if !event_chat_muted?(comment_user, @event) && comment_user.all_chat_notifications_setting.is_on == true && comment_user.event_notifications_setting.is_on == true
 
@@ -65,7 +63,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
              },
              data: {
               "id": @notification.id,
-              "sender_name": User.get_full_name(request_user),
+              "sender_name": get_full_name(request_user),
               "actor_id": @notification.actor_id,
               "actor_image": @notification.actor.avatar,
               "notifiable_id": @notification.notifiable_id,
@@ -107,7 +105,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
         
          @comment = Comment.find(params[:comment_id])
         
-      if @reply = @comment.replies.create!(user: request_user, msg: params[:msg])
+      if @reply = @comment.replies.create!(user: request_user, msg: params[:comment])
        # resource should be parent resource in case of api so that event id should be available in order to show event based comment.
        action_arg = "commented on event '#{@event.name}'";
       # create_activity(action_arg, @event, 'Event', admin_event_path(@event), @event.name, 'post')
@@ -116,7 +114,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          publish_key: ENV['PUBLISH_KEY'],
          subscribe_key: ENV['SUBSCRIBE_KEY']
         )
-      if @notification = Notification.create!(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else User.get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')  
+      if @notification = Notification.create!(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')  
          @pubnub.publish(
            channel: [@event.user.id.to_s],
            message: { 
@@ -137,7 +135,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          @comment_users.uniq.each do |comment_user|
        if comment_user != request_user
        
-         if @notification = Notification.create(recipient: comment_user, actor: request_user, action: User.get_full_name(request_user) + " replied to a comment on event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')  
+         if @notification = Notification.create(recipient: comment_user, actor: request_user, action: get_full_name(request_user) + " replied to a comment on event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')  
  
           if !event_chat_muted?(comment_user, @event) && comment_user.all_chat_notifications_setting.is_on == true && comment_user.event_notifications_setting.is_on == true
  
@@ -155,7 +153,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
               },
               data: {
                "id": @notification.id,
-               "sender_name": User.get_full_name(request_user),
+               "sender_name": get_full_name(request_user),
                "actor_id": @notification.actor_id,
                "actor_image": @notification.actor.avatar,
                "notifiable_id": @notification.notifiable_id,
@@ -236,7 +234,7 @@ end
           "event_id" => comment.event_id,
           "created_at" => comment.created_at,
           "updated_at" => comment.updated_at,
-          "from" => User.get_full_name(comment.user),
+          "from" => get_full_name(comment.user),
           "user_avatar" => comment.user.avatar,
           "read_at" => comment.read_at,
           "reader_id" => comment.reader_id
@@ -269,7 +267,7 @@ end
        @events << {
         'id' => e.id,
         'name' => e.name,
-        'creator_name' => User.get_full_name(e.user),
+        'creator_name' => get_full_name(e.user),
         'creator_id' => e.user.id,
         'creator_image' => e.user.avatar,
         "is_blocked" => blocked_event?(request_user, e),
@@ -284,7 +282,7 @@ end
        success: true,
        message: '',
        data: {
-         commented_events: @events.uniq
+         commented_events: if @events.size > 1 then @events.uniq! {|e| e[:id] } else @events end
        }
      }
    end

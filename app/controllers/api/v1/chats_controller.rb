@@ -35,7 +35,7 @@ def send_message
   @channel = @chat_channel.name
   end
   
- @message = @sender.messages.new(recipient_id: @recipient.id, message: params[:message], from: User.get_full_name(@sender), user_avatar: @sender.avatar)
+ @message = @sender.messages.new(recipient_id: @recipient.id, message: params[:message], from: get_full_name(@sender), user_avatar: @sender.avatar)
 
 if @message.save
 
@@ -55,7 +55,7 @@ payload = {
     "id": @message.id,
     "actor_id": request_user.id,
     "actor_image": request_user.avatar,
-    "sender_name": User.get_full_name(request_user),
+    "sender_name": get_full_name(request_user),
     "notifiable_id": '',
     "notifiable_type": 'chat',
     "action": '',

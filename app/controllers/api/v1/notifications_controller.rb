@@ -50,7 +50,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       askee_ids_array.each do |id|
      
       @askee = User.find(id)
-      if @notification = Notification.create!(recipient: @askee, actor: request_user, action: User.get_full_name(request_user) + " is asking for your current location.", notifiable: @askee, url: "/admin/users/#{@askee.id}", notification_type: 'mobile',action_type: 'ask_location')  
+      if @notification = Notification.create!(recipient: @askee, actor: request_user, action: get_full_name(request_user) + " is asking for your current location.", notifiable: @askee, url: "/admin/users/#{@askee.id}", notification_type: 'mobile',action_type: 'ask_location')  
         @location_request = LocationRequest.create!(user_id: request_user.id, askee_id: id, notification_id: @notification.id) 
         @current_push_token = @pubnub.add_channels_to_push(
           push_token: @askee.profile.device_token,
@@ -62,7 +62,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           payload = { 
             "pn_gcm":{
               "notification":{
-                "title": User.get_full_name(request_user),
+                "title": get_full_name(request_user),
                 "body": @notification.action
               },
               data: {
@@ -126,7 +126,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
        )
-      if @notification = Notification.create(recipient: @asker, actor: request_user, action: User.get_full_name(request_user) + " has sent you #{if request_user.gender ==  'male' then 'his' else 'her' end } current location.", notifiable: @askee, url: "/admin/users/#{@asker.id}", notification_type: 'mobile', action_type: 'get_location')  
+      if @notification = Notification.create(recipient: @asker, actor: request_user, action: get_full_name(request_user) + " has sent you #{if request_user.gender ==  'male' then 'his' else 'her' end } current location.", notifiable: @askee, url: "/admin/users/#{@asker.id}", notification_type: 'mobile', action_type: 'get_location')  
         
         @current_push_token = @pubnub.add_channels_to_push(
           push_token: @asker.profile.device_token,
@@ -138,7 +138,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
            payload = { 
             "pn_gcm":{
               "notification":{
-                "title": User.get_full_name(request_user),
+                "title": get_full_name(request_user),
                 "body": @notification.action
               },
               data: {
@@ -203,7 +203,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
          ids_array.each do |id|
          
           @recipient = User.find(id)
-         if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: User.get_full_name(request_user) + " has sent you #{if request_user.profile.gender ==  'male' then 'his' else 'her' end } current location.", notifiable: @recipient, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "send_location")
+         if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{if request_user.profile.gender ==  'male' then 'his' else 'her' end } current location.", notifiable: @recipient, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "send_location")
 
           @location_share = LocationShare.create!(user_id: request_user.id, recipient_id: id, lat:params[:lat], lng: params[:lng], notification_id: @notification.id)
 
@@ -216,7 +216,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             payload = { 
             "pn_gcm":{
               "notification":{
-                "title": User.get_full_name(request_user),
+                "title": get_full_name(request_user),
                 "body": @notification.action
               },
               data: {

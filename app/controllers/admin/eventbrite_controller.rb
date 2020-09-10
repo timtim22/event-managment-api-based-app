@@ -41,7 +41,7 @@ def import_events
       "end_time" => key.end["local"].split("T",2)[1],
       "venue_id" => key.venue_id,
       'category_id' => key.category_id,
-      'host' => User.get_full_name(current_user)
+      'host' => get_full_name(current_user)
       # 'lat' => getLocation(key.venue_id,header)['latitude'],
       # 'lng' => getLocation(key.venue_id,header)['longitude']
     }

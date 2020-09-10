@@ -13,7 +13,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
        "total_competitions" => @business.competitions.size,
        "total_offers" => @business.special_offers.size.to_i + @business.passes.size.to_i,
        "total_followers" => @business.followers.size,
-       "business_name" => User.get_full_name(@business),
+       "business_name" => get_full_name(@business),
        "business_logo" => @business.avatar,
      }
     case resource

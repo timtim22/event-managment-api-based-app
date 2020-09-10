@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
   def SetJsVariables
     if current_user
        channel = current_user.id
-       name = User.get_full_name(current_user)
+       name = get_full_name(current_user)
     end
     gon.push({
     :authenticity_token => form_authenticity_token,
@@ -148,6 +148,14 @@ class ApplicationController < ActionController::Base
   def is_business?(user)
     role_ids = user.roles.map {|role| role.id }
     role_ids.include? 2  
+  end
+
+  def get_full_name(user)
+    if is_business?(user)
+      name = user.business_profile.profile_name
+     elsif(user.web_user ==  true)
+      name = user.profile.first_name + " " + user.profile.last_name    
+     end
   end
 
   def is_admin_or_super_admin?(user)
@@ -383,7 +391,7 @@ class ApplicationController < ActionController::Base
       lat: offer.lat,
       lng: offer.lng,
       image: offer.image.url,
-      creator_name: User.get_full_name(offer.user),
+      creator_name: get_full_name(offer.user),
       creator_image: offer.user.avatar,
       description: offer.description,
       validity: offer.validity.strftime(get_time_format),
@@ -720,5 +728,6 @@ end
   helper_method :is_admin_or_super_admin?
   helper_method :create_activity
   helper_method :generate_code
+  helper_method :get_full_name
 
 end

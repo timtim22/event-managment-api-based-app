@@ -28,7 +28,7 @@ class Admin::TicketmasterController < Admin::AdminMasterController
           event.event_type = 'ticketmaster'
           event.start_time = key.dates['start']['localTime']
           event.end_time = "Not specified"
-          event.host = User.get_full_name(current_user)
+          event.host = get_full_name(current_user)
           event.location = key.embedded["venues"][0]["city"]["name"] + "," + key.embedded["venues"][0]["state"]["name"] + "," + key.embedded["venues"][0]["country"]["name"]
           if event.save
             errors.push("Successfully saved.")

@@ -6,7 +6,7 @@ class Admin::CommentsController < Admin::AdminMasterController
     @comment = @event.comments.new()
     @comment.user = current_user
     @comment.user_avatar = current_user.avatar
-    @comment.from = User.get_full_name(current_user)  
+    @comment.from = get_full_name(current_user)  
     @comment.comment = params[:comment]
     if @comment.save
       # Shoot notifications to users who commented on an event
@@ -29,7 +29,7 @@ class Admin::CommentsController < Admin::AdminMasterController
           if user.all_chat_notifications_setting.is_on == true && user.event_notifications_setting.is_on == true && !blocked_event?(user, @event) && !event_chat_muted?(user,@event)
           
      
-          if @notification = Notification.create(recipient: user, actor: current_user, action: User.get_full_name(current_user) + " posted a new comment on event '#{@event.name}'.", notifiable: @comment, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'post_comment_web') 
+          if @notification = Notification.create(recipient: user, actor: current_user, action: get_full_name(current_user) + " posted a new comment on event '#{@event.name}'.", notifiable: @comment, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'post_comment_web') 
          
           @current_push_token = @pubnub.add_channels_to_push(
            push_token: user.device_token,

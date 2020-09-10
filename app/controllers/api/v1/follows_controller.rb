@@ -18,12 +18,12 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
      check = Follow.where(following_id: params[:following_id]).where(user_id: request_user.id)
      if check.blank?
      if fr = Follow.create!(following_id: params[:following_id], user_id: request_user.id,status: true)
-      create_activity(request_user,"followed #{User.get_full_name(@following)}", fr, 'Follow', '', '', 'post', 'follow')
+      create_activity(request_user,"followed #{get_full_name(@following)}", fr, 'Follow', '', '', 'post', 'follow')
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
         )
-      if @notification = Notification.create(recipient: @following, actor: request_user, action: User.get_full_name(request_user) + " followed you", notifiable: fr, url: '#', notification_type: 'web', action_type: 'add_to_wallet')  
+      if @notification = Notification.create(recipient: @following, actor: request_user, action: get_full_name(request_user) + " followed you", notifiable: fr, url: '#', notification_type: 'web', action_type: 'add_to_wallet')  
 
        #publish web channel
        @pubnub.publish(
@@ -42,7 +42,7 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
         #also notify request_user friends
         if !request_user.friends.blank?
           request_user.friends.each do |friend|
-          if @notification = Notification.create(recipient: friend, actor: request_user, action: "Your friend " + User.get_full_name(request_user) + " followed #{User.get_full_name(@following)}.", notifiable: fr, url: "#", notification_type: 'mobile', action_type: 'add_to_wallet')  
+          if @notification = Notification.create(recipient: friend, actor: request_user, action: "Your friend " + get_full_name(request_user) + " followed #{get_full_name(@following)}.", notifiable: fr, url: "#", notification_type: 'mobile', action_type: 'add_to_wallet')  
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
                push_token: friend.profile.device_token,
@@ -53,7 +53,7 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
              payload = { 
               "pn_gcm":{
                "notification":{
-                 "title": User.get_full_name(request_user),
+                 "title": get_full_name(request_user),
                  "body": @notification.action
                },
                data: {
@@ -117,8 +117,8 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
     @follow = Follow.where(:following_id => params[:following_id]).where(:user_id => request_user.id).first
     if @follow && @follow.destroy
       @following = User.find(params[:following_id])
-     # create_activity(request_user, "unfollowed #{User.get_full_name(@following)}", @follow, 'Follow', '', '', 'post','unfollow')
-      if @notification = Notification.create(recipient: @following, actor: request_user, action: User.get_full_name(request_user) + " unfollowed you", notifiable: @follow, url: '#', notification_type: 'web')  
+     # create_activity(request_user, "unfollowed #{get_full_name(@following)}", @follow, 'Follow', '', '', 'post','unfollow')
+      if @notification = Notification.create(recipient: @following, actor: request_user, action: get_full_name(request_user) + " unfollowed you", notifiable: @follow, url: '#', notification_type: 'web')  
        #publish to web channel
        @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
@@ -188,7 +188,7 @@ end
 #      fr = Follow.where(user_id: params[:user_id]).where(following_id: request_user.id).first
 #      if fr.update(:status => true)
 #       fr.follow_request.destroy
-#       if @notification = Notification.create(recipient: fr.follower, actor: request_user, action: User.get_full_name(request_user) + " accepted your follow request", notifiable: fr, url: '/admin/follow-requests', notification_type: 'mobile')  
+#       if @notification = Notification.create(recipient: fr.follower, actor: request_user, action: get_full_name(request_user) + " accepted your follow request", notifiable: fr, url: '/admin/follow-requests', notification_type: 'mobile')  
 #         @pubnub = Pubnub.new(
 #         publish_key: ENV['PUBLISH_KEY'],
 #         subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -248,7 +248,7 @@ end
      if !params[:request_id].blank?
        fr = FollowRequest.find(params[:request_id])
        if fr.destroy
-       # create_activity(request_user,"removed request of #{User.get_full_name(fr.sender)}", fr, 'Follow', '', '', 'post')
+       # create_activity(request_user,"removed request of #{get_full_name(fr.sender)}", fr, 'Follow', '', '', 'post')
         render json: {
         code: 200,
         success: true,
@@ -276,7 +276,7 @@ end
    def remove_follower
     if !params[:user_id].blank?
       if fr = Follow.where(user_id: params[:user_id]).where(following_id: request_user.id).first.destroy
-       # create_activity(request_user, "removed #{User.get_full_name(User.find(params[:user_id]))} from your followers", fr, 'Follow', '', '', 'post')
+       # create_activity(request_user, "removed #{get_full_name(User.find(params[:user_id]))} from your followers", fr, 'Follow', '', '', 'post')
         render json: {
           code: 200,
           success: true,

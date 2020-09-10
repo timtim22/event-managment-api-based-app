@@ -70,7 +70,7 @@ class Admin::EventsController < Admin::AdminMasterController
        if !current_user.followers.blank?
             current_user.followers.each do |follower|
         if follower.all_chat_notifications_setting.is_on == true && follower.event_notifications_setting.is_on == true
-          if @notification = Notification.create!(recipient: follower, actor: current_user, action: User.get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event') 
+          if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event') 
             @channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
              push_token: follower.device_token,
@@ -81,7 +81,7 @@ class Admin::EventsController < Admin::AdminMasterController
              payload = { 
               "pn_gcm":{
                "notification":{
-                 "title": User.get_full_name(current_user),
+                 "title": get_full_name(current_user),
                  "body": @notification.action
                },
                data: {
@@ -156,7 +156,7 @@ class Admin::EventsController < Admin::AdminMasterController
        if !current_user.followers.blank?
         current_user.followers.each do |follower|
       if follower.all_chat_notifications_setting.is_on == true && follower.event_notifications_setting.is_on == true
-      if @notification = Notification.create!(recipient: follower, actor: current_user, action: User.get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event') 
+      if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event') 
         @channel = "event" #encrypt later
         @current_push_token = @pubnub.add_channels_to_push(
          push_token: follower.profile.device_token,
@@ -167,7 +167,7 @@ class Admin::EventsController < Admin::AdminMasterController
          payload = { 
           "pn_gcm":{
            "notification":{
-             "title": User.get_full_name(current_user),
+             "title": get_full_name(current_user),
              "body": @notification.action
            },
            data: {

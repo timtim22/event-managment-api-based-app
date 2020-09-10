@@ -90,7 +90,7 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
           )
       request_user.followers.each do |follower|
    if follower.special_offers_notifications_setting.is_on == true 
-      if @notification = Notification.create!(recipient: follower, actor: request_user, action: User.get_full_name(request_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event') 
+      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event') 
         @channel = "event" #encrypt later
         @current_push_token = @pubnub.add_channels_to_push(
          push_token: follower.profile.device_token,
@@ -101,7 +101,7 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
          payload = { 
           "pn_gcm":{
            "notification":{
-             "title": User.get_full_name(request_user),
+             "title": get_full_name(request_user),
              "body": @notification.action
            },
            data: {
@@ -174,7 +174,7 @@ def update
           )
       request_user.followers.each do |follower|
   if follower.special_offers_notifications_setting.is_on == true 
-      if @notification = Notification.create!(recipient: follower, actor: request_user, action: User.get_full_name(request_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event') 
+      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event') 
        
         @current_push_token = @pubnub.add_channels_to_push(
         push_token: follower.profile.device_token,
@@ -185,7 +185,7 @@ def update
         payload = { 
           "pn_gcm":{
           "notification":{
-            "title": User.get_full_name(request_user),
+            "title": get_full_name(request_user),
             "body": @notification.action
           },
           data: {

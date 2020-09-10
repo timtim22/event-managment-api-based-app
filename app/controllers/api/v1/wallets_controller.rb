@@ -24,7 +24,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         lat: wallet.offer.lat,
         lng: wallet.offer.lng,
         image: wallet.offer.image.url,
-        creator_name: User.get_full_name(wallet.offer.user),
+        creator_name: get_full_name(wallet.offer.user),
         creator_image: wallet.offer.user.avatar,
         description: wallet.offer.description,
         validity: wallet.offer.validity,
@@ -37,7 +37,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
       @passes << {
         id: wallet.offer.id,
         title: wallet.offer.title,
-        host_name: User.get_full_name(wallet.offer.event.user),
+        host_name: get_full_name(wallet.offer.event.user),
         host_image: wallet.offer.event.user.avatar,
         event_name: wallet.offer.event.name,
         event_id: wallet.offer.event.id,
@@ -57,7 +57,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
       @others << {
         id: wallet.offer.id,
         title: wallet.offer.title,
-        host_name: User.get_full_name(wallet.offer.event.user),
+        host_name: get_full_name(wallet.offer.event.user),
         host_image: wallet.offer.event.user.avatar,
         event_name: wallet.offer.event.name,
         event_id: wallet.offer.event.id,
@@ -98,7 +98,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
        )
-      if @notification = Notification.create(recipient: @wallet.offer.user, actor: request_user, action: User.get_full_name(request_user) + " added your offer '#{@wallet.offer.title}' to wallet.", notifiable: @wallet.offer, url: "/admin/#{ if @wallet.offer_type == 'Pass' then 'passes' else 'special_offers' end }/#{@wallet.offer.id}", notification_type: 'web', action_type: 'add_to_wallet')  
+      if @notification = Notification.create(recipient: @wallet.offer.user, actor: request_user, action: get_full_name(request_user) + " added your offer '#{@wallet.offer.title}' to wallet.", notifiable: @wallet.offer, url: "/admin/#{ if @wallet.offer_type == 'Pass' then 'passes' else 'special_offers' end }/#{@wallet.offer.id}", notification_type: 'web', action_type: 'add_to_wallet')  
         @pubnub.publish(
           channel: [@wallet.offer.user.id.to_s],
           message: { 
@@ -114,7 +114,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         #also notify request_user friends
         if !request_user.friends.blank?
           request_user.friends.each do |friend|
-            if @notification = Notification.create(recipient: friend, actor: request_user, action: User.get_full_name(request_user) + " has grabbed #{@wallet.offer.class.name.downcase} '#{@wallet.offer.title}'.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet') 
+            if @notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has grabbed #{@wallet.offer.class.name.downcase} '#{@wallet.offer.title}'.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet') 
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
                push_token: friend.profile.device_token,
@@ -191,7 +191,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
     @offer_array << {
       id: pass.id,
       title: pass.title,
-      host_name: User.get_full_name(pass.user),
+      host_name: get_full_name(pass.user),
       host_image: pass.user.avatar,
       event_name: pass.event.name,
       event_image:pass.event.image,
@@ -217,7 +217,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
       lat: offer.lat,
       lng: offer.lng,
       image: offer.image.url,
-      creator_name: User.get_full_name(offer.user),
+      creator_name: get_full_name(offer.user),
       creator_image: offer.user.avatar,
       description: offer.description,
       validity: offer.validity,
