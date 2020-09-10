@@ -88,7 +88,7 @@ class User < ApplicationRecord
                        :confirmation => true,
                        :on => :create,
                        :length => {:within => 6..40},
-                       :if => :web_user?
+                       :unless => :app_user?
 
 
   mount_uploader :avatar, ImageUploader

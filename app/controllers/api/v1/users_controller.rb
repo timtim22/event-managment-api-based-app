@@ -81,10 +81,10 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
       @profile.last_name = params[:last_name]
       @profile.device_token = params[:device_token]
       @profile.gender = params[:gender]
-      if !params{:location].blank?
-        @profile.location = params[:location]
-        @profile.lat = params[:lat]
-        @profile.lng = params[:lng]
+      if !params[:location].blank?
+      @profile.location = params[:location]
+      @profile.lat = params[:lat]
+      @profile.lng = params[:lng]
       end
       @profile.is_email_subscribed = params[:is_email_subscribed]
       @profile.save
