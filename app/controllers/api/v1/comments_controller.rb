@@ -228,6 +228,7 @@ end
     if !blocked_event?(request_user, @event)
       @event.comments.each do |comment|
         @replies = []
+        @empty = []
         comment_modified = {
           "id" =>  comment.id,
           "comment" => comment.comment,
@@ -243,9 +244,10 @@ end
         comment.replies.each do |reply|
           @replies << {
           "id" => reply.id,
+          "comment" => reply.msg,
           "from" => get_full_name(reply.user),
           "avatar" => reply.user.avatar,
-          "reply_to" =>  reply.reply_to_user
+          "reply_to" =>  if !reply.reply_to_user.blank?  then reply.reply_to_user else @empty end
         }
       end
         @comments << {
