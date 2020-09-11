@@ -30,9 +30,9 @@ class Admin::CompetitionsController < Admin::AdminMasterController
       if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition') 
   
         @current_push_token = @pubnub.add_channels_to_push(
-         push_token: follower.device_token,
+         push_token: follower.profile.device_token,
          type: 'gcm',
-         add: follower.device_token
+         add: follower.profile.device_token
          ).value
 
          payload = { 
@@ -56,7 +56,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
          }
         
        @pubnub.publish(
-         channel: follower.device_token,
+         channel: follower.profile.device_token,
          message: payload
          ) do |envelope|
              puts envelope.status

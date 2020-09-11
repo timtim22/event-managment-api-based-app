@@ -92,7 +92,9 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          code: 200,
          success: true,
          message: "Comment created successfully",
-         data: nil
+         data: {
+           comment: @comment
+         }
        }
     else 
       render json: {
@@ -245,6 +247,7 @@ end
           @replies << {
           "id" => reply.id,
           "comment" => reply.msg,
+          "user_id" => reply.user_id,
           "from" => get_full_name(reply.user),
           "avatar" => reply.user.avatar,
           "created_at" => reply.created_at,

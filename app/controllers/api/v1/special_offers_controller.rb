@@ -80,7 +80,6 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
       @special_offer.event_id = id
       @special_offer.user = current_user
       @special_offer.redeem_code = params[:redeem_code]
-      @special_offer.is_redeemed = false
       @special_offer.terms_conditions = params[:terms_conditions]
       @special_offer.validity = params[:validity]
       if @special_offer.save
@@ -156,8 +155,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
    if @check.blank?
     if(@special_offer && @special_offer.redeem_code == params[:redeem_code].to_s)
       if  @redemption = Redemption.create!(:user_id =>  request_user.id, offer_id: @special_offer.id, code: params[:redeem_code], offer_type: 'SpecialOffer')
-      @special_offer.is_redeemed = true
-      @special_offer.save
+ 
         # resource should be parent resource in case of api so that event id should be available in order to show event based interest level.
         create_activity("redeemed special offer", @redemption, 'Redemption', '', @special_offer.title, 'post', 'redeem_special_offer')
         #ambassador program: also add earning if the pass is shared by an ambassador

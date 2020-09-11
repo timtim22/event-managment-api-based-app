@@ -26,7 +26,6 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         event_start_time: e.start_time,
         event_end_time: e.end_time,
         event_date: e.start_date,
-        ambassador_name: pass.ambassador_name,
         is_added_to_wallet: is_added_to_wallet?(pass.id),
         validity: pass.validity,
         grabbers_count: pass.wallets.size
@@ -46,7 +45,6 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       event_start_time: e.start_time,
       event_end_time: e.end_time,
       event_date: e.start_date,
-      ambassador_name: pass.ambassador_name,
       is_added_to_wallet: is_added_to_wallet?(pass.id),
       validity: pass.validity,
       grabbers_count: pass.wallets.size

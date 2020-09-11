@@ -30,7 +30,6 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
       @special_offer.end_time = params[:validity_time]
       @special_offer.image = params[:image]
       @special_offer.redeem_code = generate_code
-      @special_offer.is_redeemed = false
       @special_offer.terms_conditions = params[:terms_conditions]
       @special_offer.validity = params[:validity]
       if @special_offer.save
@@ -108,7 +107,6 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
      @special_offer.end_time = params[:validity_time]
      @special_offer.image = params[:image]
      @special_offer.redeem_code = generate_code
-     @special_offer.is_redeemed = false
      @special_offer.terms_conditions = params[:terms_conditions]
      @special_offer.validity = params[:validity] 
     if @special_offer.save
