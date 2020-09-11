@@ -2,6 +2,8 @@
 class Api::V1::ApiMasterController < ApplicationController
     SECRET_KEY = Rails.application.secrets.secret_key_base.to_s
     protect_from_forgery with: :null_session
+
+ 
      
       def not_found
         render json: { error: 'not_found' }

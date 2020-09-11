@@ -140,9 +140,9 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
           if !event_chat_muted?(comment_user, @event) && comment_user.all_chat_notifications_setting.is_on == true && comment_user.event_notifications_setting.is_on == true
  
            @current_push_token = @pubnub.add_channels_to_push(
-              push_token: comment_user.device_token,
+              push_token: comment_user.profile.device_token,
               type: 'gcm',
-              add: comment_user.device_token
+              add: comment_user.profile.device_token
               ).value
    
             payload = { 
@@ -167,7 +167,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
              }
             }
             @pubnub.publish(
-             channel: comment_user.device_token,
+             channel: comment_user.profile.device_token,
              message: payload
              ) do |envelope|
                  puts envelope.status
@@ -271,12 +271,25 @@ end
   }
    end
 
-
-
+   
    def get_commented_events
      @events = []
      @commented_events = request_user.comments.map {|comment| 
        e = comment.event
+       last_commnt = comment.event.comments.order(created_at: 'DESC').first
+       last_comment_modified = {
+        "id" => last_comment.id,
+        "comment" => last_comment.comment,
+        "user_id" => last_comment.user_id,
+        "event_id" => last_comment.event_id,
+        "created_at" => last_comment.created_at,
+        "updated_at" => last_comment.updated_at,
+        "from" => get_full_name(last_commnt.user),
+        "user_avatar" => last_commnt.user.avatar,
+        "read_at" => last_commnt.read_at,
+        "reader_id" => last_comment.reader_id
+       }
+
        @events << {
         'id' => e.id,
         'name' => e.name,
@@ -285,7 +298,7 @@ end
         'creator_image' => e.user.avatar,
         "is_blocked" => blocked_event?(request_user, e),
         "is_mute" => event_chat_muted?(request_user, e),
-        "last_comment" => comment.event.comments.order(created_at: 'DESC').first,
+        "last_comment" => last_comment_modified,
         "unread_count" => get_unread_comments_count(e)
        }
     }#map

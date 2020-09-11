@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_10_140451) do
+ActiveRecord::Schema.define(version: 2020_09_10_110341) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -54,6 +54,8 @@ ActiveRecord::Schema.define(version: 2020_09_10_140451) do
 
   create_table "business_profiles", force: :cascade do |t|
     t.integer "user_id"
+    t.string "profile_name", default: ""
+    t.string "contact_name", default: ""
     t.string "address", default: ""
     t.string "website", default: ""
     t.text "about", default: ""
@@ -63,14 +65,15 @@ ActiveRecord::Schema.define(version: 2020_09_10_140451) do
     t.string "facebook", default: ""
     t.string "linkedin", default: ""
     t.string "instagram", default: ""
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "profile_name"
-    t.string "contact_name"
-    t.boolean "is_charity", default: false
-    t.boolean "is_ambassador", default: false
     t.string "snapchat", default: ""
     t.string "youtube", default: ""
+    t.boolean "is_ambassador", default: false
+    t.boolean "is_charity", default: false
+    t.string "location", default: ""
+    t.string "lat", default: ""
+    t.string "lng", default: ""
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "categories", force: :cascade do |t|
@@ -524,11 +527,11 @@ ActiveRecord::Schema.define(version: 2020_09_10_140451) do
     t.string "avatar", default: "avatar.png"
     t.string "phone_number", default: ""
     t.boolean "app_user", default: false
+    t.boolean "web_user", default: false
     t.boolean "phone_verified", default: false
     t.string "stripe_state", default: ""
     t.string "connected_account_id", default: ""
     t.boolean "is_email_verified", default: false
-    t.boolean "web_user", default: false
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
