@@ -276,7 +276,7 @@ end
      @events = []
      @commented_events = request_user.comments.map {|comment| 
        e = comment.event
-       last_commnt = comment.event.comments.order(created_at: 'DESC').first
+       last_comment = comment.event.comments.order(created_at: 'DESC').first
        last_comment_modified = {
         "id" => last_comment.id,
         "comment" => last_comment.comment,
@@ -284,9 +284,9 @@ end
         "event_id" => last_comment.event_id,
         "created_at" => last_comment.created_at,
         "updated_at" => last_comment.updated_at,
-        "from" => get_full_name(last_commnt.user),
-        "user_avatar" => last_commnt.user.avatar,
-        "read_at" => last_commnt.read_at,
+        "from" => get_full_name(last_comment.user),
+        "user_avatar" => last_comment.user.avatar,
+        "read_at" => last_comment.read_at,
         "reader_id" => last_comment.reader_id
        }
 
