@@ -23,7 +23,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
        @channel = "event" 
        if ids_array.kind_of?(Array)
        ids_array.each do |id|
-       @check = OfferForwarding.where(offer_id: @offer.id).where(recipient_id: id).where(user_id: request_user.id).first
+       @check = OfferForwarding.where(offer_id: @offer.id).where(recipient_id: id).where(user_id: request_user.id).where(offer_type: params[:offer_type]).first
        if @check.blank?  
        @recipient = User.find(id)
        if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{if params[:offer_type] ==  'Pass' then 'a pass ' + @offer.title else 'a Special Offer ' + @offer.title end }.", notifiable: @offer, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{if params[:offer_type] ==  'Pass' then 'pass_recieved' else 'special_offer_recieved'  end }")
@@ -85,7 +85,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         render json: {
           code: 400,
           success: false,
-          message: 'Notification was not sent, please try again later.',
+          message: 'You have already forwarded this offer.',
           data: nil
         }
       end
@@ -219,9 +219,9 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         #create_activity(request_user, "forwarded event", @event_forward, 'EventForwarding', '', '', 'post','forward_event')
 
          @current_push_token = @pubnub.add_channels_to_push(
-           push_token: @recipient.device_token,
+           push_token: @recipient.profile.device_token,
            type: 'gcm',
-           add: @recipient.device_token
+           add: @recipient.profile.device_token
            ).value
 
           payload = { 
@@ -246,7 +246,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         }
  
           @pubnub.publish(
-            channel: [@recipient.device_token],
+            channel: [@recipient.profile.device_token],
             message: payload
              ) do |envelope|
                puts envelope.status
@@ -271,7 +271,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         render json: {
           code: 400,
           success: false,
-          message: 'Event farward failed, please try again later.',
+          message: 'You have already forwarded event to this user .',
           data: nil
         }
       end

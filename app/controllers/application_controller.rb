@@ -680,12 +680,7 @@ end
 
  def distributed_by(pass)
     distributed_by = 'n/a'
-    if !pass.offer_shares.blank? || !pass.offer_forwardings.blank?
-        user = pass.offer_shares.first.user
-        if user && user.profile.is_ambassador == true
-          distributed_by = get_full_name(user)
-        end
-    elsif(!pass.offer_forwardings.blank?)
+    if !pass.offer_forwardings.blank?
         user = pass.offer_forwardings.first.user
         if user && user.profile.is_ambassador == true
           distributed_by = get_full_name(user)
