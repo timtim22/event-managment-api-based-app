@@ -221,7 +221,6 @@ class Admin::EventsController < Admin::AdminMasterController
     @event.lat = params[:lat]
     @event.lng = params[:lng]
     @event.feature_media_link = params[:feature_media_link]
-    @event.additional_media = params[:additional_media]
     @event.allow_chat = params[:allow_chat]
     @event.invitees = params[:invitees]
     @event.event_forwarding = params[:event_forwarding]
@@ -256,7 +255,7 @@ class Admin::EventsController < Admin::AdminMasterController
   end
 	
   def event_params
-		params.permit(:name,:start_date,:end_date,:price,:price_type,:event_type,:start_time, :end_time, :host, :description,:location,:image, :feature_media_link, :additional_media, :lat,:lng,:allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18, :category_ids => [], event_attachments_attributes: 
+		params.permit(:name,:start_date,:end_date,:price,:price_type,:event_type,:start_time, :end_time, :host, :description,:location,:image, :feature_media_link, :lat,:lng,:allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18, :category_ids => [], event_attachments_attributes: 
     [:id, :event_id, :media])
   end
 
