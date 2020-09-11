@@ -372,7 +372,7 @@ class ApplicationController < ActionController::Base
       event_start_time: pass.event.start_time,
       event_end_time: pass.event.end_time,
       event_date: pass.event.start_date,
-      ambassador_name: pass.ambassador_name,
+      distributed_by: distributed_by(pass),
       is_added_to_wallet: is_added_to_wallet?(pass.id),
       validity: pass.validity.strftime(get_time_format).to_s,
       grabbers_count: pass.wallets.size
@@ -498,7 +498,7 @@ class ApplicationController < ActionController::Base
           event_start_time: pass.event.start_time,
           event_end_time: pass.event.end_time,
           event_date: pass.event.start_date,
-          ambassador_name: pass.ambassador_name,
+          distributed_by: distributed_by(pass),
           is_added_to_wallet: is_added_to_wallet?(pass.id),
           validity: pass.validity.strftime(get_time_format).to_s,
           grabbers_count: pass.wallets.size,
@@ -672,6 +672,23 @@ end
    def not_me?(user)
     user != request_user
    end
+
+
+ def distributed_by(pass)
+    distributed_by = 'n/a'
+    if !pass.offer_shares.blank? || !pass.offer_forwardings.blank?
+        user = pass.offer_shares.first.user
+        if user && user.profile.is_ambassador == true
+          distributed_by = get_full_name(user)
+        end
+    elsif(!pass.offer_forwardings.blank?)
+        user = pass.offer_forwardings.first.user
+        if user && user.profile.is_ambassador == true
+          distributed_by = get_full_name(user)
+        end
+    end
+    distributed_by
+end
  
   
  

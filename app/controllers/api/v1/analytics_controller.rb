@@ -184,7 +184,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
           event_start_time: pass.event.start_time,
           event_end_time: pass.event.end_time,
           event_date: pass.event.start_date,
-          ambassador_name: pass.ambassador_name,
+          distributed_by: distributed_by(pass),
           validity: pass.validity + " " + pass.validity_time.strftime("%H:%M:%S").to_s,
           grabbers_count: pass.wallets.size,
           stats: stats
