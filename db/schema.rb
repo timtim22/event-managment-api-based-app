@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_10_110341) do
+ActiveRecord::Schema.define(version: 2020_09_11_114743) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -370,7 +370,7 @@ ActiveRecord::Schema.define(version: 2020_09_10_110341) do
 
   create_table "redemptions", force: :cascade do |t|
     t.integer "user_id"
-    t.string "pass_id"
+    t.integer "offer_id"
     t.integer "code", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

@@ -17,7 +17,21 @@ class Admin::CompetitionsController < Admin::AdminMasterController
   end
   
   def create
-      @competition = current_user.own_competitions.new(competition_params)
+      @competition = current_user.own_competitions.new   
+      @competition.title = params[:title]
+      @competition.description = params[:description]
+      @competition.start_date = params[:start_date]
+      @competition.end_date = params[:end_date]
+      @competition.price = params[:price]
+      @competition.start_time = params[:start_time]
+      @competition.end_time = params[:end_time]
+      @competition.image = params[:image]
+      @competition.validity = string_to_DateTime(params[:validity])
+      @competition.host = params[:host]
+      @competition.validity_time = params[:end_time]
+      @competition.location = params[:location]
+      @competition.lat = params[:lat]
+      @competition.lng = params[:lng]
     if @competition.save
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
@@ -30,9 +44,9 @@ class Admin::CompetitionsController < Admin::AdminMasterController
       if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition') 
   
         @current_push_token = @pubnub.add_channels_to_push(
-         push_token: follower.profile.device_token,
+         push_token: follower.device_token,
          type: 'gcm',
-         add: follower.profile.device_token
+         add: follower.device_token
          ).value
 
          payload = { 
@@ -56,7 +70,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
          }
         
        @pubnub.publish(
-         channel: follower.profile.device_token,
+         channel: follower.device_token,
          message: payload
          ) do |envelope|
              puts envelope.status
@@ -77,7 +91,21 @@ class Admin::CompetitionsController < Admin::AdminMasterController
 
   def update
         @competition = Competition.find(params[:id])
-    if @competition.update(competition_params)
+        @competition.title = params[:title]
+        @competition.description = params[:description]
+        @competition.start_date = params[:start_date]
+        @competition.end_date = params[:end_date]
+        @competition.price = params[:price]
+        @competition.start_time = params[:start_time]
+        @competition.end_time = params[:end_time]
+        @competition.image = params[:image]
+        @competition.validity = string_to_DateTime(params[:validity])
+        @competition.host = params[:host]
+        @competition.validity_time = params[:validity_time]
+        @competition.location = params[:location]
+        @competition.lat = params[:lat]
+        @competition.lng = params[:lng]
+    if @competition.save
       #create_activity("updated competition", @competition, "Competition", admin_competition_path(@competition),@competition.title, 'patch')
       redirect_to admin_competitions_path, notice: "Competition updated successfully."
     else

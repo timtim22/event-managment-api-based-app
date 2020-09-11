@@ -35,7 +35,7 @@ class Admin::PassesController < Admin::AdminMasterController
       @pass.title = params[:title]
       @pass.description = params[:description]
       @pass.event_id = id
-      @pass.validity = params[:validity]
+      @pass.validity = string_to_DateTime(params[:validity])
       @pass.quantity = params[:quantity]
       @pass.pass_type = params[:pass_type]
       @pass.validity_time = params[:validity_time]
@@ -79,7 +79,7 @@ class Admin::PassesController < Admin::AdminMasterController
       @pass.user = current_user
       @pass.redeem_code = generate_code
       @pass.quantity = params[:quantity]
-      @pass.validity = params[:validity]
+      @pass.validity = string_to_DateTime(params[:validity])
       @pass.pass_type = params[:pass_type]
       @pass.validity_time = params[:validity_time]
       @pass.terms_conditions = params[:terms_conditions]

@@ -575,6 +575,10 @@ end
   end
   end
 
+  def string_to_DateTime(string)
+    DateTime.parse(string)
+  end
+
   def get_grabbers_friends_count(offer)
     if request_user
       offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size
