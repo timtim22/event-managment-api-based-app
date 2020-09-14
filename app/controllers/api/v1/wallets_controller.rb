@@ -66,7 +66,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         event_start_time: wallet.offer.event.start_time,
         event_end_time: wallet.offer.event.end_time,
         event_date: wallet.offer.event.start_date,
-        price: wallet.offer.price,
+        price: get_formated_price(wallet.offer.price),
         quantity: wallet.offer.quantity,
         purchased_quantity: getPurchaseQuantity(wallet.offer.id),
         per_head: wallet.offer.per_head,

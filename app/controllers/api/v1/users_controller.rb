@@ -237,7 +237,7 @@ end
         "event_type" => event.event_type,
         "image" => event.image,
         "price_type" => event.price_type,
-        "price" => event.price,
+        "price" => get_formated_price(event.price),
         "additional_media" => event.event_attachments,
         "created_at" => event.created_at,
         "updated_at" => event.updated_at,
@@ -644,7 +644,7 @@ end
           'end_date' => e.end_date,
           'start_time' => e.start_time,
           'end_time' => e.end_time,
-          'price' => e.price, # check for price if it is zero
+          'price' => get_formated_price(e.price), # check for price if it is zero
           'price_type' => e.price_type,
           'event_type' => e.event_type,
           'additional_media' => e.event_attachments,

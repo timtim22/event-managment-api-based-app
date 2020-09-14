@@ -57,7 +57,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       "id" => e.ticket.id,
       'title' => e.ticket.title,
       'event_name' => e.name,
-      'price' => e.ticket.price,
+      'price' => get_formated_price(e.ticket.price),
       "quantity" => e.ticket.quantity,
       'ticket_type' => e.ticket.ticket_type,
       'per_head' => e.ticket.per_head,
@@ -73,7 +73,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         'end_date' => e.end_date,
         'start_time' => e.start_time,
         'end_time' => e.end_time,
-        'price' => e.price, # check for price if it is zero
+        'price' => get_formated_price(e.price), # check for price if it is zero
         'price_type' => e.price_type,
         'event_type' => e.event_type,
         'additional_media' => e.event_attachments,

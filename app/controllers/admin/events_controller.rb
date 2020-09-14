@@ -73,9 +73,9 @@ class Admin::EventsController < Admin::AdminMasterController
           if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event') 
             @channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
-             push_token: follower.device_token,
+             push_token: follower.profile.device_token,
              type: 'gcm',
-             add: follower.device_token
+             add: follower.profile.device_token
              ).value
   
              payload = { 
@@ -99,7 +99,7 @@ class Admin::EventsController < Admin::AdminMasterController
              }
             
            @pubnub.publish(
-             channel: follower.device_token,
+             channel: follower.profile.device_token,
              message: payload
              ) do |envelope|
                  puts envelope.status

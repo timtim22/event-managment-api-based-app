@@ -26,7 +26,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
       @competition.start_time = params[:start_time]
       @competition.end_time = params[:end_time]
       @competition.image = params[:image]
-      @competition.validity = string_to_DateTime(params[:validity])
+      @competition.validity = params[:validity]
       @competition.host = params[:host]
       @competition.validity_time = params[:end_time]
       @competition.location = params[:location]
@@ -101,7 +101,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
         @competition.image = params[:image]
         @competition.validity = string_to_DateTime(params[:validity])
         @competition.host = params[:host]
-        @competition.validity_time = params[:validity_time]
+        @competition.validity_time = params[:end_time]
         @competition.location = params[:location]
         @competition.lat = params[:lat]
         @competition.lng = params[:lng]
