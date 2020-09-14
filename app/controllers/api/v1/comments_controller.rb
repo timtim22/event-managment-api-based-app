@@ -169,8 +169,8 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
                "action": @notification.action,
                "action_type": @notification.action_type,
                "created_at": @notification.created_at,
-               "body": @reply.comment,
-               "last_comment": @reply    
+               "body": @reply.msg,
+               "last_comment": @reply.msg    
               }
              }
             }
