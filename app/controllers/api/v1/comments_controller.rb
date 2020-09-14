@@ -54,6 +54,8 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
              type: 'gcm',
              add: comment_user.profile.device_token
              ).value
+
+          
   
            payload = { 
             "pn_gcm":{
@@ -62,7 +64,9 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
                "body": @notification.action
              },
              data: {
-              "id": @notification.id,
+              "id": @comment.id,
+              "comment_id": @comment.id,
+              "reply_id": '',
               "sender_name": get_full_name(request_user),
               "actor_id": @notification.actor_id,
               "actor_image": @notification.actor.avatar,
@@ -156,6 +160,8 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
               data: {
                "id": @notification.id,
                "sender_name": get_full_name(request_user),
+               "comment_id": @comment.id,
+               "reply_id": @reply.id,
                "actor_id": @notification.actor_id,
                "actor_image": @notification.actor.avatar,
                "notifiable_id": @notification.notifiable_id,
