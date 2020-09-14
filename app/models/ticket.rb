@@ -10,4 +10,6 @@ class Ticket < ApplicationRecord
   # validates :title, presence: true
   # validates :quantity, presence: true
   # validates :per_head, presence: true
+
+ 
 end

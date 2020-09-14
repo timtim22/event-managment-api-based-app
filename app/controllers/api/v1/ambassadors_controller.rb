@@ -76,6 +76,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           id: pass.id,
           type: 'pass',
           title: pass.title,
+          description: pass.description,
           host_name: business.business_profile.profile_name,
           host_image: business.avatar,
           event_name: pass.event.name,
@@ -92,7 +93,8 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           quantity: pass.quantity,
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: pass.created_at,
-          business: get_business_object(business) 
+          business: get_business_object(business),
+          terms_and_conditions: pass.terms_conditions 
         }
         end
       end #not empty
@@ -103,6 +105,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           id: offer.id,
           type: 'special_offer',
           title: offer.title,
+          description: offer.description,
           sub_title: offer.sub_title,
           location: offer.location,
           date: offer.date,
@@ -120,7 +123,8 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           ambassador_rate: offer.ambassador_rate,
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: offer.created_at,
-          business: get_business_object(business) 
+          business: get_business_object(business),
+          terms_and_conditions: offer.terms_conditions 
         }
         end
       end #not blank
@@ -163,6 +167,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           id: pass.id,
           type: 'pass',
           title: pass.title,
+          description: pass.description,
           host_name: business.business_profile.profile_name,
           host_image: business.avatar,
           event_name: pass.event.name,
@@ -180,7 +185,8 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           quantity: pass.quantity,
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: pass.created_at,
-          business: get_business_object(business) 
+          business: get_business_object(business),
+          terms_and_conditions: pass.terms_conditions 
         }
         end
       end #not empty
@@ -191,6 +197,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           id: offer.id,
           type: 'special_offer',
           title: offer.title,
+          description: offer.description,
           sub_title: offer.sub_title,
           location: offer.location,
           date: offer.date,
@@ -210,7 +217,8 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           ambassador_rate: offer.ambassador_rate,
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: offer.created_at,
-          business: get_business_object(business) 
+          business: get_business_object(business),
+          terms_and_conditions: offer.terms_conditions 
         }
         end
       end #not empty

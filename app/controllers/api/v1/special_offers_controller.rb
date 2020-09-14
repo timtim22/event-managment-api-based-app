@@ -9,6 +9,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
       @special_offers << {
       id: offer.id,
       title: offer.title,
+      description: offer.description,
       sub_title: offer.sub_title,
       location: offer.location,
       date: offer.date,
@@ -23,7 +24,8 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
       end_time: offer.time, 
       grabbers_count: offer.wallets.size,
       is_added_to_wallet: is_added_to_wallet?(offer.id),
-      grabbers_friends_count: get_grabbers_friends_count(offer)
+      grabbers_friends_count: get_grabbers_friends_count(offer),
+      terms_and_conditions: offer.terms_conditions
     }
     end #if
     end #each
@@ -32,6 +34,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
         @special_offers << {
         id: offer.id,
         title: offer.title,
+        description: offer.description,
         sub_title: offer.sub_title,
         location: offer.location,
         date: offer.date,
@@ -46,7 +49,8 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
         end_time: offer.time, 
         grabbers_count: offer.wallets.size,
         is_added_to_wallet: is_added_to_wallet?(offer.id),
-        grabbers_friends_count: get_grabbers_friends_count(offer)
+        grabbers_friends_count: get_grabbers_friends_count(offer),
+        terms_and_conditions: offer.terms_conditions
       }
       end #each
     end#if

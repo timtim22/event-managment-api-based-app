@@ -21,6 +21,7 @@
           <th>Start Time</th>
           <th>End Time</th>
           <th>Host</th>
+          <th>Price</th>
           <th>Location</th>
           <th>Action</th>
         </tr>
@@ -35,6 +36,7 @@
             <td><%= competition.start_time.to_time.to_s %></td>
             <td><%= competition.end_time.to_time.to_s %></td>
             <td><%= competition.host %></td>
+            <td><%= competition.price %></td>
             <td><%= competition.location[0...15] %></td>
             <td>
             <a href="<%= admin_competition_path(competition.id) %>" data-toggle="tooltip" title="View competition"><i class="fa fa-eye"></i></a>

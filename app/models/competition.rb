@@ -20,4 +20,10 @@ class Competition < ApplicationRecord
 
   scope :not_expired, -> { where(['validity > ?', DateTime.now]) }
   scope :expired, -> { where(['validity < ?', DateTime.now]) }
+
+  #will automatically format price but db key and fuc name should be same
+def price
+  "%.2f" % self[:price] if self[:price]
+end
+
 end

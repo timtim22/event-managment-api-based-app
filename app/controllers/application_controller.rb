@@ -737,8 +737,10 @@ end
 
 
   def get_formated_price(number)
-    number_with_precision(number, :precision => 2)
+     ##
   end
+
+  
 
   helper_method :SetJsVariables
   helper_method :is_admin_or_super_admin?

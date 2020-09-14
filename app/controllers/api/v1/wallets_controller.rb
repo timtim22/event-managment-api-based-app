@@ -17,6 +17,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         @special_offers << {
         id: wallet.offer.id,
         title: wallet.offer.title,
+        description: wallet.offer.description,
         sub_title:wallet.offer.sub_title,
         location: wallet.offer.location,
         date: wallet.offer.date,
@@ -31,12 +32,14 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         is_expired: is_expired?(wallet.offer),
         grabbers_count: wallet.offer.wallets.size,
         is_redeemed: is_redeemed(wallet.offer.id, 'SpecialOffer', request_user.id),
-        grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size
+        grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+        terms_and_conditions: wallet.offer.terms_conditions
       }
      when 'Pass' 
       @passes << {
         id: wallet.offer.id,
         title: wallet.offer.title,
+        description: wallet.offer.description,
         host_name: get_full_name(wallet.offer.event.user),
         host_image: wallet.offer.event.user.avatar,
         event_name: wallet.offer.event.name,
@@ -51,7 +54,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         is_expired: is_expired?(wallet.offer),
         grabbers_count: wallet.offer.wallets.size,
         is_redeemed: is_redeemed(wallet.offer.id, 'Pass', request_user.id),
-        grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size
+        grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+        terms_and_conditions: wallet.offer.terms_conditions
       }
      else
       @others << {
@@ -191,6 +195,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
     @offer_array << {
       id: pass.id,
       title: pass.title,
+      description: pass.description,
       host_name: get_full_name(pass.user),
       host_image: pass.user.avatar,
       event_name: pass.event.name,
@@ -203,13 +208,15 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
       is_added_to_wallet: is_added_to_wallet?(pass.id),
       validity: pass.validity,
       is_expired: is_expired?(pass),
-      grabbers_count: pass.wallets.size
+      grabbers_count: pass.wallets.size,
+      terms_and_conditions: pass.terms_conditions
     } 
    elsif(params[:offer_type] == 'SpecialOffer')
     offer = SpecialOffer.find(params[:offer_id])
     @offer_array << {
       id: offer.id,
       title: offer.title,
+      description: offer.description,
       sub_title: offer.sub_title,
       location: offer.location,
       date: offer.date,
@@ -225,7 +232,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
       is_expired: is_expired?(offer),
       grabbers_count: offer.wallets.size,
       is_added_to_wallet: is_added_to_wallet?(offer.id),
-      grabbers_friends_count: offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size
+      grabbers_friends_count: offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+      terms_and_conditions: offer.terms_conditions
     }
    end
 

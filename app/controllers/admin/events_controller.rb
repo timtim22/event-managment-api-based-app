@@ -26,6 +26,7 @@ class Admin::EventsController < Admin::AdminMasterController
 	end
 
   def create
+ 
     @pubnub = Pubnub.new(
       publish_key: ENV['PUBLISH_KEY'],
       subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -37,7 +38,7 @@ class Admin::EventsController < Admin::AdminMasterController
           @event.name = params[:name]
           @event.start_date = date
           @event.end_date = date
-          @event.price = get_formated_price(params[:price])
+          @event.price = params[:price]
           @event.price_type = params[:price_type]
           @event.event_type = params[:event_type]
           @event.start_time = params[:start_time]
@@ -50,6 +51,7 @@ class Admin::EventsController < Admin::AdminMasterController
           @event.lat = params[:lat]
           @event.lng = params[:lng]
           @event.feature_media_link = params[:feature_media_link]
+          @event.terms_conditions = params[:terms_conditions]
           @event.allow_chat = params[:allow_chat]
           @event.invitees = params[:invitees]
           @event.event_forwarding = params[:event_forwarding]
@@ -115,7 +117,7 @@ class Admin::EventsController < Admin::AdminMasterController
       @event.name = params[:name]
       @event.start_date = params[:start_date].to_date.to_s
       @event.end_date = params[:end_date].to_date.to_s
-      @event.price = get_formated_price(params[:price])
+      @event.price = params[:price]
       @event.price_type = params[:price_type]
       @event.event_type = params[:event_type]
       @event.start_time = params[:start_time]
@@ -128,6 +130,7 @@ class Admin::EventsController < Admin::AdminMasterController
       @event.lat = params[:lat]
       @event.lng = params[:lng]
       @event.feature_media_link = params[:feature_media_link]
+      @event.terms_conditions = params[:terms_conditions]
       @event.allow_chat = params[:allow_chat]
       @event.invitees = params[:invitees]
       @event.event_forwarding = params[:event_forwarding]
@@ -208,7 +211,7 @@ class Admin::EventsController < Admin::AdminMasterController
     @event.name = params[:name]
     @event.start_date = params[:start_date].to_date.to_s
     @event.end_date = params[:end_date].to_date.to_s
-    @event.price = get_formated_price(params[:price])
+    @event.price = params[:price]
     @event.price_type = params[:price_type]
     @event.event_type = params[:event_type]
     @event.start_time = params[:start_time]
@@ -221,6 +224,7 @@ class Admin::EventsController < Admin::AdminMasterController
     @event.lat = params[:lat]
     @event.lng = params[:lng]
     @event.feature_media_link = params[:feature_media_link]
+    @event.terms_conditions = params[:terms_conditions]
     @event.allow_chat = params[:allow_chat]
     @event.invitees = params[:invitees]
     @event.event_forwarding = params[:event_forwarding]

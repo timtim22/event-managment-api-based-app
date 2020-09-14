@@ -50,5 +50,10 @@ def has_one_category_at_least
   end
 end
 
+#will automatically format price but db key and fuc name should be same
+def price
+  "%.2f" % self[:price] if self[:price]
+end
+
 
 end

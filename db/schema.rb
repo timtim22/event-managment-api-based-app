@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_11_134530) do
+ActiveRecord::Schema.define(version: 2020_09_14_105537) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -143,6 +143,7 @@ ActiveRecord::Schema.define(version: 2020_09_11_134530) do
     t.string "placeholder", default: "http://placehold.it/900x300"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "terms_conditions", default: ""
   end
 
   create_table "event_attachments", force: :cascade do |t|
@@ -197,6 +198,7 @@ ActiveRecord::Schema.define(version: 2020_09_11_134530) do
     t.boolean "is_cancelled", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "terms_conditions", default: ""
   end
 
   create_table "follow_requests", force: :cascade do |t|

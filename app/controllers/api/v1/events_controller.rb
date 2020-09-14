@@ -37,6 +37,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       @passes << {
       id: pass.id,
       title: pass.title,
+      description: pass.description,
       host_name: e.user.business_profile.profile_name,
       host_image: e.user.avatar,
       event_name: e.name,
@@ -47,7 +48,8 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       event_date: e.start_date,
       is_added_to_wallet: is_added_to_wallet?(pass.id),
       validity: pass.validity.strftime(get_time_format),
-      grabbers_count: pass.wallets.size
+      grabbers_count: pass.wallets.size,
+      terms_and_condition: pass.terms_conditions
     }
   end#each
   end #if request_user
@@ -57,7 +59,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       "id" => e.ticket.id,
       'title' => e.ticket.title,
       'event_name' => e.name,
-      'price' => get_formated_price(e.ticket.price),
+      'price' => e.ticket.price,
       "quantity" => e.ticket.quantity,
       'ticket_type' => e.ticket.ticket_type,
       'per_head' => e.ticket.per_head,
@@ -73,7 +75,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         'end_date' => e.end_date,
         'start_time' => e.start_time,
         'end_time' => e.end_time,
-        'price' => get_formated_price(e.price), # check for price if it is zero
+        'price' => e.price, # check for price if it is zero
         'price_type' => e.price_type,
         'event_type' => e.event_type,
         'additional_media' => e.event_attachments,
@@ -101,7 +103,8 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         'grabbers' => get_event_passes_grabbers(e),
         'sponsors' => e.sponsors,
         "mute_chat" => get_mute_chat_status(e),
-        "mute_notifications" => get_mute_notifications_status(e) 
+        "mute_notifications" => get_mute_notifications_status(e),
+        "terms_and_conditions" => e.terms_conditions 
      }
      
     end #each
@@ -134,7 +137,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 		@event = Event.new
 	end
 
-	def create
+  def create
     @event = Event.new(event_params)
     # Notify all mygo user about event creation
     @pubnub = Pubnub.new(
@@ -238,10 +241,6 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 
 
   private 
-
-
-
-  
 
   # calculates interest level demographics interested + going
  
