@@ -76,7 +76,8 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
               "action_type": @notification.action_type,
               "created_at": @notification.created_at,
               "body": @comment.comment,
-              "last_comment": @comment    
+              "last_comment": @comment,
+              "is_host" => is_host?(@comment.user, @event)    
              }
             }
            }
@@ -111,7 +112,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          success: true,
          message: "Comment created successfully",
          data: {
-           comment: @comment
+           comment: comments_hash
          }
        }
     else 
@@ -200,12 +201,22 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
     
        end #not request_user
        end #each
+
+       reply_hash = {
+        "id" =>  @reply.id,
+        "comment" => @reply.msg,
+        "user_id" => @reply.user_id,
+        "from" => get_full_name(@reply.user),
+        "avatar" => @reply.user.avatar,
+        "created_at": @reply.created_at,
+        "is_host" => is_host?(@reply.user,  @event) 
+       }
   
         render json: {
           code: 200,
           success: true,
           message: "Replied successfully",
-          data: @reply
+          data: reply_hash
         }
      else 
        render json: {
