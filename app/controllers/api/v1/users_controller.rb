@@ -485,7 +485,10 @@ end
     friends_participants_count: competition.registrations.map {|reg| if(request_user.friends.include? reg.user) then reg.user end }.size,
     creator_name: get_full_name(competition.user),
     creator_image: competition.user.avatar,
-    validity: competition.validity
+    validity: competition.validity,
+    total_entry_count: get_entry_count(user, competition),
+    issued_by: get_full_name(competition.user)
+    
     }
     end
 

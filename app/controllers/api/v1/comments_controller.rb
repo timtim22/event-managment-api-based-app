@@ -101,7 +101,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
         "updated_at" => @comment.updated_at,
         "from" => get_full_name(comment.user),
         "user_avatar" => @comment.user.avatar,
-        "read_at": @comment.read_at
+        "read_at": @comment.read_at,
         "reader_id" => @comment.reader_id,
         "is_host" => is_host?(@comment.user, @event)
        }
