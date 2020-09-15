@@ -100,7 +100,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
         "event_id" => @comment.event_id,
         "created_at": @comment.created_at,
         "updated_at" => @comment.updated_at,
-        "from" => get_full_name(comment.user),
+        "from" => get_full_name(@comment.user),
         "user_avatar" => @comment.user.avatar,
         "read_at": @comment.read_at,
         "reader_id" => @comment.reader_id,
