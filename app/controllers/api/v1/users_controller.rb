@@ -610,6 +610,7 @@ end
       profile['last_name'] = ''
       profile['avatar'] = user.avatar
       profile['about'] = user.profile.about
+      profile['address'] = user.business_profile.address
       profile['followers_count'] = user.followers.size
       profile['events_count'] = user.events.size
       profile['competitions_count'] = user.competitions.size
@@ -683,6 +684,7 @@ end
       profile['first_name'] = user.business_profile.profile_name
       profile['last_name'] = ''   
       profile['avatar'] = user.avatar
+      profile['address'] = user.business_profile.address
       profile['about'] = user.business_profile.about
       profile['facebook'] = user.business_profile.facebook
       profile['twitter'] = user.business_profile.twitter
