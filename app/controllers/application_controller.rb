@@ -422,6 +422,8 @@ class ApplicationController < ActionController::Base
         creator_name: competition.user.business_profile.profile_name,
         creator_image: competition.user.avatar,
         creator_id: competition.user.id,
+        total_entry_count: get_entry_count(user, competition),
+        issued_by: get_full_name(competition.user),
         is_followed: is_followed(competition.user),
         validity: competition.validity.strftime(get_time_format)
     }
@@ -738,6 +740,14 @@ end
 
   def get_formated_price(number)
      ##
+  end
+
+  def get_entry_count(user, competition)
+    count = competition.registrations.where(user: user).size
+  end
+
+  def is_host?(user, resource)
+    resource.user == user
   end
 
   

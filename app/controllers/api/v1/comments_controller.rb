@@ -91,6 +91,20 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
    
       end #not request_user
       end #each
+
+       comments_hash = {
+        "id" =>  @comment.id,
+        "comment" => @comment.comment,
+        "user_id" => @comment.user_id,
+        "event_id" => @comment.event_id,
+        "created_at": @comment.created_at,
+        "updated_at" => @comment.updated_at,
+        "from" => get_full_name(comment.user),
+        "user_avatar" => @comment.user.avatar,
+        "read_at": @comment.read_at
+        "reader_id" => @comment.reader_id,
+        "is_host" => is_host?(@comment.user, @event)
+       }
  
        render json: {
          code: 200,
@@ -170,7 +184,8 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
                "action_type": @notification.action_type,
                "created_at": @notification.created_at,
                "body": @reply.msg,
-               "last_comment": @reply.msg    
+               "last_comment": @reply.msg,
+               "is_host" => is_host?(@reply.user,  @event)    
               }
              }
             }
