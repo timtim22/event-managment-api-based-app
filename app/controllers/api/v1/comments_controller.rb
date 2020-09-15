@@ -47,7 +47,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
       
         if @notification = Notification.create(recipient: comment_user, actor: request_user, action: get_full_name(request_user) + " commented on event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')  
 
-         if !event_chat_muted?(comment_user, @event) && comment_user.all_chat_notifications_setting.is_on == true && comment_user.event_notifications_setting.is_on == true
+         if !event_chat_muted?(comment_user, @event) && !comment_user.all_chat_notifications_setting.blank?  && comment_user.all_chat_notifications_setting.is_on == true && !comment_user.event_notifications_setting.blank? && comment_user.event_notifications_setting.is_on == true
 
           @current_push_token = @pubnub.add_channels_to_push(
              push_token: comment_user.profile.device_token,
@@ -216,7 +216,9 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
           code: 200,
           success: true,
           message: "Replied successfully",
-          data: reply_hash
+          data: {
+            reply: reply_hash
+           }
         }
      else 
        render json: {
