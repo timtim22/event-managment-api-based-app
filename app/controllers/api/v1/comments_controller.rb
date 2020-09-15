@@ -273,7 +273,8 @@ end
           "from" => get_full_name(comment.user),
           "user_avatar" => comment.user.avatar,
           "read_at" => comment.read_at,
-          "reader_id" => comment.reader_id
+          "reader_id" => comment.reader_id,
+          "is_host" => is_host?(comment.user,  @event)  
         }
         comment.replies.each do |reply|
           @replies << {
@@ -283,7 +284,8 @@ end
           "from" => get_full_name(reply.user),
           "avatar" => reply.user.avatar,
           "created_at" => reply.created_at,
-          "reply_to" =>  if !reply.reply_to_user.blank?  then reply.reply_to_user else @empty end
+          "reply_to" =>  if !reply.reply_to_user.blank?  then reply.reply_to_user else @empty end,
+          "is_host" => is_host?(reply.user,  @event)  
         }
       end
         @comments << {
@@ -323,6 +325,7 @@ end
         "user_avatar" => last_comment.user.avatar,
         "read_at" => last_comment.read_at,
         "reader_id" => last_comment.reader_id
+         
        }
 
        @events << {
