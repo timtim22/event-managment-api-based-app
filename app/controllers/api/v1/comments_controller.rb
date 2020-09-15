@@ -313,7 +313,7 @@ end
    
    def get_commented_events
      @events = []
-     @commented_events = request_user.comments.map {|comment| 
+     @commented_events = request_user.comments.each do {|comment| 
        e = comment.event
        last_comment = comment.event.comments.order(created_at: 'DESC').first
        last_comment_modified = {
@@ -341,7 +341,7 @@ end
         "last_comment" => last_comment_modified,
         "unread_count" => get_unread_comments_count(e)
        }
-    }#map
+      end#each
 
      render json:  {
        code: 200,
