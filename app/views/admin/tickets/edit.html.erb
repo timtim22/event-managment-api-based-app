@@ -31,6 +31,11 @@
            <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Quantity" value="<%= @ticket.quantity %>">
         </div>
 
+        <div class="form-group">
+        <label for="terms_conditions">Terms and Conditions</label>
+        <textarea name="terms_conditions" class="form-control" id="terms_conditions" rows="12"><%= @ticket.terms_conditions %></textarea>
+     </div>
+
       <div class="form-group">
         <label for="per_head">Per Head</label>
         <input type="text" class="form-control" id="" name="per_head" placeholder="Allowd per head" value="<%= @ticket.per_head %>">

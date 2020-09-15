@@ -30,7 +30,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
         creator_name: competition.user.business_profile.profile_name,
         creator_image: competition.user.avatar,
         creator_id: competition.user.id,
-        total_entry_count: get_entry_count(user, competition),
+        total_entries_count: get_entry_count(request_user, competition),
         issued_by: get_full_name(competition.user),
         is_followed: is_followed(competition.user),
         validity: competition.validity.strftime(get_time_format),
@@ -58,9 +58,10 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
       creator_name: competition.user.business_profile.profile_name,
       creator_image: competition.user.avatar,
       creator_id: competition.user.id,
+      total_entries_count: 0,
       issued_by: get_full_name(competition.user),
       is_followed: is_followed(competition.user),
-      validity: competition.validity.strfime(get_time_format),
+      validity: competition.validity.strftime(get_time_format),
       terms_and_conditions: competition.terms_conditions
       }
     end #each

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_14_105537) do
+ActiveRecord::Schema.define(version: 2020_09_15_123201) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -499,6 +499,7 @@ ActiveRecord::Schema.define(version: 2020_09_14_105537) do
     t.decimal "end_price", precision: 8, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "terms_conditions", default: ""
   end
 
   create_table "transactions", force: :cascade do |t|

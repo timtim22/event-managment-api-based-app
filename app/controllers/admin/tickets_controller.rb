@@ -27,6 +27,7 @@ class Admin::TicketsController < Admin::AdminMasterController
       @ticket.price = @event.price
       @ticket.quantity = params[:quantity]
       @ticket.event_id = id
+      @ticket.terms_conditions = params[:terms_conditions]
       @ticket.ticket_type = @event.price_type
       @ticket.user_id = current_user.id
       @ticket.per_head = params[:per_head]
@@ -64,6 +65,7 @@ class Admin::TicketsController < Admin::AdminMasterController
       @ticket.price = @event.price
       @ticket.quantity = params[:quantity]
       @ticket.event_id = id
+      @ticket.terms_conditions = params[:terms_conditions]
       @ticket.ticket_type = @event.price_type
       @ticket.user_id = current_user.id
       @ticket.per_head = params[:per_head]

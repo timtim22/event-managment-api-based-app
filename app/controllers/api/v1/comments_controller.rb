@@ -313,24 +313,26 @@ end
    
    def get_commented_events
      @events = []
-     @commented_events = request_user.comments.each do {|comment| 
-       e = comment.event
-       last_comment = comment.event.comments.order(created_at: 'DESC').first
-       last_comment_modified = {
-        "id" => last_comment.id,
-        "comment" => last_comment.comment,
-        "user_id" => last_comment.user_id,
-        "event_id" => last_comment.event_id,
-        "created_at" => last_comment.created_at,
-        "updated_at" => last_comment.updated_at,
-        "from" => get_full_name(last_comment.user),
-        "user_avatar" => last_comment.user.avatar,
-        "read_at" => last_comment.read_at,
-        "reader_id" => last_comment.reader_id
-         
-       }
+     @response = []
+     @commented_events = request_user.comments.each do |comment| 
+       @events.push(comment.event)
+     end#each
+     @events.uniq.each do |e|
+      last_comment = e.comments.order(created_at: 'DESC').first
+      last_comment_modified = {
+       "id" => last_comment.id,
+       "comment" => last_comment.comment,
+       "user_id" => last_comment.user_id,
+       "event_id" => last_comment.event_id,
+       "created_at" => last_comment.created_at,
+       "updated_at" => last_comment.updated_at,
+       "from" => get_full_name(last_comment.user),
+       "user_avatar" => last_comment.user.avatar,
+       "read_at" => last_comment.read_at,
+       "reader_id" => last_comment.reader_id   
+      }
 
-       @events << {
+      @response << {
         'id' => e.id,
         'name' => e.name,
         'creator_name' => get_full_name(e.user),
@@ -341,14 +343,14 @@ end
         "last_comment" => last_comment_modified,
         "unread_count" => get_unread_comments_count(e)
        }
-      end#each
+     end #each
 
      render json:  {
        code: 200,
        success: true,
        message: '',
        data: {
-         commented_events: if @events.size > 1 then @events.uniq! {|e| e[:id] } else @events end
+         commented_events: @response
        }
      }
    end
