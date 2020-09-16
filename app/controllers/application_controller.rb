@@ -398,7 +398,10 @@ class ApplicationController < ActionController::Base
       end_time: offer.validity.strftime(get_time_format), 
       grabbers_count: offer.wallets.size,
       is_added_to_wallet: is_added_to_wallet?(offer.id),
-      grabbers_friends_count: get_grabbers_friends_count(offer)
+      grabbers_friends_count: get_grabbers_friends_count(offer),
+      issued_by: get_full_name(offer.user),
+      redeem_count: get_redeem_count(offer),
+      quantity: offer.quantity
     }
   end
 
@@ -760,6 +763,10 @@ end
     else
      true
     end
+   end
+
+   def get_redeem_count(resource)
+     resource.redemptions.size
    end
 
   

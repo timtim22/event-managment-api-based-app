@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_15_123201) do
+ActiveRecord::Schema.define(version: 2020_09_16_093901) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -458,6 +458,7 @@ ActiveRecord::Schema.define(version: 2020_09_15_123201) do
     t.boolean "agreed_to_terms", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "quantity", default: 0
   end
 
   create_table "sponsors", force: :cascade do |t|

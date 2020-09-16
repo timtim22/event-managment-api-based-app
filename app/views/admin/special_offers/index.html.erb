@@ -17,6 +17,7 @@
           <th>Title</th>
           <th>Descripiton</th>
           <th>Validity</th>
+          <th>Quantity </th>
           <th>Action</th>
         </tr>
         </thead>
@@ -28,6 +29,7 @@
           <td><%= link_to offer.title[0...30], admin_special_offer_path(offer.id)  %></td>
           <td><%= offer.description[0...39] %></td>
           <td><%= offer.validity %></td>
+          <td><%= offer.quantity %></td>
           <td>
           <a href="<%= admin_special_offer_path(offer.id) %>" data-toggle="tooltip" title="View Offer"><i class="fa fa-eye"></i></a>
           |

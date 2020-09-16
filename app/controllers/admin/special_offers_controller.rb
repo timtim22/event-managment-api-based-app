@@ -31,6 +31,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
       @special_offer.image = params[:image]
       @special_offer.redeem_code = generate_code
       @special_offer.terms_conditions = params[:terms_conditions]
+      @special_offer.quantity = params[:quantity]
       @special_offer.validity = params[:validity]
       if @special_offer.save
         #create_activity("created special offer", @special_offer, "SpecialOffer", admin_special_offer_path(@special_offer),@special_offer.title, 'post')
@@ -108,6 +109,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
      @special_offer.image = params[:image]
      @special_offer.redeem_code = generate_code
      @special_offer.terms_conditions = params[:terms_conditions]
+     @special_offer.quantity = params[:quantity]
      @special_offer.validity = params[:validity] 
     if @special_offer.save
       #create_activity("updated special offer", @special_offer, "SpecialOffer", admin_special_offer_path(@special_offer),@special_offer.title, 'patch')

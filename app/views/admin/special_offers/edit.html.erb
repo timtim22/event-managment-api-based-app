@@ -63,6 +63,11 @@
            </div><!--time end-->
         </div>
 
+        <div class="form-group">
+          <label for="quantity">Quantity</label>
+          <input type="number" class="form-control" id="quantity" name="quantity" value="<%= @special_offer.quantity %>" >
+      </div>
+
        <div class="form-group">
          <label for="terms_conditions">Terms and Conditions</label>
          <textarea name="terms_conditions" class="form-control" id="terms_conditions" rows="12"><%= @special_offer.terms_conditions %></textarea>

@@ -19,13 +19,15 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
       image: offer.image.url,
       creator_name: get_full_name(offer.user),
       creator_image: offer.user.avatar,
-      description: offer.description,
       validity: offer.validity.strftime(get_time_format),
       end_time: offer.time, 
       grabbers_count: offer.wallets.size,
       is_added_to_wallet: is_added_to_wallet?(offer.id),
       grabbers_friends_count: get_grabbers_friends_count(offer),
-      terms_and_conditions: offer.terms_conditions
+      terms_and_conditions: offer.terms_conditions,
+      issued_by: get_full_name(offer.user),
+      redeem_count: get_redeem_count(offer),
+      quantity: offer.quantity,
     }
     end #if
     end #each
@@ -44,13 +46,15 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
         image: offer.image.url,
         creator_name: get_full_name(offer.user),
         creator_image: offer.user.avatar,
-        description: offer.description,
         validity: offer.validity.strftime(get_time_format),
         end_time: offer.time, 
         grabbers_count: offer.wallets.size,
         is_added_to_wallet: is_added_to_wallet?(offer.id),
         grabbers_friends_count: get_grabbers_friends_count(offer),
-        terms_and_conditions: offer.terms_conditions
+        terms_and_conditions: offer.terms_conditions,
+        issued_by: get_full_name(offer.user),
+        redeem_count: get_redeem_count(offer),
+        quantity: offer.quantity,
       }
       end #each
     end#if
