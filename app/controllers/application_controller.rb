@@ -422,7 +422,7 @@ class ApplicationController < ActionController::Base
         creator_name: competition.user.business_profile.profile_name,
         creator_image: competition.user.avatar,
         creator_id: competition.user.id,
-        total_entries_count: get_entry_count(user, competition),
+        total_entries_count: get_entry_count(request_user, competition),
         issued_by: get_full_name(competition.user),
         is_followed: is_followed(competition.user),
         validity: competition.validity.strftime(get_time_format)
