@@ -123,7 +123,11 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: offer.created_at,
           business: get_business_object(business),
-          terms_and_conditions: offer.terms_conditions 
+          terms_and_conditions: offer.terms_conditions,
+          issued_by: get_full_name(offer.user),
+          redeem_count: get_redeem_count(offer),
+          quantity: offer.quantity
+         
         }
         end
       end #not blank
@@ -214,7 +218,10 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: offer.created_at,
           business: get_business_object(business),
-          terms_and_conditions: offer.terms_conditions 
+          terms_and_conditions: offer.terms_conditions,
+          issued_by: get_full_name(offer.user),
+          redeem_count: get_redeem_count(offer),
+          quantity: offer.quantity 
         }
         end #each
       end #not empty
