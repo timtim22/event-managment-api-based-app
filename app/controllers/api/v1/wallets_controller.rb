@@ -10,7 +10,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
   @wallet_data = {}
   @special_offers = []
   @passes = []
-  @others = []
+  @tickets = []
+  @competitions = []
   @wallets.each do |wallet|
     case wallet.offer_type
       when 'SpecialOffer'
@@ -56,8 +57,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
         terms_and_conditions: wallet.offer.terms_conditions
       }
-     else
-      @others << {
+    when 'Ticket'
+      @tickets << {
         id: wallet.offer.id,
         title: wallet.offer.title,
         host_name: get_full_name(wallet.offer.event.user),
@@ -74,12 +75,40 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         purchased_quantity: getPurchaseQuantity(wallet.offer.id),
         per_head: wallet.offer.per_head,
         is_redeemed: is_redeemed(wallet.offer.id, "Ticket", request_user.id)
-      } 
-      end 
+      }
+    when 'Competition'
+      @competitions << {
+        id: wallet.offer.id,
+        title: wallet.offer.title,
+        description: wallet.offer.description,
+        location: wallet.offer.location,
+        start_date: wallet.offer.start_date,
+        end_date: wallet.offer.end_date,
+        start_time: wallet.offer.start_time,
+        end_time: wallet.offer.end_time,
+        price: wallet.offer.price,
+        lat: wallet.offer.lat,
+        lng: wallet.offer.lng,
+        image: wallet.offer.image.url,
+        is_entered: is_entered_competition?(wallet.offer.id),
+        participants_stats: get_participants_stats(wallet.offer),
+        creator_name: wallet.offer.user.business_profile.profile_name,
+        creator_image: wallet.offer.user.avatar,
+        creator_id: wallet.offer.user.id,
+        total_entries_count: get_entry_count(request_user, wallet.offer),
+        issued_by: get_full_name(wallet.offer.user),
+        is_followed: is_followed(wallet.offer.user),
+        validity: wallet.offer.validity.strftime(get_time_format),
+        terms_and_conditions: wallet.offer.terms_conditions
+       }
+    else
+       'do nothing' 
+    end #case 
   end #each
   @wallet_data['special_offers'] = @special_offers
   @wallet_data['passes'] = @passes
-  @wallet_data['others'] = @others
+  @wallet_data['tickets'] = @tickets
+  @wallet_data['competitions'] = @competitions
 
   render json: {
     code: 200,
@@ -280,7 +309,12 @@ def is_redeemed(offer_id, offer_type,user_id)
 end
 
 def getPurchaseQuantity(ticket_id)
-  TicketPurchase.where(user_id: request_user.id).where(ticket_id: ticket_id).first.quantity
+  p = TicketPurchase.where(user_id: request_user.id).where(ticket_id: ticket_id)
+  if !p.blank?
+    p.first.quantity
+  else
+    0
+  end
 end
 
 end

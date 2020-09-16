@@ -7,6 +7,7 @@ class Competition < ApplicationRecord
   has_many :views, dependent: :destroy, as: :resource
   has_many :viewers, through: :views, source: :user
   has_many :activity_logs, dependent: :destroy, as: :resource
+  has_many :wallets, dependent: :destroy, as: :offer
   
   validates :title, presence: true
   validates :start_date, presence: true

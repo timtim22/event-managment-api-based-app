@@ -750,6 +750,18 @@ end
     resource.user == user
   end
 
+
+  def showability?(user, competition)
+    if is_entered_competition?(competition.id)
+       reg = competition.registrations.where(user: user).first
+       entry_time = reg.created_at
+       after_24_hours = entry_time + 24.hours
+       after_24_hours < Time.now             
+    else
+     true
+    end
+   end
+
   
 
   helper_method :SetJsVariables
