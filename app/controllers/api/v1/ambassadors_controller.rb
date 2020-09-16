@@ -157,13 +157,11 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
   # list of business who approved an ambassador
   def my_businesses
     @businesses = request_user.ambassador_businesses
-    @passes = []
-    @special_offers = []
     @offers = []
     @businesses.each do |business|
       if !business.passes.blank?
       business.passes.not_expired.order(created_at: 'DESC').each do |pass| 
-        @passes << {
+        @offers << {
           id: pass.id,
           type: 'pass',
           title: pass.title,
@@ -188,12 +186,12 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           business: get_business_object(business),
           terms_and_conditions: pass.terms_conditions 
         }
-        end
+        end #each
       end #not empty
 
       if !business.special_offers.blank?
         business.special_offers.not_expired.order(created_at: 'DESC').each do |offer|
-        @special_offers << {
+        @offers << {
           id: offer.id,
           type: 'special_offer',
           title: offer.title,
@@ -220,22 +218,10 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           business: get_business_object(business),
           terms_and_conditions: offer.terms_conditions 
         }
-        end
+        end #each
       end #not empty
-    end
-
-    if !@passes.blank?
-      @passes.each do  |pass|
-        @offers.push(pass)
-      end
-   end #not empty
-
-   if !@passes.blank?
-    @special_offers.each do  |offer|
-      @offers.push(offer)
-    end
-  end#not empty
-
+    end #parant each
+ 
     render json: {
       code: 200,
       success: true,
