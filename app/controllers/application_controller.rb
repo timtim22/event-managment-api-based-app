@@ -376,7 +376,9 @@ class ApplicationController < ActionController::Base
       is_added_to_wallet: is_added_to_wallet?(pass.id),
       validity: pass.validity.strftime(get_time_format).to_s,
       grabbers_count: pass.wallets.size,
-      terms_and_conditions: pass.terms_conditions
+      terms_and_conditions: pass.terms_conditions,
+      redeem_count: get_redeem_count(pass),
+      quantity: pass.quantity
     }
   end
 
@@ -517,7 +519,9 @@ class ApplicationController < ActionController::Base
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: pass.created_at,
           business: get_business_object(business),
-          terms_conditions: pass.terms_conditions
+          terms_conditions: pass.terms_conditions,
+          redeem_count: get_redeem_count(pass),
+          quantity: pass.quantity
            
         }
         end

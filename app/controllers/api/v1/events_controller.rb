@@ -31,7 +31,9 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         grabbers_count: pass.wallets.size,
         terms_and_conditions: pass.terms_conditions,
         description: pass.description,
-        issued_by: get_full_name(pass.user)
+        issued_by: get_full_name(pass.user),
+        redeem_count: get_redeem_count(pass),
+        quantity: pass.quantity
       }
     end# remove if
     end#each
@@ -54,7 +56,9 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       grabbers_count: pass.wallets.size,
       terms_and_conditions: pass.terms_conditions,
       description: pass.description,
-      issued_by: get_full_name(pass.user)
+      issued_by: get_full_name(pass.user),
+      redeem_count: get_redeem_count(pass),
+      quantity: pass.quantity
     }
   end#each
   end #if request_user

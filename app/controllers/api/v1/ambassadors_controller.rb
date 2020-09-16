@@ -93,8 +93,12 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           quantity: pass.quantity,
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: pass.created_at,
-          business: get_business_object(business),
-          terms_and_conditions: pass.terms_conditions 
+          terms_and_conditions: pass.terms_conditions,
+          redeem_count: get_redeem_count(pass),
+          quantity: pass.quantity,
+          issued_by: get_full_name(business), 
+          business: get_business_object(business)
+         
         }
         end
       end #not empty
@@ -186,8 +190,12 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           quantity: pass.quantity,
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: pass.created_at,
+          issued_by: get_full_name(business),
+          terms_and_conditions: pass.terms_conditions,
+          redeem_count: get_redeem_count(pass),
+          quantity: pass.quantity, 
           business: get_business_object(business),
-          terms_and_conditions: pass.terms_conditions 
+         
         }
         end #each
       end #not empty
