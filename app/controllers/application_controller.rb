@@ -375,7 +375,8 @@ class ApplicationController < ActionController::Base
       distributed_by: distributed_by(pass),
       is_added_to_wallet: is_added_to_wallet?(pass.id),
       validity: pass.validity.strftime(get_time_format).to_s,
-      grabbers_count: pass.wallets.size
+      grabbers_count: pass.wallets.size,
+      terms_and_conditions: pass.terms_conditions
     }
   end
 
@@ -401,7 +402,8 @@ class ApplicationController < ActionController::Base
       grabbers_friends_count: get_grabbers_friends_count(offer),
       issued_by: get_full_name(offer.user),
       redeem_count: get_redeem_count(offer),
-      quantity: offer.quantity
+      quantity: offer.quantity,
+      terms_and_conditions: offer.terms_conditions
     }
   end
 
@@ -428,7 +430,8 @@ class ApplicationController < ActionController::Base
         total_entries_count: get_entry_count(request_user, competition),
         issued_by: get_full_name(competition.user),
         is_followed: is_followed(competition.user),
-        validity: competition.validity.strftime(get_time_format)
+        validity: competition.validity.strftime(get_time_format),
+        terms_and_conditions: competition.terms_conditions
     }
   end
 
@@ -495,6 +498,7 @@ class ApplicationController < ActionController::Base
           id: pass.id,
           type: 'pass',
           title: pass.title,
+          description: pass.description,
           host_name: business.business_profile.profile_name,
           host_image: business.avatar,
           event_name: pass.event.name,
@@ -512,7 +516,9 @@ class ApplicationController < ActionController::Base
           quantity: pass.quantity,
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: pass.created_at,
-          business: get_business_object(business) 
+          business: get_business_object(business),
+          terms_conditions: pass.terms_conditions
+           
         }
         end
       end #not empty
@@ -542,7 +548,12 @@ class ApplicationController < ActionController::Base
           ambassador_rate: offer.ambassador_rate,
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: offer.created_at,
-          business: get_business_object(business) 
+          issued_by: get_full_name(offer.user),
+          redeem_count: get_redeem_count(offer),
+          quantity: offer.quantity,
+          terms_and_conditions: terms_conditions, 
+          business: get_business_object(business),
+       
         }
         end
       end #not empty

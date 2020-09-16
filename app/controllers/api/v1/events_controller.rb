@@ -28,7 +28,10 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         event_date: e.start_date,
         is_added_to_wallet: is_added_to_wallet?(pass.id),
         validity: pass.validity.strftime(get_time_format),
-        grabbers_count: pass.wallets.size
+        grabbers_count: pass.wallets.size,
+        terms_and_conditions: pass.terms_conditions,
+        description: pass.description,
+        issued_by: get_full_name(pass.user)
       }
     end# remove if
     end#each
@@ -49,7 +52,9 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       is_added_to_wallet: is_added_to_wallet?(pass.id),
       validity: pass.validity.strftime(get_time_format),
       grabbers_count: pass.wallets.size,
-      terms_and_condition: pass.terms_conditions
+      terms_and_conditions: pass.terms_conditions,
+      description: pass.description,
+      issued_by: get_full_name(pass.user)
     }
   end#each
   end #if request_user
