@@ -15,7 +15,6 @@ class CreatePasses < ActiveRecord::Migration[5.2]
       t.datetime :valid_from
       t.datetime :valid_to
       t.string :pass_type, default: 'ordinary'
-      t.integer :redeem_code, default: 0
       t.timestamps
     end
   end

@@ -516,10 +516,11 @@ class ApplicationController < ActionController::Base
           quantity: pass.quantity,
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: pass.created_at,
-          business: get_business_object(business),
-          terms_conditions: pass.terms_conditions,
+          terms_and_conditions: pass.terms_conditions,
           redeem_count: get_redeem_count(pass),
-          quantity: pass.quantity
+          quantity: pass.quantity,
+          issued_by: get_full_name(pass.user),
+          business: get_business_object(business)
            
         }
         end #each
@@ -527,7 +528,7 @@ class ApplicationController < ActionController::Base
 
       if !business.special_offers.blank?
         business.special_offers.not_expired.order(created_at: 'DESC').each do |offer|
-        @special_offers << {
+        @offers << {
           id: offer.id,
           type: 'special_offer',
           title: offer.title,
@@ -553,7 +554,7 @@ class ApplicationController < ActionController::Base
           issued_by: get_full_name(offer.user),
           redeem_count: get_redeem_count(offer),
           quantity: offer.quantity,
-          terms_and_conditions: terms_conditions, 
+          terms_and_conditions: offer.terms_conditions, 
           business: get_business_object(business),
        
         }

@@ -95,7 +95,6 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           created_at: pass.created_at,
           terms_and_conditions: pass.terms_conditions,
           redeem_count: get_redeem_count(pass),
-          quantity: pass.quantity,
           issued_by: get_full_name(business), 
           business: get_business_object(business)
          
@@ -193,7 +192,6 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           issued_by: get_full_name(business),
           terms_and_conditions: pass.terms_conditions,
           redeem_count: get_redeem_count(pass),
-          quantity: pass.quantity, 
           business: get_business_object(business),
          
         }

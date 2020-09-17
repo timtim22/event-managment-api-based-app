@@ -424,24 +424,39 @@ $(document).on('change','input#competition_location',function(event){
 });//change
  
 function setSelectValue() {
+   
   if($("#price_type").val() != "free") {
     $("div.price_div").show();
+    if ($('#price_range_checkbox').is(':checked') == true) {
+       $('#price_range_div').show();
+       $('#single_price').hide();
+    }
+    else {
+      $('#price_range_div').hide();
+      $('#single_price').show();
+    }
  }
  else {
   $("div.price_div").hide();
-  $("input#price").val('');
+  $("input#price").val(0);
  }
 }
+
 setSelectValue();
 
+$(document).on('click','#price_range_checkbox', function(event){
+  if ($('#price_range_checkbox').is(':checked') == true) {
+    $('#price_range_div').show();
+    $('#single_price').hide();
+ }
+ else {
+   $('#price_range_div').hide();
+   $('#single_price').show();
+ }
+})//click
+
 $(document).on('change','#price_type',function(e){
-   if($("#price_type").val() != "free") {
-      $("div.price_div").show();
-   }
-   else {
-    $("div.price_div").hide();
-    $("input#price").val('0');
-   }
+  setSelectValue();
 
 });//change
 

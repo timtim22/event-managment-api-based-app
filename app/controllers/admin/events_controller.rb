@@ -30,7 +30,26 @@ class Admin::EventsController < Admin::AdminMasterController
     @pubnub = Pubnub.new(
       publish_key: ENV['PUBLISH_KEY'],
       subscribe_key: ENV['SUBSCRIBE_KEY']
-     )
+     ) 
+       if params[:price_type == 'free']
+          price_range = false
+          price = 0.00
+          start_price = 0.00
+          end_price = 0.00
+       else
+        if params[:price_range] == 'on'
+          price_range = true
+          price = params[:start_price]
+          start_price = params[:start_price]
+          end_price = params[:end_price]
+        else
+          price_range = false
+          price = params[:price]
+          start_price = 0.00
+          end_price = 0.00
+        end
+       end  
+       
       if(params[:start_date] != params[:end_date])
          dates = (params[:start_date]..params[:end_date]).to_a
          dates.each do |date|
@@ -38,7 +57,10 @@ class Admin::EventsController < Admin::AdminMasterController
           @event.name = params[:name]
           @event.start_date = date
           @event.end_date = date
-          @event.price = params[:price]
+          @event.price_range = price_range
+          @event.price = price
+          @event.start_price = start_price
+          @event.end_price = end_price
           @event.price_type = params[:price_type]
           @event.event_type = params[:event_type]
           @event.start_time = params[:start_time]
@@ -117,7 +139,10 @@ class Admin::EventsController < Admin::AdminMasterController
       @event.name = params[:name]
       @event.start_date = params[:start_date].to_date.to_s
       @event.end_date = params[:end_date].to_date.to_s
-      @event.price = params[:price]
+      @event.price_range = price_range
+      @event.price = price
+      @event.start_price = start_price
+      @event.end_price = end_price
       @event.price_type = params[:price_type]
       @event.event_type = params[:event_type]
       @event.start_time = params[:start_time]
@@ -206,12 +231,33 @@ class Admin::EventsController < Admin::AdminMasterController
   end
   
   def update
-   
+    if params[:price_type == 'free']
+      price_range = false
+      price = 0.00
+      start_price = 0.00
+      end_price = 0.00
+   else
+    if params[:price_range] == 'on'
+      price_range = true
+      price = params[:start_price]
+      start_price = params[:start_price]
+      end_price = params[:end_price]
+    else
+      price_range = false
+      price = params[:price]
+      start_price = 0.00
+      end_price = 0.00
+    end
+   end  
+
     @event = Event.find(params[:id])
     @event.name = params[:name]
     @event.start_date = params[:start_date].to_date.to_s
     @event.end_date = params[:end_date].to_date.to_s
-    @event.price = params[:price]
+    @event.price_range = price_range
+    @event.price = price
+    @event.start_price = start_price
+    @event.end_price = end_price
     @event.price_type = params[:price_type]
     @event.event_type = params[:event_type]
     @event.start_time = params[:start_time]

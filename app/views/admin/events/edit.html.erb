@@ -61,12 +61,28 @@
           <option value="private">Private</option>
         </select>
       </div>
-   <div class="price_div" style="display:none;">
-   <div class="form-group">
-     <label for="price">Price (USD)</label>
-     <input type="number" step="0.01" class="form-control price" id="price" name="price" placeholder="Price" value="<%= @event.price %>">
-    </div>
-   </div><!-- price div-->
+      <div class="price_div">
+      <div class="form-group">
+       <label for="price_range">Price range</label>
+       <input type="checkbox" id="price_range_checkbox" name="price_range" <%= if @event.price_range then 'checked' end %>>
+     </div>
+     <div id="single_price">
+     <div class="form-group">
+       <label for="price">Price (Euro)</label>
+       <input type="number" step="0.01" class="form-control price" id="price" name="price" value="<%= @event.price %>">
+     </div>
+     </div><!--price div -->
+     <div id="price_range_div">
+      <div class="form-group">
+        <label for="start_price">Start Price (Euro)</label>
+        <input type="number" step="0.01" class="form-control start_price" id="start_price" name="start_price" value="<%= @event.start_price %>">
+       </div>
+       <div class="form-group">
+       <label for="end_price">End Price (Euro)</label>
+       <input type="number" step="0.01" class="form-control end_price" id="end_price" name="end_price" value="<%= @event.end_price %>">
+       </div>
+      </div><!-- price range -->
+      </div><!-- price div-->
         <div class="form-group">
           <div id="time_start">
           <label for="email">Start Time</label>
