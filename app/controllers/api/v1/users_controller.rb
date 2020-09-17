@@ -488,7 +488,7 @@ end
     validity: competition.validity,
     total_entries_count: get_entry_count(request_user, competition),
     issued_by: get_full_name(competition.user),
-    description: competition.description,
+    terms_and_conditions: competition.terms_conditions,
     
     }
     end

@@ -490,13 +490,11 @@ class ApplicationController < ActionController::Base
 
   def get_ambassador_gives_away(user)
     @businesses = user.ambassador_businesses
-    @passes = []
-    @special_offers = []
     @offers = []
     @businesses.each do |business|
       if !business.passes.blank?
       business.passes.not_expired.order(created_at: 'DESC').each do |pass| 
-        @passes << {
+        @offers << {
           id: pass.id,
           type: 'pass',
           title: pass.title,
@@ -524,7 +522,7 @@ class ApplicationController < ActionController::Base
           quantity: pass.quantity
            
         }
-        end
+        end #each
       end #not empty
 
       if !business.special_offers.blank?
@@ -559,23 +557,10 @@ class ApplicationController < ActionController::Base
           business: get_business_object(business),
        
         }
-        end
+        end #each
       end #not empty
-    end
-
-    if !@passes.blank?
-      @passes.each do  |pass|
-        @offers.push(pass)
-      end
-   end #not empty
-
-   if !@passes.blank?
-    @special_offers.each do  |offer|
-      @offers.push(offer)
-    end
-  end#not empty
-    @offers
-      
+    end #each 
+    @offers   
 end
 
   def is_ambassador?(user)
