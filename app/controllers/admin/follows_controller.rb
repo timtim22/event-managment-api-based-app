@@ -145,7 +145,7 @@ end
         )
   
         @current_push_token = @pubnub.add_channels_to_push(
-          push_token: fr.follower.profiile.device_token,
+          push_token: fr.follower.profile.device_token,
           type: 'gcm',
           add: fr.follower.profiile.device_token
           ).value
