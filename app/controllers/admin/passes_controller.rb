@@ -176,75 +176,75 @@ class Admin::PassesController < Admin::AdminMasterController
   end
 
 
-  def send_vip_pass
-    if !params[:user_ids].blank?
-      vip = Pass.where(pass_type: 'vip').first
-      user_ids = params[:user_ids]
-      user_ids.each  do  |id|
-      user = User.find(id);
-      check  = user.wallets.where(offer_id: vip.id).where(offer_type: 'Pass').first
-      if check == nil
-       @wallet  = user.wallets.new(offer_id: vip.id, offer_type: 'Pass')
-      if @wallet.save
-         share = vip.vip_pass_shares.create!(user: user)
-        @pubnub = Pubnub.new(
-          publish_key: ENV['PUBLISH_KEY'],
-          subscribe_key: ENV['SUBSCRIBE_KEY']
-         )
-             #also notify current_user friends
-              if @notification = Notification.create(recipient: user, actor: current_user, action: get_full_name(current_user) + " has sent you a VIP pass to join their event.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet') 
+  # def send_vip_pass
+  #   if !params[:user_ids].blank?
+  #     vip = Pass.where(pass_type: 'vip').first
+  #     user_ids = params[:user_ids]
+  #     user_ids.each  do  |id|
+  #     user = User.find(id);
+  #     check  = user.wallets.where(offer_id: vip.id).where(offer_type: 'Pass').first
+  #     if check == nil
+  #      @wallet  = user.wallets.new(offer_id: vip.id, offer_type: 'Pass')
+  #     if @wallet.save
+  #        share = vip.vip_pass_shares.create!(user: user)
+  #       @pubnub = Pubnub.new(
+  #         publish_key: ENV['PUBLISH_KEY'],
+  #         subscribe_key: ENV['SUBSCRIBE_KEY']
+  #        )
+  #            #also notify current_user friends
+  #             if @notification = Notification.create(recipient: user, actor: current_user, action: get_full_name(current_user) + " has sent you a VIP pass to join their event.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet') 
            
-              @current_push_token = @pubnub.add_channels_to_push(
-                 push_token: user.profile.device_token,
-                 type: 'gcm',
-                 add: user.profile.device_token
-                 ).value
+  #             @current_push_token = @pubnub.add_channels_to_push(
+  #                push_token: user.profile.device_token,
+  #                type: 'gcm',
+  #                add: user.profile.device_token
+  #                ).value
       
-               payload = { 
-                "pn_gcm":{
-                 "notification":{
-                   "title": @wallet.offer.title,
-                   "body": @notification.action
-                 },
-                 data: {
-                  "id": @notification.id,
-                  "actor_id": @notification.actor_id,
-                  "actor_image": @notification.actor.avatar,
-                  "notifiable_id": @notification.notifiable_id,
-                  "notifiable_type": @notification.notifiable_type,
-                  "action": @notification.action,
-                  "action_type": @notification.action_type,
-                  "created_at": @notification.created_at,
-                  "body": ''   
-                 }
-                }
-               }
-               @pubnub.publish(
-                channel: user.profile.device_token,
-                message: payload
-                ) do |envelope|
-                    puts envelope.status
-               end
-            end ##notification create
-          end #each 
+  #              payload = { 
+  #               "pn_gcm":{
+  #                "notification":{
+  #                  "title": @wallet.offer.title,
+  #                  "body": @notification.action
+  #                },
+  #                data: {
+  #                 "id": @notification.id,
+  #                 "actor_id": @notification.actor_id,
+  #                 "actor_image": @notification.actor.avatar,
+  #                 "notifiable_id": @notification.notifiable_id,
+  #                 "notifiable_type": @notification.notifiable_type,
+  #                 "action": @notification.action,
+  #                 "action_type": @notification.action_type,
+  #                 "created_at": @notification.created_at,
+  #                 "body": ''   
+  #                }
+  #               }
+  #              }
+  #              @pubnub.publish(
+  #               channel: user.profile.device_token,
+  #               message: payload
+  #               ) do |envelope|
+  #                   puts envelope.status
+  #              end
+  #           end ##notification create
+  #         end #each 
        
-       # create_activity("added to wallet '#{@wallet.offer.title}'", @wallet, 'Wallet', '', @wallet.offer.title, 'post')
-       flash[:notice] = "Pass successfully sent."
-       redirect_to admin_passes_path
-      else
-        flash[:alert_danger] = @wallet.errors.full_messages
-        redirect_to admin_passes_path
-      end
-    else
-      flash[:alert_danger] = "Pass is already shared."
-      redirect_to admin_passes_path
-    end
+  #      # create_activity("added to wallet '#{@wallet.offer.title}'", @wallet, 'Wallet', '', @wallet.offer.title, 'post')
+  #      flash[:notice] = "Pass successfully sent."
+  #      redirect_to admin_passes_path
+  #     else
+  #       flash[:alert_danger] = @wallet.errors.full_messages
+  #       redirect_to admin_passes_path
+  #     end
+  #   else
+  #     flash[:alert_danger] = "Pass is already shared."
+  #     redirect_to admin_passes_path
+  #   end
  
-    else
-     flash[:alert_danger] = "user_id is required."
-     redirect_to admin_passes_path
-    end
-   end
+  #   else
+  #    flash[:alert_danger] = "user_id is required."
+  #    redirect_to admin_passes_path
+  #   end
+  #  end
 
 
 
