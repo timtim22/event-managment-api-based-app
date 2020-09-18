@@ -11,7 +11,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
     if request_user
      
     Competition.not_expired.order(created_at: 'DESC').each do |competition|
-      if !is_removed_competition?(request_user, competition) && showability?(request_user, competition) 
+      if !is_removed_competition?(request_user, competition) && showability?(request_user, competition) == true
         @competitions << {
         id: competition.id,
         title: competition.title,
