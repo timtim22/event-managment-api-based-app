@@ -1,0 +1,32 @@
+<div class="container-scroller">
+<%= render 'shared/header' %>
+<div class="container-fluid page-body-wrapper">
+  <%= render 'shared/sidebar' %>
+ <div class="main-panel">
+   <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+     <div class="card-body">
+      <%= render "shared/notice" %>
+     <br>
+    <h4 class="card-title">Send VIP pass</h4>
+    <div class="table-responsive">
+    <form method="post" action="<%= admin_send_vip_pass_path %>" >
+    <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
+    <div class="form-group">
+    <label for="categories">Select People(Multi select)</label><br>
+    <select class="form-control categories_select select_multi" data-placeholder="Select a category..." multiple class="chosen-select" name="user_ids[]" id="categories_select">
+     <% @users.each do |user| %>
+     <option value="<%= user.id %>"><%= get_full_name(user) %></option>
+     <% end %>
+     </select>
+    </div>
+    <button type="submit" class="btn btn-primary mr-2">Send</button>
+    </form>
+    </div>
+</div>
+</div>
+</div>
+  <%=  render 'shared/footer' %>
+ </div><!--main panel-->
+</div><!-- page wrapper-->
+</div><!--container-->

@@ -17,6 +17,7 @@
           <th>Descripiton</th>
           <th>Validity</th>
           <th>Event</th>
+          <th>Pass Type</th>
           <th>Action</th>
         </tr>
         </thead>
@@ -27,6 +28,7 @@
           <td><%= pass.description[0...39] %></td>
           <td><%= pass.validity %></td>
           <td><%= link_to pass.event.name[0...25], admin_event_path(pass.event.id) %></td>
+          <td><%= pass.pass_type %></td>
           <td>
           <a href="<%= admin_pass_path(pass.id) %>" data-toggle="tooltip" title="View pass"><i class="fa fa-eye"></i></a>
           |
@@ -34,6 +36,12 @@
           |
           <%= link_to admin_pass_path(pass), method: :delete, data: { confirm: 'Are you sure you want to delete?'} do %>
             <i class="fa fa-trash" data-toggle="tooltip" title="Delete pass"></i>
+            <% end %>
+            <% if pass.pass_type == 'vip' %>
+              |
+              <a href="<%= admin_send_vip_pass_path %>" data-toggle="tooltip" title="Send VIP pass">
+              <i class="fa fa-paper-plane" aria-hidden="true"></i>
+              </a>
             <% end %>
           </td>
        </tr>

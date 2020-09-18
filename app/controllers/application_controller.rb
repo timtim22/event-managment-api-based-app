@@ -608,6 +608,23 @@ end
    end
 
 
+   def is_entered_competition_updated?(user, competition_id)
+    if user
+     reg = Registration.where(user_id: user).where(event_id: competition_id).where(event_type: 'Competition')
+     if !reg.blank?
+       true
+     else
+       false
+     end
+    else
+      false
+    end
+   end
+
+
+  
+
+
    def get_participants_stats(competition) 
     participants = []
     if !competition.registrations.blank?
@@ -756,11 +773,9 @@ end
 
 
   def showability?(user, competition)
-    if is_entered_competition?(competition.id)
+    if is_entered_competition_updated?(user, competition.id)
        reg = competition.registrations.where(user: user).first
-       entry_time = reg.created_at
-       after_24_hours = entry_time + 24.hours
-       after_24_hours < Time.now             
+        Time.now > reg.created_at + 24.hours          
     else
      true
     end

@@ -165,7 +165,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
       if  @redemption = Redemption.create!(:user_id =>  request_user.id, offer_id: @special_offer.id, code: params[:redeem_code], offer_type: 'SpecialOffer')
  
         # resource should be parent resource in case of api so that event id should be available in order to show event based interest level.
-        create_activity("redeemed special offer", @redemption, 'Redemption', '', @special_offer.title, 'post', 'redeem_special_offer')
+        #create_activity("redeemed special offer", @redemption, 'Redemption', '', @special_offer.title, 'post', 'redeem_special_offer')
         #ambassador program: also add earning if the pass is shared by an ambassador
         @shared_offers = []
         @forwardings = OfferForwarding.all.each do |forward|

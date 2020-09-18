@@ -60,7 +60,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
         terms_and_conditions: wallet.offer.terms_conditions,
         redeem_count: get_redeem_count(wallet.offer),
-        quantity: wallet.offer.quantity
+        quantity: wallet.offer.quantity,
+        issued_by: get_full_name(wallet.offer.user)
       }
     when 'Ticket'
       @tickets << {

@@ -36,6 +36,14 @@
         </div>
 
         <div class="form-group">
+        <label for="pass_type">Pass Type</label>
+        <select class="form-control" id="pass_type" name="pass_type">
+          <option value="ordinary">Ordinary</option>
+          <option value="vip">VIP</option>
+        </select>
+      </div>
+
+        <div class="form-group">
           <label for="quantity">Quantity</label>
           <input type="text" class="form-control date" id="quantity" name="quantity" value="<%= @pass.quantity %>">
       </div>

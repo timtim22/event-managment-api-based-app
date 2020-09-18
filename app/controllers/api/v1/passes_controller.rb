@@ -54,13 +54,12 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
   # end
 
   def redeem_it
-    if !params[:redeem_code].blank? && !params[:event_id].blank?
-     @pass = Pass.find_by(event_id: params[:event_id])
+    if !params[:redeem_code].blank? && !params[:pass_id].blank?
+     @pass = Pass.find(params[:pass_id])
      @check  = Redemption.where(offer_id: @pass.id).where(offer_type: 'Pass').where(user_id: request_user.id)
      if @check.blank?
     if(@pass && @pass.redeem_code == params[:redeem_code].to_s)
       if  @redemption = Redemption.create!(:user_id =>  request_user.id, offer_id: @pass.id, code: params[:redeem_code], offer_type: 'Pass')
-      @pass.is_redeemed = true
       @pass.quantity = @pass.quantity - 1;
       @pass.save
         # resource should be parent resource in case of api so that event id should be available in order to show event based interest level.
@@ -121,7 +120,7 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
     render json: {
       code: 400,
       success: false,
-      message: "event_id and redeem_code are required fields.",
+      message: "pass_id and redeem_code are required fields.",
       data: nil
     }
   end

@@ -64,7 +64,7 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
       @pass.number_of_passes = @pass.number_of_passes - 1;
       @pass.save
         # resource should be parent resource in case of api so that event id should be available in order to show event based interest level.
-        create_activity("redeemed pass", @redemption, 'Redemption', '', @pass.title, 'post')
+        #create_activity("redeemed pass", @redemption, 'Redemption', '', @pass.title, 'post')
         #ambassador program: also add earning if the pass is shared by an ambassador
         @shared_offers = []
         @forwardings = OfferForwarding.all.each do |forward|
@@ -137,6 +137,7 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
       if check == nil
        @wallet  = user.wallets.new(offer_id: vip.id, offer_type: 'Pass')
       if @wallet.save
+         share = vip.vip_pass_shares.create!(user: user)
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -145,9 +146,9 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
               if @notification = Notification.create(recipient: user, actor: request_user, action: get_full_name(request_user) + " has sent you a VIP pass to join their event.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet') 
            
               @current_push_token = @pubnub.add_channels_to_push(
-                 push_token: user.device_token,
+                 push_token: user.profile.device_token,
                  type: 'gcm',
-                 add: user.device_token
+                 add: user.profile.device_token
                  ).value
       
                payload = { 
@@ -170,14 +171,14 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
                 }
                }
                @pubnub.publish(
-                channel: user.device_token,
+                channel: user.profile.device_token,
                 message: payload
                 ) do |envelope|
                     puts envelope.status
                end
             end ##notification create
        
-        create_activity("added to wallet '#{@wallet.offer.title}'", @wallet, 'Wallet', '', @wallet.offer.title, 'post')
+       # create_activity("added to wallet '#{@wallet.offer.title}'", @wallet, 'Wallet', '', @wallet.offer.title, 'post')
         render json: {
           code: 200,
           success: true,
@@ -251,6 +252,20 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
       }
     end
 
+   end
+
+
+   def vip_people
+    vip_people = []
+    vip_people = VipPassShare.all.map {|sh|  get_user_object(sh.user) }
+    render json: {
+      code: 200,
+      success: true,
+      message: '',
+      data: {
+        vip_people: vip_people
+      }
+    }
    end
 
   private

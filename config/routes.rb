@@ -145,6 +145,8 @@ Rails.application.routes.draw do
      get '/payments/refund-requests' => "payments#refund_requests"
      get '/payments/approve-refund' => "payments#approve_refund"
      get '/payments/reject-refund' => "payments#reject_refund"
+     get '/send-vip-pass' => "passes#send_vip_pass_page"
+     post '/send-vip-pass' => "passes#send_vip_pass"
     
 
      resources :news_feeds
@@ -185,11 +187,13 @@ Rails.application.routes.draw do
         get '/get-past-offers' => 'special_offers#get_past_offers'
         get '/get-past-competitions' => 'competitions#get_past_competitions'
         post '/passes/send-vip-pass' => 'passes#send_vip_pass'
+        get '/passes/vip-people' => 'passes#vip_people'
         post '/passes/remove-vip-pass' => 'passes#remove_vip_pass'
         get '/get-app-users' => 'users#get_app_users'
         post '/get-user' => 'users#get_user'
         get '/get-categories' => 'events#get_categories'
         post '/cancel-event' => 'events#cancel_event'
+    
   
       end
     end

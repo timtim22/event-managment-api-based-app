@@ -9,6 +9,7 @@ class Pass < ApplicationRecord
   has_many :owners, through: :wallets, source: :user # who added it to wallet
   has_many :views, dependent: :destroy, as: :resource
   has_many :viewers, through: :views, source: :user
+  has_many :vip_pass_shares, dependent: :destroy
 
   validates :title, presence: true
  # validates :description, presence: true
