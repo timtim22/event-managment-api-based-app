@@ -68,9 +68,9 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
       if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition') 
   
         @current_push_token = @pubnub.add_channels_to_push(
-         push_token: follower.device_token,
+         push_token: follower.profiile.device_token,
          type: 'gcm',
-         add: follower.device_token
+         add: follower.profiile.device_token
          ).value
 
          payload = { 
@@ -94,7 +94,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
          }
         
        @pubnub.publish(
-         channel: follower.device_token,
+         channel: follower.profiile.device_token,
          message: payload
          ) do |envelope|
              puts envelope.status
