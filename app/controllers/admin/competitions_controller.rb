@@ -46,7 +46,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
         @current_push_token = @pubnub.add_channels_to_push(
          push_token: follower.profile.device_token,
          type: 'gcm',
-         add: follower.profiile.device_token
+         add: follower.profile.device_token
          ).value
 
          payload = { 

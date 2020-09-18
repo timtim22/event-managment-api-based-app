@@ -197,7 +197,7 @@ end
 #         @current_push_token = @pubnub.add_channels_to_push(
 #           push_token: fr.follower.profile.device_token,
 #           type: 'gcm',
-#           add: fr.follower.profiile.device_token
+#           add: fr.follower.profile.device_token
 #           ).value
   
 #         payload = { 
@@ -210,7 +210,7 @@ end
 #       }
   
 #         @pubnub.publish(
-#          channel: [fr.follower.profiile.device_token],
+#          channel: [fr.follower.profile.device_token],
 #          message: payload
 #           ) do |envelope|
 #             puts envelope.status
