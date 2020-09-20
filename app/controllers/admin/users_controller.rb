@@ -238,7 +238,7 @@ class Admin::UsersController < Admin::AdminMasterController
     private
 
     def user_params
-        params.permit(:profile_name,:contact_name,:avatar, :email, :password, :password_confirmation)
+        params.permit(:profile_name,:contact_name,:avatar, :email)
     end
 
     def profile_update_params
