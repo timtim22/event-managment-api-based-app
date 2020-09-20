@@ -30,8 +30,8 @@ class User < ApplicationRecord
   has_many :owned_passes, through: :wallets, source: :offer, source_type: "Pass"
   has_many :owned_special_offers, through: :wallets, source: :offer, source_type: "SpecialOffer"
   has_many :activity_logs, dependent: :destroy
-  has_many :registrations
-  has_many :competitions
+  has_many :registrations, dependent: :destroy
+  has_many :competitions, dependent: :destroy
   has_many :competitions_to_attend, through: :registrations, source: :event, :source_type => "Competition" 
   has_many :going_interest_levels, -> { where(level: 'going') }, foreign_key: :user_id, class_name: 'InterestLevel', dependent: :destroy
   has_many :events_to_attend, through: :going_interest_levels, source: :event
