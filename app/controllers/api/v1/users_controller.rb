@@ -49,9 +49,9 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     render json: @user, status: :ok
   end
 
+ 
   # POST /users
   def create
-
     required_fields = ['first_name', 'last_name','app_user','dob', 'device_token', 'gender','is_email_subscribed', 'type']
     errors = []
     required_fields.each do |field|
@@ -146,6 +146,9 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
      }
     end
   end
+
+
+
 
   # PUT /users/{username}
   def update

@@ -785,6 +785,11 @@ end
      resource.redemptions.size
    end
 
+
+   def get_token_from_user(user)
+    token = encode(user_id: user.id)
+   end
+
   
 
   helper_method :SetJsVariables

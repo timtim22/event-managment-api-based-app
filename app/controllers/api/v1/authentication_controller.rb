@@ -54,6 +54,49 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
 
   end
 
+
+
+ def get_accounts
+    @phone_number = params[:phone_number]
+    if params[:phone_number].blank? == true
+      render json: { 
+        code: 400,
+        success: false,
+        message: "Phone number is required.",
+        data: nil
+       }
+    else
+    @accounts = User.where(phone_number: @phone_number)
+       business_accounts = []
+       app_account = {}
+       accounts_data = {}
+    if !@accounts.blank?
+      @accounts.each do |account|
+        if account.web_user
+         business_accounts.push(get_business_object(account))
+        else account.app_user
+         account.profile.update!(device_token: params[:device_token])
+         app_account = get_user_object(account)
+        end        
+      end #each
+    
+    end
+
+      accounts_data['business'] = business_accounts
+      accounts_data['app'] = app_account
+
+    render json: { 
+      code: 200,
+      success: true,
+      message: "",
+      data: {
+         accounts: accounts_data
+       }
+    }
+  end
+
+  end #func
+
   
 
   def logout

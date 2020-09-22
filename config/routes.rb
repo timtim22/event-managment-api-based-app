@@ -95,6 +95,7 @@ Rails.application.routes.draw do
        get '/get-users-having-common-fields' => 'users#get_users_having_common_fields'
        get '/privacy-policy' => 'users#privacy_policy'
        post '/friendships/get-friends-details' => 'friendships#get_friends_details'
+       post '/get-accounts' => 'authentication#get_accounts'
       # get '/*a', to: 'application#not_found'
      end
    end

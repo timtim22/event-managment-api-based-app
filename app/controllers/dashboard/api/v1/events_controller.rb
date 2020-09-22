@@ -123,7 +123,6 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
   def create
     success = false
     @event = request_user.events.new
-    @event.is_private = params[:is_private]
     @event.name = params[:name]
     @event.image = params[:image]
     @event.start_date = params[:start_date]
@@ -140,7 +139,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     @event.lng = params[:location][:geometry][:lng]
     end
     @event.price = params[:price]
-    @event.event_type = "mygo"
+    @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
     @error_messages = []
     if @event.save

@@ -74,7 +74,7 @@ class User < ApplicationRecord
   has_many :views, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :user_settings, dependent: :destroy
-  has_one  :business_profile, dependent: :destroy
+  has_one :business_profile, dependent: :destroy
 
 
 
@@ -82,7 +82,7 @@ class User < ApplicationRecord
   # validates :is_subscribed, presence: true
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }, on: :create, if: :web_user
 
-  validates :phone_number, presence: true, uniqueness: true,on: :create,
+  validates :phone_number, presence: true, on: :create,
   :length => { :minimum => 10, :maximum => 15 }, format: { with: /(^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0-9\-\s]{10}$)/ }
 
   validates :password, :presence => true,
