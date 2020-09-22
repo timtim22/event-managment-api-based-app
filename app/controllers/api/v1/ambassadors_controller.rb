@@ -69,7 +69,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
     @passes = []
     @special_offers = []
     @offers = []
-    User.businesses_list.each do |business|
+    User.businesses_list.page(params[:page]).per(20).each do |business|
    if !business.passes.blank?
       business.passes.not_expired.order(created_at: 'DESC').each do |pass| 
         @passes << {
@@ -103,7 +103,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
       end #not empty
         
       if !business.special_offers.blank?
-        business.special_offers.not_expired.order(created_at: 'DESC').each do |offer|
+        business.special_offers.page(params[:page]).per(20).not_expired.order(created_at: 'DESC').each do |offer|
         @special_offers << {
           id: offer.id,
           type: 'special_offer',
@@ -162,7 +162,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
 
   # list of business who approved an ambassador
   def my_businesses
-    @businesses = request_user.ambassador_businesses
+    @businesses = request_user.ambassador_businesses.page(params[:page]).per(20)
     @offers = []
     @businesses.each do |business|
       if !business.passes.blank?
@@ -199,7 +199,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
       end #not empty
 
       if !business.special_offers.blank?
-        business.special_offers.not_expired.order(created_at: 'DESC').each do |offer|
+        business.special_offers.page(params[:page]).per(20).not_expired.order(created_at: 'DESC').each do |offer|
         @offers << {
           id: offer.id,
           type: 'special_offer',

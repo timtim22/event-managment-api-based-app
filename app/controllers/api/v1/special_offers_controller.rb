@@ -4,7 +4,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
   def index
     @special_offers = []
     if request_user
-    SpecialOffer.not_expired.order(created_at: "DESC").each do |offer|
+    SpecialOffer.page(params[:page]).per(20).not_expired.order(created_at: "DESC").each do |offer|
      if !is_removed_offer?(request_user, offer)
       @special_offers << {
       id: offer.id,

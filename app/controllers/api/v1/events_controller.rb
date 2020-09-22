@@ -8,7 +8,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   def index
     @events = []
     @empty = {}
-    events = Event.all
+    events = Event.all.page(params[:page]).per(20)
     events.each do |e|
       @passes = []
       @ticket = []
