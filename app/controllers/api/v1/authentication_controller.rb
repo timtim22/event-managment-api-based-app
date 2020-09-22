@@ -78,7 +78,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
             "profile_name" => account.business_profile.profile_name,
             "phone_number" => account.phone_number,
             "web_user" => account.web_user,
-            "app_user" => account.web_user,
+            "app_user" => account.app_user,
             "email" => account.email
           }
          business_accounts.push(obj)
@@ -90,7 +90,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
           "last_name" => account.profile.last_name,
           "phone_number" => account.phone_number,
           "web_user" => account.web_user,
-          "app_user" => account.web_user,
+          "app_user" => account.app_user,
           "email" => account.email
          }
         end        
