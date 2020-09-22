@@ -3,7 +3,7 @@ class Dashboard::Api::V1::NewsFeedsController < Dashboard::Api::V1::ApiMasterCon
   before_action :set_news_feed, only: ['show','edit', 'destroy']
 
   def index
-    @news_feeds = request_user.news_feeds.order(:created_at => 'DESC').page(params[:page])
+    @news_feeds = request_user.news_feeds.page(params[:page]).per(20).order(:created_at => 'DESC').page(params[:page])
     render json: {
       code: 200,
       success: true,

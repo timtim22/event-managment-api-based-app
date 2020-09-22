@@ -8,7 +8,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
  
     def get_past_competitions
     @competitions = []
-    Competition.expired.order(created_at: 'DESC').each do |competition|
+    Competition.page(params[:page]).per(20).expired.order(created_at: 'DESC').each do |competition|
       location = {
         "name" => competition.location,
         "geometry" => {
@@ -50,7 +50,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
   end
   
   def index
-    @competitions = request_user.own_competitions.order(created_at: "DESC")
+    @competitions = request_user.own_competitions.page(params[:page]).per(20).order(created_at: "DESC")
   end
 
   

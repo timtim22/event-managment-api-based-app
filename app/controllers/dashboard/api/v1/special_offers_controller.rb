@@ -2,7 +2,7 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
   before_action :authorize_request
 
   def index
-    @special_offers = SpecialOffer.order(id: 'DESC')
+    @special_offers = SpecialOffer.page(params[:page]).per(20).order(id: 'DESC')
     @offers = []
     @special_offers.each do |offer|
       location = {
@@ -35,7 +35,7 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
 
   def get_past_offers
     @special_offers = []
-    SpecialOffer.expired.order(created_at: "DESC").each do |offer|
+    SpecialOffer.page(params[:page]).per(20).expired.order(created_at: "DESC").each do |offer|
       location = {
         "name" => offer.location,
         "geometry" => {

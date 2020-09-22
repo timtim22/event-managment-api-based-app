@@ -7,7 +7,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
   
   def index
     @events = []
-    request_user.events.each do |e|
+    request_user.events.page(params[:page]).per(20).each do |e|
       sponsors = []
       additional_media = []
       location = {
@@ -75,7 +75,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
   def get_past_events
     @events = []
-    request_user.events.expired.each do |e|
+    request_user.events.page(params[:page]).per(20).expired.each do |e|
       stats = {}
       location = {}
       location = {

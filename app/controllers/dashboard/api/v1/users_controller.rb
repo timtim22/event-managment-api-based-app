@@ -7,8 +7,8 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
   # GET /users
   def index
   
-    app = User.app_users.map  { |user| get_user_object(user) }
-    business = User.web_users.map { |user| get_business_object(user) }
+    app = User.app_users.page(params[:page]).per(20).map  { |user| get_user_object(user) }
+    business = User.web_users.page(params[:page]).per(20).map { |user| get_business_object(user) }
       
     render json: {
       code: 200,

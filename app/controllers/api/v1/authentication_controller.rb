@@ -73,10 +73,26 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
     if !@accounts.blank?
       @accounts.each do |account|
         if account.web_user
-         business_accounts.push(get_business_object(account))
+          obj = {
+            "id" => account.id,
+            "profile_name" => account.business_profile.profile_name,
+            "phone_number" => account.phone_number,
+            "web_user" => account.web_user,
+            "app_user" => account.web_user,
+            "email" => account.email
+          }
+         business_accounts.push(obj)
         else account.app_user
          account.profile.update!(device_token: params[:device_token])
-         app_account = get_user_object(account)
+         app_account =  {
+          "id" => account.id,
+          "first_name" => account.profile.first_name,
+          "last_name" => account.profile.last_name,
+          "phone_number" => account.phone_number,
+          "web_user" => account.web_user,
+          "app_user" => account.web_user,
+          "email" => account.email
+         }
         end        
       end #each
     

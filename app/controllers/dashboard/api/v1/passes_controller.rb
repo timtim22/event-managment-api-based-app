@@ -257,7 +257,7 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
 
    def vip_people
     vip_people = []
-    vip_people = VipPassShare.all.map {|sh|  get_user_object(sh.user) }
+    vip_people = VipPassShare.all.page(params[:page]).per(20).map {|sh|  get_user_object(sh.user) }
     render json: {
       code: 200,
       success: true,
