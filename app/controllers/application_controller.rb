@@ -790,6 +790,15 @@ end
     token = encode(user_id: user.id)
    end
 
+
+   def append_info_to_payload(payload)
+    super
+    payload[:host] = request.host
+    payload[:remote_ip] = request.remote_ip
+    payload[:ip] = request.ip
+    payload[:x_forwarded_for] = request.env['HTTP_X_FORWARDED_FOR']
+  end
+
   
 
   helper_method :SetJsVariables
