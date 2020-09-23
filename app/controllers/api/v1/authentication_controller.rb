@@ -76,6 +76,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
           obj = {
             "id" => account.id,
             "profile_name" => account.business_profile.profile_name,
+            "avatar" => account.avatar,
             "phone_number" => account.phone_number,
             "web_user" => account.web_user,
             "app_user" => account.app_user,
@@ -88,6 +89,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
           "id" => account.id,
           "first_name" => account.profile.first_name,
           "last_name" => account.profile.last_name,
+          "avatar" => account.avatar,
           "phone_number" => account.phone_number,
           "web_user" => account.web_user,
           "app_user" => account.app_user,

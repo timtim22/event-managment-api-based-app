@@ -52,7 +52,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
  
   # POST /users
   def create
-    required_fields = ['first_name', 'last_name','app_user','dob', 'device_token', 'gender','is_email_subscribed', 'type']
+    required_fields = ['first_name', 'last_name','dob', 'device_token', 'gender','is_email_subscribed', 'type']
     errors = []
     required_fields.each do |field|
       if params[field.to_sym].blank?
@@ -68,7 +68,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
       @user.avatar= params[:avatar]
     end
    
-    @user.app_user = params[:app_user]
+    @user.app_user = true
     @user.phone_number = params[:phone_number]
     @user.email = params[:email]
     @user.verification_code = generate_code
