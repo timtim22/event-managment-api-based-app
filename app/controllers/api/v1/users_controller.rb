@@ -899,7 +899,9 @@ end
 
  def send_verification_email(user)
     @code = user.verification_code 
-    @url = "#{ENV['BASE_URL']}/api/v1/auth/verify-code?email=#{user.email}&&verification_code=#{@code}"
+    base_url = request.base_url
+    @url = "#{base_url}/api/v1/auth/verify-code?email=#{user.email}&&verification_code=#{@code}"
+    # @url = "#{ENV['BASE_URL']}/api/v1/auth/verify-code?email=#{user.email}&&verification_code=#{@code}"
     if UserMailer.with(user: user).verification_email(user,@url).deliver_now#UserMailer.deliver_now
      true   
   else

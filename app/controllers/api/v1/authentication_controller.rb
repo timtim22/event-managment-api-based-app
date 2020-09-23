@@ -25,6 +25,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
     if @user
        if @user.app_user
         @profile_data = get_user_simple_object(@user)
+        @user.profile.update!(device_token: params[:device_token])
        elsif @user.web_user
         @profile_data = get_business_simple_object(@user)
        end
@@ -32,7 +33,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
       #create_activity('logged in.', @user, 'User', '', '', 'post')
       token = encode(user_id: @user.id)
       time = Time.now + 24.hours.to_i
-      @user.profile.update!(device_token: params[:device_token])
+      
       render json: { 
             code: 200,
             success: true,
