@@ -70,9 +70,9 @@ end
 
 group :production do
   gem 'pg'
-  gem 'lograge'
 end
 
+gem 'lograge'
 
 group :test do
   # Adds support for Capybara system testing and selenium driver

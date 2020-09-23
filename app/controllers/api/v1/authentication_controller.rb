@@ -23,11 +23,11 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
     else
     @user = User.find_by(phone_number: @phone_number)
     if @user
-      @profile_data = {}
-      @profile_data['id'] = @user.id
-      @profile_data["first_name"] = @user.profile.first_name
-      @profile_data["last_name"] = @user.profile.last_name
-      @profile_data["avatar"] = @user.avatar
+       if @user.app_user
+        @profile_data = get_user_simple_object(@user)
+       elsif @user.web_user
+        @profile_data = get_business_simple_object(@user)
+       end
       # create_activity creates login issue regarding jwt auth token requirements
       #create_activity('logged in.', @user, 'User', '', '', 'post')
       token = encode(user_id: @user.id)

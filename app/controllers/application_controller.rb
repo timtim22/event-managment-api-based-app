@@ -236,6 +236,30 @@ class ApplicationController < ActionController::Base
 
   end
 
+  def get_business_simple_object(user)
+    object = {
+      "id" => user.id,
+      "profile_name" => user.business_profile.profile_name,
+      "avatar" => user.avatar,
+      "phone_number" => user.phone_number,
+      "email" => user.email,
+      "app_user" => user.app_user
+    }
+  end
+
+
+  def get_user_simple_object(user)
+    object = {
+      "id" => user.id,
+      "first_name" => user.profile.first_name,
+      "last_name" => user.profile.last_name,
+      "avatar" => user.avatar,
+      "phone_number" => user.phone_number,
+      "email" => user.email,
+      "app_user" => user.app_user
+    }
+  end
+
 
   def get_event_object(event)
      location = {
