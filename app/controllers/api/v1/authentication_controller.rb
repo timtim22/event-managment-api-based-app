@@ -4,12 +4,12 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
    # POST /auth/login
    def login
     @empty = {}
-    @phone_number = params[:phone_number]
-    if params[:phone_number].blank? == true
+   
+    if params[:id].blank? == true
       render json: { 
         code: 400,
         success: false,
-        message: "Phone number is required.",
+        message: "id number is required.",
         data: nil
        }
 
@@ -21,7 +21,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
           data: nil
          }
     else
-    @user = User.where(phone_number: @phone_number).where(app_user: params[:app_user]).first
+    @user = User.find(params[:id])
     if @user
        if @user.app_user
         @profile_data = get_user_simple_object(@user)
