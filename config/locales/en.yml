@@ -30,5 +30,16 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  activerecord:
+    attributes:
+      user:
+        password: "Password"
+    errors:
+      models:
+        user:
+          attributes:
+            password:
+              format: " min one lower case, one special character is required."
+
+              
 

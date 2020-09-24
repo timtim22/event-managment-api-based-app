@@ -96,6 +96,10 @@ Rails.application.routes.draw do
        get '/privacy-policy' => 'users#privacy_policy'
        post '/friendships/get-friends-details' => 'friendships#get_friends_details'
        post '/get-accounts' => 'authentication#get_accounts'
+       get '/get-business-dashbord' => 'business_dashboard#home'
+       get '/get-business-events' => 'business_dashboard#events'
+       get '/get-business-special-offers' => 'business_dashboard#special_offers'
+       get '/get-business-competitions' => 'business_dashboard#competitions'
       # get '/*a', to: 'application#not_found'
      end
    end

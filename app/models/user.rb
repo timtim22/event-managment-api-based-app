@@ -88,8 +88,10 @@ class User < ApplicationRecord
   validates :password, :presence => true,
                        :confirmation => true,
                        :on => :create,
-                       :length => {:within => 6..40},
+                       :length => {:within => 8..40},
+                       :format => {message: 'should contain at least one lower character and a special character.', with: /\A(?=.*[a-z])(?=.*[[:^alnum:]]) /x},
                        :unless => :app_user?
+                      
 
 
   mount_uploader :avatar, ImageUploader

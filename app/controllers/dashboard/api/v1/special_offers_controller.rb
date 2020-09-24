@@ -2,7 +2,7 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
   before_action :authorize_request
 
   def index
-    @special_offers = SpecialOffer.page(params[:page]).per(20).order(id: 'DESC')
+    @special_offers = request_user.special_offers.page(params[:page]).per(20).order(id: 'DESC')
     @offers = []
     @special_offers.each do |offer|
       location = {
@@ -47,7 +47,7 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
       @special_offers << {
         id: offer.id,
         title: offer.title,
-        image: offer.image.url,
+        image: offer.image,
         location: location,
         views: offer.views.size,
         published: offer.created_at.strftime("%a %d %b %y - %H:%M "),
