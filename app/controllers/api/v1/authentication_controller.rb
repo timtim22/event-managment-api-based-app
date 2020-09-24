@@ -21,7 +21,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
           data: nil
          }
     else
-    @user = User.find_by(phone_number: @phone_number)
+    @user = User.find_by(phone_number: @phone_number).where(app_user: params[:app_user])
     if @user
        if @user.app_user
         @profile_data = get_user_simple_object(@user)
