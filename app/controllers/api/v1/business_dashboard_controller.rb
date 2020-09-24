@@ -24,7 +24,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
       # },
       "social" => {
         "youtube" => business.business_profile.youtube,
-        "snapchat" => business.business_profile.snapchat,
+        "instagram" => business.business_profile.instagram,
         "facebook" => business.business_profile.facebook,
         "linkedin" => business.business_profile.linkedin,
         "twitter" => business.business_profile.twitter,
