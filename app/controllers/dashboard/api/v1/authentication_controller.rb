@@ -50,7 +50,7 @@ class Dashboard::Api::V1::AuthenticationController < Dashboard::Api::V1::ApiMast
       render json: { 
         code: 401,
         success: false,
-        message: "login failed.Please check your credentials.",
+        message: "Email/password is incorrect.",
         data: nil
       }
     end

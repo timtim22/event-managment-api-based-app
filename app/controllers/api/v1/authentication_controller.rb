@@ -47,7 +47,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
       render json: { 
         code: 401,
         success: false,
-        message: "login failed.Please check your credentials.",
+        message: "Email/password is incorrect.",
         data: @empty
       }
     end

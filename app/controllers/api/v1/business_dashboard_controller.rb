@@ -14,13 +14,14 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
       "avatar" => business.avatar,
       "about" => business.business_profile.about,
       "unread_messages_count" => business.incoming_messages.unread.size,
-      "location" => {
-        "name" => business.business_profile.location,
-        "geometry" => {
-          "lat" => business.business_profile.lat,
-          "lng" => business.business_profile.lng
-        }
-      },
+      "address" => business.business_profile.address,
+      # # "location" => {
+      # #   "name" => business.business_profile.location,
+      # #   "geometry" => {
+      # #     "lat" => business.business_profile.lat,
+      # #     "lng" => business.business_profile.lng
+      # #   }
+      # },
       "social" => {
         "youtube" => business.business_profile.youtube,
         "snapchat" => business.business_profile.snapchat,
@@ -29,7 +30,10 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         "twitter" => business.business_profile.twitter,
         "website" => business.business_profile.website
       },
-      "news_feeds" => business.news_feeds
+      
+      "news_feeds" => business.news_feeds,
+      "followers_count" =>  business.followers.size
+
     }
 
 
