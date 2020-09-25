@@ -872,6 +872,19 @@ end
     }
   end
 
+
+  def get_phone_numbers
+    @phone_numbers = User.all.map {|user| user.phone_number }
+    render json: {
+      code: 200,
+      success: true,
+      message: '',
+      data: {
+        phone_numbers: @phone_numbers
+      }
+    }
+  end
+
   private
 
   def find_user

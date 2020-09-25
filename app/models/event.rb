@@ -39,10 +39,11 @@ mount_base64_uploader :image, ImageUploader
 
 mount_base64_uploader :image, ImageUploader
 paginates_per 20
-#custom queries/scopes
+#custom queries/scopes\
 scope :events_by_date, ->(date) { Event.where(:date => date) }
 scope :expired, -> { where(['end_date < ?', DateTime.now]) }
-scope :not_expired, -> { where(['end_date > ?', DateTime.now]) } 
+scope :not_expired, -> { where(['end_date > ?', DateTime.now]) }
+scope :sort_by_date, -> { order(start_date: 'ASC' )} 
 
 def has_one_category_at_least
   if categories.empty?

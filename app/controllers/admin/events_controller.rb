@@ -9,7 +9,7 @@ class Admin::EventsController < Admin::AdminMasterController
  
 
 	def index
-		@events = current_user.events.order(:created_at => 'DESC').page(params[:page])
+		@events = current_user.events.sort_by_date.page(params[:page])
 	end
 
 	def new
