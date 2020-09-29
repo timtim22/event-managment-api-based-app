@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_28_130031) do
+ActiveRecord::Schema.define(version: 2020_09_29_125120) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -26,6 +26,8 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.string "method"
     t.string "url"
     t.string "action_type"
+    t.index ["resource_id", "resource_type"], name: "index_activity_logs_on_resource_id_and_resource_type"
+    t.index ["user_id"], name: "index_activity_logs_on_user_id"
   end
 
   create_table "ambassador_requests", force: :cascade do |t|
@@ -34,6 +36,10 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.string "status", default: "pending"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["business_id"], name: "index_ambassador_requests_on_business_id"
+    t.index ["business_id"], name: "index_ambassador_requests_on_business_id_and_business_id"
+    t.index ["user_id"], name: "index_ambassador_requests_on_user_id"
+    t.index ["user_id"], name: "index_ambassador_requests_on_user_id_and_user_id"
   end
 
   create_table "assignments", force: :cascade do |t|
@@ -74,6 +80,7 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.string "lng", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_business_profiles_on_user_id"
   end
 
   create_table "categories", force: :cascade do |t|
@@ -122,6 +129,7 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.integer "competition_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_competition_winners_on_user_id"
   end
 
   create_table "competitions", force: :cascade do |t|
@@ -153,6 +161,7 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.string "media_type", default: "0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_event_attachments_on_event_id"
   end
 
   create_table "event_forwardings", force: :cascade do |t|
@@ -161,6 +170,8 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.integer "event_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_event_forwardings_on_event_id"
+    t.index ["user_id"], name: "index_event_forwardings_on_user_id"
   end
 
   create_table "event_shares", force: :cascade do |t|
@@ -169,6 +180,8 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.integer "event_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_event_shares_on_event_id"
+    t.index ["user_id"], name: "index_event_shares_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -212,6 +225,8 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.boolean "status", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["recipient_id"], name: "index_follow_requests_on_recipient_id"
+    t.index ["sender_id"], name: "index_follow_requests_on_sender_id"
   end
 
   create_table "follows", force: :cascade do |t|
@@ -220,6 +235,10 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "status", default: false
+    t.index ["following_id"], name: "index_follows_on_following_id"
+    t.index ["following_id"], name: "index_follows_on_following_id_and_following_id"
+    t.index ["user_id"], name: "index_follows_on_user_id"
+    t.index ["user_id"], name: "index_follows_on_user_id_and_user_id"
   end
 
   create_table "friend_requests", force: :cascade do |t|
@@ -230,6 +249,7 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.datetime "updated_at", null: false
     t.datetime "read_at"
     t.index ["friend_id"], name: "index_friend_requests_on_friend_id"
+    t.index ["friend_id"], name: "index_friend_requests_on_friend_id_and_friend_id"
     t.index ["user_id"], name: "index_friend_requests_on_user_id"
   end
 
@@ -245,6 +265,9 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.string "level", default: "0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["event_id", "user_id"], name: "index_interest_levels_on_event_id_and_user_id"
+    t.index ["event_id"], name: "index_interest_levels_on_event_id"
+    t.index ["user_id"], name: "index_interest_levels_on_user_id"
   end
 
   create_table "location_requests", force: :cascade do |t|
@@ -263,6 +286,7 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "notification_id"
+    t.index ["notification_id"], name: "index_location_shares_on_notification_id"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -274,6 +298,7 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.datetime "updated_at", null: false
     t.string "from"
     t.string "user_avatar"
+    t.index ["recipient_id"], name: "index_messages_on_recipient_id"
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
@@ -284,6 +309,7 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.string "image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_news_feeds_on_user_id"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -299,6 +325,9 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.string "url"
     t.string "notification_type"
     t.string "action_type"
+    t.index ["actor_id"], name: "index_notifications_on_actor_id"
+    t.index ["notifiable_id", "notifiable_type"], name: "index_notifications_on_notifiable_id_and_notifiable_type"
+    t.index ["recipient_id"], name: "index_notifications_on_recipient_id"
   end
 
   create_table "offer_forwardings", force: :cascade do |t|
@@ -309,6 +338,9 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_ambassador", default: false
+    t.index ["offer_id", "offer_type"], name: "index_offer_forwardings_on_offer_id_and_offer_type"
+    t.index ["recipient_id"], name: "index_offer_forwardings_on_recipient_id"
+    t.index ["user_id"], name: "index_offer_forwardings_on_user_id"
   end
 
   create_table "offer_shares", force: :cascade do |t|
@@ -319,6 +351,8 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_ambassador", default: false
+    t.index ["offer_id", "offer_type"], name: "index_offer_shares_on_offer_id_and_offer_type"
+    t.index ["user_id"], name: "index_offer_shares_on_user_id"
   end
 
   create_table "passes", force: :cascade do |t|
@@ -347,6 +381,7 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.string "token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_password_resets_on_user_id"
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -373,6 +408,7 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.string "youtube", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
   create_table "redemptions", force: :cascade do |t|
@@ -382,6 +418,8 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.integer "code", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["offer_id", "offer_type"], name: "index_redemptions_on_offer_id_and_offer_type"
+    t.index ["user_id"], name: "index_redemptions_on_user_id"
   end
 
   create_table "refund_requests", force: :cascade do |t|
@@ -393,6 +431,8 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.json "stripe_refund_response"
+    t.index ["ticket_id"], name: "index_refund_requests_on_ticket_id"
+    t.index ["user_id"], name: "index_refund_requests_on_user_id"
   end
 
   create_table "registrations", force: :cascade do |t|
@@ -401,6 +441,9 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.string "event_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["event_id", "event_type"], name: "index_registrations_on_event_id_and_event_type"
+    t.index ["event_id", "user_id"], name: "index_registrations_on_event_id_and_user_id"
+    t.index ["user_id"], name: "index_registrations_on_user_id"
   end
 
   create_table "reminders", force: :cascade do |t|
@@ -409,6 +452,8 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "level"
+    t.index ["event_id"], name: "index_reminders_on_event_id"
+    t.index ["user_id"], name: "index_reminders_on_user_id"
   end
 
   create_table "replies", force: :cascade do |t|
@@ -419,6 +464,9 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "reply_to_id"
+    t.index ["comment_id"], name: "index_replies_on_comment_id"
+    t.index ["reply_to_id"], name: "index_replies_on_reply_to_id"
+    t.index ["user_id"], name: "index_replies_on_user_id"
   end
 
   create_table "reported_events", force: :cascade do |t|
@@ -442,6 +490,7 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_settings_on_user_id"
   end
 
   create_table "special_offers", force: :cascade do |t|
@@ -464,6 +513,7 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "quantity", default: 0
+    t.index ["user_id"], name: "index_special_offers_on_user_id"
   end
 
   create_table "sponsors", force: :cascade do |t|
@@ -473,6 +523,7 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "external_url"
+    t.index ["event_id"], name: "index_sponsors_on_event_id"
   end
 
   create_table "student_details", force: :cascade do |t|
@@ -491,6 +542,8 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "quantity"
+    t.index ["ticket_id"], name: "index_ticket_purchases_on_ticket_id"
+    t.index ["user_id"], name: "index_ticket_purchases_on_user_id"
   end
 
   create_table "tickets", force: :cascade do |t|
@@ -520,6 +573,9 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.integer "ticket_id"
     t.integer "payee_id"
     t.integer "amount"
+    t.index ["payee_id"], name: "index_transactions_on_payee_id"
+    t.index ["ticket_id"], name: "index_transactions_on_ticket_id"
+    t.index ["user_id"], name: "index_transactions_on_user_id"
   end
 
   create_table "user_settings", force: :cascade do |t|
@@ -531,6 +587,8 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.datetime "updated_at", null: false
     t.string "resource_type"
     t.datetime "blocked_at"
+    t.index ["resource_id", "resource_type"], name: "index_user_settings_on_resource_id_and_resource_type"
+    t.index ["user_id"], name: "index_user_settings_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -555,6 +613,12 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.string "resource_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["resource_id", "resource_type"], name: "index_views_on_resource_id_and_resource_type"
+    t.index ["user_id"], name: "index_views_on_user_id"
+    t.index [nil, "user_id"], name: "index_views_on_competition_id_and_user_id"
+    t.index [nil, "user_id"], name: "index_views_on_event_id_and_user_id"
+    t.index [nil, "user_id"], name: "index_views_on_pass_id_and_user_id"
+    t.index [nil, "user_id"], name: "index_views_on_special_offer_id_and_user_id"
   end
 
   create_table "vip_pass_shares", force: :cascade do |t|
@@ -562,6 +626,8 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["pass_id"], name: "index_vip_pass_shares_on_pass_id"
+    t.index ["user_id"], name: "index_vip_pass_shares_on_user_id"
   end
 
   create_table "wallets", force: :cascade do |t|
@@ -570,6 +636,10 @@ ActiveRecord::Schema.define(version: 2020_09_28_130031) do
     t.string "offer_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["offer_id", "offer_type"], name: "index_wallets_on_offer_id_and_offer_type"
+    t.index ["user_id"], name: "index_wallets_on_user_id"
+    t.index [nil, "user_id"], name: "index_wallets_on_pass_id_and_user_id"
+    t.index [nil, "user_id"], name: "index_wallets_on_special_offer_id_and_user_id"
   end
 
 end

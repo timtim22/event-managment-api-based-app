@@ -229,7 +229,6 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     if !params[:id].blank?
         success = false
         @event = Event.find(params[:id])
-        @event.is_private = params[:is_private]
         @event.name = params[:name]
         @event.image = params[:image]
         @event.start_date = params[:start_date]

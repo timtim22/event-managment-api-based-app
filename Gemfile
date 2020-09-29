@@ -66,6 +66,7 @@ group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem 'web-console', '>= 3.3.0'
   gem 'sqlite3'
+  gem 'lol_dba' #to check out indexes
 end
 
 group :production do
