@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_17_102729) do
+ActiveRecord::Schema.define(version: 2020_09_28_130031) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -144,6 +144,7 @@ ActiveRecord::Schema.define(version: 2020_09_17_102729) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "terms_conditions", default: ""
+    t.index ["user_id"], name: "index_competitions_on_user_id"
   end
 
   create_table "event_attachments", force: :cascade do |t|
@@ -200,6 +201,7 @@ ActiveRecord::Schema.define(version: 2020_09_17_102729) do
     t.datetime "updated_at", null: false
     t.text "terms_conditions", default: ""
     t.boolean "price_range", default: false
+    t.index ["user_id"], name: "index_events_on_user_id"
   end
 
   create_table "follow_requests", force: :cascade do |t|
@@ -336,6 +338,8 @@ ActiveRecord::Schema.define(version: 2020_09_17_102729) do
     t.string "pass_type", default: "ordinary"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_passes_on_event_id"
+    t.index ["user_id"], name: "index_passes_on_user_id"
   end
 
   create_table "password_resets", force: :cascade do |t|
@@ -502,6 +506,8 @@ ActiveRecord::Schema.define(version: 2020_09_17_102729) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "terms_conditions", default: ""
+    t.index ["event_id"], name: "index_tickets_on_event_id"
+    t.index ["user_id"], name: "index_tickets_on_user_id"
   end
 
   create_table "transactions", force: :cascade do |t|

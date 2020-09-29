@@ -8,12 +8,12 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   def index
     @events = []
     @empty = {}
-    events = Event.sort_by_date.page(params[:page]).per(20)
-    events.each do |e|
+    events = Event.sort_by_date.page(params[:page]).per(20).eager_load(:passes, :tickets, :event_attachments, :categories, :interest_levels, :sponsors)
+    events.map  { |e|
       @passes = []
       @ticket = []
       if request_user
-      e.passes.not_expired.each do |pass|
+      e.passes.not_expired.map { |pass|
         if !is_removed_pass?(request_user, pass)
         @passes << {
         id: pass.id,
@@ -36,9 +36,9 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         quantity: pass.quantity
       }
     end# remove if
-    end#each
+  } #map
   else 
-    e.passes.not_expired.each do |pass|
+    e.passes.not_expired.map { |pass|
       @passes << {
       id: pass.id,
       title: pass.title,
@@ -60,7 +60,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       redeem_count: get_redeem_count(pass),
       quantity: pass.quantity
     }
-  end#each
+  }# passes map
   end #if request_user
 
     if e.ticket
@@ -116,14 +116,16 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         "terms_and_conditions" => e.terms_conditions 
      }
      
-    end #each
+    } #map
+
+
 
 		render json: {
       code: 200,
       success: true,
       message: '',
 			data: { 
-       "events" =>  @events
+       "events" => @events
      }
   }
  
