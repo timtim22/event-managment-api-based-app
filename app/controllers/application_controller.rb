@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
       else
         false
       end
-  end
+  end                                   
 
   def current_user
     user = User.find(session[:user_id]) if session[:user_id] 
@@ -721,7 +721,7 @@ end
    end
 
    def not_me?(user)
-    user != request_user
+    user != request_user && user.phone_number != request_user.phone_number
    end
 
 
