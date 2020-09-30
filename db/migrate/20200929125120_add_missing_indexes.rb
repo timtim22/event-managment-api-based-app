@@ -59,16 +59,10 @@ class AddMissingIndexes < ActiveRecord::Migration[5.2]
     add_index :user_settings, :user_id
     add_index :user_settings, [:resource_id, :resource_type]
     add_index :views, :user_id
-    add_index :views, [:competition_id, :user_id]
-    add_index :views, [:event_id, :user_id]
-    add_index :views, [:pass_id, :user_id]
     add_index :views, [:resource_id, :resource_type]
-    add_index :views, [:special_offer_id, :user_id]
     add_index :vip_pass_shares, :pass_id
     add_index :vip_pass_shares, :user_id
     add_index :wallets, :user_id
     add_index :wallets, [:offer_id, :offer_type]
-    add_index :wallets, [:pass_id, :user_id]
-    add_index :wallets, [:special_offer_id, :user_id]
   end
 end

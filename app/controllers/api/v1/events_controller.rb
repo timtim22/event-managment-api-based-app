@@ -132,8 +132,9 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   # end
   
   def index
-    @events = Event.sort_by_date.page(params[:page]).per(30)
-    @response = @events.map {|event| e = {
+    @events = Event.sort_by_date.page(params[:page]).per(30).eager_load(:passes, :tickets)
+    @response = @events.map {|event|
+     e = {
       "id" => event.id,
       "image" => event.image,
       "name" => event.name,
@@ -144,8 +145,10 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       "end_time" => event.end_time,
       "price_type" => get_price_type(event),
       "price" => get_price(event).to_s + "€",
+      "price" => event.price,
       "has_pass" => has_pass?(event)
-    }}
+    }
+  }
     
     render json: {
         code: 200,

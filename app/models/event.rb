@@ -43,7 +43,7 @@ paginates_per 20
 scope :events_by_date, ->(date) { Event.where(:date => date) }
 scope :expired, -> { where(['end_date < ?', DateTime.now]) }
 scope :not_expired, -> { where(['end_date > ?', DateTime.now]) }
-scope :sort_by_date, -> { order(start_date: 'ASC' )} 
+scope :sort_by_date, -> { select('*, (start_date) as start_date').order('start_date ASC') }
 
 def has_one_category_at_least
   if categories.empty?
