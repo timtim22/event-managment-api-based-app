@@ -149,6 +149,46 @@ class Api::V1::ApiMasterController < ApplicationController
    #chat specific
 
 
+
+  def get_price(event)
+     price = '' 
+    if !event.tickets.blank?
+        event.tickets.each do |ticket|
+          if ticket.ticket_type == "buy" && event.tickets.size > 1
+             prices = []
+             prices.push(ticket.price)
+             start_price = prices.min
+             end_price = prices.max
+             price = start_price.to_s + '-' +  end_price.to_s
+          elsif ticket.ticket_type == "free"
+             price = ticket.price
+          elsif ticket.ticket_type == "pay_at_door"
+             price = ticket.start_price.to_s + '-' + ticket.end_price.to_s 
+          else
+             price = ticket.price
+          end
+        end# each
+    end# not empty
+    price
+  end
+
+
+
+  def get_price_type(event)
+    price_type = ''
+    if !event.tickets.blank?
+       price_type = event.tickets.first.ticket_type
+    else
+      price_type = 'info'
+    end
+    price_type
+  end
+
+  def has_pass?(event)
+    !event.passes.blank?
+  end
+
+
   
       
 end
