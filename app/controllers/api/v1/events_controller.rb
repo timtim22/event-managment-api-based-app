@@ -138,7 +138,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
           @ticket = []
           if request_user
           e.passes.not_expired.map { |pass|
-            if !is_removed_pass?(request_user, pass)
+          if !is_removed_pass?(request_user, pass)
             @passes << {
             id: pass.id,
             title: pass.title,
@@ -186,20 +186,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         }
       }# passes map
       end #if request_user
-    
-        if e.ticket
-          @ticket << {
-          "id" => e.ticket.id,
-          'title' => e.ticket.title,
-          'event_name' => e.name,
-          'price' => e.ticket.price,
-          "quantity" => e.ticket.quantity,
-          'ticket_type' => e.ticket.ticket_type,
-          'per_head' => e.ticket.per_head,
-          'is_purchased' => is_ticket_purchased(e.ticket.id)
-          }
-        end #if
-    
+
           @event = {
             'id' => e.id,
             'name' => e.name,
@@ -221,23 +208,20 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
             'is_followed' => is_followed(e.user),
             'interest_count' => e.interested_interest_levels.size,
             'going_count' => e.going_interest_levels.size,
-            'followers_count' => e.user ? e.user.followers.size : nil ,
-            'following_count' => e.user ? e.user.followings.size : nil,
             'demographics' => get_demographics(e),
-            'passes' =>  @passes,
-            'ticket' => @ticket,
-            'passes_grabbers_friends_count' =>  get_passes_grabbers_friends_count(e),
             'going_users' => e.going_users,
             "interested_users" => getInterestedUsers(e),
             'creator_name' => e.user.business_profile.profile_name,
             'creator_id' => e.user.id,
             'creator_image' => e.user.avatar,
             'categories' => !e.categories.blank? ? e.categories : @empty,
-            'grabbers' => get_event_passes_grabbers(e),
             'sponsors' => e.sponsors,
             "mute_chat" => get_mute_chat_status(e),
             "mute_notifications" => get_mute_notifications_status(e),
-            "terms_and_conditions" => e.terms_conditions 
+            "terms_and_conditions" => e.terms_conditions,
+            "forwards_count" => e.event_forwardings.count,
+            "comments_count" => e.comments.size,
+            "has_passes" => has_passes?(e) 
          }
 
          render json: {
@@ -274,7 +258,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       "price_type" => get_price_type(event),
       "price" => get_price(event).to_s + "€",
       "price" => event.price,
-      "has_pass" => has_pass?(event),
+      "has_passes" => has_passes?(event),
       "created_at" => event.created_at
     }
   }

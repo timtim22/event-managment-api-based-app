@@ -124,7 +124,6 @@ class Api::V1::ApiMasterController < ApplicationController
     end
 
     def getInterestedUsers(event)
-      @interested_users = []
       @interested_followers = []
       @interested_others = []
       event.interested_users.uniq.each do |user|
@@ -138,7 +137,7 @@ class Api::V1::ApiMasterController < ApplicationController
       end
     end
     end #each
-    @interested_users << {
+    @interested_users = {
       "interested_friends" => @interested_followers,
       "interested_others" => @interested_others
     }
@@ -192,7 +191,7 @@ class Api::V1::ApiMasterController < ApplicationController
      price_type
   end
 
-  def has_pass?(event)
+  def has_passes?(event)
     !event.passes.blank?
   end
 
