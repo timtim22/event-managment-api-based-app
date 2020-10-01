@@ -30,7 +30,7 @@
         <tbody>
         <% @events.each do |event| %>
         <tr>
-            <td><a href="<%= admin_event_path(event) %>" ><img src="<%= !event.image.url.blank? ? event.image.url : event.eventbrite_image %>" onError='this.onerror=null;this.src="<%= event.placeholder %>" ' style="border-radius:3px;"></a></td>
+            <td><a href="<%= admin_event_path(event) %>" ><img src="<%= event.image.url %>" onError='this.onerror=null;this.src="<%= event.placeholder %>" ' style="border-radius:3px;"></a></td>
             <td><%= event.name[0...25] %></td>
             <td><%= event.start_date.to_date.to_s %></td>
             <td><%= event.end_date.to_date.to_s  %></td>

@@ -55,8 +55,8 @@ class Admin::EventsController < Admin::AdminMasterController
          dates.each do |date|
           @event = current_user.events.new
           @event.name = params[:name]
-          @event.start_date = date
-          @event.end_date = date
+          @event.start_date = date.to_date
+          @event.end_date = date.to_date
           @event.price_range = price_range
           @event.price = price
           @event.start_price = start_price
@@ -137,8 +137,8 @@ class Admin::EventsController < Admin::AdminMasterController
       else
       @event = current_user.events.new
       @event.name = params[:name]
-      @event.start_date = params[:start_date].to_date.to_s
-      @event.end_date = params[:end_date].to_date.to_s
+      @event.start_date = params[:start_date].to_date
+      @event.end_date = params[:end_date].to_date
       @event.price_range = price_range
       @event.price = price
       @event.start_price = start_price

@@ -17,6 +17,7 @@
           <th>Price</th>
           <th>Quantity</th>
           <th>Per Head</th>
+          <th>Ticket Type</th>
           <th>Event</th>
           <th>Action</th>
         </tr>
@@ -28,6 +29,7 @@
           <td><%= ticket.event.price %></td>
           <td><%= ticket.quantity %></td>
           <td><%= ticket.per_head %></td>
+          <td><%= ticket.ticket_type %> </td>
           <td><%= link_to ticket.event.name, admin_event_path(ticket.event.id) %></td>
           <td>
           <a href="<%= admin_ticket_path(ticket.id) %>" data-toggle="tooltip" title="View Ticket"><i class="fa fa-eye"></i></a>

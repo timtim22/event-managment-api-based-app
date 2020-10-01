@@ -146,7 +146,8 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       "price_type" => get_price_type(event),
       "price" => get_price(event).to_s + "€",
       "price" => event.price,
-      "has_pass" => has_pass?(event)
+      "has_pass" => has_pass?(event),
+      "created_at" => event.created_at
     }
   }
     
