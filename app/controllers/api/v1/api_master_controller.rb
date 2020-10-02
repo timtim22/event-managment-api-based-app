@@ -194,9 +194,6 @@ class Api::V1::ApiMasterController < ApplicationController
   def has_passes?(event)
     !event.passes.blank?
   end
-
-
-  
-      
+   
 end
 

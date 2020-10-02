@@ -423,26 +423,70 @@ $(document).on('change','input#competition_location',function(event){
   }
 });//change
  
-function setSelectValue() {
-   
-  if($("#price_type").val() != "free") {
-    $("div.price_div").show();
-    if ($('#price_range_checkbox').is(':checked') == true) {
-       $('#price_range_div').show();
-       $('#single_price').hide();
-    }
-    else {
-      $('#price_range_div').hide();
-      $('#single_price').show();
-    }
- }
- else {
-  $("div.price_div").hide();
-  $("input#price").val(0);
- }
-}
+ $(document).on('click','.free_ticket', function(event){
+  $(".pay_at_door_input").remove();
+  $(".paid_ticket_input").remove();
+    $('.input_section').show();
+    var inputs = '<br><div class="form-group free_ticket_input ">' 
+        + '<label style="margin-right: 30px; " class="free_ticket_input">Ticket Name </label>'
+        + '<input type="text" name="free_ticket[title][]" style="margin-right: 30px;" class="free_ticket_input">'
+        + '<label style="margin-right: 30px;" class="free_ticket_input">Quantity</label>'
+        + '<input type="number" name="free_ticket[quantity][]" style="margin-right: 30px;" class="free_ticket_input">'
+        + '<label style="margin-right: 30px;" class="free_ticket_input">Max Per Order</label>'
+        + '<input type="number" name="free_ticket[per_head][]" style="margin-right: 30px;" class="free_ticket_input">'
+        + '</div>';
+    $('.input_section').append(inputs);
+  })//click
 
-setSelectValue();
+  $(document).on('click','.paid_ticket', function(event){
+    $(".free_ticket_input").remove();
+    $(".pay_at_door_input").remove();
+    $('.input_section').show();
+    var inputs = '<br><div class="form-group paid_ticket_input">' 
+        + '<label style="margin-right: 30px;">Ticket Name </label>'
+        + '<input type="text" name="paid_ticket[title][]" style="margin-right: 30px;">'
+        + '<label style="margin-right: 30px;">Quantity</label>'
+        + '<input type="number" name="paid_ticket[quantity][]" style="margin-right: 30px;">'
+        + '<label style="margin-right: 30px;">Price</label>'
+        + '<input type="number" name="paid_ticket[price][]" style="margin-right: 30px;">'
+        + '<label style="margin-right: 30px;">Max Per Order</label>'
+        + '<input type="number" name="paid_ticket[per_head][]" style="margin-right: 30px;">'
+        + '</div>';
+    $('.input_section').append(inputs);
+  })//click
+
+
+  $(document).on('click','.pass', function(event){
+    $('.input_section').show();
+    var inputs = '<br><div class="form-group pass_input">' 
+        + '<label style="margin-right: 30px;">Pass Name </label>'
+        + '<input type="text" name="pass[title][]" style="margin-right: 30px;">'
+        + '<label style="margin-right: 30px;">Quantity</label>'
+        + '<input type="number" name="pass[quantity][]" style="margin-right: 30px;">'
+        + '<label style="margin-right: 30px;">Reward Per Redeem</label>'
+        + '<input type="number" name="pass[ambassador_rate][]" style="margin-right: 30px;">'
+        + '<label style="margin-right: 30px;">Valid from</label>'
+        + '<input type="number" name="pass[valid_from][]" style="margin-right: 30px;">'
+        + '<label style="margin-right: 30px;">Valid to</label>'
+        + '<input type="number" name="pass[valid_to][]" style="margin-right: 30px;">'
+        + '</div>';
+    $('.input_section').append(inputs);
+  })//click
+
+
+  $(document).on('click','.pay_at_door', function(event){
+    $(".free_ticket_input").remove();
+    $(".paid_ticket_input").remove();
+    $('.input_section').show();
+    var inputs = '<br><div class="form-group pay_at_door_input">' 
+        + '<label style="margin-right: 30px;">Start Price</label>'
+        + '<input type="text" name="pay_at_door[start_price]" style="margin-right: 30px;">'
+        + '<label style="margin-right: 30px;">Quantity</label>'
+        + '<input type="number" name="pay_at_door[end_price]" style="margin-right: 30px;">'
+        + '</div>';
+    $('.input_section').append(inputs);
+  })//click
+
 
 $(document).on('click','#price_range_checkbox', function(event){
   if ($('#price_range_checkbox').is(':checked') == true) {

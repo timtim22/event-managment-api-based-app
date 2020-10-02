@@ -1,5 +1,5 @@
 class Api::V1::EventsController < Api::V1::ApiMasterController
-  before_action :authorize_request, except:  ['events_list_by_date','index']
+  before_action :authorize_request, except:  ['events_list_by_date','index','show_event']
 
   def initialize
     
@@ -196,7 +196,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
             'start_time' => e.start_time,
             'end_time' => e.end_time,
             'price' => e.price, # check for price if it is zero
-            'price_type' => e.price_type,
+            'price_type' => get_price_type(e),
             'event_type' => e.event_type,
             'additional_media' => e.event_attachments,
             'location' => e.location,
