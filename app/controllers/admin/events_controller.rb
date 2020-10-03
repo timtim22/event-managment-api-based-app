@@ -190,7 +190,7 @@ class Admin::EventsController < Admin::AdminMasterController
       # notifiy all users about new event creation
 
       if !params[:free_ticket].blank?
-          @ticket = @event.tickets.create!(user: current_user, ticket_type: 'free', quantity: params[:free_ticket]["quantity"], per_head: params[:free_ticket]["per_head"])
+          @ticket = @event.tickets.create!(user: current_user, ticket_type: 'free', quantity: params[:free_ticket]["quantity"], per_head: params[:free_ticket]["per_head"], price: 0)
           
        end #if
 
