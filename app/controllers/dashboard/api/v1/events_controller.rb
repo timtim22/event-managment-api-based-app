@@ -131,6 +131,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     @event.end_time = params['end_time']
     @event.over_18 = params[:over_18]
     @event.description = params[:description]
+    @event.price = 0
     @event.allow_chat = params[:allow_chat]
     @event.event_forwarding = params[:event_forwarding]
     if !params[:location].blank? 

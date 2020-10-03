@@ -167,7 +167,9 @@ class Api::V1::ApiMasterController < ApplicationController
             price = ticket.price
          end
        end# each
-   end# not empty
+      else
+        price = ''
+      end
    price
  end
 
@@ -176,11 +178,6 @@ class Api::V1::ApiMasterController < ApplicationController
 
 
  
-
-
-
-
-
   def get_price_type(event)
     price_type = ''
     if !event.tickets.blank?
