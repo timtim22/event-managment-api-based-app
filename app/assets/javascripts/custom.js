@@ -425,6 +425,7 @@ $(document).on('change','input#competition_location',function(event){
 
  
  $(document).on('click','.free_ticket', function(event){
+  $('input.price_type').val('free');
   $(".pay_at_door_input").remove();
   $(".paid_ticket_input").remove();
     $('.input_section').show();
@@ -440,6 +441,7 @@ $(document).on('change','input#competition_location',function(event){
   })//click
 
   $(document).on('click','.paid_ticket', function(event){
+    $('input.price_type').val('buy');
     $(".free_ticket_input").remove();
     $(".pay_at_door_input").remove();
     $('.input_section').show();
@@ -494,6 +496,7 @@ $(document).on('change','input#competition_location',function(event){
 
 
   $(document).on('click','.pay_at_door', function(event){
+    $('input.price_type').val('pay_at_door');
     $(".free_ticket_input").remove();
     $(".paid_ticket_input").remove();
     $('.input_section').show();

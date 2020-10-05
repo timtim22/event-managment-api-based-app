@@ -195,7 +195,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
             'end_date' => e.end_date,
             'start_time' => e.start_time,
             'end_time' => e.end_time,
-            'price' => e.price, # check for price if it is zero
+            'price' => get_price(e), # check for price if it is zero
             'price_type' => get_price_type(e),
             'event_type' => e.event_type,
             'additional_media' => e.event_attachments,
@@ -245,24 +245,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   
   def index
     @events = Event.sort_by_date.page(params[:page]).per(30).eager_load(:passes, :tickets)
-    @response = @events.map {|event|
-     e = {
-      "id" => event.id,
-      "image" => event.image,
-      "name" => event.name,
-      "location" => event.location,
-      "start_date" => event.end_date,
-      "end_date" => event.end_date,
-      "start_time" => event.start_time,
-      "end_time" => event.end_time,
-      "price_type" => get_price_type(event),
-      "price" => get_price(event).to_s + "€",
-      "price" => event.price,
-      "has_passes" => has_passes?(event),
-      "created_at" => event.created_at
-    }
-  }
-    
+    @response = @events.map {|event| get_simple_event_object(event) }
     render json: {
         code: 200,
         success: true,

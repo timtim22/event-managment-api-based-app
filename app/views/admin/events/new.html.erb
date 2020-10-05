@@ -11,7 +11,7 @@
          <%= render "shared/notice" %>
         <form method="post" action="<%= admin_events_path %>" class="forms-sample" enctype="multipart/form-data">
         <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
-
+        <input type='hidden' class="price_type" name="price_type" value="free">
       <div class="form-group">
         <label for="image" class="control-label">Event Image</label>
         <br>

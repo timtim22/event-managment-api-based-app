@@ -102,6 +102,8 @@ Rails.application.routes.draw do
        get '/get-business-competitions' => 'business_dashboard#competitions'
        get '/get-phone-numbers' => 'users#get_phone_numbers'
        post '/events/show' => 'events#show_event'
+       post '/events/search' => 'search#search_events' 
+    
       # get '/*a', to: 'application#not_found'
      end
    end

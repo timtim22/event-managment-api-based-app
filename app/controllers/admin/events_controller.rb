@@ -40,6 +40,7 @@ class Admin::EventsController < Admin::AdminMasterController
           @event.start_date = date.to_date
           @event.end_date = date.to_date
           @event.event_type = params[:event_type]
+          @event.price_type = params[:price_type]
           @event.start_time = params[:start_time]
           @event.end_time = params[:end_time]
           @event.category_ids = params[:category_ids]
@@ -157,6 +158,7 @@ class Admin::EventsController < Admin::AdminMasterController
       @event.start_date = params[:start_date].to_date
       @event.end_date = params[:end_date].to_date
       @event.event_type = params[:event_type]
+      @event.price_type = params[:price_type]
       @event.start_time = params[:start_time]
       @event.end_time = params[:end_time]
       @event.host = params[:host]
