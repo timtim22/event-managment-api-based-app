@@ -13,6 +13,7 @@ Rails.application.routes.draw do
        #resources :events
        resources :special_offers
        post "/events" => "events#index" 
+       get '/categories' => "categories#index"
        post '/auth/login', to: 'authentication#login'
        post '/auth/logout', to: 'authentication#logout'
        post '/auth/send-verification-email', to: 'authentication#send_verification_email'
