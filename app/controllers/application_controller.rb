@@ -835,6 +835,7 @@ end
             start_price = prices.min
             end_price = prices.max
             price = start_price.to_s + '-' +  end_price.to_s
+            
          elsif ticket.ticket_type == "free"
             price = ticket.price
          elsif ticket.ticket_type == "pay_at_door"

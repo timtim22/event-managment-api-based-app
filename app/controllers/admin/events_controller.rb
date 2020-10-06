@@ -26,7 +26,7 @@ class Admin::EventsController < Admin::AdminMasterController
 	end
 
   def create
-   
+
     @pubnub = Pubnub.new(
       publish_key: ENV['PUBLISH_KEY'],
       subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -58,56 +58,60 @@ class Admin::EventsController < Admin::AdminMasterController
           #create_activity("created event", @event, "Event", admin_event_path(@event),@event.name, 'post')
          
          
-      if !params[:event_attachments].blank?
-        params[:event_attachments]['media'].each do |m|
-          @event_attachment = @event.event_attachments.new(:media => m,:event_id => @event.id, media_type: 'image')
-          @event_attachment.save
-         end
-        end #if
-
-        if !params[:sponsor_image].blank? && !params[:external_url].blank?
-          @event_sponsor = @event.sponsors.create!(:name => params[:sponsor_name],:sponsor_image => params[:sponsor_image])
-        end#if
-      # notifiy all users about new event creation
-
-      if !params[:free_ticket].blank?
-          @ticket = @event.tickets.create!(user: current_user, ticket_type: 'free', quantity: params[:free_ticket]["quantity"], per_head: params[:free_ticket]["per_head"], price: 0)
-          
-       end #if
-
-       if !params[:paid_ticket].blank?
-        params[:paid_ticket]['title'].each do |t|
-          params[:paid_ticket]['quantity'].each do |q|
-            params[:paid_ticket]['price'].each do |p|
-              params[:paid_ticket]['per_head'].each do |per|
-             @ticket = @event.tickets.create!(user: current_user, title: t, ticket_type: 'buy', quantity: q, per_head: per, price: p)
-         end
-        end
-        end
-      end
-        end #if
-
-
-        if !params[:pass].blank?
-          params[:pass]["title"].each do |t|
-            params[:pass]["quantity"].each do |q|
-              params[:pass]["ambassador_rate"].each do |rate|
-                params[:pass]["description"].each do |ds|
-                  params[:pass]["valid_from"].each do |from|
-                    params[:pass]["valid_to"].each do |to|
-                     @ticket = @event.passes.create!(user: current_user, title: t, quantity: q, valid_from: from, valid_to: to, validity: to, ambassador_rate: rate, description: ds)
-                  end
-                end
-              end
-              end
-           end
-        end
-          end #if
-
-    if !params[:pay_at_door].blank?
-        @ticket = @event.tickets.create!(user: current_user, ticket_type: 'pay_at_door', start_price: params[:pay_at_door]["start_price"], end_price: params[:pay_at_door]["end_price"])
-     end #if
-
+          if !params[:event_attachments].blank?
+            params[:event_attachments]['media'].each do |m|
+              @event_attachment = @event.event_attachments.new(:media => m,:event_id => @event.id, media_type: 'image')
+              @event_attachment.save
+             end
+            end #if
+    
+            if !params[:sponsor_image].blank? && !params[:external_url].blank?
+              @event_sponsor = @event.sponsors.create!(:name => params[:sponsor_name],:sponsor_image => params[:sponsor_image])
+            end#if
+          # notifiy all users about new event creation
+    
+          if !params[:free_ticket].blank?
+              @ticket = @event.tickets.create!(user: current_user, ticket_type: 'free', quantity: params[:free_ticket]["quantity"], per_head: params[:free_ticket]["per_head"], price: 0)
+              
+           end #if
+    
+           if !params[:paid_ticket].blank?
+            tickets = []      
+            count = params[:paid_tickets_count]
+            count.to_i.times.each do |count|
+             tickets << {
+               "title" =>  params[:paid_ticket][:title][count-1],
+               "price" => params[:paid_ticket][:price][count-1],
+               "quantity" => params[:paid_ticket][:quantity][count-1],
+               "per_head" => params[:paid_ticket][:per_head][count-1]
+             }
+            end #each
+             tickets.each do |ticket|
+              @ticket = @event.tickets.create!(user: current_user, title: ticket["title"], ticket_type: 'buy', quantity: ticket["quantity"], per_head: ticket["per_head"], price: ticket["price"])
+             end #each
+            end #if
+    
+           if !params[:pass].blank?
+              passes = []      
+              count = params[:passes_count]
+              count.to_i.times.each do |count|
+            passes << {
+             "title" =>  params[:pass][:title][count-1],
+             "description" =>  params[:pass][:description][count-1],
+             "quantity" => params[:pass][:quantity][count-1],
+             "ambassador_rate" => params[:pass][:ambassador_rate][count-1],
+             "valid_from" => params[:pass][:valid_from][count-1],
+             "valid_to" => params[:pass][:valid_to][count-1]
+           }
+          end #each
+              passes.each do |pass|
+              @pass = @event.passes.create!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"])
+            end #each 
+         end #if
+    
+        if !params[:pay_at_door].blank?
+            @ticket = @event.tickets.create!(user: current_user, ticket_type: 'pay_at_door', start_price: params[:pay_at_door]["start_price"], end_price: params[:pay_at_door]["end_price"])
+         end #if
         
        if !current_user.followers.blank?
             current_user.followers.each do |follower|
@@ -197,33 +201,38 @@ class Admin::EventsController < Admin::AdminMasterController
        end #if
 
        if !params[:paid_ticket].blank?
-        params[:paid_ticket]['title'].each do |t|
-          params[:paid_ticket]['quantity'].each do |q|
-            params[:paid_ticket]['price'].each do |p|
-              params[:paid_ticket]['per_head'].each do |per|
-             @ticket = @event.tickets.create!(user: current_user, title: t, ticket_type: 'buy', quantity: q, per_head: per, price: p)
-         end
-        end
-        end
-      end
+        tickets = []      
+        count = params[:paid_tickets_count]
+        3.times.each do |count|
+         tickets << {
+           "title" =>  params[:paid_ticket][:title][count-1],
+           "price" => params[:paid_ticket][:price][count-1],
+           "quantity" => params[:paid_ticket][:quantity][count-1],
+           "per_head" => params[:paid_ticket][:per_head][count-1]
+         }
+        end #each
+         tickets.each do |ticket|
+          @ticket = @event.tickets.create!(user: current_user, title: ticket["title"], ticket_type: 'buy', quantity: ticket["quantity"], per_head: ticket["per_head"], price: ticket["price"])
+         end #each
         end #if
 
-
         if !params[:pass].blank?
-          params[:pass]["title"].each do |t|
-            params[:pass]["quantity"].each do |q|
-              params[:pass]["ambassador_rate"].each do |rate|
-                params[:pass]["description"].each do |ds|
-                  params[:pass]["valid_from"].each do |from|
-                    params[:pass]["valid_to"].each do |to|
-                     @ticket = @event.passes.create!(user: current_user, title: t, quantity: q, valid_from: from, valid_to: to, validity: to, ambassador_rate: rate, description: ds)
-                  end
-                end
-              end
-              end
-           end
-        end
-          end #if
+          passes = []      
+          count = params[:passes_count]
+          count.to_i.times.each do |count|
+        passes << {
+         "title" =>  params[:pass][:title][count-1],
+         "description" =>  params[:pass][:description][count-1],
+         "quantity" => params[:pass][:quantity][count-1],
+         "ambassador_rate" => params[:pass][:ambassador_rate][count-1],
+         "valid_from" => params[:pass][:valid_from][count-1],
+         "valid_to" => params[:pass][:valid_to][count-1]
+       }
+      end #each
+          passes.each do |pass|
+          @pass = @event.passes.create!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"])
+        end #each 
+     end #if
 
     if !params[:pay_at_door].blank?
         @ticket = @event.tickets.create!(user: current_user, ticket_type: 'pay_at_door', start_price: params[:pay_at_door]["start_price"], end_price: params[:pay_at_door]["end_price"])

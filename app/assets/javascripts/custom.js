@@ -423,7 +423,8 @@ $(document).on('change','input#competition_location',function(event){
   }
 });//change
 
- 
+  var paid_tikcets_count = 0;
+  var passes_count = 0;   
  $(document).on('click','.free_ticket', function(event){
   $('input.price_type').val('free');
   $(".pay_at_door_input").remove();
@@ -441,7 +442,9 @@ $(document).on('change','input#competition_location',function(event){
   })//click
 
   $(document).on('click','.paid_ticket', function(event){
+    paid_tikcets_count += 1; 
     $('input.price_type').val('buy');
+    $("input#paid_tickets_count").val(paid_tikcets_count);
     $(".free_ticket_input").remove();
     $(".pay_at_door_input").remove();
     $('.input_section').show();
@@ -466,7 +469,9 @@ $(document).on('change','input#competition_location',function(event){
 
 
   $(document).on('click','.pass', function(event){
+     passes_count += 1;
     $('.input_section').show();
+    $("input#passes_count").val(passes_count)
     var inputs = '<br><div class="form-group pass_input">' 
         + '<label style="margin-right: 30px;">Pass Name </label><br>'
         + '<input type="text" name="pass[title][]" class="input" style="margin-right: 30px;">'

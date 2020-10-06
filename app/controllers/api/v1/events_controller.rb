@@ -244,17 +244,84 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   end
   
   def index
-    @events = Event.sort_by_date.page(params[:page]).per(30).eager_load(:passes, :tickets)
-    @response = @events.map {|event| get_simple_event_object(event) }
+    @events = []
+    if !params[:filter_names].blank?
+      filter_names = params[:filter_names].split(',').map {|s| s } 
+      filter_names.each do  |name|
+       case name
+        when "location"
+          @q = Event.ransack(location_cont: params[:location])
+           events = @q.result(distinct: true)
+          if !events.blank?
+            events.map {|event| @events.push(get_simple_event_object(event)) }
+          end
+    
+        when "price"
+          case params[:price].to_i
+          when 0
+            events = Ticket.where(ticket_type: 'free').map {|ticket| ticket.event  }
+            if !events.blank?
+             events.map {|event| @events.push(get_simple_event_object(event)) }
+            end
+          when params[:price].to_i < 60
+            @buy_events = Ticket.where(ticket_type: 'buy').where("price < ?", 60).map {|ticket| ticket.event  }
+            if !@buy_events.blank?
+              @buy_events.map {|event| @events.push(get_simple_event_object(event)) }
+            end 
+  
+             @pay_at_door_events = Ticket.where(ticket_type: 'pay_at_door').where("end_price < ?", 60).map {|ticket| ticket.event  }
+            if !@pay_at_door_events.blank?
+              @pay_at_door_events.map {|event| @events.push(get_simple_event_object(event)) }
+            end 
+          when params[:price].to_i > 60
+            @buy_events = Ticket.where(ticket_type: 'buy').where("price > ?", 60).map {|ticket| ticket.event  }
+            if !@buy_events.blank?
+              @buy_events.map {|event| @events.push(get_simple_event_object(event)) }
+            end 
+  
+             @pay_at_door_events = Ticket.where(ticket_type: 'pay_at_door').where("end_price > ?", 60).map {|ticket| ticket.event  }
+            if !@pay_at_door_events.blank?
+              @pay_at_door_events.map {|event| @events.push(get_simple_event_object(event)) }
+            end 
+          else
+            "do nothing"
+          end
+
+        when "categories"
+            events = []
+            categories = params[:categories].split(',').map {|s|  Category.find_by(name: s)  }
+            
+            
+           if !categories.blank?
+             categories.each do |cat|
+              categorization = Categorization.where(category_id: cat).first
+              if !categorization.blank?
+              @events.push(categorization.event)
+              end
+             end   
+           end
+        else
+           "do nothing for now"
+        end #switch
+      end #each
+    else
+    
+      events = Event.sort_by_date.page(params[:page]).per(30).eager_load(:passes, :tickets)
+      @events = events.map {|event| get_simple_event_object(event) }
+    end
     render json: {
         code: 200,
         success: true,
         message: '',
         data: { 
-          "events" => @response
+          "events" => @events
         }
       }
+  
   end
+
+
+
 
 	def events_list_by_date
 		@events = Event.events_by_date(params[:date])
