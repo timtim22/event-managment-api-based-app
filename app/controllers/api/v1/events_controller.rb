@@ -255,10 +255,10 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
           if !events.blank?
             events.map {|event| @events.push(get_simple_event_object(event)) }
           end
-    
         when "price"
-          case params[:price].to_i
-          when 0
+         
+          case 
+          when params[:price].to_i == 0
             events = Ticket.where(ticket_type: 'free').map {|ticket| ticket.event  }
             if !events.blank?
              events.map {|event| @events.push(get_simple_event_object(event)) }
@@ -289,15 +289,10 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 
         when "categories"
             events = []
-            categories = params[:categories].split(',').map {|s|  Category.find_by(name: s)  }
-            
-            
-           if !categories.blank?
-             categories.each do |cat|
-              categorization = Categorization.where(category_id: cat).first
-              if !categorization.blank?
-              @events.push(categorization.event)
-              end
+            categorizations = params[:categories].split(',').map {|id|  Categorization.find_by(category_id: id) }
+           if !categorizations.blank?
+             categorizations.each do |categorization|
+              @events.push(get_simple_event_object(categorization.event))
              end   
            end
         else
@@ -305,7 +300,6 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         end #switch
       end #each
     else
-    
       events = Event.sort_by_date.page(params[:page]).per(30).eager_load(:passes, :tickets)
       @events = events.map {|event| get_simple_event_object(event) }
     end

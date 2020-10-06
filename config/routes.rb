@@ -10,8 +10,9 @@ Rails.application.routes.draw do
  namespace :api do
      namespace :v1 do
        resources :users, param: :email
-       resources :events
-       resources :special_offers 
+       #resources :events
+       resources :special_offers
+       post "/events" => "events#index" 
        post '/auth/login', to: 'authentication#login'
        post '/auth/logout', to: 'authentication#logout'
        post '/auth/send-verification-email', to: 'authentication#send_verification_email'
