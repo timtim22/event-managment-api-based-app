@@ -867,6 +867,11 @@ end
     !event.passes.blank?
   end
 
+
+  def paginate_array(array)
+    Kaminari.paginate_array(array)
+  end
+
   
 
   helper_method :SetJsVariables

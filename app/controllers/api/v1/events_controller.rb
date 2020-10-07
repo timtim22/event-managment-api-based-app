@@ -250,10 +250,10 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       filter_names.each do  |name|
        case name
         when "location"
-          @q = Event.ransack(location_cont: params[:location]).page(params[:page]).per(30)
-           events = @q.result(distinct: true)
+          @q = Event.ransack(location_cont: params[:location])
+           events = @q.result(distinct: true).page(params[:page]).per(30)
           if !events.blank?
-            events.map {|event| @events.push(get_simple_event_object(event)) }
+            events.page(params[:page]).per(30).map {|event| @events.push(get_simple_event_object(event)) }
           end
         when "price"
          
@@ -310,7 +310,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       events = Event.sort_by_date.page(params[:page]).per(30).eager_load(:passes, :tickets)
       @events = events.map {|event| get_simple_event_object(event) }
     end
-    @result = @events.page(params[:page]).per(30)
+    @result = paginate_array(@events).page(params[:page]).per(30)
     render json: {
         code: 200,
         success: true,
