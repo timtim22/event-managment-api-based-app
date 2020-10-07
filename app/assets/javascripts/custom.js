@@ -508,7 +508,7 @@ $(document).on('change','input#competition_location',function(event){
     var inputs = '<br><div class="form-group pay_at_door_input">' 
         + '<label style="margin-right: 30px;">Start Price</label>'
         + '<input type="number" name="pay_at_door[start_price]" class="input" style="margin-right: 30px;">'
-        + '<label style="margin-right: 30px;">Quantity</label>'
+        + '<label style="margin-right: 30px;">End Price</label>'
         + '<input type="number" name="pay_at_door[end_price]" class="input" style="margin-right: 30px;">'
         + '</div>';
     $('.input_section').append(inputs);

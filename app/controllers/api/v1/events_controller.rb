@@ -250,7 +250,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       filter_names.each do  |name|
        case name
         when "location"
-          @q = Event.ransack(location_cont: params[:location])
+          @q = Event.ransack(location_cont: params[:location]).page(params[:page]).per(30)
            events = @q.result(distinct: true)
           if !events.blank?
             events.map {|event| @events.push(get_simple_event_object(event)) }
@@ -259,27 +259,27 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
          
           case 
           when params[:price].to_i == 0
-            events = Ticket.where(ticket_type: 'free').map {|ticket| ticket.event  }
+            events = Ticket.where(ticket_type: 'free').page(params[:page]).per(30).map {|ticket| ticket.event  }
             if !events.blank?
              events.map {|event| @events.push(get_simple_event_object(event)) }
             end
           when params[:price].to_i < 60
-            @buy_events = Ticket.where(ticket_type: 'buy').where("price < ?", 60).map {|ticket| ticket.event  }
+            @buy_events = Ticket.where(ticket_type: 'buy').where("price < ?", 60).page(params[:page]).per(30).map {|ticket| ticket.event  }
             if !@buy_events.blank?
               @buy_events.map {|event| @events.push(get_simple_event_object(event)) }
             end 
   
-             @pay_at_door_events = Ticket.where(ticket_type: 'pay_at_door').where("end_price < ?", 60).map {|ticket| ticket.event  }
+             @pay_at_door_events = Ticket.where(ticket_type: 'pay_at_door').where("end_price < ?", 60).page(params[:page]).per(30).map {|ticket| ticket.event  }
             if !@pay_at_door_events.blank?
               @pay_at_door_events.map {|event| @events.push(get_simple_event_object(event)) }
             end 
           when params[:price].to_i > 60
-            @buy_events = Ticket.where(ticket_type: 'buy').where("price > ?", 60).map {|ticket| ticket.event  }
+            @buy_events = Ticket.where(ticket_type: 'buy').where("price > ?", 60).page(params[:page]).per(30).map {|ticket| ticket.event  }
             if !@buy_events.blank?
               @buy_events.map {|event| @events.push(get_simple_event_object(event)) }
             end 
   
-             @pay_at_door_events = Ticket.where(ticket_type: 'pay_at_door').where("end_price > ?", 60).map {|ticket| ticket.event  }
+             @pay_at_door_events = Ticket.where(ticket_type: 'pay_at_door').where("end_price > ?", 60).page(params[:page]).per(30).map {|ticket| ticket.event  }
             if !@pay_at_door_events.blank?
               @pay_at_door_events.map {|event| @events.push(get_simple_event_object(event)) }
             end 
@@ -298,7 +298,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
              end   
            end
           when "pass"
-            events = Pass.all.map {|pass| pass.event }
+            events = Pass.page(params[:page]).per(30).map {|pass| pass.event }
             if !events.blank?
               events.map {|event| @events.push(get_simple_event_object(event)) }
             end   
@@ -310,12 +310,13 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       events = Event.sort_by_date.page(params[:page]).per(30).eager_load(:passes, :tickets)
       @events = events.map {|event| get_simple_event_object(event) }
     end
+    @result = @events.page(params[:page]).per(30)
     render json: {
         code: 200,
         success: true,
         message: '',
         data: { 
-          "events" => @events
+          "events" => @result
         }
       }
   
