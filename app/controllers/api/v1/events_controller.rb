@@ -295,6 +295,11 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
               @events.push(get_simple_event_object(categorization.event))
              end   
            end
+          when "pass"
+            events = Pass.all.map {|pass| pass.event }
+            if !events.blank?
+              events.map {|event| @events.push(get_simple_event_object(event)) }
+            end   
         else
            "do nothing for now"
         end #switch
