@@ -289,9 +289,11 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 
         when "categories"
             events = []
-            categorizations = params[:categories].split(',').map {|id|  Categorization.find_by(category_id: id) }
-           if !categorizations.blank?
-             categorizations.each do |categorization|
+            categories = params[:categories].split(',').map {|id|  Category.find_by(uuid: id) }
+            categorizations = categories.map {|cat| Categorization.find_by(category_id: cat.id) }
+      
+           if categorizations !=  [nil]
+             categorizations.each do |categorization|         
               @events.push(get_simple_event_object(categorization.event))
              end   
            end

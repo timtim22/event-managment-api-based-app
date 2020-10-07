@@ -835,26 +835,16 @@ end
 
   def get_price(event)
     price = ''
-   if !event.tickets.blank?
-       event.tickets.each do |ticket|
-         if ticket.ticket_type == "buy" && event.tickets.size > 1
-            prices = []
-            prices.push(ticket.price)
-            start_price = prices.min
-            end_price = prices.max
-            price = start_price.to_s + '-' +  end_price.to_s
-            
-         elsif ticket.ticket_type == "free"
-            price = ticket.price
-         elsif ticket.ticket_type == "pay_at_door"
-            price = ticket.start_price.to_s + '-' + ticket.end_price.to_s
-         else
-            price = ticket.price
-         end
-       end# each
-      else
-        price = ''
-      end
+    if !event.tickets.where(ticket_type: 'buy').blank? && event.tickets.size > 1
+       prices = event.tickets.map {|ticket| ticket.price }
+       price =  '€' + prices.min.to_s + '-' + '€' + prices.max.to_s
+    elsif !event.tickets.where(ticket_type: 'buy').blank? && event.tickets.size == 1
+       price = '€' + event.tickets.first.price.to_s
+    elsif !event.tickets.where(ticket_type: 'pay_at_door').blank?
+       price = '€' + event.tickets.first.start_price.to_s +  '-' + event.tickets.first.end_price.to_s
+    else
+      price = '0'
+   end
    price
  end
 
