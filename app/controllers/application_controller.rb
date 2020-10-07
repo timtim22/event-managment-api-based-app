@@ -41,8 +41,16 @@ class ApplicationController < ActionController::Base
     code = SecureRandom.hex(10)
   end
 
+  def generate_uuid
+    uuid = SecureRandom.uuid
+  end
+
   def generate_six_digit_code
-    code = rand(100 ** 6)
+    code = rand(100 ** 3)
+  end
+
+  def generate_four_digit_code
+    code = rand(100 ** 2)
   end
 
   def blocked_event?(request_user, event)
