@@ -363,9 +363,9 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       
     else
       if !params[:pass].blank? && params[:pass] == 'true'
-      @events = Event.joins(:tickets, :categories, :passes).where(has_passes: true).merge(Ticket.ransack(ticket_type_cont: params[:price]).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).uniq.map {|event| get_simple_event_object(event) }
+      @events = Event.joins(:tickets, :categories, :passes).where(pass: params[:pass]).ransack(location_cont: params[:location]).result(distinct: true).merge(Ticket.ransack(ticket_type_cont: params[:price]).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).uniq.map {|event| get_simple_event_object(event) }
      else
-      @events = Event.joins(:tickets, :categories).ransack(location_cont: params[:location]).result(distinct: true).ransack(location_cont: params[:location]).result(distinct: true).merge(Ticket.ransack(ticket_type_cont: params[:price]).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).uniq.map {|event| get_simple_event_object(event) }
+      @events = Event.joins(:tickets, :categories).ransack(location_cont: params[:location]).result(distinct: true).merge(Ticket.ransack(ticket_type_cont: params[:price]).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).uniq.map {|event| get_simple_event_object(event) }
      end
     end
    
