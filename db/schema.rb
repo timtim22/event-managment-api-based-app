@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_07_054810) do
+ActiveRecord::Schema.define(version: 2020_10_08_153328) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -215,6 +215,8 @@ ActiveRecord::Schema.define(version: 2020_10_07_054810) do
     t.datetime "updated_at", null: false
     t.text "terms_conditions", default: ""
     t.boolean "price_range", default: false
+    t.boolean "has_passes", default: false
+    t.string "pass", default: "false"
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 

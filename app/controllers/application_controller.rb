@@ -880,6 +880,10 @@ end
     array.sort_by { |h| h["start_date"].split('/').reverse }
   end
 
+  def string_to_boolean(str)
+    ActiveModel::Type::Boolean.new.cast(str)
+  end
+
   
 
   helper_method :SetJsVariables
