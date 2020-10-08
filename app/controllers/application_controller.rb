@@ -153,6 +153,10 @@ class ApplicationController < ActionController::Base
     string.parameterize.underscore.to_sym
   end
 
+  def string_to_array_of_integers(string, delimeter)
+    string.split(delimeter).map {|s| s.to_i }
+  end
+
   def is_business?(user)
     role_ids = user.roles.map {|role| role.id }
     role_ids.include? 2  
@@ -870,6 +874,10 @@ end
 
   def paginate_array(array)
     Kaminari.paginate_array(array)
+  end
+
+  def array_sort_by_date(array)
+    array.sort_by { |h| h["start_date"].split('/').reverse }
   end
 
   

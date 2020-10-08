@@ -87,6 +87,22 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
   end #func
 
 
+  def events_live_search
+    @q = Event.ransack(name_cont: params[:q])
+    events = @q.result(distinct: true).sort_by_date.page(params[:page]).per(30)
+
+    render json: {
+      code: 200,
+      sucess: true,
+      message: '',
+      data: {
+        result: events
+      }
+    }
+
+  end
+
+
 
 
   private 
