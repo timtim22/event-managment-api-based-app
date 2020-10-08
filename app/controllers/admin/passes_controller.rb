@@ -72,6 +72,8 @@ class Admin::PassesController < Admin::AdminMasterController
       subscribe_key: ENV['SUBSCRIBE_KEY']
       )
     ids.each do |id|
+      @event = Event.find(id)
+      @event.update!(pass: 'true')
       @pass = Pass.new
       @pass.title = params[:title]
       @pass.description = params[:description]

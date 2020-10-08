@@ -174,6 +174,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
         when 'pass'
           resource[:fields].each do |f|
           @pass = Pass.create!(event: @event, user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate])
+          @event.update!(pass: 'true')
           end #each
 
         else
