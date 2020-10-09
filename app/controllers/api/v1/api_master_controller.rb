@@ -157,7 +157,7 @@ class Api::V1::ApiMasterController < ApplicationController
         "end_time" => event.end_time,
         "price_type" => get_price_type(event),
         "price" => get_price(event).to_s,
-        "has_passes" => event.pass,
+        "has_passes" => has_passes?(event),
         "created_at" => event.created_at,
         "categories" => event.categories
       }

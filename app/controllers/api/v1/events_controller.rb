@@ -408,7 +408,6 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       if !params[:price].blank?
           case 
           when params[:price].to_i == 0
-           
             price = '0.00'
             predicate = 'price_eq'
           when params[:price].to_i > 60
@@ -435,16 +434,8 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       end #if
 
       predicate_sym = string_to_sym(predicate)
-      # render json: {
-      #   predicate: predicate_sym,
-      #   price: price,
-      #   first_cat: first_cat
-      # }
-      # return
-
       
-  
-      @events = Event.ransack(pass_cont: params[:pass]).result(distinct: true).ransack(location_cont: params[:location]).result(distinct: true).uniq.map {|event| get_simple_event_object(event) }
+      @events = Event.all.joins(:tickets, :categories).ransack(pass_cont: params[:pass]).result(distinct: true).ransack(location_cont: params[:location]).result(distinct: true).merge(Ticket.ransack(ticket_type_cont: 'free').result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).page(params[:page]).per(30).uniq.map {|event| get_simple_event_object(event) }
 
     else
       events = Event.sort_by_date.page(params[:page]).per(30).eager_load(:passes, :tickets)
