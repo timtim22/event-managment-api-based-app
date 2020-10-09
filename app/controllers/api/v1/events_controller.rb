@@ -323,70 +323,147 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   # end
 
 
-  def index
-    if params[:filter] == 'true'
-      first_cat = ''
-    if !params[:categories].blank?  
-      cat_names = params[:categories].split(',').map {|s| s }
-      first_cat = cat_names[0]
-      @events = Event.joins(:tickets, :categories).ransack(location_cont: params[:location]).result(distinct: true).merge(Ticket.ransack(ticket_type_cont: params[:price]).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).uniq.map {|event| get_simple_event_object(event) }
-    end
-
+  # def index
+  #   if params[:filter] == 'true'
+  #     first_cat = ''
+  #   if !params[:categories].blank? 
+      
+  #     cat_names = params[:categories].split(',').map {|s| s }
+  #     first_cat = cat_names[0]
+  #     @events = Event.joins(:categories).ransack(:location_cont => params[:location]).result(distinct: true).ransack(pass_cont: params[:pass]).result(distinct: true).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).uniq.map {|event| get_simple_event_object(event) }
+  #   else
    
-
-
-    if !params[:price].blank?
+  #   if !params[:price].blank?
      
-      if params[:price].to_i == 0
+  #     if params[:price].to_i == 0
        
-        @events = Event.joins(:tickets, :categories).ransack(location_cont: params[:location]).result(distinct: true).merge(Ticket.ransack(ticket_type_cont: 'free').result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).uniq.map {|event| get_simple_event_object(event) }
+  #       @events = Event.ransack(location_cont: params[:location]).result(distinct: true).ransack(pass_cont: params[:pass]).result(distinct: true).merge(Ticket.ransack(ticket_type_cont: 'free').result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).page(params[:page]).per(30).uniq.map {|event| get_simple_event_object(event) }
 
-      elsif params[:price].to_i < 20
-        @events = Event.joins(:tickets, :categories).merge(Ticket.ransack(price_lt: 20).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).uniq.map {|event| get_simple_event_object(event) }
+  #     elsif params[:price].to_i < 20
 
-      elsif params[:price].to_i < 30
-        @events = Event.joins(:tickets, :categories).merge(Ticket.ransack(price_lt: 30).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).uniq.map {|event| get_simple_event_object(event) }
+  #       @events = Event.ransack(location_cont: params[:location]).result(distinct: true).ransack(pass_cont: params[:pass]).result(distinct: true).merge(Ticket.ransack(price_lt: 20).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).page(params[:page]).per(30).uniq.map {|event| get_simple_event_object(event) }
+
+  #     elsif params[:price].to_i < 30
+  #       @events = Event.ransack(location_cont: params[:location]).result(distinct: true).ransack(pass_cont: params[:pass]).result(distinct: true).merge(Ticket.ransack(price_lt: 30).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).page(params[:page]).per(30).uniq.map {|event| get_simple_event_object(event) }
 
         
-      elsif params[:price].to_i < 40
-        @events = Event.joins(:tickets, :categories).merge(Ticket.ransack(price_lt: 40).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).uniq.map {|event| get_simple_event_object(event) }
+  #     elsif params[:price].to_i < 40
+  #       @events = Event.ransack(location_cont: params[:location]).result(distinct: true).ransack(pass_cont: params[:pass]).result(distinct: true).merge(Ticket.ransack(price_lt: 40).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).page(params[:page]).per(30).uniq.map {|event| get_simple_event_object(event) }
 
-      elsif params[:price].to_i < 50
-        @events = Event.joins(:tickets, :categories).merge(Ticket.ransack(price_lt: 50).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).uniq.map {|event| get_simple_event_object(event) }
+  #     elsif params[:price].to_i < 50
+  #       @events = Event.ransack(location_cont: params[:location]).result(distinct: true).ransack(pass_cont: params[:pass]).result(distinct: true).merge(Ticket.ransack(price_lt: 50).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).page(params[:page]).per(30).uniq.map {|event| get_simple_event_object(event) }
      
-      elsif params[:price].to_i > 60
-        @events = Event.joins(:tickets, :categories).merge(Ticket.ransack(price_gt: 60).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).uniq.map {|event| get_simple_event_object(event) }
+  #     elsif params[:price].to_i > 60
+  #       @events = Event.ransack(location_cont: params[:location]).result(distinct: true).ransack(pass_cont: params[:pass]).result(distinct: true).merge(Ticket.ransack(price_gt: 60).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).page(params[:page]).per(30).uniq.map {|event| get_simple_event_object(event) }
      
-      elsif params[:price].to_i < 60  
-        @events = Event.joins(:tickets, :categories).merge(Ticket.ransack(price_lt: 60).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).uniq.map {|event| get_simple_event_object(event) } 
-      end
-      
-    else
-      if !params[:pass].blank? && params[:pass] == 'true'
-      @events = Event.joins(:tickets, :categories, :passes).where(pass: params[:pass]).ransack(location_cont: params[:location]).result(distinct: true).merge(Ticket.ransack(ticket_type_cont: params[:price]).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).uniq.map {|event| get_simple_event_object(event) }
-     else
-      @events = Event.joins(:tickets, :categories).ransack(location_cont: params[:location]).result(distinct: true).merge(Ticket.ransack(ticket_type_cont: params[:price]).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).uniq.map {|event| get_simple_event_object(event) }
-     end
-    end
+  #     elsif params[:price].to_i < 60  
+  #       @events =Event.ransack(location_cont: params[:location]).result(distinct: true).ransack(pass_cont: params[:pass]).result(distinct: true).merge(Ticket.ransack(price_lt: 60).result(distinct: true)).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).page(params[:page]).per(30).uniq.map {|event| get_simple_event_object(event) } 
+  #     end
+
    
-    else
      
+  #   else
+   
+      
+  #     @events = Event.ransack(location_cont: params[:location]).result(distinct: true).ransack(pass_cont: params[:pass]).result(distinct: true).merge(Category.ransack(name_cont: first_cat).result(distinct: true)).page(params[:page]).per(30).uniq.map {|event| get_simple_event_object(event) }
+  #   end
+
+  # end
+   
+  #   else
+
+    
+  #     events = Event.sort_by_date.page(params[:page]).per(30).eager_load(:passes, :tickets)
+  #     @events = events.map {|event| get_simple_event_object(event) }  
+  #   end
+
+  #   render json:  {
+  #     code: 200,
+  #     success: true,
+  #     message: '',
+  #     size: @events.size,
+  #     params: params,
+  #     first_cat: cat_names,
+  #     data: {
+  #       events: @events,
+        
+  #     }
+  #   }
+  # end
+
+
+
+  def index
+
+    if params[:filter] == 'true'
+      price = ''
+      first_cat = ''
+      predicate = ''
+
+      if !params[:categories].blank? 
+        cat_names = params[:categories].split(',').map {|s| s }
+        first_cat = cat_names[0]
+      end
+
+      if !params[:price].blank?
+          case 
+          when params[:price].to_i == 0
+           
+            price = '0.00'
+            predicate = 'price_eq'
+          when params[:price].to_i > 60
+            price = '60'
+            predicate = 'price_gt'
+          when params[:price].to_i < 60
+            price = '60'
+            predicate = 'price_lt'
+          when params[:price].to_i < 50
+            price = '50'
+            predicate = 'price_lt'
+          when params[:price].to_i < 40
+            price = '40'
+            predicate = 'price_lt'
+          when params[:price].to_i < 30
+            price = '30'
+            predicate = 'price_lt'
+          when params[:price].to_i < 20
+           price = '20'
+           predicate = 'price_lt'
+          else
+            "do nothing"
+          end
+      end #if
+
+      predicate_sym = string_to_sym(predicate)
+      # render json: {
+      #   predicate: predicate_sym,
+      #   price: price,
+      #   first_cat: first_cat
+      # }
+      # return
+
+      
+  
+      @events = Event.ransack(pass_cont: params[:pass]).result(distinct: true).ransack(location_cont: params[:location]).result(distinct: true).uniq.map {|event| get_simple_event_object(event) }
+
+    else
       events = Event.sort_by_date.page(params[:page]).per(30).eager_load(:passes, :tickets)
       @events = events.map {|event| get_simple_event_object(event) }  
     end
 
-    render json:  {
-      code: 200,
-      success: true,
-      message: '',
-      size: @events.size,
-      params: params,
-      first_cat: cat_names,
-      data: {
-        events: @events,
-        
+      
+
+      render json:  {
+        code: 200,
+        success: true,
+        message: '',
+        size: @events.size,
+        params: params,
+        data: {
+          events: @events,
+          
+        }
       }
-    }
   end
 
 

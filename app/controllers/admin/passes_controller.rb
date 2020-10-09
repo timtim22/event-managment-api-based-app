@@ -72,8 +72,7 @@ class Admin::PassesController < Admin::AdminMasterController
       subscribe_key: ENV['SUBSCRIBE_KEY']
       )
     ids.each do |id|
-      @event = Event.find(id)
-      @event.update!(pass: 'true')
+     
       @pass = Pass.new
       @pass.title = params[:title]
       @pass.description = params[:description]
@@ -85,7 +84,9 @@ class Admin::PassesController < Admin::AdminMasterController
       @pass.pass_type = params[:pass_type]
       @pass.validity_time = params[:validity_time]
       @pass.terms_conditions = params[:terms_conditions]
-      if @pass.save
+      @event = Event.find(id)
+      @event.pass = 'true'
+      if @pass.save && @event.save
        # create_activity("created pass", @pass, "Pass", admin_pass_path(@pass),@pass.title, 'post')
         if !current_user.followers.blank?
           current_user.followers.each do |follower|
