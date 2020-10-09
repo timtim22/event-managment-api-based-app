@@ -1,4 +1,3 @@
-
 class Api::V1::FollowsController < Api::V1::ApiMasterController
   before_action :authorize_request
   require 'action_view'
@@ -360,7 +359,7 @@ end
       user: request_user
     }
   }
-  ende
+  end
 
   private
   
