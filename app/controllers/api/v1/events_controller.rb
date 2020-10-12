@@ -131,8 +131,14 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         @events = filter_events_by_price(params[:price]).map {|event| get_simple_event_object(event)}
       #case 3
       elsif params[:location].blank? && params[:price].blank? && !params[:categories].blank? && params[:pass] != 'true'
-        
-       @events =  filter_events_by_categories(params[:categories]).map {|event| get_simple_event_object(event) }
+       
+       events =  filter_events_by_categories(params[:categories])
+       if !events.blank?
+        @events = events.map {|event| get_simple_event_object(event) }
+       else
+        @events = []
+       end
+     
      # case 4
       elsif params[:location].blank? && params[:price].blank? && params[:categories].blank? && params[:pass] == 'true'
         
@@ -496,13 +502,20 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
     cat_names_array = categories_names.split(',').map {|s| s }
      cat_names_array.each do |cat_name|
        cat = Category.where(name: cat_name).first
+       if !cat.nil?
        @cats.push(cat)
+       end
      end #each
+
+     if !@cats.blank?
           cat_ids = @cats.map {|cat| cat.id }
       if !cat_ids.blank?
           @categorizations = Categorization.where(category_id: cat_ids)
           @events = @categorizations.map {|categorization| categorization.event }
       end
+    end
+
+   @events
   
   end
 
