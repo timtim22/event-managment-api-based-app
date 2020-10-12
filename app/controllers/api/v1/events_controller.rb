@@ -142,33 +142,44 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       #case 5
       elsif !params[:location].blank? && !params[:price].blank? && params[:categories].blank? && params[:pass] != 'true'
         
-        events =  filter_events_by_price(params[:price])
-        ids = events.map {|event| event.id }
-        if !ids.blank?
-         @events = Event.where(id: ids).where(location: params[:location]).page(params[:page]).per(get_per_page).map {|event| get_simple_event_object(event) }
-        else
+        location_based_events =  filter_events_by_price(params[:price])
+        location_based_ids = location_based_events.map {|event| event.id }
+
+        price_based_events = filter_events_by_price(params[:price])
+        price_based_ids = price_based_events.map {|event| event.id }
+        common_ids = location_based_ids & price_based_ids
+        if !common_ids.blank?
+          @events = Event.where(id: common_ids).page(params[:page]).per(get_per_page).map {|event| get_simple_event_object(event)}
+         else
           @events = []
-        end
-         #case 6
-      elsif !params[:location].blank? && params[:price].blank? && !params[:categories].blank? && params[:pass] != 'true'
+         end
         
-        events = filter_events_by_categories(params[:categories])
-        ids = events.map {|event| event.id }
-        if !ids.blank?
-         @events = Event.where(id: ids).where(location: params[:location]).page(params[:page]).per(get_per_page).map {|event| get_simple_event_object(event) }
-        else
+       #case 6
+      elsif !params[:location].blank? && params[:price].blank? && !params[:categories].blank? && params[:pass] != 'true'
+        location_based_events = Event.ransack(location_cont: params[:location]).result(distinct: true).page(params[:page]).per(get_per_page)
+        location_based_ids = location_based_events.map {|event| event.id } 
+        cats_based_events = filter_events_by_categories(params[:categories])
+        cats_based_ids = cats_based_events.map {|event| event.id }
+        common_ids = location_based_ids & cats_based_ids
+        if !common_ids.blank?
+          @events = Event.where(id: common_ids).page(params[:page]).per(get_per_page).map {|event| get_simple_event_object(event)}
+         else
           @events = []
-        end
+         end
+   
          #case 7
       elsif !params[:location].blank? && params[:price].blank? && params[:categories].blank? && params[:pass] == 'true'
-        
-        events =  filter_events_by_pass
-        ids = events.map {|event| event.id }
-        if !ids.blank?
-         @events = Event.where(id: ids).where(location: params[:location]).page(params[:page]).per(get_per_page).map {|event| get_simple_event_object(event) }
-        else
+       location_based_events = Event.ransack(location_cont: params[:location]).result(distinct: true).page(params[:page]).per(get_per_page)
+       location_based_ids = location_based_events.map {|event| event.id } 
+       pass_based_events =  filter_events_by_pass
+       pass_based_ids = pass_based_events.map {|event| event.id }
+        common_ids = pass_based_ids & location_based_ids
+        if !common_ids.blank?
+          @events = Event.where(id: common_ids).page(params[:page]).per(get_per_page).map {|event| get_simple_event_object(event)}
+         else
           @events = []
-        end
+         end
+
         #case 8
       elsif  params[:location].blank? && !params[:price].blank? && !params[:categories].blank? && params[:pass] != 'true'
         
@@ -291,8 +302,8 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
               @events = []
              end
 
-            else
-          
+            elsif !params[:location].blank? && !params[:price].blank? && !params[:categories].blank? && params[:pass] == 'true' 
+            
               location_based_events = Event.ransack(location_cont: params[:location]).result(distinct: true).page(params[:page]).per(get_per_page)
               location_based_ids = @events.map {|event| event.id }
                price_based_events = filter_events_by_price(params[:price])
