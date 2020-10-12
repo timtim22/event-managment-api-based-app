@@ -124,7 +124,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       #case 1
       if !params[:location].blank? && params[:price].blank? && params[:categories].blank? && params[:pass] != 'true'
         
-        @events = Event.ransack(location_cont: params[:location]).result(distinct: true).page(params[:page]).per(get_per_page)
+        @events = Event.ransack(location_cont: params[:location]).result(distinct: true).page(params[:page]).per(get_per_page).map {|event| get_simple_event_object(event) }
       #case 2
       elsif params[:location].blank? && !params[:price].blank? && params[:categories].blank? && params[:pass] != 'true'
         
@@ -132,7 +132,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       #case 3
       elsif params[:location].blank? && params[:price].blank? && !params[:categories].blank? && params[:pass] != 'true'
         
-       @events =  filter_events_by_categories(params[:categories])
+       @events =  filter_events_by_categories(params[:categories]).map {|event| get_simple_event_object(event) }
      # case 4
       elsif params[:location].blank? && params[:price].blank? && params[:categories].blank? && params[:pass] == 'true'
         
