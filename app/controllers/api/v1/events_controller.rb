@@ -131,14 +131,14 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         @events = filter_events_by_price(params[:price]).map {|event| get_simple_event_object(event)}
       #case 3
       elsif params[:location].blank? && params[:price].blank? && !params[:categories].blank? && params[:pass] != 'true'
-      ######################################################################################################3
+     
        events =  filter_events_by_categories(params[:categories])
        if !events.blank?
         @events = events.map {|event| get_simple_event_object(event) }
        else
         @events = []
        end
-      @events 
+     
 
      # case 4
       elsif params[:location].blank? && params[:price].blank? && params[:categories].blank? && params[:pass] == 'true'
