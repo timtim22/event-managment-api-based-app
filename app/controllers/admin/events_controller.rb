@@ -26,7 +26,7 @@ class Admin::EventsController < Admin::AdminMasterController
 	end
 
   def create
-
+    
     @pubnub = Pubnub.new(
       publish_key: ENV['PUBLISH_KEY'],
       subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -44,6 +44,7 @@ class Admin::EventsController < Admin::AdminMasterController
           @event.start_time = params[:start_time]
           @event.end_time = params[:end_time]
           @event.category_ids = params[:category_ids]
+          @event.first_cat_id =  params[:category_ids].first
           @event.description = params[:description]
           @event.location = trim_space(params[:location])
           @event.image = params[:image]
@@ -186,6 +187,7 @@ class Admin::EventsController < Admin::AdminMasterController
       @event.end_time = params[:end_time]
       @event.host = params[:host]
       @event.category_ids = params[:category_ids]
+      @event.first_cat_id =  params[:category_ids].first
       @event.description = params[:description]
       @event.location = trim_space(params[:location])
       @event.image = params[:image]

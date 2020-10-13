@@ -131,13 +131,15 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         @events = filter_events_by_price(params[:price]).map {|event| get_simple_event_object(event)}
       #case 3
       elsif params[:location].blank? && params[:price].blank? && !params[:categories].blank? && params[:pass] != 'true'
-     
+        
        events =  filter_events_by_categories(params[:categories])
        if !events.blank?
         @events = events.map {|event| get_simple_event_object(event) }
        else
         @events = []
        end
+      
+
      
 
      # case 4
@@ -501,30 +503,10 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   end
 
   def filter_events_by_categories(categories_names)
-    
-    
-    
-    
     @events = []
     cat_uuids = categories_names.split(',').map {|s| s.gsub(' ','') }
-    cats_ids = Category.where(uuid: cat_uuids).map {|cat| cat.id }
-    final_events_ids = []
-    
-     if !cats_ids.blank?
-        events_ids = Categorization.where(category_id: cats_ids).map {|categorization| categorization.event_id }
-
-        events = Event.where(id: events_ids)
-
-        events.each do |event|
-           if cats_ids.include? event.categories.first.id
-             final_events_ids.push(event.id)
-           end
-        end #each
-        @events = Event.where(id: final_events_ids).sort_by_date.page(params[:page]).per(get_per_page)
-    end
-
-   @events
-  
+    cats_ids = Category.where(uuid: cat_uuids).map {|cat| cat.id }.uniq
+    @events = Event.where(first_cat_id: cats_ids).sort_by_date.page(params[:page]).per(get_per_page)
   end
 
 
