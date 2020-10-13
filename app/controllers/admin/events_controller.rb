@@ -129,6 +129,7 @@ class Admin::EventsController < Admin::AdminMasterController
     
         if !params[:pay_at_door].blank?
             @ticket = @event.tickets.create!(user: current_user, ticket_type: 'pay_at_door', start_price: params[:pay_at_door]["start_price"], end_price: params[:pay_at_door]["end_price"], price: 0)
+            @event.update!(start_price: params[:pay_at_door]["start_price"], end_price:params[:pay_at_door]["end_price"])
          end #if
         
        if !current_user.followers.blank?
@@ -271,6 +272,7 @@ class Admin::EventsController < Admin::AdminMasterController
 
     if !params[:pay_at_door].blank?
         @ticket = @event.tickets.create!(user: current_user, ticket_type: 'pay_at_door', start_price: params[:pay_at_door]["start_price"], end_price: params[:pay_at_door]["end_price"])
+        @event.update!(start_price: params[:pay_at_door]["start_price"], end_price:params[:pay_at_door]["end_price"])
      end #if
       # notifiy all users about new event creation
      
