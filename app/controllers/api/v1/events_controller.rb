@@ -501,13 +501,26 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   end
 
   def filter_events_by_categories(categories_names)
+    
+    
+    
+    
     @events = []
     cat_uuids = categories_names.split(',').map {|s| s.gsub(' ','') }
-     cats_ids = Category.where(uuid: cat_uuids).map {|cat| cat.id }
-
+    cats_ids = Category.where(uuid: cat_uuids).map {|cat| cat.id }
+    final_events_ids = []
+    
      if !cats_ids.blank?
         events_ids = Categorization.where(category_id: cats_ids).map {|categorization| categorization.event_id }
-        @events = Event.where(id: events_ids).sort_by_date.page(params[:page]).per(get_per_page)
+
+        events = Event.where(id: events_ids)
+
+        events.each do |event|
+           if cats_ids.include? event.categories.first.id
+             final_events_ids.push(event.id)
+           end
+        end #each
+        @events = Event.where(id: final_events_ids).sort_by_date.page(params[:page]).per(get_per_page)
     end
 
    @events

@@ -80,8 +80,8 @@ class Admin::EventsController < Admin::AdminMasterController
             tickets = []      
             tota_count =  params[:paid_ticket][:price].size
             if tota_count > 1
-             price_one =  params[:paid_ticket][:price].first
-             price_two = params[:paid_ticket][:price].last
+             price_one =  params[:paid_ticket][:price].first.to_f
+             price_two = params[:paid_ticket][:price].last.to_f
              start_price = ''
              end_price = ''
              if price_one < price_two
@@ -92,6 +92,8 @@ class Admin::EventsController < Admin::AdminMasterController
               end_price = price_one
              end
              @event.update!(start_price: start_price, end_price: end_price)
+            else
+              @event.update!(price: params[:paid_ticket][:price].first)
             end
             tota_count.times.each do |count|
              tickets << {
@@ -106,7 +108,7 @@ class Admin::EventsController < Admin::AdminMasterController
              end #each
             end #if
 
-
+            
            if !params[:pass].blank?
               passes = []      
               count = params[:passes_count]

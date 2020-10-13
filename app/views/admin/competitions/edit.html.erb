@@ -9,60 +9,76 @@
         <h4 class="card-title">Create competition</h4>
          <%= render "shared/form_errors", object: @competition %>
          <%= render "shared/notice" %>
-        <form method="post" action="<%= admin_competition_path(@competition.id) %>" id="competition_update_form" class="forms-sample" enctype="multipart/form-data">
-        <input type="hidden" name="_method" value="patch">
+        <form method="post" action="<%= admin_competitions_path %>" class="forms-sample" enctype="multipart/form-data">
         <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
         <div class="form-group">
-          <label for="name">Title</label>
-          <input type="text" class="form-control" id="name" name="title" placeholder="Title" value="<%= @competition.title %>">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" id="name" name="title" placeholder="Title">
         </div>
         <div class="form-group">
           <label for="description">Description</label>
-          <textarea name="description" class="form-control" rows="12"><%= @competition.description %></textarea>
+          <textarea name="description" class="form-control" rows="12"></textarea>
        </div>
          <div class="form-group">
+            <label for="image" class="control-label">Competition Image</label>
+            <br>
             <input type="file" id="image" name="image">
         </div>
         <div class="form-group">
+          <label for="location">Location</label><br>
           <input type="hidden" name="lat" id="lat">
           <input type="hidden" name="lng" id="lng">
-          <label for="location">Location</label>
-          <input type="text" class="form-control" name="location" id="competition_location" placeholder="Location" value="<%= @competition.location %>">
+          <input type="hidden" name="creator_name" value="<%= get_full_name(current_user) %>">
+          <input type="hidden" name="creator_image" value="<%= current_user.avatar %>">
+          <span class="error" id="location_error"></span><br>
+          <input type="text" class="form-control" name="location" id="competition_location" placeholder="Location">
        </div>
-       <div class="form-group">
-       <label for="start_date">Start date</label>
-       <input type="text" class="form-control date" id="start_date" name="start_date" placeholder="Start date" value="<%= @competition.start_date %>">
-   </div>
-   <div class="form-group">
-      <label for="end_date">End date</label>
-      <input type="text" class="form-control date" id="end_date" name="end_date" placeholder="End date" value="<%= @competition.end_date %>">
-   </div>
-   
-   <div class="price_div">
-   <div class="form-group">
-     <label for="price">Price (Coins)</label>
-     <input type="text" class="form-control price" id="price" name="price" placeholder="Price" value="<%= @competition.price %>">
-    </div>
-   </div><!-- price div-->
         <div class="form-group">
-          <div id="time_start">
-          <label for="email">Start Time</label>
-          <input type="text" class="form-control time ui-timepicker-input" id="start_time" name="start_time" placeholder="start_Time"  value="<%= @competition.start_time %>">
-          </div><!--time start-->
-          <div id="time_end">
-            <label for="email">End Time</label>
-            <input type="text" class="form-control time ui-timepicker-input" id="end_time" name="end_time" placeholder="End Time" value="<%= @competition.end_time %>">
-          </div><!--time end-->
+            <label for="start_date">Start date</label>
+            <input type="text" class="form-control date" id="start_date" name="start_date" placeholder="Start date" data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true">
         </div>
         <div class="form-group">
-        <label for="terms_conditions">Terms and Conditions</label>
-        <textarea name="terms_conditions" class="form-control" id="terms_conditions" rows="12"></textarea>
-     </div>
+           <label for="end_date">End date</label>
+           <input type="text" class="form-control date" id="end_date" name="end_date" placeholder="End date" data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true">
+        </div>
+        <div class="price_div_competition">
         <div class="form-group">
-          <label for="validity">Validity</label>
-          <input type="text" class="form-control date" id="validity" name="validity" value="<%= @competition.validity %>">
+          <label for="price">Price (Coins)</label>
+          <input type="number" class="form-control price" id="price_competition" name="price" placeholder="Price">
+         </div>
+        </div><!-- price div-->
+        <div class="form-group">
+            <div id="time_start">
+            <label for="email">Start Time</label>
+            <input type="text" class="form-control time ui-timepicker-input" id="start_time" name="start_time" placeholder="start_Time">
+             </div><!--time start-->
+             <div id="time_end">
+              <label for="email">End Time</label>
+              <input type="text" class="form-control time ui-timepicker-input" id="end_time" name="end_time" placeholder="End Time">
+            </div><!--time end-->
+        </div>
+
+         <div class="form-group" style="display:none;">
+            <label for="password_confirmation">Host</label>
+            <input type="text" class="form-control" name="host" id="host" value="<%= get_full_name(current_user) %>">
+         </div>
+
+         <div class="form-group">
+         <label for="terms_conditions">Terms and Conditions</label>
+         <textarea name="terms_conditions" class="form-control" id="terms_conditions" rows="12"></textarea>
+      </div>
+
+         <div class="form-group">
+            <label for="start_date">Validity Date</label>
+            <input type="text" class="form-control date" id="validity" name="validity" placeholder="Validity" data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true">
        </div>
-        <button type="submit" class="btn btn-primary mr-2" id="competition_update_btn">Update</button>
+
+       <div class="form-group">
+          <label for="validity_time">Validity Time</label>
+          <input type="text" class="form-control time ui-timepicker-input" id="validity_time" name="validity_time" placeholder="Validity Time">
+      </div><!--validity time-->
+
+        <button type="submit" class="btn btn-primary mr-2">Create</button>
         </form>
     </div>
     </div>
