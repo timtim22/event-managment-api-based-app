@@ -124,7 +124,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       #case 1
       if !params[:location].blank? && params[:price].blank? && params[:categories].blank? && params[:pass] != 'true'
         
-        @events = Event.ransack(location_cont: params[:location]).result(distinct: true).page(params[:page]).per(get_per_page).map {|event| get_simple_event_object(event) }
+        @events = Event.sort_by_date.ransack(location_cont: params[:location]).result(distinct: true).page(params[:page]).per(get_per_page).map {|event| get_simple_event_object(event) }
       #case 2
       elsif params[:location].blank? && !params[:price].blank? && params[:categories].blank? && params[:pass] != 'true'
         
@@ -469,24 +469,24 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 
   private 
 
-
   def filter_events_by_price(price)
        @events = []
       case 
       when price.to_i == 0
-        @events = Ticket.where(ticket_type: 'free').page(params[:page]).per(get_per_page).map {|t| t.event }
+        @events = Ticket.where(ticket_type: 'free').sort_by_date.page(params[:page]).per(get_per_page).map {|t| t.event }
       when price.to_i > 60
-        @events = Ticket.where("price > ?", 60).page(params[:page]).per(get_per_page).map {|t| t.event }
+        @events = Event.where("price != ?", "0.00").where("price > ?", 60).or(Event.where("end_price != ?", "0.00").where("end_price > ?", 60)).sort_by_date.page(params[:page]).per(get_per_page)
       when price.to_i < 60
-        @events = Ticket.where("price < ?", 60).page(params[:page]).per(get_per_page).map {|t| t.event }
+      
+        @events = Event.where("price != ?", "0.00").where("price < ?", 60).or(Event.where("end_price != ?", "0.00").where("start_price < ?",  60).or(Event.where("end_price < ?", 60))).sort_by_date.page(params[:page]).per(get_per_page)
       when price.to_i < 50
-        @events = Ticket.where("price > ?", 50).page(params[:page]).per(get_per_page).map {|t| t.event }
+        @events = Event.sort_by_date.where("price != ?", "0.00").where("price < ?", 50).or(Event.where("end_price != ?", "0.00").where("start_price < ?", 50).or(Event.where("end_price < ?", 50))).sort_by_date.page(params[:page]).per(get_per_page).map {|t| t.event }
       when price.to_i < 40
-        @events = Ticket.where("price < ?", 40).page(params[:page]).per(get_per_page).map {|t| t.event }
+        @events = Event.sort_by_date.where("price != ?", "0.00").where("price < ?", 40).or(Event.where("end_price != ?", "0.00").where("start_price < ?",  40).or(Event.where("end_price < ?", 40))).sort_by_date.page(params[:page]).per(get_per_page).map {|t| t.event }
       when price.to_i < 30
-        @events = Ticket.where("price < ?", 30).page(params[:page]).per(get_per_page).map {|t| t.event }
+        @events = Event.sort_by_date.where("price != ?", "0.00").where("price < ?", 30).or(Event.where("end_price != ?", "0.00").where("start_price < ?",  30).or(Event.where("end_price < ?", 30))).sort_by_date.page(params[:page]).per(get_per_page).map {|t| t.event }
       when price.to_i < 20
-        @events = Ticket.where("price < ?", 20).page(params[:page]).per(get_per_page).map {|t| t.event }
+        @events = Event.sort_by_date.where("price != ?", "0.00").where("price < ?", 20).or(Event.where("end_price != ?", "0.00").where("start_price < ?",  20).or(Event.where("end_price < ?", 20))).sort_by_date.page(params[:page]).per(get_per_page).map {|t| t.event }
       else
         "do nothing"
       end
@@ -503,8 +503,8 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
      cats_ids = Category.where(uuid: cat_uuids).map {|cat| cat.id }
 
      if !cats_ids.blank?
-        @categorizations = Categorization.where(category_id: cats_ids)
-        @events = @categorizations.map {|categorization| categorization.event } 
+        events_ids = Categorization.where(category_id: cats_ids).map {|categorization| categorization.event_id }
+        @events = Event.where(id: events_ids).sort_by_date.page(params[:page]).per(get_per_page)
     end
 
    @events

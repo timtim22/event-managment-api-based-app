@@ -432,11 +432,11 @@ $(document).on('change','input#competition_location',function(event){
     $('.input_section').show();
     var inputs = '<br><div class="form-group free_ticket_input input">' 
         + '<label style="margin-right: 30px; " class="free_ticket_input">Ticket Name </label>'
-        + '<input type="text" name="free_ticket[title]" style="margin-right: 30px;" class="free_ticket_input input">'
+        + '<input type="text" name="free_ticket[title]" required style="margin-right: 30px;" class="free_ticket_input input">'
         + '<label style="margin-right: 30px;" class="free_ticket_input">Quantity</label>'
-        + '<input type="number" name="free_ticket[quantity]" style="margin-right: 30px;" class="free_ticket_input input">'
+        + '<input type="number" name="free_ticket[quantity]" required style="margin-right: 30px;" class="free_ticket_input input">'
         + '<label style="margin-right: 30px;" class="free_ticket_input">Max Per Order</label>'
-        + '<input type="number" name="free_ticket[per_head]" style="margin-right: 30px;" class="free_ticket_input input">'
+        + '<input type="number" name="free_ticket[per_head]" required style="margin-right: 30px;" class="free_ticket_input input">'
         + '</div>';
     $('.input_section').append(inputs);
   })//click
@@ -450,19 +450,19 @@ $(document).on('change','input#competition_location',function(event){
     $('.input_section').show();
     var inputs = '<br><div class="form-group paid_ticket_input">' 
         + '<label style="margin-right: 30px;">Ticket Name </label><br>'
-        + '<input type="text" name="paid_ticket[title][]" class="input" style="margin-right: 30px;">'
+        + '<input type="text" name="paid_ticket[title][]" required class="input" style="margin-right: 30px;">'
         + '</div>'
         + '<div class="form-group paid_ticket_input" >'
         + '<label style="margin-right: 30px;">Quantity</label><br>'
-        + '<input type="number" name="paid_ticket[quantity][]" class="input" style="margin-right: 30px;">'
+        + '<input type="number" name="paid_ticket[quantity][]" required class="input" style="margin-right: 30px;">'
         + '</div>'
         + '<div class="form-group paid_ticket_input" >'
         + '<label style="margin-right: 30px;">Price</label><br>'
-        + '<input type="number" name="paid_ticket[price][]" class="input" style="margin-right: 30px;">'
+        + '<input type="number" name="paid_ticket[price][]" step="0.01" required class="input" style="margin-right: 30px;">'
         + '</div>'
         + '<div class="form-group paid_ticket_input" >'
         + '<label style="margin-right: 30px;">Max Per Order</label><br>'
-        + '<input type="number" name="paid_ticket[per_head][]" class="input" style="margin-right: 30px;">'
+        + '<input type="number" name="paid_ticket[per_head][]"  required class="input" style="margin-right: 30px;">'
         + '</div>';
     $('.input_section').append(inputs);
   })//click
@@ -474,27 +474,27 @@ $(document).on('change','input#competition_location',function(event){
     $("input#passes_count").val(passes_count)
     var inputs = '<br><div class="form-group pass_input">' 
         + '<label style="margin-right: 30px;">Pass Name </label><br>'
-        + '<input type="text" name="pass[title][]" class="input" style="margin-right: 30px;">'
+        + '<input type="text" name="pass[title][]" class="input" required style="margin-right: 30px;">'
         + '</div>'
         + '<div class="form-group pass_input"> '
         + '<label style="margin-right: 30px;">Description</label><br>'
-        + '<textarea name="pass[description][]" class="input" style="margin-right: 30px;"></textarea>'
+        + '<textarea name="pass[description][]" required class="input" style="margin-right: 30px;"></textarea>'
         + '</div>'
         + '<div class="form-group pass_input"> '
         + '<label style="margin-right: 30px;">Quantity</label><br>'
-        + '<input type="number" name="pass[quantity][]" class="input" style="margin-right: 30px;">'
+        + '<input type="number" name="pass[quantity][]" required class="input" style="margin-right: 30px;">'
         + '</div>'
         + '<div class="form-group pass_input" >'
         + '<label style="margin-right: 30px;">Reward Per Redeem</label><br>'
-        + '<input type="number" name="pass[ambassador_rate][]" class="input" style="margin-right: 30px;">'
+        + '<input type="number" name="pass[ambassador_rate][]" required class="input" style="margin-right: 30px;">'
         + '</div>'
         + '<div class="form-group pass_input"> '
         + '<label style="margin-right: 30px;">Valid from</label><br>'
-        + '<input type="text"  name="pass[valid_from][]" value="2020-12-12" class="input date" style="margin-right: 30px;">'
+        + '<input type="text"  name="pass[valid_from][]" required value="2020-12-12" class="input date" style="margin-right: 30px;">'
         + '</div>'
         + '<div class="form-group pass_input"> '
         + '<label style="margin-right: 30px;">Valid to</label><br>'
-        + '<input type="text" name="pass[valid_to][]" class="input date" value="2020-12-12" style="margin-right: 30px;">'
+        + '<input type="text" name="pass[valid_to][]" required class="input date" value="2020-12-12" style="margin-right: 30px;">'
         + '</div>';
     $('.input_section').append(inputs);
   })//click
@@ -507,9 +507,9 @@ $(document).on('change','input#competition_location',function(event){
     $('.input_section').show();
     var inputs = '<br><div class="form-group pay_at_door_input">' 
         + '<label style="margin-right: 30px;">Start Price</label>'
-        + '<input type="number" name="pay_at_door[start_price]" class="input" style="margin-right: 30px;">'
+        + '<input type="number" name="pay_at_door[start_price]" step="0.01" required class="input" style="margin-right: 30px;">'
         + '<label style="margin-right: 30px;">End Price</label>'
-        + '<input type="number" name="pay_at_door[end_price]" class="input" style="margin-right: 30px;">'
+        + '<input type="number" name="pay_at_door[end_price]" step="0.01" required class="input" style="margin-right: 30px;">'
         + '</div>';
     $('.input_section').append(inputs);
   })//click

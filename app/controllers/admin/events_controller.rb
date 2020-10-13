@@ -76,9 +76,24 @@ class Admin::EventsController < Admin::AdminMasterController
            end #if
     
            if !params[:paid_ticket].blank?
+         
             tickets = []      
-            count = params[:paid_tickets_count]
-            count.to_i.times.each do |count|
+            tota_count =  params[:paid_ticket][:price].size
+            if tota_count > 1
+             price_one =  params[:paid_ticket][:price].first
+             price_two = params[:paid_ticket][:price].last
+             start_price = ''
+             end_price = ''
+             if price_one < price_two
+              start_price = price_one
+              end_price = price_two
+             else
+              start_price = price_two
+              end_price = price_one
+             end
+             @event.update!(start_price: start_price, end_price: end_price)
+            end
+            tota_count.times.each do |count|
              tickets << {
                "title" =>  params[:paid_ticket][:title][count-1],
                "price" => params[:paid_ticket][:price][count-1],
@@ -90,7 +105,8 @@ class Admin::EventsController < Admin::AdminMasterController
               @ticket = @event.tickets.create!(user: current_user, title: ticket["title"], ticket_type: 'buy', quantity: ticket["quantity"], per_head: ticket["per_head"], price: ticket["price"])
              end #each
             end #if
-    
+
+
            if !params[:pass].blank?
               passes = []      
               count = params[:passes_count]
@@ -201,9 +217,26 @@ class Admin::EventsController < Admin::AdminMasterController
        end #if
 
        if !params[:paid_ticket].blank?
+         
         tickets = []      
-        count = params[:paid_tickets_count]
-        3.times.each do |count|
+        tota_count =  params[:paid_ticket][:price].size
+        if tota_count > 1
+         price_one =  params[:paid_ticket][:price].first.to_f
+         price_two = params[:paid_ticket][:price].last.to_f
+         start_price = ''
+         end_price = ''
+         if price_one < price_two
+          start_price = price_one
+          end_price = price_two
+         else
+          start_price = price_two
+          end_price = price_one
+         end
+         @event.update!(start_price: start_price, end_price: end_price)
+        else
+          @event.update!(price: params[:paid_ticket][:price].first)
+        end
+        tota_count.times.each do |count|
          tickets << {
            "title" =>  params[:paid_ticket][:title][count-1],
            "price" => params[:paid_ticket][:price][count-1],
