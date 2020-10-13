@@ -478,9 +478,10 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       when price.to_i > 60
         @events = Event.where("price != ?", "0.00").where("price > ?", 60).or(Event.where("end_price != ?", "0.00").where("end_price > ?", 60)).sort_by_date.page(params[:page]).per(get_per_page)
       when price.to_i < 60
-      
+       
         @events = Event.where("price != ?", "0.00").where("price < ?", 60).or(Event.where("end_price != ?", "0.00").where("start_price < ?",  60).or(Event.where("end_price < ?", 60))).sort_by_date.page(params[:page]).per(get_per_page)
       when price.to_i < 50
+        
         @events = Event.sort_by_date.where("price != ?", "0.00").where("price < ?", 50).or(Event.where("end_price != ?", "0.00").where("start_price < ?", 50).or(Event.where("end_price < ?", 50))).sort_by_date.page(params[:page]).per(get_per_page).map {|t| t.event }
       when price.to_i < 40
         @events = Event.sort_by_date.where("price != ?", "0.00").where("price < ?", 40).or(Event.where("end_price != ?", "0.00").where("start_price < ?",  40).or(Event.where("end_price < ?", 40))).sort_by_date.page(params[:page]).per(get_per_page).map {|t| t.event }
