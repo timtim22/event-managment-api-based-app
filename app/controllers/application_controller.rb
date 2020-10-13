@@ -884,6 +884,10 @@ end
     ActiveModel::Type::Boolean.new.cast(str)
   end
 
+  def trim_space(string)
+    string.gsub(' ', '')
+  end
+
   
 
   helper_method :SetJsVariables

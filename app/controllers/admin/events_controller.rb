@@ -45,7 +45,7 @@ class Admin::EventsController < Admin::AdminMasterController
           @event.end_time = params[:end_time]
           @event.category_ids = params[:category_ids]
           @event.description = params[:description]
-          @event.location = params[:location]
+          @event.location = trim_space(params[:location])
           @event.image = params[:image]
           @event.lat = params[:lat]
           @event.lng = params[:lng]
@@ -184,7 +184,7 @@ class Admin::EventsController < Admin::AdminMasterController
       @event.host = params[:host]
       @event.category_ids = params[:category_ids]
       @event.description = params[:description]
-      @event.location = params[:location]
+      @event.location = trim_space(params[:location])
       @event.image = params[:image]
       @event.lat = params[:lat]
       @event.lng = params[:lng]
