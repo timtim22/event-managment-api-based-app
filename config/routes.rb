@@ -10,6 +10,7 @@ Rails.application.routes.draw do
  namespace :api do
      namespace :v1 do
        resources :users, param: :email
+       resource :passes
        #resources :events
        resources :special_offers
        post "/events" => "events#index" 
@@ -105,6 +106,7 @@ Rails.application.routes.draw do
        get '/get-phone-numbers' => 'users#get_phone_numbers'
        post '/events/show' => 'events#show_event'
        get '/events/search' => 'search#events_live_search'
+       post '/events/passes' => 'passes#index'
         
     
       # get '/*a', to: 'application#not_found'

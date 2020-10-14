@@ -1,8 +1,54 @@
 class Api::V1::PassesController < Api::V1::ApiMasterController
  
-  # def index
-  #   @passes = current_user.passes.order(created_at: "ASC")
-  # end
+  def index
+    if !params[:event_id].blank?
+      @event = Event.find(params[:event_id])
+      @passes = []
+      passes = Pass.where(event_id: @event.id).page(params[:page]).per(30)
+      if !passes.blank?
+        passes.each do |pass|
+          @passes << {
+            id: pass.id,
+            title: pass.title,
+            description: pass.description,
+            host_name:@event.user.business_profile.profile_name,
+            host_image:@event.user.avatar,
+            event_name:@event.name,
+            event_image:@event.image,
+            event_location:@event.location,
+            event_start_time:@event.start_time,
+            event_end_time:@event.end_time,
+            event_date:@event.start_date,
+            is_added_to_wallet: is_added_to_wallet?(pass.id),
+            validity: pass.validity.strftime(get_time_format),
+            grabbers_count: pass.wallets.size,
+            terms_and_conditions: pass.terms_conditions,
+            grabbers_count: pass.wallets.size,
+            description: pass.description,
+            issued_by: get_full_name(pass.user),
+            redeem_count: get_redeem_count(pass),
+            quantity: pass.quantity
+          }
+        end#each
+      end#if
+      render json: {
+        code: 200,
+        success: true,
+        message: "",
+        data: {
+          passes: @passes
+        }
+      }
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "event_id is required.",
+        data: nil
+      }
+    end
+    
+  end
 
   # def new
   #   @pass = Pass.new
