@@ -845,7 +845,7 @@ end
     elsif !event.tickets.where(ticket_type: 'buy').blank? && event.tickets.size == 1
        price = '€' + event.price
     elsif !event.tickets.where(ticket_type: 'pay_at_door').blank?
-       price = '€' + event.tickets.first.start_price.to_s +  '-' + event.tickets.first.end_price.to_s
+       price = '€' + event.tickets.first.start_price.to_s +  '-€' + event.tickets.first.end_price.to_s
     else
       price = '0'
    end
@@ -887,6 +887,36 @@ end
   def trim_space(string)
     string.gsub(' ', '')
   end
+
+
+  def valid_date?(dt)
+    begin
+      Date.parse(dt)
+      true
+    rescue => e
+      false
+    end
+  end
+  
+  
+  def generate_date_range(first, last)
+    first, last = "", first unless last
+    if last.nil? || last.empty?
+      last = (Time.now - 1.day).in_time_zone('Kolkata').strftime("%Y-%m-%d")
+    end
+    if first.empty?
+      first = Time.strptime(last, "%Y-%m-%d").beginning_of_month.strftime("%Y-%m-%d")
+    end
+    (first..last).select { |d|  valid_date?(d) }
+  end
+
+
+
+  def inster_space_ater_comma(string)
+    string.gsub(/,(?![ ])/, ', ')
+  end
+  
+
 
   
 

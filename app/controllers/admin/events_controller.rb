@@ -27,13 +27,14 @@ class Admin::EventsController < Admin::AdminMasterController
 
   def create
     
+     
     @pubnub = Pubnub.new(
       publish_key: ENV['PUBLISH_KEY'],
       subscribe_key: ENV['SUBSCRIBE_KEY']
      ) 
        
       if(params[:start_date] != params[:end_date])
-         dates = (params[:start_date]..params[:end_date]).to_a
+         dates = generate_date_range(params[:start_date], params[:end_date])
          dates.each do |date|
           @event = current_user.events.new
           @event.name = params[:name]
