@@ -191,7 +191,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 
         #case 8
       elsif  params[:location].blank? && !params[:price].blank? && !params[:categories].blank? && params[:pass] != 'true'
-        
+       
         events =   filter_events_by_price(params[:price])
         ids = events.map {|event| event.id }
         cat_based_events =   filter_events_by_categories(params[:categories])
@@ -479,12 +479,12 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         event_ids = Ticket.where(ticket_type: 'free').page(params[:page]).per(get_per_page).map {|t| t.event_id }
         @events = Event.where(id: event_ids).sort_by_date.page(params[:page]).per(get_per_page)
       elsif price == 60 
-        @events = Event.where("price != ?", "0.00").where("price < ?", threshhold).or(Event.where("end_price != ?", "0.00").where("end_price < ?", threshhold).or(Event.where("start_price < ?", threshhold))).sort_by_date.page(params[:page]).per(get_per_page)
+        @events = Event.where("price != ?", "0.00").where("price < ?", threshhold).or(Event.where("end_price != ?", "0.00").where("end_price < ?", threshhold).or(Event.where("start_price != ? ", "0.00").where("start_price < ?", threshhold))).sort_by_date.page(params[:page]).per(get_per_page)
       elsif price > 60
-        @events = Event.where("price != ?", "0.00").where("price > ?", threshhold).or(Event.where("end_price != ?", "0.00").where("end_price > ?", threshhold).or(Event.where("start_price > ?", threshhold))).sort_by_date.page(params[:page]).per(get_per_page)
+        @events = Event.where("price != ?", "0.00").where("price > ?", threshhold).or(Event.where("end_price != ?", "0.00").where("end_price > ?", threshhold).or(Event.where("start_price != ? ", "0.00").where("start_price > ?", threshhold))).sort_by_date.page(params[:page]).per(get_per_page)
       else 
        
-        @events = Event.where("price != ?", "0.00").where("price < ?", price).or(Event.where("end_price != ?", "0.00").where("end_price < ?", price).or(Event.where("start_price < ?", price))).sort_by_date.page(params[:page]).per(get_per_page)
+        @events = Event.where("price != ?", "0.00").where("price < ?", price).or(Event.where("end_price != ?", "0.00").where("end_price < ?", price).or(Event.where("start_price != ? ", "0.00").where("start_price < ?", price))).sort_by_date.page(params[:page]).per(get_per_page)
       
       end 
  
