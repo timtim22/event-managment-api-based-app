@@ -85,7 +85,7 @@
       </div>
          
        <div class="form-group">
-        <h4>Admission Process </h4>
+        <h4>Admission Process </h4><br>
         <button type="button" class="free_ticket">Free Ticket <i class="fa fa-plus" aria-hidden="true"></i></button>
         <button type="button" class="paid_ticket">Paid Ticket <i class="fa fa-plus" aria-hidden="true"></i></button>
         <button type="button" class="pay_at_door">Pay at the door <i class="fa fa-plus" aria-hidden="true"></i></button>
@@ -95,11 +95,12 @@
         </div>
        </div><!-- form group -->
 
-          <div class="form-group">
-            <label for="sponsor_image">Sponsor Logo</label>
-            <input type="file" class="form-control" id="sponsor_image" name="sponsor_image">
-        </div>
-
+            <hr>
+            <h5 style="font-weight:bold;">Sponsors</h5><br>
+            <button type="button" class="add_sponsor"> Add Sponsor <i class="fa fa-plus" aria-hidden="true"></i></button>
+            <hr>
+          <div class="sponsor_input_section"></div>
+        <hr>
 
          <div class="form-group" style="display:none;">
             <label for="password_confirmation">Host</label>
@@ -108,20 +109,15 @@
          
 
         <div class="form-group">
-            <label for="external_url">Link External Url</label>
-            <input type="text" class="form-control" id="external_url" name="external_url" placeholder="example.com">
-        </div>
-
-        <div class="form-group">
             <label for="allow_additional_media">Add Media</label>
             <input type="checkbox" id="allow_additional_media" name="allow_additional_media">
         </div>
 
          <div class="additional_media_wrapper" style="display: none;">
           <div class="form-group">
-            <label for="password_confirmation">Additional Media</label>
+            <label for="password_confirmation">Additional Media (choose multiple by holding CTRL key)</label>
             <br>
-             <input type="file" name="event_attachments[media][]" multiple id="additional_media">
+             <input type="file" name="event_attachments[media][]"  multiple id="additional_media">
           </div>
         </div><!--additional media wrapper-->
         <button type="submit" class="btn btn-primary mr-2 event_create_button">Create</button>

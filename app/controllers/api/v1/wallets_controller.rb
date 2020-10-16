@@ -295,7 +295,7 @@ end
 def remove_offer
  all_is_well = !params[:offer_id].blank? && !params[:offer_type].blank?
  if all_is_well
-    @wallet = Wallet.where(offer_id: params[:offer_id]).where(offer_type: params[:offer_type]).first
+    @wallet = request_user.wallets.where(offer_id: params[:offer_id]).where(offer_type: params[:offer_type]).first
     if @wallet.update!(is_removed: true)
       render json:  {
       code: 200,

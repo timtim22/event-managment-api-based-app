@@ -423,9 +423,17 @@ $(document).on('change','input#competition_location',function(event){
   }
 });//change
 
+  $(document).ready(function(e){
+    if($("#paid_ticket").val() == '1') {
+      alert('yes here');
+      $(".free_ticket").attr('disabled', 'disabled');
+    }
+  });//ready
+
   var paid_tikcets_count = 0;
   var passes_count = 0;   
  $(document).on('click','.free_ticket', function(event){
+
   $('input.price_type').val('free');
   $(".pay_at_door_input").remove();
   $(".paid_ticket_input").remove();
@@ -442,6 +450,7 @@ $(document).on('change','input#competition_location',function(event){
   })//click
 
   $(document).on('click','.paid_ticket', function(event){
+    
     paid_tikcets_count += 1; 
     $('input.price_type').val('buy');
     $("input#paid_tickets_count").val(paid_tikcets_count);
@@ -513,6 +522,18 @@ $(document).on('change','input#competition_location',function(event){
         + '</div>';
     $('.input_section').append(inputs);
   })//click
+
+  $(document).on('click', '.add_sponsor', function(event){
+    var html = '<div class="form-group">'
+              + '<label for="sponsor_image">Sponsor Logo</label>'
+              + '<input type="file" class="form-control" required id="" name="sponsor_images[]">'
+              + '</div>'
+              + '<div class="form-group">'
+              + '<label for="external_url">Link External Url</label>'
+              + '<input type="text" class="form-control" required id="external_url" name="external_urls[]" placeholder="example.com">'
+              + '</div>'; 
+              $(".sponsor_input_section").append(html);  
+   });//click
 
 
 $(document).on('click','#price_range_checkbox', function(event){
