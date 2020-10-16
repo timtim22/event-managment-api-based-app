@@ -164,8 +164,11 @@ class Api::V1::ApiMasterController < ApplicationController
      end
 
 
-
+    def get_per_page
+      per_page = 30
+    end
 
    
+
 end
 

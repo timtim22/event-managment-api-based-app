@@ -107,7 +107,10 @@ Rails.application.routes.draw do
        post '/events/show' => 'events#show_event'
        get '/events/search' => 'search#events_live_search'
        post '/events/passes' => 'passes#index'
-        
+       get 'wallet/get-offers' => 'wallets#get_offers'
+       get 'wallet/get-passes' => 'wallets#get_passes'
+       get 'wallet/get-competitions' => 'wallets#get_competitions'
+       get 'wallet/get-tickets' => 'wallets#get_tickets'
     
       # get '/*a', to: 'application#not_found'
      end

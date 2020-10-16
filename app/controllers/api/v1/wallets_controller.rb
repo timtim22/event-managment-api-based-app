@@ -1,4 +1,6 @@
 class Api::V1::WalletsController < Api::V1::ApiMasterController
+  before_action :authorize_request
+  before_action
   require 'json'
   require 'pubnub'
   require 'action_view'
@@ -6,7 +8,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
   include ActionView::Helpers::DateHelper
 
  def get_wallet
-  @wallets = request_user.wallets.order(created_at: 'DESC')
+ 
   @wallet_data = {}
   @special_offers = []
   @passes = []
@@ -126,6 +128,187 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
     }
   }
  end
+
+
+ def get_offers
+  @special_offers = []
+  @wallets = request_user.wallets.where(offer_type: 'SpecialOffer').page(params[:page]).per(get_per_page)
+  @wallets.each do |wallet|
+        @special_offers << {
+        id: wallet.offer.id,
+        title: wallet.offer.title,
+        description: wallet.offer.description,
+        sub_title:wallet.offer.sub_title,
+        location: wallet.offer.location,
+        date: wallet.offer.date,
+        time: wallet.offer.time,
+        lat: wallet.offer.lat,
+        lng: wallet.offer.lng,
+        image: wallet.offer.image.url,
+        creator_name: get_full_name(wallet.offer.user),
+        creator_image: wallet.offer.user.avatar,
+        validity: wallet.offer.validity.strftime(get_time_format),
+        is_expired: is_expired?(wallet.offer),
+        grabbers_count: wallet.offer.wallets.size,
+        is_redeemed: is_redeemed(wallet.offer.id, 'SpecialOffer', request_user.id),
+        grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+        terms_and_conditions: wallet.offer.terms_conditions,
+        issued_by: get_full_name(wallet.offer.user),
+        redeem_count: get_redeem_count(wallet.offer),
+        quantity: wallet.offer.quantity
+      }
+    end#foreach
+
+    render json:  {
+       code: 200,
+       success: true,
+       message: '',
+       data: {
+         special_offers: @special_offers
+       }
+    }
+ end
+
+
+ def get_passes
+  @passes = []
+  @wallets = request_user.wallets.where(offer_type: 'Pass').page(params[:page]).per(get_per_page)
+  @wallets.each do |wallet|
+  @passes << {
+    id: wallet.offer.id,
+    title: wallet.offer.title,
+    description: wallet.offer.description,
+    host_name: get_full_name(wallet.offer.event.user),
+    host_image: wallet.offer.event.user.avatar,
+    event_name: wallet.offer.event.name,
+    event_id: wallet.offer.event.id,
+    event_image: wallet.offer.event.image,
+    event_location: wallet.offer.event.location,
+    event_start_time: wallet.offer.event.start_time,
+    event_end_time: wallet.offer.event.end_time,
+    event_date: wallet.offer.event.start_date,
+    distributed_by: distributed_by(wallet.offer),
+    validity: wallet.offer.validity.strftime(get_time_format),
+    is_expired: is_expired?(wallet.offer),
+    grabbers_count: wallet.offer.wallets.size,
+    is_redeemed: is_redeemed(wallet.offer.id, 'Pass', request_user.id),
+    grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+    terms_and_conditions: wallet.offer.terms_conditions,
+    redeem_count: get_redeem_count(wallet.offer),
+    quantity: wallet.offer.quantity,
+    issued_by: get_full_name(wallet.offer.user)
+  }
+ end #each
+
+ render json:  {
+  code: 200,
+  success: true,
+  message: '',
+  data: {
+    passes: @passes
+  }
+}
+
+ end
+
+
+def get_competitions
+  @competitions = []
+  @wallets = request_user.wallets.where(offer_type: 'Competition').page(params[:page]).per(get_per_page)
+  @wallets.each do |wallet|
+    @competitions << {
+      id: wallet.offer.id,
+      title: wallet.offer.title,
+      description: wallet.offer.description,
+      location: wallet.offer.location,
+      start_date: wallet.offer.start_date,
+      end_date: wallet.offer.end_date,
+      start_time: wallet.offer.start_time,
+      end_time: wallet.offer.end_time,
+      price: wallet.offer.price,
+      lat: wallet.offer.lat,
+      lng: wallet.offer.lng,
+      image: wallet.offer.image.url,
+      is_entered: is_entered_competition?(wallet.offer.id),
+      participants_stats: get_participants_stats(wallet.offer),
+      creator_name: wallet.offer.user.business_profile.profile_name,
+      creator_image: wallet.offer.user.avatar,
+      creator_id: wallet.offer.user.id,
+      total_entries_count: get_entry_count(request_user, wallet.offer),
+      issued_by: get_full_name(wallet.offer.user),
+      is_followed: is_followed(wallet.offer.user),
+      validity: wallet.offer.validity.strftime(get_time_format),
+      terms_and_conditions: wallet.offer.terms_conditions
+     }
+  end#each
+
+  render json:  {
+    code: 200,
+    success: true,
+    message: '',
+    data: {
+      competitions: @competitions
+    }
+  }
+
+end
+
+
+def get_tickets
+  @tickets = []
+  @wallets = request_user.wallets.where(offer_type: 'Ticket').page(params[:page]).per(get_per_page)
+  @wallets.each do |wallet|
+  @tickets << {
+    id: wallet.offer.id,
+    title: wallet.offer.title,
+    host_name: get_full_name(wallet.offer.event.user),
+    host_image: wallet.offer.event.user.avatar,
+    event_name: wallet.offer.event.name,
+    event_id: wallet.offer.event.id,
+    event_image: wallet.offer.event.image,
+    event_location: wallet.offer.event.location,
+    event_start_time: wallet.offer.event.start_time,
+    event_end_time: wallet.offer.event.end_time,
+    event_date: wallet.offer.event.start_date,
+    price: get_formated_price(wallet.offer.price),
+    quantity: wallet.offer.quantity,
+    purchased_quantity: getPurchaseQuantity(wallet.offer.id),
+    per_head: wallet.offer.per_head,
+    is_redeemed: is_redeemed(wallet.offer.id, "Ticket", request_user.id)
+  
+  }
+end #each
+
+render json:  {
+    code: 200,
+    success: true,
+    message: '',
+    data: {
+      tickets: @tickets
+    }
+  }
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
  def add_to_wallet
   if !params[:offer_id].blank? && !params[:offer_type].blank?
@@ -323,5 +506,9 @@ def getPurchaseQuantity(ticket_id)
     0
   end
 end
+
+private
+
+
 
 end

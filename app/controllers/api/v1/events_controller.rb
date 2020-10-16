@@ -1,6 +1,6 @@
 class Api::V1::EventsController < Api::V1::ApiMasterController
   before_action :authorize_request, except:  ['events_list_by_date','index','show_event']
-  before_action :get_per_page
+e
 
 
   def show_event
@@ -501,9 +501,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   end
 
 
-  def get_per_page
-    per_page = 30
-  end
+ 
 
   # calculates interest level demographics interested + going
  
