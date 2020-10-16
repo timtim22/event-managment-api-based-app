@@ -1,6 +1,6 @@
 class Api::V1::EventsController < Api::V1::ApiMasterController
   before_action :authorize_request, except:  ['events_list_by_date','index','show_event']
-e
+
 
 
   def show_event
