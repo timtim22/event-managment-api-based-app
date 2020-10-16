@@ -9,130 +9,139 @@
         <h4 class="card-title">Create Event</h4>
          <%= render "shared/form_errors", object: @event %>
          <%= render "shared/notice" %>
-        <form method="post" action="<%= admin_event_path(@event.id) %>" id="event_update_form" class="forms-sample" enctype="multipart/form-data">
-        <input type="hidden" name="_method" value="patch">
+        <form method="post" action="<%= admin_events_path %>" class="forms-sample" enctype="multipart/form-data">
         <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
+        <input type='hidden' class="price_type" name="price_type" value="free">
+        <input type='hidden' id="paid_tickets_count" name="paid_tickets_count" value="0">
+        <input type='hidden' id="passes_count" name="passes_count" value="0">
+      <div class="form-group">
+        <label for="image" class="control-label">Event Image</label>
+        <br>
+        <input type="file" id="image" name="image">
+     </div>
+         
         <div class="form-group">
-        <select class="form-control categories_select select_multi" data-placeholder="Select a category..." multiple class="chosen-select" name="category_ids[]" id="categories_select">
-        <% @categories.each do |cat| %>
-          <% @event.categories.each do |e_cat| %>
-        <option value="<%= cat.id %>" <%= e_cat.id == cat.id ? 'selected' : '' %>><%= cat.name %></option>
-        <% end %>
-        <% end %>
-        </select>
-        </div>
-        <div class="form-group">
-          <label for="name">Title</label>
+          <label for="name">Event Name</label>
           <input type="text" class="form-control" id="name" name="name" placeholder="Title" value="<%= @event.name %>">
         </div>
+        
         <div class="form-group">
-          <label for="password_confirmation">Description</label>
-          <textarea name="description" class="form-control" rows="12"><%= @event.description %></textarea>
+          <label for="start_date">Start date</label>
+          <input type="text" class="form-control date" id="start_date" name="start_date" placeholder="Start date" data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true" value="<%= @event.start_date %>">
        </div>
-         <div class="form-group">
-            <input type="file" id="image" name="image">
+
+        <div class="form-group">
+          <label for="end_date">End date</label>
+          <input type="text" class="form-control date" id="end_date" name="end_date" placeholder="End date" data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true value="<%= @event.end_date %>"">
         </div>
-        <div class="form-group">
-        <input type="hidden" name="lat" id="lat">
-        <input type="hidden" name="lng" id="lng">
-          <label for="location">Location</label>
-          <input type="text" class="form-control location" name="location" id="location" placeholder="Location" value="<%= @event.location %>">
-       </div>
-       <div class="form-group">
-       <label for="start_date">Start date</label>
-       <input type="text" class="form-control date" id="start_date" name="start_date" placeholder="Start date" value="<%= @event.start_date %>">
-   </div>
-   <div class="form-group">
-      <label for="end_date">End date</label>
-      <input type="text" class="form-control date" id="end_date" name="end_date" placeholder="End date" value="<%= @event.end_date %>">
-   </div>
+
      <div class="form-group">
-     <label for="price_type">Price Type</label>
-     <select class="form-control" id="price_type" name="price_type" data-price_type="<%= @event.price_type %>">
-     <option value="free">Free</option>
-     <option value="pay_at_door" selected>Pay  at door</option>
-     <option value="buy">Buy Now</option>
-     </select>
-   </div>
-   <div class="form-group">
-        <label for="price_type">Event Type</label>
-        <select class="form-control" id="event_type" name="event_type">
-          <option value="public">Public</option>
-          <option value="private">Private</option>
-        </select>
+        <label for="email">Start Time</label>
+        <input type="text" class="form-control time ui-timepicker-input" id="start_time" name="start_time" placeholder="start_Time" value="<%= @event.start_time %>">
+     </div>
+
+     <div class="form-group">
+          <label for="email">End Time</label>
+          <input type="text" class="form-control time ui-timepicker-input" id="end_time" name="end_time" placeholder="End Time" value="<%= @event.end_time %>">
+    </div>
+
+    <div class="form-group">
+      <label for="location">Location</label><br>
+      <input type="hidden" name="lat" id="lat" value="<%= @event.lat %>">
+      <input type="hidden" name="lng" id="lng" value="<%= @event.lng %>">
+      <input type="hidden" name="creator_name" value="<%=  get_full_name(current_user) %>">
+      <input type="hidden" name="creator_image" value="<%= current_user.avatar %>">
+      <span class="error" id="location_error"></span><br>
+      <input type="text" class="form-control location" name="location" id="location" placeholder="Location" value="<%= @event.location %>">
+ </div>
+
+      <div class="form-group">
+      <select class="form-control categories_select select_multi" data-placeholder="Select a category..." multiple class="chosen-select" name="category_ids[]" id="categories_select">
+      <% @categories.each do |cat| %>
+        <% @event.categories.each do |e_cat| %>
+      <option value="<%= cat.id %>" <%= e_cat.id == cat.id ? 'selected' : '' %>><%= cat.name %></option>
+      <% end %>
+      <% end %>
+      </select>
       </div>
-      <div class="price_div">
+
       <div class="form-group">
-       <label for="price_range">Price range</label>
-       <input type="checkbox" id="price_range_checkbox" name="price_range" <%= if @event.price_range then 'checked' end %>>
-     </div>
-     <div id="single_price">
-     <div class="form-group">
-       <label for="price">Price (Euro)</label>
-       <input type="number" step="0.01" class="form-control price" id="price" name="price" value="<%= @event.price %>">
-     </div>
-     </div><!--price div -->
-     <div id="price_range_div">
+        <label for="description">Description</label>
+        <textarea name="description" class="form-control" rows="12"><%= @event.description %></textarea>
+      </div>
+
       <div class="form-group">
-        <label for="start_price">Start Price (Euro)</label>
-        <input type="number" step="0.01" class="form-control start_price" id="start_price" name="start_price" value="<%= @event.start_price %>">
-       </div>
-       <div class="form-group">
-       <label for="end_price">End Price (Euro)</label>
-       <input type="number" step="0.01" class="form-control end_price" id="end_price" name="end_price" value="<%= @event.end_price %>">
-       </div>
-      </div><!-- price range -->
-      </div><!-- price div-->
-        <div class="form-group">
-          <div id="time_start">
-          <label for="email">Start Time</label>
-          <input type="text" class="form-control time ui-timepicker-input" id="start_time" name="start_time" placeholder="start_Time"  value="<%= @event.start_time %>">
-          </div><!--time start-->
-          <div id="time_end">
-            <label for="email">End Time</label>
-            <input type="text" class="form-control time ui-timepicker-input" id="end_time" name="end_time" placeholder="End Time" value="<%= @event.end_time %>">
-          </div><!--time end-->
-        </div>
-        <div class="form-group">
-            <label for="envitees">Maximum Participants</label>
-            <input type="number" class="form-control" id="envitees" name="invitees" placeholder="100" value="<%= @event.invitees %>">
-        </div>
-     
-         <div class="form-group" style="display=none;">
-            <label for="password_confirmation">Host</label>
-            <input type="text" class="form-control" name="host" id="host" value="<%= get_full_name(current_user) %>" value="<%= @event.host %>">
-         </div>
-  
-       <!--  <div class="form-group">
-            <label for="password_confirmation">Feature Media link</label>
-            <input type="text" class="form-control" name="feature_media_link" id="feature_media_link" placeholder="Feature Media link" value="<%= @event.feature_media_link %>">
-        </div> -->
-        <div class="form-group">
-          <label for="terms_conditions">Terms and Conditions</label>
-          <textarea name="terms_conditions" class="form-control" id="terms_conditions" rows="12"><%= @event.terms_conditions %></textarea>
-       </div>
-         <div class="form-group">
-            <label for="over_18">Over 18</label>
-            <input type="checkbox" class="edit_event_checkbox over_18"  <%= BoolTocheckBox(@event.over_18) %> >
-            <input type="hidden" name='over_18' id="over_18" value="<%= @event.over_18 %>">
-        </div>
-         <div class="form-group">
+        <label for="terms_conditions">Terms and Conditions</label>
+        <textarea name="terms_conditions" class="form-control" rows="12"><%= @event.terms_conditions %></textarea>
+      </div>
+
+      <div class="form-group">
             <label for="event_forwarding">Event Forwarding</label>
             <input type="checkbox" class="edit_event_checkbox event_forwarding" <%= BoolTocheckBox(@event.event_forwarding) %> >
             <input type="hidden" name='event_forwarding' id="event_forwarding" value="<%= @event.event_forwarding %>">
         </div>
-         <div class="form-group">
-            <label for="allow_chat">Allow Chat</label>
-            <input type="checkbox" class="edit_event_checkbox allow_chat" <%= BoolTocheckBox(@event.allow_chat) %> value="<%= BoolToNumber(@event.allow_chat) %>" >
-            <input type="hidden" name='allow_chat' id="allow_chat"  value="<%= @event.allow_chat %>">
+
+      <div class="form-group">
+        <label for="allow_chat">Allow Chat</label>
+        <input type="checkbox" class="edit_event_checkbox allow_chat" <%= BoolTocheckBox(@event.allow_chat) %> value="<%= BoolToNumber(@event.allow_chat) %>" >
+        <input type="hidden" name='allow_chat' id="allow_chat"  value="<%= @event.allow_chat %>">
+    </div>
+         
+       <div class="form-group">
+        <h4>Admission Process </h4>
+        <button type="button" class="free_ticket">Free Ticket <i class="fa fa-plus" aria-hidden="true"></i></button>
+        <button type="button" class="paid_ticket">Paid Ticket <i class="fa fa-plus" aria-hidden="true"></i></button>
+        <button type="button" class="pay_at_door">Pay at the door <i class="fa fa-plus" aria-hidden="true"></i></button>
+        <button type="button" class="pass">Passes <i class="fa fa-plus" aria-hidden="true"></i></button>
+        <div class="input_section" style="display: none; max-width: 90%;" >
+           <% if !@event.tickets.blank? %>
+              <% @event.tickets.each do |ticket| %>
+                  <% if ticket.ticket_type == 'free' %>
+                  <div class="form-group">
+                   <label style="margin-right: 30px; " class="free_ticket_input">Ticket Name </label>
+                   <input type="text" name="free_ticket[title]" required="" style="margin-right: 30px;" class="">
+                   <label style="margin-right: 30px;" class="free_ticket_input">Quantity</label>
+                   <input type="number" name="free_ticket[quantity]" required="" style="margin-right: 30px;" class="free_ticket_input input">
+                     <label style="margin-right: 30px;" >Max Per Order</label> 
+                    <input type="number" name="free_ticket[per_head]" required="" style="margin-right: 30px;" ></div>
+                  <% elsif ticket.ticket_type == 'buy' %>
+                  <% elsif ticket.ticket_type == 'pay_at_door' %>
+                  <% end %>
+                <% end %>
+           <% end %>
         </div>
-            <div class="form-group">
-            <label for="allow_additional_media">Allow Additional Media</label>
-            <input type="checkbox" class="edit_event_checkbox allow_additional_media" <%= BoolTocheckBox(@event.allow_additional_media) %> >
-            <input type="hidden" name='allow_additional_media' id="allow_additional_media" value="<%= @event.allow_additional_media %>">
+       </div><!-- form group -->
+
+          <div class="form-group">
+            <label for="sponsor_image">Sponsor Logo</label>
+            <input type="file" class="form-control" id="sponsor_image" name="sponsor_image">
         </div>
-        
-        <button type="submit" class="btn btn-primary mr-2" id="event_update_btn">Update</button>
+
+
+         <div class="form-group" style="display:none;">
+            <label for="password_confirmation">Host</label>
+            <input type="text" class="form-control" name="host" id="host" value="<%= get_full_name(current_user) %>">
+         </div>
+         
+
+        <div class="form-group">
+            <label for="external_url">Link External Url</label>
+            <input type="text" class="form-control" id="external_url" name="external_url" placeholder="example.com">
+        </div>
+
+        <div class="form-group">
+            <label for="allow_additional_media">Add Media</label>
+            <input type="checkbox" id="allow_additional_media" name="allow_additional_media">
+        </div>
+
+         <div class="additional_media_wrapper" style="display: none;">
+          <div class="form-group">
+            <label for="password_confirmation">Additional Media</label>
+            <br>
+             <input type="file" name="event_attachments[media][]" multiple id="additional_media">
+          </div>
+        </div><!--additional media wrapper-->
+        <button type="submit" class="btn btn-primary mr-2 event_create_button">Create</button>
         </form>
     </div>
     </div>

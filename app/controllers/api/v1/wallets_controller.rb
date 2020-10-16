@@ -132,7 +132,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
 
  def get_offers
   @special_offers = []
-  @wallets = request_user.wallets.where(offer_type: 'SpecialOffer').page(params[:page]).per(get_per_page)
+  @wallets = request_user.wallets.where(offer_type: 'SpecialOffer').where(is_removed: false).page(params[:page]).per(get_per_page)
   @wallets.each do |wallet|
         @special_offers << {
         id: wallet.offer.id,
@@ -172,7 +172,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
 
  def get_passes
   @passes = []
-  @wallets = request_user.wallets.where(offer_type: 'Pass').page(params[:page]).per(get_per_page)
+  @wallets = request_user.wallets.where(offer_type: 'Pass').where(is_removed: false).page(params[:page]).per(get_per_page)
   @wallets.each do |wallet|
   @passes << {
     id: wallet.offer.id,
@@ -214,7 +214,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
 
 def get_competitions
   @competitions = []
-  @wallets = request_user.wallets.where(offer_type: 'Competition').page(params[:page]).per(get_per_page)
+  @wallets = request_user.wallets.where(offer_type: 'Competition').where(is_removed: false).page(params[:page]).per(get_per_page)
   @wallets.each do |wallet|
     @competitions << {
       id: wallet.offer.id,
@@ -232,6 +232,7 @@ def get_competitions
       is_entered: is_entered_competition?(wallet.offer.id),
       participants_stats: get_participants_stats(wallet.offer),
       creator_name: wallet.offer.user.business_profile.profile_name,
+      is_expired: is_expired?(wallet.offer),
       creator_image: wallet.offer.user.avatar,
       creator_id: wallet.offer.user.id,
       total_entries_count: get_entry_count(request_user, wallet.offer),
@@ -256,7 +257,7 @@ end
 
 def get_tickets
   @tickets = []
-  @wallets = request_user.wallets.where(offer_type: 'Ticket').page(params[:page]).per(get_per_page)
+  @wallets = request_user.wallets.where(offer_type: 'Ticket').where(is_removed: false).page(params[:page]).per(get_per_page)
   @wallets.each do |wallet|
   @tickets << {
     id: wallet.offer.id,
@@ -291,6 +292,35 @@ render json:  {
 end
 
 
+def remove_offer
+ all_is_well = !params[:offer_id].blank? && !params[:offer_type].blank?
+ if all_is_well
+    @wallet = Wallet.where(offer_id: params[:offer_id]).where(offer_type: params[:offer_type]).first
+    if @wallet.update!(is_removed: true)
+      render json:  {
+      code: 200,
+      success: true,
+      message: 'Item successfully removed.',
+      data: nil
+    }
+    else
+      render json:  {
+        code: 400,
+        success: false,
+        message: @wallet.errors.full_messages,
+        data: nil
+      }
+    end
+ else
+
+  render json: {
+    code: 400,
+    success: false,
+    message: 'offer_id and offer_type is required field.',
+    data: nil
+  }
+ end
+end
 
 
 

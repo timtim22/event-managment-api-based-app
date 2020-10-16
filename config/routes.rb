@@ -111,6 +111,7 @@ Rails.application.routes.draw do
        get 'wallet/get-passes' => 'wallets#get_passes'
        get 'wallet/get-competitions' => 'wallets#get_competitions'
        get 'wallet/get-tickets' => 'wallets#get_tickets'
+       post 'wallet/remove-offer' => 'wallets#remove_offer'
     
       # get '/*a', to: 'application#not_found'
      end
@@ -184,7 +185,6 @@ Rails.application.routes.draw do
   
    end
 
-
    namespace :dashboard do
     namespace :api do
       namespace :v1 do
@@ -211,7 +211,6 @@ Rails.application.routes.draw do
         get '/get-categories' => 'events#get_categories'
         post '/cancel-event' => 'events#cancel_event'
     
-  
       end
     end
    end
