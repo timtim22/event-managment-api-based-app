@@ -150,7 +150,7 @@ class Api::V1::ApiMasterController < ApplicationController
         "id" => event.id,
         "image" => event.image,
         "name" => event.name,
-        "location" => inster_space_ater_comma(event.location),
+        "location" => insert_space_after_comma(event.location),
         "start_date" => event.end_date,
         "end_date" => event.end_date,
         "start_time" => event.start_time,

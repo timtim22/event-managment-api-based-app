@@ -26,7 +26,12 @@ class Admin::EventsController < Admin::AdminMasterController
 	end
 
   def create
-    
+    @event = current_user.events.new
+     if params[:free_ticket].blank? && params[:paid_ticket].blank? && params[:pay_at_door].blank? && params[:pass].blank?
+      flash[:alert_danger] = "One of the adminssion process must be defined."
+      render :new
+      return
+     end
      
     @pubnub = Pubnub.new(
       publish_key: ENV['PUBLISH_KEY'],
@@ -36,7 +41,7 @@ class Admin::EventsController < Admin::AdminMasterController
       if(params[:start_date] != params[:end_date])
          dates = generate_date_range(params[:start_date], params[:end_date])
          dates.each do |date|
-          @event = current_user.events.new
+         
           @event.name = params[:name]
           @event.start_date = date.to_date
           @event.end_date = date.to_date
@@ -191,7 +196,6 @@ class Admin::EventsController < Admin::AdminMasterController
         end #date end
         redirect_to admin_events_path
       else
-      @event = current_user.events.new
       @event.name = params[:name]
       @event.start_date = params[:start_date].to_date
       @event.end_date = params[:end_date].to_date
@@ -283,7 +287,7 @@ class Admin::EventsController < Admin::AdminMasterController
          end #each
         end #if
 
-        if !params[:pass].blank?
+     if !params[:pass].blank?
           passes = []      
           count = params[:pass]['quantity'].size
           count.to_i.times.each do |count|
@@ -448,18 +452,22 @@ class Admin::EventsController < Admin::AdminMasterController
       # notifiy all users about new event creation
 
       if !params[:free_ticket].blank?
-          
+         if !params[:free_ticket][:id].nil?
         @ticket = @event.tickets.find(params[:free_ticket][:id]).update!(user: current_user, title: params[:free_ticket][:title], ticket_type: 'free', quantity: params[:free_ticket]["quantity"], per_head: params[:free_ticket]["per_head"], price: 0)
-          
+         else
+          @ticket = @event.tickets.create!(user: current_user, title: params[:free_ticket][:title], ticket_type: 'free', quantity: params[:free_ticket]["quantity"], per_head: params[:free_ticket]["per_head"], price: 0)
+         end
        end #if
 
-       if !params[:paid_ticket].blank?
-         
+
+
+       #if paid tickets already existed
+       if !params[:update_paid_ticket].blank?
         tickets = []      
-        tota_count =  params[:paid_ticket][:price].size
+        tota_count =  params[:update_paid_ticket][:price].size
         if tota_count > 1
-         price_one =  params[:paid_ticket][:price].first.to_f
-         price_two = params[:paid_ticket][:price].last.to_f
+         price_one =  params[:update_paid_ticket][:price].first.to_f
+         price_two = params[:update_paid_ticket][:price].last.to_f
          start_price = ''
          end_price = ''
          if price_one < price_two
@@ -476,43 +484,106 @@ class Admin::EventsController < Admin::AdminMasterController
        
         tota_count.times.each do |count|
          tickets << {
-           "id" => params[:paid_ticket]["ids"][count-1],
-           "title" =>  params[:paid_ticket][:title][count-1],
-           "price" => params[:paid_ticket][:price][count-1],
-           "quantity" => params[:paid_ticket][:quantity][count-1],
-           "per_head" => params[:paid_ticket][:per_head][count-1]
+           "id" => params[:update_paid_ticket]["ids"][count-1],
+           "title" =>  params[:update_paid_ticket][:title][count-1],
+           "price" => params[:update_paid_ticket][:price][count-1],
+           "quantity" => params[:update_paid_ticket][:quantity][count-1],
+           "per_head" => params[:update_paid_ticket][:per_head][count-1]
          }
         end #each
-      
+         
          tickets.each do |ticket|
           @ticket = @event.tickets.find(ticket["id"]).update!(user: current_user, title: ticket["title"], ticket_type: 'buy', quantity: ticket["quantity"], per_head: ticket["per_head"], price: ticket["price"])
          end #each
         end #if
 
-        if !params[:pass].blank?
+
+        #new paid ticket
+        if !params[:paid_ticket].blank?
+          tickets = []      
+          tota_count =  params[:paid_ticket][:price].size
+          if tota_count > 1
+           price_one =  params[:paid_ticket][:price].first.to_f
+           price_two = params[:paid_ticket][:price].last.to_f
+           start_price = ''
+           end_price = ''
+           if price_one < price_two
+            start_price = price_one
+            end_price = price_two
+           else
+            start_price = price_two
+            end_price = price_one
+           end
+           @event.update!(start_price: start_price, end_price: end_price)
+          else
+            @event.update!(price: params[:paid_ticket][:price].first)
+          end
+          tota_count.times.each do |count|
+           tickets << {
+             "title" =>  params[:paid_ticket][:title][count-1],
+             "price" => params[:paid_ticket][:price][count-1],
+             "quantity" => params[:paid_ticket][:quantity][count-1],
+             "per_head" => params[:paid_ticket][:per_head][count-1]
+           }
+          end #each
+           tickets.each do |ticket|
+            @ticket = @event.tickets.create!(user: current_user, title: ticket["title"], ticket_type: 'buy', quantity: ticket["quantity"], per_head: ticket["per_head"], price: ticket["price"])
+           end #each
+          end #if
+  
+
+
+         #if pass is already existed.
+        if !params[:update_pass].blank?
           passes = []      
-          count = params[:pass]['quantity'].size
+          count = params[:update_pass]['quantity'].size
           count.to_i.times.each do |count|
-        passes << {
-          "id" => params[:pass]["ids"][count-1],
-         "title" =>  params[:pass][:title][count-1],
-         "description" =>  params[:pass][:description][count-1],
-         "quantity" => params[:pass][:quantity][count-1],
-         "ambassador_rate" => params[:pass][:ambassador_rate][count-1],
-         "valid_from" => params[:pass][:valid_from][count-1],
-         "valid_to" => params[:pass][:valid_to][count-1]
-       }
+            passes << {
+              "id" => params[:update_pass]["ids"][count-1],
+            "title" =>  params[:update_pass][:title][count-1],
+            "description" =>  params[:update_pass][:description][count-1],
+            "quantity" => params[:update_pass][:quantity][count-1],
+            "ambassador_rate" => params[:update_pass][:ambassador_rate][count-1],
+            "valid_from" => params[:update_pass][:valid_from][count-1],
+            "valid_to" => params[:update_pass][:valid_to][count-1]
+          }
       end #each
 
-          passes.each do |pass|
-          @pass = @event.passes.find(pass["id"]).update!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"])
-        end #each 
-     end #if
+      passes.each do |pass|
+        @pass = @event.passes.find(pass["id"]).update!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"])
+      end #each 
+   end #if
 
-    if !params[:pay_at_door].blank?
+
+      #if pass ins new
+      if !params[:pass].blank?
+        passes = []      
+        count = params[:pass]['quantity'].size
+        count.to_i.times.each do |count|
+      passes << {
+       "title" =>  params[:pass][:title][count-1],
+       "description" =>  params[:pass][:description][count-1],
+       "quantity" => params[:pass][:quantity][count-1],
+       "ambassador_rate" => params[:pass][:ambassador_rate][count-1],
+       "valid_from" => params[:pass][:valid_from][count-1],
+       "valid_to" => params[:pass][:valid_to][count-1]
+     }
+    end #each
+        passes.each do |pass|
+        @pass = @event.passes.create!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"])
+      end #each 
+   end #if
+
+
       
+    if !params[:pay_at_door].blank?
+      if !params[:pay_at_door]["id"].nil?
         @ticket = @event.tickets.find(params[:pay_at_door][:id]).update!(user: current_user, ticket_type: 'pay_at_door', start_price: params[:pay_at_door]["start_price"], end_price: params[:pay_at_door]["end_price"])
         @event.update!(start_price: params[:pay_at_door]["start_price"], end_price:params[:pay_at_door]["end_price"])
+      else
+        @ticket = @event.tickets.create!(user: current_user, ticket_type: 'pay_at_door', start_price: params[:pay_at_door]["start_price"], end_price: params[:pay_at_door]["end_price"])
+        @event.update!(start_price: params[:pay_at_door]["start_price"], end_price:params[:pay_at_door]["end_price"])
+      end
      end #if
 
 
@@ -536,6 +607,40 @@ class Admin::EventsController < Admin::AdminMasterController
       flash[:alert_danger] = "Event deletion failed."
       redirect_to admin_events_path
     end
+  end
+
+
+  def delete_resource
+    id = params[:id]
+    resource = params[:resource]
+    success = false
+    case resource
+    when 'ticket'
+     if Ticket.find(id).destroy
+      success = true
+     end
+    when 'pass'
+     if Pass.find(id).destroy
+      success = true
+     end
+    else
+      "do nothing"
+    end
+    if success
+    render json: {
+      code: 200,
+      success: true,
+      message: 'Resource successfully deleted.',
+      data: nil
+    }
+  else
+      render json: {
+        code: 400,
+        success: false,
+        message: 'Resource deletion failed.',
+        data: nil
+      }
+  end
   end
 
   private

@@ -70,6 +70,20 @@ img.profile_img {
   position: fixed !important;
 }
 
+
+
+.fa-trash {
+  color: #ccc !important;
+  cursor: pointer;
+}
+
+.input {
+  padding: 5px;
+}
+
+
+
+
 .widget .panel-body { padding:0px; }
 .widget .list-group { margin-bottom: 0; }
 .widget .panel-title { display:inline }

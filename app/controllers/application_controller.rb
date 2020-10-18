@@ -912,7 +912,7 @@ end
 
 
 
-  def inster_space_ater_comma(string)
+  def insert_space_after_comma(string)
     string.gsub(/,(?![ ])/, ', ')
   end
   

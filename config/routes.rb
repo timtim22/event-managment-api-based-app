@@ -112,6 +112,7 @@ Rails.application.routes.draw do
        get 'wallet/get-competitions' => 'wallets#get_competitions'
        get 'wallet/get-tickets' => 'wallets#get_tickets'
        post 'wallet/remove-offer' => 'wallets#remove_offer'
+      
     
       # get '/*a', to: 'application#not_found'
      end
@@ -165,7 +166,7 @@ Rails.application.routes.draw do
      get '/payments/reject-refund' => "payments#reject_refund"
      get '/send-vip-pass' => "passes#send_vip_pass_page"
      post '/send-vip-pass' => "passes#send_vip_pass"
-    
+     post '/delete-resource' => 'events#delete_resource'
 
      resources :news_feeds
      resources :categories

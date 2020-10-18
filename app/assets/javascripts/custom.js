@@ -432,21 +432,22 @@ $(document).on('change','input#competition_location',function(event){
 
   var paid_tikcets_count = 0;
   var passes_count = 0;   
- $(document).on('click','.free_ticket', function(event){
-
+ $(document).one('click','.free_ticket', function(event){
+   handle_process_btn();
+   handle_free_ticket_input();  
   $('input.price_type').val('free');
   $(".pay_at_door_input").remove();
   $(".paid_ticket_input").remove();
     $('.input_section').show();
-    var inputs = '<br><div class="form-group free_ticket_input input">' 
+    var inputs = '<br><div class="free_ticket_wrapper"><div class="form-group free_ticket_input input">' 
         + '<label style="margin-right: 30px; " class="free_ticket_input">Ticket Name </label>'
         + '<input type="text" name="free_ticket[title]" required style="margin-right: 30px;" class="free_ticket_input input">'
         + '<label style="margin-right: 30px;" class="free_ticket_input">Quantity</label>'
         + '<input type="number" name="free_ticket[quantity]" required style="margin-right: 30px;" class="free_ticket_input input">'
         + '<label style="margin-right: 30px;" class="free_ticket_input">Max Per Order</label>'
         + '<input type="number" name="free_ticket[per_head]" required style="margin-right: 30px;" class="free_ticket_input input">'
-        + '</div>';
-    $('.input_section').append(inputs);
+        + '</div></div>';
+    $('.input_section').prepend(inputs);
   })//click
 
   $(document).on('click','.paid_ticket', function(event){
@@ -457,7 +458,7 @@ $(document).on('change','input#competition_location',function(event){
     $(".free_ticket_input").remove();
     $(".pay_at_door_input").remove();
     $('.input_section').show();
-    var inputs = '<br><div class="form-group paid_ticket_input">' 
+    var inputs = '<div class="new_paid_ticket_wrapper"><h5 style="font-weight:bold;">Paid Ticket</h5><div class="form-group paid_ticket_input">' 
         + '<label style="margin-right: 30px;">Ticket Name </label><br>'
         + '<input type="text" name="paid_ticket[title][]" required class="input" style="margin-right: 30px;">'
         + '</div>'
@@ -472,8 +473,9 @@ $(document).on('change','input#competition_location',function(event){
         + '<div class="form-group paid_ticket_input" >'
         + '<label style="margin-right: 30px;">Max Per Order</label><br>'
         + '<input type="number" name="paid_ticket[per_head][]"  required class="input" style="margin-right: 30px;">'
-        + '</div>';
-    $('.input_section').append(inputs);
+        + '</div><div><br>';
+    $('.input_section').prepend(inputs);
+    $('.new_paid_ticket_wrapper').css({"position": "relative", "top": '40px'});
   })//click
 
 
@@ -481,7 +483,9 @@ $(document).on('change','input#competition_location',function(event){
      passes_count += 1;
     $('.input_section').show();
     $("input#passes_count").val(passes_count)
-    var inputs = '<br><div class="form-group pass_input">' 
+    var inputs = ' <div class="passes_wrapper new_pass_wrapper" style="position: relative;margin-top: -13px;">'
+        + '<h5 style="font-weight:bold;">Pass </h5><hr>'
+        + '<div class="form-group pass_input">' 
         + '<label style="margin-right: 30px;">Pass Name </label><br>'
         + '<input type="text" name="pass[title][]" class="input" required style="margin-right: 30px;">'
         + '</div>'
@@ -504,26 +508,30 @@ $(document).on('change','input#competition_location',function(event){
         + '<div class="form-group pass_input"> '
         + '<label style="margin-right: 30px;">Valid to</label><br>'
         + '<input type="text" name="pass[valid_to][]" required class="input date" value="2020-12-12" style="margin-right: 30px;">'
-        + '</div>';
-    $('.input_section').append(inputs);
+        + '</div></div><br><hr>';
+    $('.input_section').prepend(inputs);
+    $('.new_pass_wrapper').css({"position": "relative", "top": '40px'});
   })//click
 
 
-  $(document).on('click','.pay_at_door', function(event){
+  $(document).one('click','.pay_at_door', function(event){
+    handle_pay_at_door_input();
     $('input.price_type').val('pay_at_door');
     $(".free_ticket_input").remove();
     $(".paid_ticket_input").remove();
     $('.input_section').show();
-    var inputs = '<br><div class="form-group pay_at_door_input">' 
+    var inputs = '<div class="pay_at_door_inputs" ><div class="form-group pay_at_door_input">' 
         + '<label style="margin-right: 30px;">Start Price</label>'
         + '<input type="number" name="pay_at_door[start_price]" step="0.01" required class="input" style="margin-right: 30px;">'
         + '<label style="margin-right: 30px;">End Price</label>'
         + '<input type="number" name="pay_at_door[end_price]" step="0.01" required class="input" style="margin-right: 30px;">'
-        + '</div>';
-    $('.input_section').append(inputs);
+        + '</div></div><br><hr>';
+    $('.input_section').prepend(inputs);
+    $('.pay_at_door_inputs').css({"position": "relative", "top": '40px'});
   })//click
 
   $(document).on('click', '.add_sponsor', function(event){
+   
     var html = '<div class="form-group">'
               + '<label for="sponsor_image">Sponsor Logo</label>'
               + '<input type="file" class="form-control" required id="" name="sponsor_images[]">'
@@ -532,8 +540,72 @@ $(document).on('change','input#competition_location',function(event){
               + '<label for="external_url">Link External Url</label>'
               + '<input type="text" class="form-control" required id="external_url" name="external_urls[]" placeholder="example.com">'
               + '</div>'; 
-              $(".sponsor_input_section").append(html);  
+              $(".sponsor_input_section").prepend(html);  
    });//click
+
+
+   $(document).on('click', '.remove_admission_process', function(e){
+        ok = confirm("Are you sure to remove.");
+        if(ok) {
+         var class_name = $(this).attr('id');
+         var id = $(this).data('resource_id');
+         var resource  = $(this).data('resource');
+          $.ajax({
+            type: 'post',
+            url: '/admin/delete-resource',
+            data: {
+              id: id,
+              resource: resource,
+              authenticity_token: gon.authenticity_token
+            },
+            success: function(resp) {
+              $("." + class_name).remove();
+              location.reload();
+            }
+          });//ajax
+        
+      }
+   });//click
+
+   handle_process_btn();
+
+   function handle_process_btn() {
+     if($('#free_ticket_exist').length > 0) {
+       $('button.free_ticket').attr('disabled', true);
+       $('button.paid_ticket').attr('disabled', true);
+       $('button.pay_at_door').attr('disabled', true);
+     }
+    
+
+     if ($("#paid_ticket_exist").length > 0) {
+      $('button.free_ticket').attr('disabled', true);
+      $('button.pay_at_door').attr('disabled', true);
+     }
+    
+
+     if($("#pay_at_door_exist").length > 0) {
+      $('button.free_ticket').attr('disabled', true);
+      $('button.paid_ticket').attr('disabled', true);
+      $('button.pay_at_door').attr('disabled', true);
+     }
+   
+   }
+
+   function handle_free_ticket_input() {
+     if($('.free_ticket_wrapper').length > 0) {
+       $('.free_ticket_wrapper').remove();
+       return;
+     }
+   }
+
+   function handle_pay_at_door_input() {
+    if($('.pay_at_door_inputs').length > 0) {
+      $('.pay_at_door_inputs').remove();
+      return;
+    }
+  }
+
+
 
 
 $(document).on('click','#price_range_checkbox', function(event){
@@ -551,6 +623,9 @@ $(document).on('change','#price_type',function(e){
   setSelectValue();
 
 });//change
+
+
+
 
  $(".select_multi").chosen({
    width: '50%',
