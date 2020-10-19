@@ -71,7 +71,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
             'price_type' => get_price_type(e),
             'event_type' => e.event_type,
             'additional_media' => e.event_attachments,
-            'location' => insert_space_after_comma(event.location),
+            'location' => insert_space_after_comma(e.location),
             'lat' => e.lat,
             'lng' => e.lng,
             'image' => e.image,

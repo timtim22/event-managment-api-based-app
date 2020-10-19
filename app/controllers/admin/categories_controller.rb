@@ -58,7 +58,7 @@ class Admin::CategoriesController < Admin::AdminMasterController
  end
 
  def category_params
-  params.permit(:name, :icon, :color_code)
+  params.permit(:name, :icon, :color_code,:uuid)
  end
 
 
