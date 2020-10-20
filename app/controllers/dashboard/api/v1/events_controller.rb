@@ -122,7 +122,6 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
   def create
     
-    process_validated = false
     success = false
     @error_messages = []
     
@@ -142,54 +141,37 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
           resource[:fields].each do |f|
             required_fields.each do |field|
               if f[field.to_sym].blank?
-                process_validated = false
                 @error_messages.push("In free ticket " + field + ' is required.')
-              else
-                process_validated = true
               end #if
             end #each
            end #each
           
         when 'paid'
-         
-
           required_fields = ['title', 'quantity', 'per_head','price']
           resource[:fields].each do |f|
             required_fields.each do |field|
               if f[field.to_sym].blank?
-                process_validated = false
                 @error_messages.push("In paid ticket " + field + ' is required.')
-              else
-                process_validated = true
               end #if
             end #each
           end #each
          
-          
-
           when 'pay_at_door'
            required_fields = ['start_price', 'end_price']
            resource[:fields].each do |f|
             required_fields.each do |field|
               if f[field.to_sym].blank?
-                process_validated = false
                 @error_messages.push("In pay at door " + field + ' is required.')
-              else
-                process_validated = true
               end #if
              end #each
            end #each
            
-
           when 'pass'
             required_fields = ['title', 'description', 'valid_from','valid_to','quantity','ambassador_rate']
             resource[:fields].each do |f|
               required_fields.each do |field|
                 if f[field.to_sym].blank?
-                  process_validated = false
                   @error_messages.push("In pass " + field + ' is required.')
-                else
-                  process_validated = true
                 end #if
                end #each
              end #each
@@ -199,9 +181,31 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
             process_validated = false
           end    
         end #each 
-    end
+    end #admission resource validation
+
+     if !params[:sponsors].blank?
+      required_fields = ['sponsor_image', 'external_url']
+      params[:sponsors].each do |sponsor|
+        required_fields.each do |field|
+          if sponsor[field.to_sym].blank?
+            @error_messages.push("In sponsors " + field + ' is required.')
+          end #if
+         end #each
+      end #each  
+     end #blank
+
+     if !params[:event_attachments].blank?
+      required_fields = ['media']
+      params[:event_attachments].each do |attachment|
+        required_fields.each do |field|
+          if attachment[field.to_sym].blank?
+            @error_messages.push("In event attachements " + field + ' is required.')
+          end #if
+         end #each
+      end #each  
+     end #blank
    
-  if process_validated
+  if @error_messages.blank?
     @event = request_user.events.new
     @event.name = params[:name]
     @event.image = params[:image]
@@ -222,6 +226,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     @event.price = params[:price]
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
+    @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
   
     if @event.save
       success = true
@@ -260,8 +265,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
  
     #save attachement if there is any
     if !params[:event_attachments].blank?
-      params[:event_attachments]['media'].each do |m|
-        @event_attachment = @event.event_attachments.new(:media => m,:event_id => @event.id, media_type: 'image')
+      params[:event_attachments].each do |attachment|
+        @event_attachment = @event.event_attachments.new(:media => attachment[:media], media_type: 'image')
         @event_attachment.save
        end
       end #if
@@ -274,7 +279,6 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       end#if
 
     end#if
-
 
      if success
         render json:  {
