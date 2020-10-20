@@ -8,4 +8,6 @@ class Category < ApplicationRecord
 
 
   mount_uploader :icon, ImageUploader
+
+ 
 end
