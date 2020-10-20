@@ -145,7 +145,7 @@ class Admin::EventsController < Admin::AdminMasterController
           end #each
               passes.each do |pass|
                 if @pass = @event.passes.create!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"])
-                  @event.update!(has_passes: true, pass: 'true')
+                  @event.update!(pass: 'true')
                  end
             end #each 
          end #if
@@ -307,7 +307,7 @@ class Admin::EventsController < Admin::AdminMasterController
         passes.each do |pass|
          if @pass = @event.passes.create!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"])
 
-          @event.update!(has_passes: true, pass: 'true')
+          @event.update!(pass: 'true')
          end
         end #each 
       
@@ -422,33 +422,57 @@ class Admin::EventsController < Admin::AdminMasterController
   if @event.save
       #create_activity("updated event", @event, "Event", admin_event_path(@event),@event.name, 'patch')
 
-      if !params[:event_attachments].blank?
-         ids  = params[:attachment_ids]
-         attachments = []
-         count = ids.size
-         count.times.each do |c|
-          attachments << {
-            "id" => ids[count-1],
-            "media" => params["event_attachments"]["media"][count - 1]
-          }
-        end #each
-        
-        attachments.each do |at|
-          @event_attachment = @event.event_attachments.find(at["id"]).update!(:media => at["media"],media_type: 'image')
-         end
+       # in case of new attachments
+      if !params[:attachments][:media].blank?
+        params[:attachments]['media'].each do |m|
+          @event_attachment = @event.event_attachments.create!(:media => m,:event_id => @event.id, media_type: 'image')
+         end #each
         end #if
 
+      #in case of update attachments
+      if !params[:update_attachments].blank?
+         ids = params[:attachments][:ids]
+      
+         ids.each do |id|
+          if !params[:update_attachments]["#{id}"].blank?
+          @event.event_attachments.find(id).update(:media => params[:update_attachments]["#{id}"]["media"][0], media_type: 'image')
+          end
+         end #each
+        end #if
+        
+      
 
 
-    #     if !params[:sponsor_images].blank? && !params[:external_urls].blank?
-    #        sponsors = []
-    #        count = params[:sponsor_images].size
-    #        count.to_i.times.each do |count|
-    #         sponsors << {
-    #         "image" =>  params[:sponsor_images][count-1],
-    #         "external_url" =>  params[:external_urls][count-1]
-    #       }
-    #     end #each
+         #in case of updsate sponsors
+        if !params[:update_sponsors].blank?
+          ids = params[:update_sponsors][:ids]
+          ids.each do |id|
+          if !params[:update_sponsors]["#{id}"][:images].blank? 
+            @event.sponsors.find(id).update!(sponsor_image: params[:update_sponsors]["#{id}"][:images][0], external_url: params[:update_sponsors]["#{id}"][:external_urls][0])
+            elsif !params[:update_sponsors]["#{id}"][:external_urls].blank? 
+              @event.sponsors.find(id).update!(external_url: params[:update_sponsors]["#{id}"][:external_urls][0])
+            end  
+       end #each
+      end#if
+
+
+   
+        #in case of new sponsors
+        if !params[:sponsors].blank?
+           sponsors = []
+           count = params[:sponsors]["images"].size
+           count.to_i.times.each do |count|
+            sponsors << {
+            "image" =>  params[:sponsors]["images"][count-1],
+            "external_url" =>  params[:sponsors]["external_urls"][count-1]
+          }
+        end #each
+        if !sponsors.blank?
+          sponsors.each do |sponsor|
+            @event.sponsors.create!(sponsor_image: sponsor["image"], external_url: sponsor["external_url"])
+          end#each
+        end
+      end #if
       
     #     sponsors.each do |sponsor|
     #         @event_sponsor = @event.sponsors.create!(:sponsor_image => sponsor["image"], :external_url => sponsor["external_url"])
@@ -578,6 +602,7 @@ class Admin::EventsController < Admin::AdminMasterController
     end #each
         passes.each do |pass|
         @pass = @event.passes.create!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"])
+        @event.update!(pass: 'true')
       end #each 
    end #if
 

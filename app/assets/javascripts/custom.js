@@ -534,11 +534,11 @@ $(document).on('change','input#competition_location',function(event){
    
     var html = '<div class="form-group">'
               + '<label for="sponsor_image">Sponsor Logo</label>'
-              + '<input type="file" class="form-control" required id="" name="sponsor_images[]">'
+              + '<input type="file" class="form-control" required id="" name="sponsors[images][]">'
               + '</div>'
               + '<div class="form-group">'
               + '<label for="external_url">Link External Url</label>'
-              + '<input type="text" class="form-control" required id="external_url" name="external_urls[]" placeholder="example.com">'
+              + '<input type="text" class="form-control" name="sponsors[external_urls][]" required id="external_url" name="external_urls[]" placeholder="example.com">'
               + '</div>'; 
               $(".sponsor_input_section").prepend(html);  
    });//click

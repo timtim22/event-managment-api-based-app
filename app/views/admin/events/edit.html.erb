@@ -7,7 +7,7 @@
     <div class="card">
     
     <div class="card-body">
-        <h4 class="card-title">Create Event</h4>
+        <h4 class="card-title">Update Event</h4>
          <%= render "shared/form_errors", object: @event %>
          <%= render "shared/notice" %>
         <form method="post" action="<%= admin_event_path(@event) %>" class="forms-sample" enctype="multipart/form-data">
@@ -210,6 +210,48 @@
         </div>
        </div><!-- form group -->
            
+        <hr>
+           
+
+           <hr>
+        <% if !@event.sponsors.blank? %>
+          <h5 style="font-weight:bold;">Sponsors</h5><br>
+            <button type="button" class="add_sponsor"> Add Sponsor <i class="fa fa-plus" aria-hidden="true"></i></button>
+           <hr>
+             <div class="sponsor_input_section"></div>
+            <hr>
+         
+            <ol>
+            <% @event.sponsors.each do |sponsor| %>
+              <li>
+                <input type="hidden" name="update_sponsors[ids][]" value="<%= sponsor.id %>">
+               <img src="<%= sponsor.sponsor_image.url %>" style="width: 165px; height:auto;">
+               <input type="file" class="form-control"   name="update_sponsors[<%=sponsor.id%>][images][]">
+               <input type="text" class="input" name="update_sponsors[<%= sponsor.id %>][external_urls][]" value="<%= sponsor.external_url %>" >
+               </li>
+               <br>
+              <% end %>
+            </ol>
+            <hr>
+        <% end %>
+
+
+      <% if !@event.event_attachments.blank? %>
+        <h5 style="font-weight:bold;">Additional Media</h5>
+        <hr>
+       <div class="additional_media_wrapper">
+       <ol>
+       <% @event.event_attachments.each do |attachment| %>
+         <li>
+           <input type="hidden" name="attachments[ids][]" value="<%= attachment.id %>" >
+          <img src="<%= attachment.media.url %>" style="width: 165px; height:auto;"><br><br>
+          <input type="file" name="update_attachments[<%= attachment.id %>][media][]" multiple id="additional_media">
+          </li>
+          <br>
+         <% end %>
+       </ol>
+      </div><!--additional media wrapper-->
+      <% end %>
          
       
 
@@ -217,6 +259,19 @@
           <label for="password_confirmation">Host</label>
           <input type="text" class="form-control" name="host" id="host" value="<%= get_full_name(current_user) %>">
        </div>
+
+       <div class="form-group">
+       <label for="allow_additional_media">Add Additional Media</label>
+       <input type="checkbox" id="allow_additional_media"<%= BoolTocheckBox(@event.allow_additional_media) %>  name="allow_additional_media">
+   </div>
+
+    <div class="additional_media_wrapper" style="display: none;">
+     <div class="form-group">
+       <label for="additional_media">Additional Media (choose multiple by holding CTRL key)</label>
+       <br>
+        <input type="file" name="attachments[media][]"  multiple id="additional_media">
+     </div>
+   </div><!--additional media wrapper-->
        <div class="form-group">
         <button type="submit" class="btn btn-primary mr-2 event_update_button">Update</button>
         </div>

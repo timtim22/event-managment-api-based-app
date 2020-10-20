@@ -121,7 +121,87 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
 
   def create
+    
+    process_validated = false
     success = false
+    @error_messages = []
+    
+    if params[:admission_resources].blank?
+      render json: {
+        code: 400,
+        success: false,
+        message: 'One of admission process must be defined.',
+        data: nil
+      }
+      return
+    else
+      params[:admission_resources].each do |resource|
+        case resource[:name]
+        when "free"
+          required_fields = ['title', 'quantity', 'per_head']
+          resource[:fields].each do |f|
+            required_fields.each do |field|
+              if f[field.to_sym].blank?
+                process_validated = false
+                @error_messages.push("In free ticket " + field + ' is required.')
+              else
+                process_validated = true
+              end #if
+            end #each
+           end #each
+          
+        when 'paid'
+         
+
+          required_fields = ['title', 'quantity', 'per_head','price']
+          resource[:fields].each do |f|
+            required_fields.each do |field|
+              if f[field.to_sym].blank?
+                process_validated = false
+                @error_messages.push("In paid ticket " + field + ' is required.')
+              else
+                process_validated = true
+              end #if
+            end #each
+          end #each
+         
+          
+
+          when 'pay_at_door'
+           required_fields = ['start_price', 'end_price']
+           resource[:fields].each do |f|
+            required_fields.each do |field|
+              if f[field.to_sym].blank?
+                process_validated = false
+                @error_messages.push("In pay at door " + field + ' is required.')
+              else
+                process_validated = true
+              end #if
+             end #each
+           end #each
+           
+
+          when 'pass'
+            required_fields = ['title', 'description', 'valid_from','valid_to','quantity','ambassador_rate']
+            resource[:fields].each do |f|
+              required_fields.each do |field|
+                if f[field.to_sym].blank?
+                  process_validated = false
+                  @error_messages.push("In pass " + field + ' is required.')
+                else
+                  process_validated = true
+                end #if
+               end #each
+             end #each
+           
+          else
+            @error_messages.push('invalid resource type is submitted.')
+            process_validated = false
+          end    
+        end #each 
+    end
+   
+  if process_validated
     @event = request_user.events.new
     @event.name = params[:name]
     @event.image = params[:image]
@@ -142,31 +222,25 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     @event.price = params[:price]
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
-    @error_messages = []
+  
     if @event.save
       success = true
-   
-   
     # Admisssion sectiion
     if !params[:admission_resources].blank?
       params[:admission_resources].each do |resource|
 
       case resource[:name]
-      
       when "free"
-
           resource[:fields].each do |f|
            @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], user: request_user, ticket_type: resource[:name], price: 0)
           end #each
 
        when 'paid'
-
           resource[:fields].each do |f|
            @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: resource[:name])
           end #each
 
         when 'pay_at_door'
-
           resource[:fields].each do |f|
            @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: resource[:name])
           end #each
@@ -222,8 +296,15 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
           data: nil
         }
       end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: @error_messages,
+        data: nil
+      }
+    end
     
-
   end
 
 
