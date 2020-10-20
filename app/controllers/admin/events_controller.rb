@@ -40,6 +40,7 @@ class Admin::EventsController < Admin::AdminMasterController
        
       if(params[:start_date] != params[:end_date])
          dates = generate_date_range(params[:start_date], params[:end_date])
+         
          dates.each do |date|
          
           @event.name = params[:name]
@@ -71,7 +72,8 @@ class Admin::EventsController < Admin::AdminMasterController
               @event_attachment.save
              end
             end #if
-  
+    
+    
     
             if !params[:sponsor_images].blank? && !params[:external_urls].blank?
                sponsors = []
@@ -92,8 +94,8 @@ class Admin::EventsController < Admin::AdminMasterController
           # notifiy all users about new event creation
     
           if !params[:free_ticket].blank?
-              @ticket = @event.tickets.create!(user: current_user, ticket_type: 'free', quantity: params[:free_ticket]["quantity"], per_head: params[:free_ticket]["per_head"], price: 0)
-             @event.update!(price_type: 'free')
+              @ticket = @event.tickets.create!(user: current_user, title: params[:free_ticket][:title], ticket_type: 'free', quantity: params[:free_ticket]["quantity"], per_head: params[:free_ticket]["per_head"], price: 0)
+              
            end #if
     
            if !params[:paid_ticket].blank?
@@ -126,11 +128,10 @@ class Admin::EventsController < Admin::AdminMasterController
             end #each
              tickets.each do |ticket|
               @ticket = @event.tickets.create!(user: current_user, title: ticket["title"], ticket_type: 'buy', quantity: ticket["quantity"], per_head: ticket["per_head"], price: ticket["price"])
-              @event.update!(price_type: 'buy')
              end #each
             end #if
     
-            if !params[:pass].blank?
+         if !params[:pass].blank?
               passes = []      
               count = params[:pass]['quantity'].size
               count.to_i.times.each do |count|
@@ -143,17 +144,18 @@ class Admin::EventsController < Admin::AdminMasterController
              "valid_to" => params[:pass][:valid_to][count-1]
            }
           end #each
-              passes.each do |pass|
-                if @pass = @event.passes.create!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"])
-                  @event.update!(pass: 'true')
-                 end
+            passes.each do |pass|
+             if @pass = @event.passes.create!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"])
+    
+              @event.update!(pass: 'true')
+             end
             end #each 
+          
          end #if
     
         if !params[:pay_at_door].blank?
             @ticket = @event.tickets.create!(user: current_user, ticket_type: 'pay_at_door', start_price: params[:pay_at_door]["start_price"], end_price: params[:pay_at_door]["end_price"])
             @event.update!(start_price: params[:pay_at_door]["start_price"], end_price:params[:pay_at_door]["end_price"])
-            @event.update!(price_type: 'pay_at_door')
          end #if
 
        if !current_user.followers.blank?

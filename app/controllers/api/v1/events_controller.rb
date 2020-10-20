@@ -4,6 +4,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 
 
   def show_event
+    
     if !params[:event_id].blank?
       e = Event.find(params[:event_id])
       @passes = []
@@ -93,7 +94,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
             "terms_and_conditions" => e.terms_conditions,
             "forwards_count" => e.event_forwardings.count,
             "comments_count" => e.comments.size,
-            "has_passes" => has_passes?(e) 
+            "has_passes" => has_passes?(e) && !is_added_to_wallet?(e.passes.first.id)
          }
 
          render json: {
@@ -101,7 +102,8 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
            success: true,
            message: '',
            data: {
-             event: @event
+             event: @event,
+             business_all_events: e.user.events.sort_by_date.page(params[:page]).per(10).map {|e| get_simple_event_object(e) }
            }
          }
 
