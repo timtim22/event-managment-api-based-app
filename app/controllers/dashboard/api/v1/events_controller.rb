@@ -5,7 +5,37 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
   
+  
   def index
+
+    @events = Event.all.map {|e| get_dashboard_event_object(e) }
+    render json: {
+      code: 200,
+      success: true,
+      message: '',
+      data: {
+        events: @events
+      }
+    }
+  end
+  
+
+  def show
+   event = Event.find(params[:id])
+   @event = get_simple_event_object(event)
+   render json: {
+     code: 200,
+     success: true,
+     messag: '',
+     data: {
+       event: @event
+     }
+   }
+  end
+  
+  
+
+  def user_events
     @events = []
     request_user.events.page(params[:page]).per(20).each do |e|
       sponsors = []

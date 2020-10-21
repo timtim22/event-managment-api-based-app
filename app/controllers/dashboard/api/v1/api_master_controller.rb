@@ -75,5 +75,13 @@ class Dashboard::Api::V1::ApiMasterController < Api::V1::ApiMasterController
  end
 
 
+ def get_dashboard_event_object(event)
+  e = {
+    "id" => event.id,
+    "image" => event.image
+  }
+ end
+
+
 end
 
