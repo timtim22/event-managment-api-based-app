@@ -853,6 +853,20 @@ end
  end
 
 
+ def approve_ambassador(ambassador_request_id)
+   request = AmbassadorRequest.find(ambassador_request_id)
+   request.status = 'accepted' 
+   profile =  request.user.profile
+   profile.is_ambassador = true
+
+   if request.save && profile.save
+    true
+   else
+    false
+   end
+ end
+
+
 
 
 

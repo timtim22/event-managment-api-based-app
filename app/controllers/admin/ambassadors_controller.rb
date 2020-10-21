@@ -6,14 +6,7 @@ class Admin::AmbassadorsController < Admin::AdminMasterController
   end
 
   def approve
-    ambassador = AmbassadorRequest.find(params[:id])
-    ambassador.status = 'accepted'
-    ambassador.user.profile.update!(is_ambassador: true)
-    if ambassador.save
-      #create business activity
-      create_activity(current_user, " approved #{get_full_name(ambassador.user)} as an ambassador ", ambassador, 'AmbassadorRequest', '', '', 'post', 'approved_ambassador')
-      create_activity(ambassador.user, "become ambassador ", ambassador, 'AmbassadorRequest', '', '', 'post', 'become_ambassador')
-       #create ambassador activity
+    if approve_ambassador(params[:id])
       flash[:notice] = "Ambassador successfully approved."
       redirect_to admin_ambassadors_path 
     else

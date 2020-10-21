@@ -503,11 +503,11 @@ $(document).on('change','input#competition_location',function(event){
         + '</div>'
         + '<div class="form-group pass_input"> '
         + '<label style="margin-right: 30px;">Valid from</label><br>'
-        + '<input type="text"  name="pass[valid_from][]" required value="2020-12-12" class="input date" style="margin-right: 30px;">'
+        + '<input type="text"  name="pass[valid_from][]" required placeholder="2020-12-12" class="input date" style="margin-right: 30px;">'
         + '</div>'
         + '<div class="form-group pass_input"> '
         + '<label style="margin-right: 30px;">Valid to</label><br>'
-        + '<input type="text" name="pass[valid_to][]" required class="input date" value="2020-12-12" style="margin-right: 30px;">'
+        + '<input type="text" name="pass[valid_to][]" required class="input date" placeholder="2020-12-20" style="margin-right: 30px;">'
         + '</div></div><br><hr>';
     $('.input_section').prepend(inputs);
     $('.new_pass_wrapper').css({"position": "relative", "top": '40px'});

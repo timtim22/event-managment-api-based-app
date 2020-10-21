@@ -145,7 +145,7 @@ class Admin::EventsController < Admin::AdminMasterController
            }
           end #each
             passes.each do |pass|
-             if @pass = @event.passes.create!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"])
+             if @pass = @event.passes.create!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"].to_date, valid_to: pass["valid_to"].to_date, validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"])
     
               @event.update!(pass: 'true')
              end

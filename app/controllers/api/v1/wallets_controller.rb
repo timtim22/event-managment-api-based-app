@@ -172,31 +172,33 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
 
  def get_passes
   @passes = []
-  @wallets = request_user.wallets.where(offer_type: 'Pass').where(is_removed: false).page(params[:page]).per(get_per_page)
-  @wallets.each do |wallet|
+   pass_ids = request_user.wallets.where(offer_type: 'Pass').where(is_removed: false).page(params[:page]).per(get_per_page).map {|w| w.offer.id }
+   passes = Pass.where(id: pass_ids).sort_by_date.page(params[:page]).per(get_per_page)
+  
+   passes.each do |pass|
   @passes << {
-    id: wallet.offer.id,
-    title: wallet.offer.title,
-    description: wallet.offer.description,
-    host_name: get_full_name(wallet.offer.event.user),
-    host_image: wallet.offer.event.user.avatar,
-    event_name: wallet.offer.event.name,
-    event_id: wallet.offer.event.id,
-    event_image: wallet.offer.event.image,
-    event_location: wallet.offer.event.location,
-    event_start_time: wallet.offer.event.start_time,
-    event_end_time: wallet.offer.event.end_time,
-    event_date: wallet.offer.event.start_date,
-    distributed_by: distributed_by(wallet.offer),
-    validity: wallet.offer.validity.strftime(get_time_format),
-    is_expired: is_expired?(wallet.offer),
-    grabbers_count: wallet.offer.wallets.size,
-    is_redeemed: is_redeemed(wallet.offer.id, 'Pass', request_user.id),
-    grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
-    terms_and_conditions: wallet.offer.terms_conditions,
-    redeem_count: get_redeem_count(wallet.offer),
-    quantity: wallet.offer.quantity,
-    issued_by: get_full_name(wallet.offer.user)
+    id: pass.id,
+    title: pass.title,
+    description: pass.description,
+    host_name: get_full_name(pass.event.user),
+    host_image: pass.event.user.avatar,
+    event_name: pass.event.name,
+    event_id: pass.event.id,
+    event_image: pass.event.image,
+    event_location: pass.event.location,
+    event_start_time: pass.event.start_time,
+    event_end_time: pass.event.end_time,
+    event_date: pass.event.start_date,
+    distributed_by: distributed_by(pass),
+    validity: pass.valid_to.strftime(get_time_format),
+    is_expired: is_expired?(pass),
+    grabbers_count: pass.wallets.size,
+    is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id),
+    grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+    terms_and_conditions: pass.terms_conditions,
+    redeem_count: get_redeem_count(pass),
+    quantity: pass.quantity,
+    issued_by: get_full_name(pass.user)
   }
  end #each
 
@@ -205,7 +207,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
   success: true,
   message: '',
   data: {
-    passes: @passes
+    passes: @passes,
+    user: request_user
   }
 }
 

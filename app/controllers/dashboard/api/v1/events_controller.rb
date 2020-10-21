@@ -8,7 +8,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
   
   def index
 
-    @events = Event.all.map {|e| get_dashboard_event_object(e) }
+    @events = request_user.events.map {|e| get_dashboard_event_object(e) }
     render json: {
       code: 200,
       success: true,

@@ -9,7 +9,9 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       e = Event.find(params[:event_id])
       @passes = []
           @ticket = []
+          all_pass_added = false
           if request_user
+            all_pass_added = has_passes?(e) && all_passes_added_to_wallet?(e.passes)
           e.passes.not_expired.map { |pass|
           if !is_removed_pass?(request_user, pass)
             @passes << {
@@ -52,7 +54,6 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
           validity: pass.validity.strftime(get_time_format),
           grabbers_count: pass.wallets.size,
           terms_and_conditions: pass.terms_conditions,
-          description: pass.description,
           issued_by: get_full_name(pass.user),
           redeem_count: get_redeem_count(pass),
           quantity: pass.quantity
@@ -94,7 +95,8 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
             "terms_and_conditions" => e.terms_conditions,
             "forwards_count" => e.event_forwardings.count,
             "comments_count" => e.comments.size,
-            "has_passes" => has_passes?(e) && !is_added_to_wallet?(e.passes.first.id)
+            "has_passes" => has_passes?(e),
+            "all_passes_added_to_wallet" => all_pass_added
          }
 
          render json: {
@@ -192,7 +194,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
               #location ,pass, categories, price 14
               @events = Event.where("price #{operator} ?", params[:price]).where("start_price < ?", 1).where("end_price < ?", 1).where(pass: 'true').where(first_cat_id: cats_ids).or(Event.where(pass: "true").where(first_cat_id: cats_ids).where("price < ?", 1).where("start_price #{operator} ?", params[:price]).or(Event.where(pass: "true").where(first_cat_id: cats_ids).where("price < ?", 1).where("end_price #{operator} ?", params[:price]))).ransack(location_cont: location).result(distinct: true) if !params[:price].blank? && !params[:pass].blank? && !params[:location].blank? && !params[:categories].blank?
 
-              @response = @events.sort_by_date.page(params[:page]).per(get_per_page).map {|event| get_simple_event_object(event) }
+              @response = @events.sort_by_date.page(params[:page]).per(75).map {|event| get_simple_event_object(event) }
 
      render json: {
        code: 200,
@@ -328,6 +330,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
     end
   end
 
+  
 
   private 
 

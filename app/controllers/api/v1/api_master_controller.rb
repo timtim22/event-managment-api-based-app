@@ -146,6 +146,11 @@ class Api::V1::ApiMasterController < ApplicationController
     end
   
      def get_simple_event_object(event)
+        if request_user
+          all_pass_added = has_passes?(event) && all_passes_added_to_wallet?(event.passes)
+        else
+          all_pass_added = false
+        end
       e = {
         "id" => event.id,
         "image" => event.image,
@@ -160,6 +165,7 @@ class Api::V1::ApiMasterController < ApplicationController
         "price_type" => get_price_type(event),
         "price" => get_price(event).to_s,
         "has_passes" => has_passes?(event),
+        "all_passes_added_to_wallet" => all_pass_added,
         "created_at" => event.created_at,
         "categories" => event.categories
       }
@@ -169,6 +175,12 @@ class Api::V1::ApiMasterController < ApplicationController
     def get_per_page
       per_page = 30
     end
+
+    def all_passes_added_to_wallet?(passes)
+      added_size = 0
+      passes.map {|pass| added_size = request_user.wallets.where(offer: pass).size }
+      added_size == passes.size
+   end
 
    
 

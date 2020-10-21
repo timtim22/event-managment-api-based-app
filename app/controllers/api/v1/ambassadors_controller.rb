@@ -12,8 +12,9 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
     check = @business.business_ambassador_requests.where(user_id: request_user.id)
     if check.blank?
     if  @ambassador_request = @business.business_ambassador_requests.create!(user_id: request_user.id)
-      
-      #create_activity(request_user, "sent ambassador request to #{get_full_name(@business)}", @ambassador_request, 'AmbassadorRequest', '', '', 'post', 'ambassador_request')
+     
+       approve_ambassador(@ambassador_request.id)
+     
 
       if @notification = Notification.create(recipient: @business, actor: request_user, action: get_full_name(request_user) + " sent you ambassador request", notifiable: @ambassador_request, url: '/admin/ambassadors', notification_type: 'web', action_type: 'send_request')  
         @pubnub = Pubnub.new(
@@ -36,6 +37,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
         code: 200,
         success: true,
         message: "Ambassador request sent.",
+        user: request_user,
         data:nil
       }
     else

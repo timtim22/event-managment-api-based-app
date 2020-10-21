@@ -21,7 +21,6 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
             event_date:@event.start_date,
             is_added_to_wallet: is_added_to_wallet?(pass.id),
             validity: pass.validity.strftime(get_time_format),
-            grabbers_count: pass.wallets.size,
             terms_and_conditions: pass.terms_conditions,
             grabbers_count: pass.wallets.size,
             description: pass.description,
@@ -108,6 +107,7 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
       if  @redemption = Redemption.create!(:user_id =>  request_user.id, offer_id: @pass.id, code: params[:redeem_code], offer_type: 'Pass')
       @pass.quantity = @pass.quantity - 1;
       @pass.save
+       request_user.wallets.where(offer: @pass).first.update!(is_redeemed: true)
         # resource should be parent resource in case of api so that event id should be available in order to show event based interest level.
         #create_activity(request_user, "redeemed pass", @redemption, 'Redemption', '', @pass.title, 'post', 'redeem_pass')
         #ambassador program: also add earning if the pass is shared by an ambassador
