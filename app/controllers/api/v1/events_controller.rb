@@ -11,7 +11,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
           @ticket = []
           all_pass_added = false
           if request_user
-            all_pass_added = has_passes?(e) && all_passes_added_to_wallet?(e.passes)
+            all_pass_added = has_passes?(e) && all_passes_added_to_wallet?(request_user, e.passes)
           e.passes.not_expired.map { |pass|
           if !is_removed_pass?(request_user, pass)
             @passes << {

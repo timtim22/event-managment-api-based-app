@@ -637,8 +637,14 @@ $(document).on('change','#price_type',function(e){
    });//chosen
 
   function initialize() {
+    var options = {
+      types: ['establishment'],
+      componentRestrictions: {country: ['IE', 'PK'], regions:['PK','IE']},
+
+    };
+
     var input = document.getElementById('location');
-    autocomplete = new google.maps.places.Autocomplete(input, { types: ['geocode'] });
+    autocomplete = new google.maps.places.Autocomplete(input, { types: ['geocode'] }, options);
     autocomplete.setFields(["place_id", "geometry"]);
     // When the user selects an address from the drop-down, populate the
     // address fields in the form.

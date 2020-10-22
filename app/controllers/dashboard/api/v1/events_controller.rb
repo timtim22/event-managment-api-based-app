@@ -66,6 +66,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
      'location' => location,
      'description' => e.description,
      'categories' => e.categories,
+     "allow_chat" => e.allow_chat,
+     "event_forwarding" => e.event_forwarding,
      'admission_resources' => admission_resources, 
      'sponsors' => sponsors,
      'event_attachments' => additional_media,
@@ -77,7 +79,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
    render json: {
      code: 200,
      success: true,
-     messag: '',
+     message: '',
      data: {
        event: @event
      }

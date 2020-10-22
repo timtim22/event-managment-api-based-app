@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-
+  
   include ActionView::Helpers::NumberHelper
   # include ActionController::MimeResponds
   # require 'ruby-graphviz'
@@ -929,6 +929,13 @@ end
   def insert_space_after_comma(string)
     string.gsub(/,(?![ ])/, ', ')
   end
+
+
+def all_passes_added_to_wallet?(request_user,passes)
+    passes_ids = passes.map {|pass| pass.id }
+    add_passes_ids = request_user.wallets.where(offer_type: 'Pass').where(offer_id: passes_ids).map {|w| w.offer.id }
+    passes_ids.size < add_passes_ids.size
+end
   
 
 
@@ -940,5 +947,7 @@ end
   helper_method :generate_code
   helper_method :get_full_name
   helper_method :get_price
+
+
 
 end

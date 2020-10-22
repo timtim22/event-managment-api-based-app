@@ -147,7 +147,7 @@ class Api::V1::ApiMasterController < ApplicationController
   
      def get_simple_event_object(event)
         if request_user
-          all_pass_added = has_passes?(event) && all_passes_added_to_wallet?(event.passes)
+          all_pass_added = has_passes?(event) && all_passes_added_to_wallet?(request_user,event.passes)
         else
           all_pass_added = false
         end
@@ -176,11 +176,7 @@ class Api::V1::ApiMasterController < ApplicationController
       per_page = 30
     end
 
-    def all_passes_added_to_wallet?(passes)
-       passes_ids = passes.map {|pass| pass.id }
-       add_passes_ids = request_user.wallets.where(offer_type: 'Pass').where(offer_id: passes_ids).map {|w| w.offer.id }
-       passes_ids.size < add_passes_ids.size
-   end
+   
 
    
 

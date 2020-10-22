@@ -151,6 +151,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         is_expired: is_expired?(wallet.offer),
         grabbers_count: wallet.offer.wallets.size,
         is_redeemed: is_redeemed(wallet.offer.id, 'SpecialOffer', request_user.id),
+        redeem_time: redee_time(wallet.offer.id, 'SpecialOffer', request_user.id),
         grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
         terms_and_conditions: wallet.offer.terms_conditions,
         issued_by: get_full_name(wallet.offer.user),
@@ -194,6 +195,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
     is_expired: is_expired?(pass),
     grabbers_count: pass.wallets.size,
     is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id),
+    redeem_time: redee_time(pass.id, 'Pass', request_user.id),
     grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
     terms_and_conditions: pass.terms_conditions,
     redeem_count: get_redeem_count(pass),
@@ -278,7 +280,8 @@ def get_tickets
     quantity: wallet.offer.quantity,
     purchased_quantity: getPurchaseQuantity(wallet.offer.id),
     per_head: wallet.offer.per_head,
-    is_redeemed: is_redeemed(wallet.offer.id, "Ticket", request_user.id)
+    is_redeemed: is_redeemed(wallet.offer.id, "Ticket", request_user.id),
+    redeem_time: redee_time(wallet.offer.id, "Ticket", request_user.id),
   
   }
 end #each
@@ -528,6 +531,15 @@ def is_redeemed(offer_id, offer_type,user_id)
      true
   else
     false
+  end
+end
+
+def redee_time(offer_id, offer_type,user_id)
+  @check = Redemption.where(offer_id: offer_id).where(offer_type: offer_type).where(user_id: user_id)
+  if !@check.blank?
+     @check.first.created_at
+  else
+    ''
   end
 end
 
