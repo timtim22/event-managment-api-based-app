@@ -103,9 +103,10 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
            code: 200,
            success: true,
            message: '',
+           user: request_user,
            data: {
              event: @event,
-             business_all_events: e.user.events.sort_by_date.page(params[:page]).per(10).map {|e| get_simple_event_object(e) }
+             #business_all_events: e.user.events.sort_by_date.page(params[:page]).per(10).map {|e| get_simple_event_object(e) }
            }
          }
 

@@ -21,8 +21,59 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
   
 
   def show
-   event = Event.find(params[:id])
-   @event = get_simple_event_object(event)
+   e = Event.find(params[:id])
+   sponsors = []
+   additional_media = []
+   location = {
+     "name" => e.location,
+     "geometry" => {
+       "lat" => e.lat,
+       'lng' => e.lng
+     }
+   }
+
+   admission_resources = {
+     "ticketes" => e.tickets,
+     "passes" => e.passes
+   }
+
+   if !e.sponsors.blank?
+     e.sponsors.each do |sponsor|
+     sponsors << {
+       "sponsor_image" => sponsor.sponsor_image.url,
+       "external_url" => sponsor.external_url
+     }
+    end #each
+   end
+
+   if !e.event_attachments.blank?
+     e.event_attachments.each do |attachment|
+     additional_media << {
+       "media_type" => attachment.media_type,
+       "media" => attachment.media.url 
+     }
+    end#each 
+   end
+
+   @event = {
+     'id' => e.id,
+     'name' => e.name,
+     'start_date' => e.start_date,
+     'end_date' => e.end_date,
+     'start_time' => e.start_time,
+     'end_time' => e.end_time,
+     'image' => e.image.url,
+     'location' => location,
+     'description' => e.description,
+     'categories' => e.categories,
+     'admission_resources' => admission_resources, 
+     'sponsors' => sponsors,
+     'event_attachments' => additional_media,
+     'creator_name' => get_full_name(e.user),
+     'creator_id' => e.user.id,
+     'creator_image' => e.user.avatar,
+  }
+  
    render json: {
      code: 200,
      success: true,
