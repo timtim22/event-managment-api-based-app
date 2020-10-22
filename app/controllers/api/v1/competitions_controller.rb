@@ -441,6 +441,29 @@ def create_view
     
   end
 end
+
+
+  def get_business_competitions
+    if !params[:business_id].blank?
+      business = User.find(params[:business_id])
+      competitions = business.competitions.page(params[:page]).per(30).map {|competition| get_competition_object(competition) }
+       render json: {
+         code: 200,
+         success:true,
+         message: '',
+         data: {
+           events: competitions
+         }
+       }
+   else
+     render json: {
+       code: 400,
+       success:false,
+       message: "business_id is required field.",
+       data: nil
+     }
+   end
+  end
  
 
  

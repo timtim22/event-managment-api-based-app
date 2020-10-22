@@ -670,8 +670,6 @@ end
           'followers_count' => e.user ? e.user.followers.size : nil ,
           'following_count' => e.user ? e.user.followings.size : nil,
           'demographics' => get_demographics(e),
-          'passes' =>  @passes,
-          'ticket' => @ticket,
           'passes_grabbers_friends_count' =>  get_passes_grabbers_friends_count(e),
           'going_users' => e.going_users,
           "interested_users" => getInterestedUsers(e),
@@ -686,7 +684,7 @@ end
         }
       end
 
-      offers['special_offers'] = user.special_offers.map {|offer| get_special_offer_object(offer) }
+      
       offers['passes'] = user.passes.map {|pass| get_pass_object(pass) }
       profile['id'] = user.id
       profile['profile_name'] = user.business_profile.profile_name
@@ -704,10 +702,7 @@ end
       profile['followers_count'] = user.followers.size
       profile['events_count'] = user.events.size
       profile['competitions_count'] = user.competitions.size
-      profile['offers_count'] = user.special_offers.size
-      profile['competitions'] = user.competitions.map {|competition| get_competition_object(competition) }
-      profile['events'] = events
-      profile['offers'] = offers
+      profile['offers_count'] = user.special_offers.size  
       profile['news_feeds'] = user.news_feeds
       profile['ambassador_request_status'] = status 
       profile['is_ambassador'] = if get_request_status(user.id) == 'accepted' then true else false end
@@ -730,6 +725,11 @@ end
       }
     end
  end
+
+
+
+
+
 
   def get_activity_logs
     @activity_logs = request_user.activity_logs.order(:created_at => "DESC")

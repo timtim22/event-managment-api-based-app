@@ -112,6 +112,9 @@ Rails.application.routes.draw do
        get 'wallet/get-competitions' => 'wallets#get_competitions'
        get 'wallet/get-tickets' => 'wallets#get_tickets'
        post 'wallet/remove-offer' => 'wallets#remove_offer'
+       post 'get-business-events' => 'events#get_business_events'
+       post 'get-business-offers' => 'special_offers#get_business_special_offers'
+       post 'get-business-competitions' => 'competitions#get_business_competitions'
       
     
       # get '/*a', to: 'application#not_found'

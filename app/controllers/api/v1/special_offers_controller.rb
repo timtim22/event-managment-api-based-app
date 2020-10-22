@@ -69,93 +69,36 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
     }
   end
 
-  def new
-    @special_offer = SpecialOffer.new
-  end
-
+ 
   def show
     @special_offer = SpecialOffer.find(params[:id])
   end
 
-  def create
-    @special_offer = SpecialOffer.new #instantiated to avoid undefine error in case of form errors
-    ids = params['event_ids']
-    success = false
-    if !ids.blank?
-    ids.each do |id|
-      @special_offer = SpecialOffer.new
-      @special_offer.title = params[:title]
-      @special_offer.description = params[:description]
-      @special_offer.event_id = id
-      @special_offer.user = current_user
-      @special_offer.redeem_code = params[:redeem_code]
-      @special_offer.terms_conditions = params[:terms_conditions]
-      @special_offer.validity = params[:validity]
-      if @special_offer.save
-        success = true
-      else
-        success = false
-      end
-    end #each
+  def get_business_special_offers
+    if !params[:business_id].blank?
+       business = User.find(params[:business_id])
+       offers = business.special_offers.page(params[:page]).per(30).map {|offer| get_special_offer_object(offer) }
 
-    if success
-      flash[:notice] = "special_offer created successfully."
-      redirect_to admin_special_offers_path
+        render json: {
+          code: 200,
+          success:true,
+          message: '',
+          data: {
+            events: offers
+          }
+        }
+
     else
-        render :new
-    end
-  else
-    flash.now[:alert_danger] = "No event is selected."
-    render :new
-  end
-   
-  end
-
-  def edit
-    @special_offer = SpecialOffer.find(params[:id])
-  end
-
-
-  def update
-    @special_offer = SpecialOffer.find(params[:id]) #instantiated to avoid undefine error in case of form errors
-    ids = params['event_ids']
-    success = false
-    if !ids.blank?
-    ids.each do |id|
-      @special_offer.title = params[:title]
-      @special_offer.description = params[:description]
-      @special_offer.event_id = id
-      @special_offer.terms_conditions = params[:terms_conditions]
-      @special_offer.validity = params[:validity]
-      if @special_offer.save
-        success = true
-      else
-        success = false
-      end
-    end #each
-
-    if success
-      flash[:notice] = "special offer updated successfully."
-      redirect_to admin_special_offers_path
-    else
-        render :edit
-    end
-  else
-    flash.now[:alert_danger] = "No event is selected."
-    render :new
-  end
-   
-  end
-
-  def destroy
-    @special_offer = SpecialOffer.find(params[:id])
-    if @special_offer.destroy
-      redirect_to admin_special_offers_path, :notice => "Special offer deleted successfully."
-    else
-      flash[:alert_danger] = "Special offer deletion failed."
-      redirect_to admin_special_offers_path
+      render json: {
+        code: 400,
+        success:false,
+        message: "business_id is required field.",
+        data: nil
+      }
     end
   end
+
+
 
   def redeem_it
     if !params[:redeem_code].blank? && !params[:offer_id].blank?
