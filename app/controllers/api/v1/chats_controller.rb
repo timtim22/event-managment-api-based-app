@@ -6,7 +6,7 @@ class Api::V1::ChatsController < Api::V1::ApiMasterController
   
 def send_message
 
- if !params[:recipient_id].blank? 
+ if !params[:recipient_id].blank? && !params[:message].blank? 
  @recipient = User.find(params[:recipient_id])
   if !blocked_user?(request_user, @recipient)
  if !params[:recipient_id].blank?
@@ -102,7 +102,7 @@ end
 else
   render json: {
     status: false,
-    message: "Recipient Id is required."
+    message: "recipient_id and message is required."
   }
  end
 else
@@ -118,7 +118,7 @@ else
   render json: {
     code: 400,
     success: false,
-    message: "recipient_id is required field.",
+    message: "recipient_id and message are required fields.",
     data: nil
   }
 end
@@ -198,6 +198,7 @@ def chat_people
   render json: {
   code: 200,
   success: true,
+  user: request_user,
   message: '',
   data: {
     chat_people: @chat_people

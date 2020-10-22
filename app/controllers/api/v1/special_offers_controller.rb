@@ -5,7 +5,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
     @special_offers = []
     if request_user
     SpecialOffer.page(params[:page]).per(20).not_expired.order(created_at: "DESC").each do |offer|
-     if !is_removed_offer?(request_user, offer)
+     if !is_removed_offer?(request_user, offer) && !is_added_to_wallet?(offer.id)
       @special_offers << {
       id: offer.id,
       title: offer.title,
@@ -61,6 +61,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
     render json:  {
       code: 200,
       success: true,
+      user_id: request_user.id,
       message: '',
       data:  {
         special_offers: @special_offers
