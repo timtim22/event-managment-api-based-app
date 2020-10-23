@@ -77,7 +77,7 @@ if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipie
    end #publish
   end #all chat and event chat true
 
-   chat = Message.get_messages(@sender.id,@recipient.id)
+   chat = Message.get_messages(@sender.id,@recipient.id).order(created_at: 'ASC')
   
    render json: {
      code: 200,
