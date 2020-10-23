@@ -302,6 +302,7 @@ class Admin::EventsController < Admin::AdminMasterController
         passes << {
          "title" =>  params[:pass][:title][count-1],
          "description" =>  params[:pass][:description][count-1],
+         "terms_conditions" =>  params[:pass][:terms_conditions][count-1],
          "quantity" => params[:pass][:quantity][count-1],
          "ambassador_rate" => params[:pass][:ambassador_rate][count-1],
          "valid_from" => params[:pass][:valid_from][count-1],
@@ -309,7 +310,7 @@ class Admin::EventsController < Admin::AdminMasterController
        }
       end #each
         passes.each do |pass|
-         if @pass = @event.passes.create!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"])
+         if @pass = @event.passes.create!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"],terms_conditions: pass["terms_conditions"])
 
           @event.update!(pass: 'true')
          end
@@ -582,6 +583,7 @@ class Admin::EventsController < Admin::AdminMasterController
               "id" => params[:update_pass]["ids"][count-1],
             "title" =>  params[:update_pass][:title][count-1],
             "description" =>  params[:update_pass][:description][count-1],
+            "terms_conditions" =>  params[:update_pass][:terms_conditions][count-1],
             "quantity" => params[:update_pass][:quantity][count-1],
             "ambassador_rate" => params[:update_pass][:ambassador_rate][count-1],
             "valid_from" => params[:update_pass][:valid_from][count-1],
@@ -590,7 +592,7 @@ class Admin::EventsController < Admin::AdminMasterController
       end #each
 
       passes.each do |pass|
-        @pass = @event.passes.find(pass["id"]).update!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"])
+        @pass = @event.passes.find(pass["id"]).update!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"], terms_conditions: pass["terms_conditions"])
       end #each 
    end #if
 

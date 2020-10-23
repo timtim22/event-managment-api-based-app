@@ -132,9 +132,22 @@ def chat_history
        message: "Sender Id is required."
      }
     else
+   @chat_history = []
    @recipient = request_user
    @sender = User::find(params[:sender_id])
-   @chat_history = Message.chat_history(@sender,@recipient)
+   Message.chat_history(@sender,@recipient).each do |history|
+      @chat_history << {
+        "id" => history.id,
+        "recipient_id" => history.recipient_id,
+        "message" =>  history.message,
+        "read_at" => history.read_at,
+        "user_id" => history.user_id,
+        "created_at" =>  history.created_at,
+        "updated_at" => history.updated_at,
+        "from" => User.get_full_name(history.user),
+        "user_avatar" => history.user.avatar 
+      }
+   end #each
    render json:{ 
      code: 200,
      success: true,
@@ -144,7 +157,6 @@ def chat_history
      }
     }
 end
-
 end
 
 

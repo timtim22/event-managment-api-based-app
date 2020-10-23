@@ -302,7 +302,6 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     @event.over_18 = params[:over_18]
     @event.description = params[:description]
     @event.terms_conditions = params[:terms_conditions]
-    @event.price = 0
     @event.allow_chat = params[:allow_chat]
     @event.event_forwarding = params[:event_forwarding]
     if !params[:location].blank? 
@@ -339,7 +338,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
         when 'pass'
           resource[:fields].each do |f|
-          @pass = Pass.create!(event: @event, user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+          @pass =@event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
           @event.update!(pass: 'true')
           end #each
 
@@ -394,123 +393,201 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
         message: @error_messages,
         data: nil
       }
-    end
-    
+    end  
   end
+
 
 
   def update
-    if !params[:id].blank?
-        success = false
-        @event = Event.find(params[:id])
-        @event.name = params[:name]
-        @event.image = params[:image]
-        @event.start_date = params[:start_date]
-        @event.end_date = params[:end_date]
-        @event.start_time = params[:start_time]
-        @event.end_time = params[:end_time]
-        @event.over_18 = params[:over_18]
-        @event.description = params[:description]
-        @event.allow_chat = params[:allow_chat]
-        @event.event_forwarding = params[:event_forwarding]
-        if !params[:location].blank? 
-        @event.location = params[:location][:name]
-        @event.lat = params[:location][:geometry][:lat] 
-        @event.lng = params[:location][:geometry][:lng]
-        end
-        @event.price = params[:price]
-        @event.event_type = "mygo"
-        @event.category_ids = params[:category_ids]
-        if @event.save
-          success = true
-        end
-        @error_messages = []
-        # Admisssion sectiion
-        if !params[:admission_resources].blank?
-          params[:admission_resources].each do |resource|
-
-          case resource[:name]
-          
-          when "free"
-
-              resource[:fields].each do |f|
-
-              @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], user: request_user, ticket_type: resource[:name], price: 0)
-              end #each
-
-          when 'paid'
-
-              resource[:fields].each do |f|
-              @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: resource[:name])
-              end #each
-
-            when 'pay_at_door'
-
-              resource[:fields].each do |f|
-              @ticket = @event.tickets.find(f[:id]).update!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: resource[:name])
-              end #each
-
-            when 'pass'
-
-              resource[:fields].each do |f|
-                @pass = Pass.find(f[:id]).update!(event: @event, user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate])
-             end #each
-
-            else
-              @error_messages.push('invalid resource type is submitted.')
-            end    
-          end #each
-        end#if
-
     
-        #save attachement if there is any
-        if !params[:event_attachments].blank?
-           @event.event_attachments.destroy_all
-          params[:event_attachments]['media'].each do |m|
-            @event_attachment = @event.event_attachments.create!(:media => m,:event_id => @event.id, media_type: 'image')
-          end
-          end #if
-
-          #save sponsers if there is any
-          if !params[:sponsors].blank?
-            params[:sponsors].each do |sponsor|
-             sponsors = @event.sponsors.find(sponsor[:id]).update!(:external_url => sponsor[:external_url],:sponsor_image => sponsor[:sponsor_image])
-            end#each
-          end#if
-
-
-        if success
-            render json:  {
-              code: 200,
-              success: true,
-              message: 'Event successfully updated.',
-              data: {
-                event: get_event_object(@event)
-              }
-            }
-          else
-            @event.errors.full_messages.each do |msg|
-              @error_messages.push(msg)
+    success = false
+    @error_messages = []
+    
+    if params[:admission_resources].blank?
+      render json: {
+        code: 400,
+        success: false,
+        message: 'One of admission process must be defined.',
+        data: nil
+      }
+      return
+    else
+      params[:admission_resources].each do |resource|
+        case resource[:name]
+        when "free"
+          required_fields = ['id', 'title', 'quantity', 'per_head']
+          resource[:fields].each do |f|
+            required_fields.each do |field|
+              if f[field.to_sym].blank?
+                @error_messages.push("In free ticket " + field + ' is required.')
+              end #if
             end #each
-            render json: {
-              code: 400,
-              success: false,
-              message: @error_messages,
-              data: nil
-            }
-          end
+           end #each
+          
+        when 'paid'
+          required_fields = ['id', 'title', 'quantity', 'per_head','price']
+          resource[:fields].each do |f|
+            required_fields.each do |field|
+              if f[field.to_sym].blank?
+                @error_messages.push("In paid ticket " + field + ' is required.')
+              end #if
+            end #each
+          end #each
+         
+          when 'pay_at_door'
+           required_fields = ['id', 'start_price', 'end_price']
+           resource[:fields].each do |f|
+            required_fields.each do |field|
+              if f[field.to_sym].blank?
+                @error_messages.push("In pay at door " + field + ' is required.')
+              end #if
+             end #each
+           end #each
+           
+          when 'pass'
+            required_fields = ['id','title', 'description', 'valid_from','valid_to','quantity','ambassador_rate']
+            resource[:fields].each do |f|
+              required_fields.each do |field|
+                if f[field.to_sym].blank?
+                  @error_messages.push("In pass " + field + ' is required.')
+                end #if
+               end #each
+             end #each
+           
+          else
+            @error_messages.push('invalid resource type is submitted.')
+            process_validated = false
+          end    
+        end #each 
+    end #admission resource validation
 
-        else 
+     if !params[:sponsors].blank?
+      required_fields = ['id','sponsor_image', 'external_url']
+      params[:sponsors].each do |sponsor|
+        required_fields.each do |field|
+          if sponsor[field.to_sym].blank?
+            @error_messages.push("In sponsors " + field + ' is required.')
+          end #if
+         end #each
+      end #each  
+     end #blank
 
-          render json: {
-            code: 400,
-            success: false,
-            message: "id is requrired field.",
-            data: nil
+     if !params[:event_attachments].blank?
+      required_fields = ['id','media']
+      params[:event_attachments].each do |attachment|
+        required_fields.each do |field|
+          if attachment[field.to_sym].blank?
+            @error_messages.push("In event attachements " + field + ' is required.')
+          end #if
+         end #each
+      end #each  
+     end #blank
+   
+  if @error_messages.blank?
+    @event = Event.find(params[:id])
+    @event.name = params[:name]
+    @event.image = params[:image]
+    @event.start_date = params[:start_date]
+    @event.end_date = params[:end_date]
+    @event.start_time = params['start_time']
+    @event.end_time = params['end_time']
+    @event.over_18 = params[:over_18]
+    @event.description = params[:description]
+    @event.terms_conditions = params[:terms_conditions]
+    @event.allow_chat = params[:allow_chat]
+    @event.event_forwarding = params[:event_forwarding]
+    if !params[:location].blank? 
+    @event.location = params[:location][:name]
+    @event.lat = params[:location][:geometry][:lat] 
+    @event.lng = params[:location][:geometry][:lng]
+    end
+    @event.price = params[:price]
+    @event.event_type = params[:event_type]
+    @event.category_ids = params[:category_ids]
+    @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
+  
+    if @event.save
+      success = true
+    # Admisssion sectiion
+    if !params[:admission_resources].blank?
+      params[:admission_resources].each do |resource|
+
+      case resource[:name]
+      when "free"
+          resource[:fields].each do |f|
+           @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], user: request_user, ticket_type: resource[:name], price: 0)
+          end #each
+
+       when 'paid'
+          resource[:fields].each do |f|
+           @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: resource[:name])
+          end #each
+
+        when 'pay_at_door'
+          resource[:fields].each do |f|
+           @ticket = @event.tickets.find(f[:id]).update!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: resource[:name])
+          end #each
+
+        when 'pass'
+          resource[:fields].each do |f|
+          @pass = @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+          @event.update!(pass: 'true')
+          end #each
+
+        else
+          @error_messages.push('invalid resource type is submitted.')
+        end    
+      end #each
+    end#if
+
+ 
+    #save attachement if there is any
+    if !params[:event_attachments].blank?
+      params[:event_attachments].each do |attachment|
+        @event_attachment = @event.event_attachments.find(attachment[:id]).update!(:media => attachment[:media], media_type: 'image')
+       end
+      end #if
+
+      #save sponsers if there is any
+      if !params[:sponsors].blank?
+        params[:sponsors].each do |sponsor|
+        @event_sponsor = @event.sponsors.find(sponsor[:id]).update!(:external_url => sponsor[:external_url],:sponsor_image => sponsor[:sponsor_image])
+        end #each
+      end#if
+
+    end#if
+
+     if success
+        render json:  {
+          code: 200,
+          success: true,
+          message: 'Event successfully updated.',
+          data: {
+             event: get_event_object(@event)
           }
-        end
-
+        }
+      else
+        @event.errors.full_messages.each do |msg|
+          @error_messages.push(msg)
+        end #each
+        render json: {
+          code: 400,
+          success: false,
+          message: @error_messages,
+          data: nil
+        }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: @error_messages,
+        data: nil
+      }
+    end  
   end
+
+
 
 
     def get_categories

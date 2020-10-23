@@ -191,6 +191,8 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     profile.add_social_media_links = params[:add_social_media_links]
     profile.facebook = params[:facebook]
     profile.twitter = params[:twitter]
+    profile.lat = params[:lat]
+    profile.lng = params[:lng]
     profile.snapchat = params[:snapchat]
     profile.linkedin = params[:linkedin]
     profile.youtube = params[:youtube]
