@@ -247,7 +247,7 @@
        <ol>
        <% @event.event_attachments.each do |attachment| %>
          <li>
-           <input type="hidden" name="attachments[ids][]" value="<%= attachment.id %>" >
+          
           <img src="<%= attachment.media.url %>" style="width: 165px; height:auto;"><br><br>
           <input type="file" name="update_attachments[<%= attachment.id %>][media][]" multiple id="additional_media">
           </li>

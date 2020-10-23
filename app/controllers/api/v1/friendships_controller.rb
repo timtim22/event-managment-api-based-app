@@ -381,7 +381,7 @@ end
            "id" => follower.id,
            "name" => get_full_name(follower),
            "avatar" => follower.avatar,
-           "is_request_sent" => request_status(request_user, follower),
+           "is_request_sent" => request_status(request_user, follower)["status"],
            "is_friend" => is_friend?(request_user, follower),
            "mutual_friends_count" => get_mutual_friends(request_user, follower).size,
            "is_my_following" => false,
