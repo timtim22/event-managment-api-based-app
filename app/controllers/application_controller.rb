@@ -8,12 +8,27 @@ class ApplicationController < ActionController::Base
       friend_request = FriendRequest.where(user_id: sender.id).where(friend_id: recipient.id).first
       if friend_request
        if friend_request.status == 'pending' || friend_request.status == 'accepted'
-        true
+        status = {
+          "message" => "You have already sent friend request to #{User.get_full_name(recipient)} ",
+           "status" => true
+         }
        end
-      else
-        false
+      elsif FriendRequest.where(user_id: recipient.id).where(friend_id: sender.id).first
+        status = {
+           "message" => "#{User.get_full_name(recipient)} already sent you a friend request ",
+           "status" => true
+         }
+        else
+          status = {
+            "message" => "",
+            "status" => false
+          }
       end
-  end                                   
+      status
+  end
+
+ 
+  
 
   def current_user
     user = User.find(session[:user_id]) if session[:user_id] 

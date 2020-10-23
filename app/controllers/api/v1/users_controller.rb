@@ -638,95 +638,98 @@ end
  end
 
  def get_others_business_profile
-      if !params[:user_id].blank?
-      user = User.find(params[:user_id])
-      profile = {}
-      offers = {}
-      events = []
-      competitions = []
-      status = get_request_status(user.id)
-      user.events.each do |e|
-        events << {
-          'id' => e.id,
-          'name' => e.name,
-          'description' => e.description,
-          'start_date' => e.start_date,
-          'end_date' => e.end_date,
-          'start_time' => e.start_time,
-          'end_time' => e.end_time,
-          'price' => get_formated_price(e.price), # check for price if it is zero
-          'price_type' => e.price_type,
-          'event_type' => e.event_type,
-          'additional_media' => e.event_attachments,
-          'location' => e.location,
-          'lat' => e.lat,
-          'lng' => e.lng,
-          'image' => e.image,
-          'is_interested' => is_interested?(e),
-          'is_going' => is_attending?(e),
-          'is_followed' => is_followed(e.user),
-          'interest_count' => e.interested_interest_levels.size,
-          'going_count' => e.going_interest_levels.size,
-          'followers_count' => e.user ? e.user.followers.size : nil ,
-          'following_count' => e.user ? e.user.followings.size : nil,
-          'demographics' => get_demographics(e),
-          'passes_grabbers_friends_count' =>  get_passes_grabbers_friends_count(e),
-          'going_users' => e.going_users,
-          "interested_users" => getInterestedUsers(e),
-          'creator_name' => e.user.business_profile.profile_name,
-          'creator_id' => e.user.id,
-          'creator_image' => e.user.avatar,
-          'categories' => !e.categories.blank? ? e.categories : @empty,
-          'grabbers' => get_event_passes_grabbers(e),
-          'sponsors' => e.sponsors,
-          "mute_chat" => get_mute_chat_status(e),
-          "mute_notifications" => get_mute_notifications_status(e) 
-        }
-      end
+  if !params[:user_id].blank?
+  user = User.find(params[:user_id])
+  profile = {}
+  offers = {}
+  events = []
+  competitions = []
+  status = get_request_status(user.id)
+  user.events.each do |e|
+    events << {
+      'id' => e.id,
+      'name' => e.name,
+      'description' => e.description,
+      'start_date' => e.start_date,
+      'end_date' => e.end_date,
+      'start_time' => e.start_time,
+      'end_time' => e.end_time,
+      'price' => get_formated_price(e.price), # check for price if it is zero
+      'price_type' => e.price_type,
+      'event_type' => e.event_type,
+      'additional_media' => e.event_attachments,
+      'location' => e.location,
+      'lat' => e.lat,
+      'lng' => e.lng,
+      'image' => e.image,
+      'is_interested' => is_interested?(e),
+      'is_going' => is_attending?(e),
+      'is_followed' => is_followed(e.user),
+      'interest_count' => e.interested_interest_levels.size,
+      'going_count' => e.going_interest_levels.size,
+      'followers_count' => e.user ? e.user.followers.size : nil ,
+      'following_count' => e.user ? e.user.followings.size : nil,
+      'demographics' => get_demographics(e),
+      'passes' =>  @passes,
+      'ticket' => @ticket,
+      'passes_grabbers_friends_count' =>  get_passes_grabbers_friends_count(e),
+      'going_users' => e.going_users,
+      "interested_users" => getInterestedUsers(e),
+      'creator_name' => e.user.business_profile.profile_name,
+      'creator_id' => e.user.id,
+      'creator_image' => e.user.avatar,
+      'categories' => !e.categories.blank? ? e.categories : @empty,
+      'grabbers' => get_event_passes_grabbers(e),
+      'sponsors' => e.sponsors,
+      "mute_chat" => get_mute_chat_status(e),
+      "mute_notifications" => get_mute_notifications_status(e) 
+    }
+  end
 
-      
-      offers['passes'] = user.passes.map {|pass| get_pass_object(pass) }
-      profile['id'] = user.id
-      profile['profile_name'] = user.business_profile.profile_name
-      profile['first_name'] = user.business_profile.profile_name
-      profile['last_name'] = ''   
-      profile['avatar'] = user.avatar
-      profile['address'] = user.business_profile.address
-      profile['about'] = user.business_profile.about
-      profile['facebook'] = user.business_profile.facebook
-      profile['twitter'] = user.business_profile.twitter
-      profile['snapchat'] = user.business_profile.snapchat
-      profile['instagram'] = user.business_profile.instagram
-      profile['linkedin'] = user.business_profile.linkedin
-      profile['youtube'] = user.business_profile.youtube
-      profile['followers_count'] = user.followers.size
-      profile['events_count'] = user.events.size
-      profile['competitions_count'] = user.competitions.size
-      profile['offers_count'] = user.special_offers.size  
-      profile['news_feeds'] = user.news_feeds
-      profile['ambassador_request_status'] = status 
-      profile['is_ambassador'] = if get_request_status(user.id) == 'accepted' then true else false end
+  offers['special_offers'] = user.special_offers.map {|offer| get_special_offer_object(offer) }
+  offers['passes'] = user.passes.map {|pass| get_pass_object(pass) }
+  profile['id'] = user.id
+  profile['profile_name'] = user.business_profile.profile_name
+  profile['first_name'] = user.business_profile.profile_name
+  profile['last_name'] = ''   
+  profile['avatar'] = user.avatar
+  profile['address'] = user.business_profile.address
+  profile['about'] = user.business_profile.about
+  profile['facebook'] = user.business_profile.facebook
+  profile['twitter'] = user.business_profile.twitter
+  profile['snapchat'] = user.business_profile.snapchat
+  profile['instagram'] = user.business_profile.instagram
+  profile['linkedin'] = user.business_profile.linkedin
+  profile['youtube'] = user.business_profile.youtube
+  profile['followers_count'] = user.followers.size
+  profile['events_count'] = user.events.size
+  profile['competitions_count'] = user.competitions.size
+  profile['offers_count'] = user.special_offers.size
+  profile['competitions'] = user.competitions.map {|competition| get_competition_object(competition) }
+  profile['events'] = events
+  profile['offers'] = offers
+  profile['news_feeds'] = user.news_feeds
+  profile['ambassador_request_status'] = status 
+  profile['is_ambassador'] = if get_request_status(user.id) == 'accepted' then true else false end
 
-      render json: {
-        code: 200,
-        success: true,
-        message: '',
-        data: {
-          profile: profile,
-          user: user 
-        } 
-      }
-    else
-      render json: {
-        code: 400,
-        success: false,
-        message: 'user_id is required.',
-        data: nil
-      }
-    end
- end
-
-
+  render json: {
+    code: 200,
+    success: true,
+    message: '',
+    data: {
+      profile: profile,
+      user: user 
+    } 
+  }
+else
+  render json: {
+    code: 400,
+    success: false,
+    message: 'user_id is required.',
+    data: nil
+  }
+end
+end
 
 
 

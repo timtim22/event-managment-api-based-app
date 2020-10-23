@@ -72,7 +72,7 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
     @special_offer.validity = params[:validity]
     @special_offer.ambassador_rate = params[:ambassador_rate]
     @special_offer.image = params[:image]
-    @special_offer.is_redeemed = false
+    @special_offer.redeem_code = generate_code
     @special_offer.terms_conditions = params[:terms_conditions]
     if !params[:location].blank? 
       @special_offer.location = params[:location][:name]

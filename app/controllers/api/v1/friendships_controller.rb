@@ -11,9 +11,9 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
   
   def send_request
     if !params[:friend_id].blank?
-    @friend = User.find(params[:friend_id])
-    @sender = request_user
-    if(request_status(@sender,@friend) == false)
+     @friend = User.find(params[:friend_id])
+     @sender = request_user
+    if(request_status(@sender,@friend)['status'] == false)
     @friend_request = @sender.friend_requests.new(friend: @friend)
     @friend_request.status = "pending"
     if @friend_request.save
@@ -75,7 +75,7 @@ else
     render json:  {
       code: 400,
       success: false,
-      message: "Request has already been sent.",
+      message: request_status(@sender, @friend)['message'],
       data:nil
    }
 end
