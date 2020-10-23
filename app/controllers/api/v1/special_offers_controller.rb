@@ -61,7 +61,6 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
     render json:  {
       code: 200,
       success: true,
-      user_id: request_user.id,
       message: '',
       data:  {
         special_offers: @special_offers

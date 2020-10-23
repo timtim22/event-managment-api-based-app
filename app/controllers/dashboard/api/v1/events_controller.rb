@@ -70,6 +70,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
      "event_forwarding" => e.event_forwarding,
      'admission_resources' => admission_resources, 
      'sponsors' => sponsors,
+     "terms_conditions" => e.terms_conditions,
      'event_attachments' => additional_media,
      'creator_name' => get_full_name(e.user),
      'creator_id' => e.user.id,
@@ -134,6 +135,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
         'image' => e.image.url,
         'location' => location,
         'description' => e.description,
+        "terms_conditions" => e.terms_conditions,
         'categories' => e.categories,
         'admission_resources' => admission_resources, 
         'sponsors' => sponsors,
@@ -182,6 +184,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
         'date' => e.start_date,
         'time' => e.start_time,
         'image' => e.image.url,
+        "terms_conditions" => e.terms_conditions,
         'creator_name' => e.user.first_name + " " + e.user.last_name,
         'creator_id' => e.user.id,
         'creator_image' => e.user.avatar,
@@ -298,6 +301,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     @event.end_time = params['end_time']
     @event.over_18 = params[:over_18]
     @event.description = params[:description]
+    @event.terms_conditions = params[:terms_conditions]
     @event.price = 0
     @event.allow_chat = params[:allow_chat]
     @event.event_forwarding = params[:event_forwarding]
