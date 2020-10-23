@@ -7,6 +7,31 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
       passes = Pass.where(event_id: @event.id).page(params[:page]).per(30)
       if !passes.blank?
         passes.each do |pass|
+         if request_user 
+          if !is_removed_pass?(request_user, pass)
+            @passes << {
+              id: pass.id,
+              title: pass.title,
+              description: pass.description,
+              host_name:@event.user.business_profile.profile_name,
+              host_image:@event.user.avatar,
+              event_name:@event.name,
+              event_image:@event.image,
+              event_location:@event.location,
+              event_start_time:@event.start_time,
+              event_end_time:@event.end_time,
+              event_date:@event.start_date,
+              is_added_to_wallet: is_added_to_wallet?(pass.id),
+              validity: pass.validity.strftime(get_time_format),
+              terms_and_conditions: pass.terms_conditions,
+              grabbers_count: pass.wallets.size,
+              description: pass.description,
+              issued_by: get_full_name(pass.user),
+              redeem_count: get_redeem_count(pass),
+              quantity: pass.quantity
+            }
+          end
+        else
           @passes << {
             id: pass.id,
             title: pass.title,
@@ -28,6 +53,7 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
             redeem_count: get_redeem_count(pass),
             quantity: pass.quantity
           }
+         end
         end#each
       end#if
       render json: {

@@ -145,7 +145,7 @@ def chat_history
         "created_at" =>  history.created_at,
         "updated_at" => history.updated_at,
         "from" => User.get_full_name(history.user),
-        "user_avatar" => history.user.avatar 
+        "user_avatar" => history.user.avatar.url 
       }
    end #each
    render json:{ 

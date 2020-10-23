@@ -66,13 +66,13 @@ class Api::V1::SettingsController < Api::V1::ApiMasterController
        if settings.include? params[:setting_name]
          #if user doesn't have any setting then create it first (new user)
          setting = request_user.user_settings.where(name: params[:setting_name]).where(resource_id: params[:resource_id]).where(resource_type: params[:resource_type]).first
-         blockee = User.find(params[:resource_id])
+        
          if setting.blank? 
             if setting = request_user.user_settings.create!(name: params[:setting_name], resource_id: params[:resource_id], resource_type: params[:resource_type], is_on: params[:is_on], blocked_at: Time.zone.now)
 
             #in order to acheive bi directionsl blocking
             if(params[:setting_name] == 'block' && params[:resource_type] == 'User')
-               
+               blockee = User.find(params[:resource_id])
                setting_reverse = blockee.user_settings.create!(name: params[:setting_name], resource_id: request_user.id, resource_type: params[:resource_type], is_on: params[:is_on])
              end 
             

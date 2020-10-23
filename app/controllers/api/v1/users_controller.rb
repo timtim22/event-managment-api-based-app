@@ -148,8 +148,6 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
   end
 
 
-
-
   # PUT /users/{username}
   def update
     unless @user.update(user_params)
@@ -203,13 +201,33 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
 
   if profile.save && user.save
    # create_activity("updated profile.", profile, "Profile")
+   profile_object = {
+    'first_name' => user.profile.first_name, 
+    'last_name' => user.profile.last_name,
+    'avatar' => user.avatar,
+    'lat' => user.profile.lat,
+    'lng' => user.profile.lng,
+    'about' => user.profile.about,
+    'dob' => user.profile.dob.to_date,
+    'roles' => user.roles,
+    'gender' => user.profile.gender,
+    'mobile' => user.phone_number,
+    'email' => user.email,
+    'facebook' => user.profile.facebook,
+    'twitter' => user.profile.twitter,
+    'snapchat' => user.profile.snapchat,
+    'instagram' =>  user.profile.instagram,
+    'linkedin' => user.profile.linkedin,
+    'youtube' => user.profile.youtube,
+  }
+
     render json: {
       code: 200,
       success: true,
       message: "successfully updated.",
       data: {
         user: user,
-        profile: profile
+        profile: profile_object
       }
     }
   else
@@ -224,7 +242,6 @@ end
 
   def get_profile
     user = request_user
-      profile = {}
       attending = []
       competitions = []
       activity_logs = []
@@ -302,7 +319,7 @@ end
       issued_by: get_full_name(competition.user),
       validity: competition.validity
       }
-      end
+     end
 
       user.activity_logs.each do |log|
         resource = {}
@@ -369,32 +386,35 @@ end
       end
 
 
-      profile['first_name'] = user.profile.first_name 
-      profile['last_name'] = user.profile.last_name
-      profile['avatar'] = user.avatar
-      profile['lat'] = user.profile.lat
-      profile['lng'] = user.profile.lng
-      profile['about'] = user.profile.about
-      profile['dob'] = user.profile.dob.to_date
-      profile['roles'] = user.roles
-      profile['gender'] = user.profile.gender
-      profile['mobile'] = user.phone_number
-      profile['email'] = user.email
-      profile['facebook'] = user.profile.facebook
-      profile['twitter'] = user.profile.twitter
-      profile['snapchat'] = user.profile.snapchat
-      profile['instagram'] = user.profile.instagram
-      profile['linkedin'] = user.profile.linkedin
-      profile['youtube'] = user.profile.youtube
-      profile['friends_count'] = user.friends.size
-      profile['follows_count'] = user.followings.size
-      profile['followers_count'] = user.followers.size
-      # if user.is_ambassador to be added later
-      #   profile['passes'] = 'to be added after ambassador shcema'
-      # end
-      profile['competitions'] = competitions
-      profile['attending'] = attending
-      profile['activities'] = activity_logs
+ 
+
+      profile = {
+
+          'first_name' => user.profile.first_name, 
+          'last_name' => user.profile.last_name,
+          'avatar' => user.avatar,
+          'lat' => user.profile.lat,
+          'lng' => user.profile.lng,
+          'about' => user.profile.about,
+          'dob' => user.profile.dob.to_date,
+          'roles' => user.roles,
+          'gender' => user.profile.gender,
+          'mobile' => user.phone_number,
+          'email' => user.email,
+          'facebook' => user.profile.facebook,
+          'twitter' => user.profile.twitter,
+          'snapchat' => user.profile.snapchat,
+          'instagram' =>  user.profile.instagram,
+          'linkedin' => user.profile.linkedin,
+          'youtube' => user.profile.youtube,
+          'friends_count' => user.friends.size,
+          'follows_count' => user.followings.size,
+          'followers_count' => user.followers.size,
+          'competitions' => competitions,
+          'attending' => attending,
+          'activities' => activity_logs
+      }
+
       render json: {
         code: 200,
         success: true,

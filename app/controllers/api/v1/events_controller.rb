@@ -94,7 +94,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
             "mute_notifications" => get_mute_notifications_status(e),
             "terms_and_conditions" => e.terms_conditions,
             "forwards_count" => e.event_forwardings.count,
-            "comments_count" => e.comments.size,
+            "comments_count" => e.comments.size + e.comments.map {|c| c.replies }.size,
             "has_passes" => has_passes?(e),
             "all_passes_added_to_wallet" => all_pass_added
          }
