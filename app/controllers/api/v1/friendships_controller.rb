@@ -416,7 +416,7 @@ end
             "id" => friend.id,
             "name" => get_full_name(friend),
             "avatar" => friend.avatar,
-            "is_request_sent" => request_status(request_user, friend),
+            "is_request_sent" => request_status(request_user, friend)["status"],
             "is_friend" => is_friend?(request_user, friend),
             "mutual_friends_count" => get_mutual_friends(request_user, friend).size,
             "is_my_following" => false,

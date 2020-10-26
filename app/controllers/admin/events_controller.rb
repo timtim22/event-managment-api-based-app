@@ -55,6 +55,7 @@ class Admin::EventsController < Admin::AdminMasterController
         @event.description = params[:description]
         @event.location = trim_space(params[:location])
         @event.image = params[:image]
+        @event.video = params[:file]
         @event.lat = params[:lat]
         @event.lng = params[:lng]
         @event.feature_media_link = params[:feature_media_link]
@@ -77,20 +78,22 @@ class Admin::EventsController < Admin::AdminMasterController
 
 
 
-          if !params[:sponsor_images].blank? && !params[:external_urls].blank?
-            sponsors = []
-            count = params[:sponsor_images].size
-            count.to_i.times.each do |count|
-              sponsors << {
-              "image" =>  params[:sponsor_images][count-1],
-              "external_url" =>  params[:external_urls][count-1]
-            }
-          end #each
-        
-          sponsors.each do |sponsor|
-              @event_sponsor = @event.sponsors.create!(:sponsor_image => sponsor["image"], :external_url => sponsor["external_url"])
-          end #each 
-          end#if
+         #in case of new sponsors
+         if !params[:sponsors].blank?
+          sponsors = []
+          count = params[:sponsors]["images"].size
+          count.to_i.times.each do |count|
+           sponsors << {
+           "image" =>  params[:sponsors]["images"][count-1],
+           "external_url" =>  params[:sponsors]["external_urls"][count-1]
+         }
+       end #each
+       if !sponsors.blank?
+         sponsors.each do |sponsor|
+           @event.sponsors.create!(sponsor_image: sponsor["image"], external_url: sponsor["external_url"])
+         end#each
+       end
+     end #if
           
           
         # notifiy all users about new event creation
@@ -239,20 +242,22 @@ class Admin::EventsController < Admin::AdminMasterController
         end #if
 
 
-        if !params[:sponsor_images].blank? && !params[:external_urls].blank?
-           sponsors = []
-           count = params[:sponsor_images].size
-           count.to_i.times.each do |count|
-            sponsors << {
-            "image" =>  params[:sponsor_images][count-1],
-            "external_url" =>  params[:external_urls][count-1]
-          }
-        end #each
-      
-        sponsors.each do |sponsor|
-            @event_sponsor = @event.sponsors.create!(:sponsor_image => sponsor["image"], :external_url => sponsor["external_url"])
-        end #each 
-        end#if
+         #in case of new sponsors
+         if !params[:sponsors].blank?
+          sponsors = []
+          count = params[:sponsors]["images"].size
+          count.to_i.times.each do |count|
+           sponsors << {
+           "image" =>  params[:sponsors]["images"][count-1],
+           "external_url" =>  params[:sponsors]["external_urls"][count-1]
+         }
+       end #each
+       if !sponsors.blank?
+         sponsors.each do |sponsor|
+           @event.sponsors.create!(sponsor_image: sponsor["image"], external_url: sponsor["external_url"])
+         end#each
+       end
+     end #if
         
         
       # notifiy all users about new event creation
@@ -580,7 +585,7 @@ class Admin::EventsController < Admin::AdminMasterController
           count = params[:update_pass]['quantity'].size
           count.to_i.times.each do |count|
             passes << {
-              "id" => params[:update_pass]["ids"][count-1],
+            "id" => params[:update_pass]["ids"][count-1],
             "title" =>  params[:update_pass][:title][count-1],
             "description" =>  params[:update_pass][:description][count-1],
             "terms_conditions" =>  params[:update_pass][:terms_conditions][count-1],

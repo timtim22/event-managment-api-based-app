@@ -33,6 +33,10 @@
 <% end %>
 <% if !@event.sponsors.blank? %>
 <br>
+<h5>Attachments </h5>
+  <li>
+  <video controls width="640" height="480" src="<%= @event.file %>"></video>
+  </li>
 <h5>Sponsers:</h5>
 <% @event.sponsors.each do |s| %>
   <li><%= s.name %>

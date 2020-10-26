@@ -69,6 +69,11 @@ group :development do
   gem 'lol_dba' #to check out indexes
 end
 
+gem 'carrierwave-video'
+gem 'carrierwave-video-thumbnailer'
+gem 'carrierwave_backgrounder'
+gem 'streamio-ffmpeg', '~> 2.0.0'
+
 group :production do
   gem 'pg'
 end
