@@ -11,14 +11,12 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   def purchase_ticket
     if !params[:ticket_id].blank? && !params[:ticket_type].blank?  && !params[:quantity].blank? 
         @ticket = Ticket.find(params[:ticket_id])
-        @event = Event.find(@tikcet.event_id)
+        @event = @ticket.event
       if params[:ticket_type] == 'buy'
         if !params[:status].blank? && !params[:stripe_response].blank? && !params[:transaction_id].blank?
 
-          transaction = Transaction.find(params[:transaction_id])
-          transaction.status = params[:status]
-          transaction.stripe_response = params[:stripe_response]
-          transaction.save
+          transaction = Transaction.find(params[:transaction_id]).update!(status: params[:status], stripe_response: params[:stripe_response])
+    
 
           if(transaction.status == 'successful') #while tikcet_type ==  'buy' 'can_purchase' is already inmpleted  to 'get_secret' api which is the first step of stripe payment, so doesn't need here
            
@@ -30,7 +28,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
               @ticket.quantity = @ticket.quantity - params[:quantity].to_i
               @ticket.save
 
-              create_activity(request_user, "attedning event", @event, 'Event', admin_event_path(@event), @event.name, 'post', 'going')
+              # create_activity(request_user, "attedning event", @event, 'Event', admin_event_path(@event), @event.name, 'post', 'going')
 
             if @wallet  = request_user.wallets.create!(offer_id: params[:ticket_id], offer_type: 'Ticket')
         
@@ -97,7 +95,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
         @ticket.quantity = @ticket.quantity - params[:quantity].to_i
         @ticket.save
 
-        create_activity(request_user, "attending event", @event, 'Event', admin_event_path(@event), @event.name, 'post', 'going')
+        # create_activity(request_user, "attending event", @event, 'Event', admin_event_path(@event), @event.name, 'post', 'going')
 
          @wallet = request_user.wallets.where(offer_id: @purchase.id).where(offer_type: 'Ticket').first
 
@@ -332,24 +330,27 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   end
   end
 
-  def get_secret
-      if !params[:currency].blank? && !params[:ticket_id].blank? && !params[:quantity].blank?
-        application_fee_percent = 5;
 
-   @ticket = Ticket.find(params[:ticket_id])
+
+
+  def get_secret
+      if !params[:total_price].blank? && !params[:ticket_id].blank? && !params[:quantity].blank?
+         application_fee_percent = 5; #later to change it to dynamic value
+     @ticket = Ticket.find(params[:ticket_id])
      if can_purchase?(@ticket, params[:quantity]) 
-         @payable = @ticket.event.price * params[:quantity].to_i
+         @payable = params[:total_price]
+        
          application_fee = calculate_application_fee(@payable,application_fee_percent).ceil
-      if @ticket.user.connected_account_id != 'no account' 
+      if @ticket.user.connected_account_id != '' 
         intent = Stripe::PaymentIntent.create({
           amount: @payable,
-          currency: params[:currency], #later changeable, will come from admin dashboard
+          currency: 'EUR', #later changeable, will come from admin dashboard
           application_fee_amount:  application_fee,
         }, stripe_account: @ticket.user.connected_account_id)
 
         #save in db as well
-        current_amount = @ticket.event.price - application_fee
-        @transaction = Transaction.create!(user_id: request_user.id, ticket_id: @ticket.id, payment_intent: intent, payee_id: @ticket.user.id, amount: current_amount)
+
+        @transaction = Transaction.create!(user_id: request_user.id, ticket_id: @ticket.id, payment_intent: intent, payee_id: @ticket.user.id, amount: @payable)
 
     render json: {
       code: 200,
@@ -381,11 +382,14 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
     render json: {
       code: 400,
       success: false,
-      message: 'currency, quantity and ticket_id are required fields.',
+      message: 'total_price, quantity and ticket_id are required fields.',
       data: nil
     }
   end
   end
+
+
+  
 
   def place_refund_request
     if !params[:ticket_id].blank?
@@ -447,7 +451,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   def can_purchase?(ticket, purchase_quantity)
     purchased_ticket = request_user.ticket_purchases.where(ticket_id: ticket.id).first
     if purchased_ticket.blank? #buying first time?
-    if purchase_quantity.to_i <= @ticket.per_head && purchase_quantity.to_i > 0
+    if purchase_quantity.to_i > 0 && purchase_quantity.to_i <= @ticket.per_head  
       true
     else
       false
@@ -462,6 +466,5 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   end #blank
   end
 
-  
   
 end

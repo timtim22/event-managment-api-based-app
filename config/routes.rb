@@ -115,6 +115,7 @@ Rails.application.routes.draw do
        post 'get-business-events' => 'events#get_business_events'
        post 'get-business-offers' => 'special_offers#get_business_special_offers'
        post 'get-business-competitions' => 'competitions#get_business_competitions'
+       post 'events/get-tickets' => 'tickets#get_tickets'
       
     
       # get '/*a', to: 'application#not_found'

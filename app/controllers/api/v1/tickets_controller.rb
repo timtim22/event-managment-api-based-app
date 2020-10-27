@@ -48,4 +48,50 @@ class Api::V1::TicketsController < Api::V1::ApiMasterController
     }
   end
   end
+
+
+  def get_tickets
+    if !params[:event_id].blank?
+       @event = Event.find(params[:event_id])
+       @tickets = []
+       @event.tickets.each do |ticket|
+         @tickets << {
+           id: ticket.id,
+           title: ticket.title,
+           price: ticket.price,
+           sold_out: sold_out?(ticket),
+           ticket_type: ticket.ticket_type,
+           event_name: ticket.event.name,
+           event_location: ticket.event.location,
+           event_start_time: ticket.event.start_time,
+           event_date: ticket.event.start_date,
+         }
+       end
+
+       render json: {
+         code: 200,
+         success: true,
+         message: '',
+         data: {
+           tickets: @tickets
+         }
+       }
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: 'event_id is required field.',
+        data: nil
+      }
+    end
+  end
+
+
+  private
+   
+  def sold_out?(ticket)
+    ticket.quantity.to_i == 0
+  end
+
+
 end

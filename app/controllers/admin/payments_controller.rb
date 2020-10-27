@@ -4,7 +4,7 @@ class Admin::PaymentsController < Admin::AdminMasterController
   Stripe.api_key = ENV['STRIPE_API_KEY']
 
   def add_payment_account
-   if current_user.connected_account_id == 'no account'
+   if current_user.connected_account_id == ''
    @oauth_url = "https://connect.stripe.com/oauth/authorize?client_id=#{ENV['STRIPE_CLIENT_ID']}&state=#{current_user.stripe_state}&scope=read_write&response_type=code&stripe_user[email]=#{current_user.email}&stripe_user[url]=#{ENV['BASE_URL']}/stripe/oauth"
    else 
     flash.now[:notice] = 'Your payment account has already been added.'
@@ -182,7 +182,7 @@ class Admin::PaymentsController < Admin::AdminMasterController
 
   def save_account_id(id)
     # Save the connected account ID from the response to your database.
-    current_user.update!(connected_account_id: id)
+    current_user.update!(connected_account_id: id) if current_user
   end
 
 end
