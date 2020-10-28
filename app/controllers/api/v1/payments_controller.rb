@@ -343,7 +343,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
          application_fee = calculate_application_fee(@payable,application_fee_percent).ceil
       if @ticket.user.connected_account_id != '' 
         intent = Stripe::PaymentIntent.create({
-          amount: @payable,
+          amount: @payable.to_i,
           currency: 'EUR', #later changeable, will come from admin dashboard
           application_fee_amount:  application_fee,
         }, stripe_account: @ticket.user.connected_account_id)
