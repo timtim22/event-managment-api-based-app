@@ -176,6 +176,11 @@ class Api::V1::ApiMasterController < ApplicationController
       per_page = 30
     end
 
+
+    def event_expired?(event)
+      event.end_date < DateTime.now
+    end
+
    
 
    

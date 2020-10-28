@@ -66,6 +66,8 @@ class Api::V1::TicketsController < Api::V1::ApiMasterController
            event_location: ticket.event.location,
            event_start_time: ticket.event.start_time,
            event_date: ticket.event.start_date,
+           validity: ticket.event.end_date,
+           is_expired: event_expired?(ticket.event)
          }
        end
 

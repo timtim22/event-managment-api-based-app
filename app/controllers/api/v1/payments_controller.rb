@@ -18,7 +18,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
           transaction = Transaction.find(params[:transaction_id]).update!(status: params[:status], stripe_response: params[:stripe_response])
     
 
-          if(transaction.status == 'successful') #while tikcet_type ==  'buy' 'can_purchase' is already inmpleted  to 'get_secret' api which is the first step of stripe payment, so doesn't need here
+          if(params[:status] == 'successful') #while tikcet_type ==  'buy' 'can_purchase' is already inmpleted  to 'get_secret' api which is the first step of stripe payment, so doesn't need here
            
           
               @check = TicketPurchase.where(ticket_id: params[:ticket_id]).where(user_id: request_user.id)
@@ -315,7 +315,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
         render json: {
           code: 400,
           success: false,
-          message: "Your total purchase quantity for this ticket exceeds than allowed per head quantity  #{@ticket.per_head}",
+          message: "Your total purchase quantity for this ticket exceeds than allowed per order quantity  #{@ticket.per_head}",
           data: nil
         }
       end
@@ -331,8 +331,6 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   end
 
 
-
-
   def get_secret
       if !params[:total_price].blank? && !params[:ticket_id].blank? && !params[:quantity].blank?
          application_fee_percent = 5; #later to change it to dynamic value
@@ -340,7 +338,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
      if can_purchase?(@ticket, params[:quantity]) 
          @payable = params[:total_price]
         
-         application_fee = calculate_application_fee(@payable,application_fee_percent).ceil
+         application_fee = calculate_application_fee(@payable.to_i,application_fee_percent).ceil
       if @ticket.user.connected_account_id != '' 
         intent = Stripe::PaymentIntent.create({
           amount: @payable.to_i,
@@ -465,6 +463,8 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
    end
   end #blank
   end
+
+  
 
   
 end
