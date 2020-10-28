@@ -270,6 +270,9 @@ def get_tickets
     host_name: get_full_name(wallet.offer.event.user),
     host_image: wallet.offer.event.user.avatar,
     event_name: wallet.offer.event.name,
+    event_description: wallet.offer.event.description,
+    event_terms_conditions: wallet.offer.event.terms_conditions,
+    going_count: wallet.offer.event.going_interest_levels.size,
     event_id: wallet.offer.event.id,
     event_image: wallet.offer.event.image,
     event_location: wallet.offer.event.location,
@@ -282,6 +285,10 @@ def get_tickets
     per_head: wallet.offer.per_head,
     is_redeemed: is_redeemed(wallet.offer.id, "Ticket", request_user.id),
     redeem_time: redee_time(wallet.offer.id, "Ticket", request_user.id),
+    validity: wallet.offer.event.end_date,
+    is_expired: event_expired?(wallet.offer.event),
+
+
   
   }
 end #each
