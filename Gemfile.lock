@@ -88,12 +88,6 @@ GEM
       carrierwave (>= 0.8.0)
       mime-types (~> 3.0)
       mimemagic (~> 0.3.2)
-    carrierwave-video (0.6.0)
-      carrierwave
-      streamio-ffmpeg
-    carrierwave-video-thumbnailer (0.1.4)
-      carrierwave
-    carrierwave_backgrounder (0.0.2)
     childprocess (3.0.0)
     choice (0.2.0)
     chromedriver-helper (2.1.1)
@@ -362,8 +356,6 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     sqlite3 (1.4.2)
-    streamio-ffmpeg (2.0.0)
-      multi_json (~> 1.8)
     stripe (5.18.0)
     thor (1.0.1)
     thread_safe (0.3.6)
@@ -411,9 +403,6 @@ DEPENDENCIES
   capybara (>= 2.15)
   carrierwave (~> 1.0)
   carrierwave-base64
-  carrierwave-video
-  carrierwave-video-thumbnailer
-  carrierwave_backgrounder
   chromedriver-helper
   coffee-rails (~> 4.2)
   dotenv-rails
@@ -444,7 +433,6 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   selenium-webdriver
   sqlite3
-  streamio-ffmpeg (~> 2.0.0)
   stripe
   ticketmaster-sdk
   turbolinks (~> 5)
