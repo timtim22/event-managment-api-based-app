@@ -910,6 +910,30 @@ end
     }
   end
 
+  def update_profile_pictures
+    if @update = request_user.update!(avatar: params[:avatar])
+      render json: {
+        code: 200,
+        success: true,
+        message: 'Profile picture successfully updated.',
+        data: {
+          picture: request_user.avatar
+        }
+      }
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: @update.errors.full_messages,
+        data: nil
+      }
+    end
+  end
+
+
+  
+   
+
   private
 
   def find_user
@@ -946,6 +970,8 @@ end
     false
   end
 end
+
+
 
 def has_passes?(event)
   !event.passes.blank?

@@ -607,7 +607,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
     if !params[:event_id].blank?
       @event = Event.find(params[:event_id])
-      if @event.update(is_cancelled: true)
+      if @event.update(status: 'cancelled')
         render json: {
           code: 200,
           success: true,
@@ -636,7 +636,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
     def destroy
       event = Event.find(params[:id])
-      if event.is_cancelled == true
+      if event.status == "cancelled"
          if event.destroy
            render json: {
              code: 200,

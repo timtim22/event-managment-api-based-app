@@ -439,6 +439,17 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   #   end
   # end
 
+
+  def get_stripe_params
+    render json: {
+      code: 200,
+      success: true,
+      data: {
+        params: params
+      }
+    }
+  end
+
   private
 
   def calculate_application_fee(amount, application_fee_percent)

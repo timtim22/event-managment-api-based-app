@@ -55,7 +55,7 @@ class Admin::EventsController < Admin::AdminMasterController
         @event.description = params[:description]
         @event.location = trim_space(params[:location])
         @event.image = params[:image]
-        @event.video = params[:file]
+        @event.video = params[:video]
         @event.lat = params[:lat]
         @event.lng = params[:lng]
         @event.feature_media_link = params[:feature_media_link]

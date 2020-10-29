@@ -38,7 +38,7 @@ accepts_nested_attributes_for :event_attachments
 
 mount_uploader :image, ImageUploader
 mount_base64_uploader :image, ImageUploader
-mount_uploader :file, VideoUploader
+mount_uploader :video, VideoUploader
 
 
 mount_base64_uploader :image, ImageUploader
