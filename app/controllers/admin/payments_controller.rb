@@ -20,7 +20,7 @@ class Admin::PaymentsController < Admin::AdminMasterController
   if !state_matches?(state)
      flash[:alert_danger] = "State doesn't match. Oauth failed.Please try again later."
      redirect_to admin_add_payment_account_path
-  end
+  else
 
   # Send the authorization code to Stripe's API.
   code = params[:code]
@@ -36,7 +36,7 @@ class Admin::PaymentsController < Admin::AdminMasterController
   flash.now[:notice] = "Your account has been added successfully."
   
    render :oauth_success_page
-  
+  end
   end
 
   def received_payments

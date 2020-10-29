@@ -6,18 +6,18 @@
   <div class="col-12 grid-margin stretch-card">
     <div class="card">
     <div class="card-body">
-        <h4 class="card-title">Create competition</h4>
+        <h4 class="card-title">Update competition</h4>
          <%= render "shared/form_errors", object: @competition %>
          <%= render "shared/notice" %>
         <form method="post" action="<%= admin_competitions_path %>" class="forms-sample" enctype="multipart/form-data">
         <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
         <div class="form-group">
         <label for="title">Title</label>
-        <input type="text" class="form-control" id="name" name="title" placeholder="Title">
+        <input type="text" class="form-control" id="name" name="title" value="<%= @competition.title %>">
         </div>
         <div class="form-group">
           <label for="description">Description</label>
-          <textarea name="description" class="form-control" rows="12"></textarea>
+          <textarea name="description" class="form-control" rows="12"><%= @competition.description %></textarea>
        </div>
          <div class="form-group">
             <label for="image" class="control-label">Competition Image</label>
@@ -35,26 +35,26 @@
        </div>
         <div class="form-group">
             <label for="start_date">Start date</label>
-            <input type="text" class="form-control date" id="start_date" name="start_date" placeholder="Start date" data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true">
+            <input type="text" class="form-control date" id="start_date" name="start_date" placeholder="Start date" data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true" value="<%= @competition.start_date %>">
         </div>
         <div class="form-group">
            <label for="end_date">End date</label>
-           <input type="text" class="form-control date" id="end_date" name="end_date" placeholder="End date" data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true">
+           <input type="text" class="form-control date" id="end_date" name="end_date"  data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true" value="<%= @competition.end_date %>">
         </div>
         <div class="price_div_competition">
         <div class="form-group">
-          <label for="price">Price (Coins)</label>
-          <input type="number" class="form-control price" id="price_competition" name="price" placeholder="Price">
+          <label for="price">Price </label>
+          <input type="number" class="form-control price" id="price_competition" name="price" value="<%= @competition.price %>">
          </div>
         </div><!-- price div-->
         <div class="form-group">
             <div id="time_start">
             <label for="email">Start Time</label>
-            <input type="text" class="form-control time ui-timepicker-input" id="start_time" name="start_time" placeholder="start_Time">
+            <input type="text" class="form-control time ui-timepicker-input" id="start_time" name="start_time" value="<%= @competition.start_time %>">
              </div><!--time start-->
              <div id="time_end">
               <label for="email">End Time</label>
-              <input type="text" class="form-control time ui-timepicker-input" id="end_time" name="end_time" placeholder="End Time">
+              <input type="text" class="form-control time ui-timepicker-input" id="end_time" name="end_time" value="<%= @competition.end_time %>">
             </div><!--time end-->
         </div>
 
@@ -65,20 +65,20 @@
 
          <div class="form-group">
          <label for="terms_conditions">Terms and Conditions</label>
-         <textarea name="terms_conditions" class="form-control" id="terms_conditions" rows="12"></textarea>
+         <textarea name="terms_conditions" class="form-control" id="terms_conditions" rows="12"><%= @competition.terms_conditions %></textarea>
       </div>
 
          <div class="form-group">
             <label for="start_date">Validity Date</label>
-            <input type="text" class="form-control date" id="validity" name="validity" placeholder="Validity" data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true">
+            <input type="text" class="form-control date" id="validity" name="validity" value="<%= @competition.validity %>" data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true">
        </div>
 
        <div class="form-group">
           <label for="validity_time">Validity Time</label>
-          <input type="text" class="form-control time ui-timepicker-input" id="validity_time" name="validity_time" placeholder="Validity Time">
+          <input type="text" class="form-control time ui-timepicker-input" id="validity_time" name="validity_time" value="<%= @competition.validity_time %>">
       </div><!--validity time-->
 
-        <button type="submit" class="btn btn-primary mr-2">Create</button>
+        <button type="submit" class="btn btn-primary mr-2">Update</button>
         </form>
     </div>
     </div>
