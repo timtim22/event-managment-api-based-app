@@ -399,6 +399,7 @@ class ApplicationController < ActionController::Base
       "end_time" => event.end_time,
       "event_type" => event.event_type,
       "allow_chat" => event.allow_chat,
+      "status" => event.status,
       "event_forwarding" => event.event_forwarding,
       "over_18" => event.over_18,
       "image" => event.image,
@@ -951,6 +952,11 @@ def all_passes_added_to_wallet?(request_user,passes)
     passes_ids = passes.map {|pass| pass.id }
     added_passes_ids = request_user.wallets.where(offer_type: 'Pass').where(offer_id: passes_ids).map {|w| w.offer.id }
     passes_ids.size == added_passes_ids.size
+end
+
+
+def get_mime_type(filename)
+  mime_type = Rack::Mime.mime_type(File.extname(filename))
 end
   
 

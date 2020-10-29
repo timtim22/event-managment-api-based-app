@@ -11,6 +11,15 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   def purchase_ticket
     if !params[:ticket_id].blank? && !params[:ticket_type].blank?  && !params[:quantity].blank? 
         @ticket = Ticket.find(params[:ticket_id])
+        if @ticket.quantity <  params[:quantity].to_i
+          render json: {
+            code: 400,
+            success: false,
+            message: 'Wrong quantity is selected.',
+            data: nil
+          }
+          return
+        end
         @event = @ticket.event
       if params[:ticket_type] == 'buy'
         if !params[:status].blank? && !params[:stripe_response].blank? && !params[:transaction_id].blank?
@@ -19,12 +28,12 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
     
 
           if(params[:status] == 'successful') #while tikcet_type ==  'buy' 'can_purchase' is already inmpleted  to 'get_secret' api which is the first step of stripe payment, so doesn't need here
-           
+            request_user.going_interest_levels.create!(event: @event)
           
               @check = TicketPurchase.where(ticket_id: params[:ticket_id]).where(user_id: request_user.id)
           if @check.blank?
             if @purchase = request_user.ticket_purchases.create!(ticket_id: params[:ticket_id], quantity: params[:quantity])
-              #update total quantity
+              #update total quantity   
               @ticket.quantity = @ticket.quantity - params[:quantity].to_i
               @ticket.save
 
@@ -303,6 +312,8 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
         }
 
       else
+
+        transaction = Transaction.find(params[:transaction_id]).update!(status: params[:status], stripe_response: params[:stripe_response])
       render json: {
         code: 400,
         success: false,
@@ -341,7 +352,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
          application_fee = calculate_application_fee(@payable.to_i,application_fee_percent).ceil
       if @ticket.user.connected_account_id != '' 
         intent = Stripe::PaymentIntent.create({
-          amount: @payable.to_i,
+          amount: @payable.to_i * 100,
           currency: 'EUR', #later changeable, will come from admin dashboard
           application_fee_amount:  application_fee,
         }, stripe_account: @ticket.user.connected_account_id)

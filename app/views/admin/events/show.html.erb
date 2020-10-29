@@ -32,10 +32,6 @@
 <% end %>
 <% end %>
 <% if !@event.sponsors.blank? %>
-<br>
-<h5>Attachments </h5>
-  
- 
 <h5>Sponsers:</h5>
 <% @event.sponsors.each do |s| %>
   <li><%= s.name %>
@@ -44,8 +40,25 @@
   <% end %>
   <% end %>
   
-  <video controls width="640" height="480" src="<%= @event.video.url %>"></video>
+
   </li>
+
+  <br>
+<% if !@event.event_attachments.blank? %>  
+<h5>Additional Media</h5>
+<% @event.event_attachments.each do |attachment| %>
+<li>
+
+<% if attachment.media_type == "video" %>
+<video controls width="640" height="480" src="<%= attachment.media.url %>"></video>
+<% elsif attachment.media_type =='image' %>
+<img src="<%= attachment.media.url %> ">
+  <br>
+<% end %>
+ </li>
+ <% end %>
+ <% end %>
+
 </div>
  </div><!--container -->
  <div class="container">

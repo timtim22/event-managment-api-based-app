@@ -38,10 +38,10 @@ accepts_nested_attributes_for :event_attachments
 
 mount_uploader :image, ImageUploader
 mount_base64_uploader :image, ImageUploader
-mount_uploader :video, VideoUploader
 
 
-mount_base64_uploader :image, ImageUploader
+
+
 paginates_per 20
 #custom queries/scopes\
 scope :events_by_date, ->(date) { Event.where(:date => date) }

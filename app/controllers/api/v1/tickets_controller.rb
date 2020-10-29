@@ -62,6 +62,7 @@ class Api::V1::TicketsController < Api::V1::ApiMasterController
            sold_out: sold_out?(ticket),
            ticket_type: ticket.ticket_type,
            quantity: ticket.quantity,
+           per_head: ticket.per_head,
            event_name: ticket.event.name,
            event_location: ticket.event.location,
            event_start_time: ticket.event.start_time,
