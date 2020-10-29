@@ -235,10 +235,10 @@ class Admin::EventsController < Admin::AdminMasterController
      if @event.save
         
       if !params[:event_attachments].blank?
+
         params[:event_attachments]['media'].each do |m|
-          @event_attachment = @event.event_attachments.new(:media => m,:event_id => @event.id, media_type: 'image')
-          @event_attachment.save
-         end
+          @event_attachment = @event.event_attachments.create!(:media => m,:event_id => @event.id, media_type: m.content_type.split('/').first)
+        end
         end #if
 
 
