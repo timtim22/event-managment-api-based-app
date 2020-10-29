@@ -81,7 +81,10 @@ img.profile_img {
   padding: 5px;
 }
 
-
+.additional_media_size {
+  max-width: 350px;
+  margin: 1px solid #ccc;
+} 
 
 
 .widget .panel-body { padding:0px; }
