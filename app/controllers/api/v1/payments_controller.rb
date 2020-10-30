@@ -368,7 +368,8 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
       data: {
         client_secret: intent.client_secret,
         publish_key: ENV['STRIPE_PUBLISH_KEY'],
-        transaction_id: @transaction.id
+        transaction_id: @transaction.id,
+        account_id: @ticket.user.connected_account_id
       }
     }
   else
