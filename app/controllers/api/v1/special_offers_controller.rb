@@ -83,7 +83,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
           success:true,
           message: '',
           data: {
-            events: offers
+            offers: offers
           }
         }
 

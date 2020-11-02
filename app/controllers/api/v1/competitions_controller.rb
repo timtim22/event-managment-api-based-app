@@ -452,7 +452,7 @@ end
          success:true,
          message: '',
          data: {
-           events: competitions
+           competitions: competitions
          }
        }
    else
