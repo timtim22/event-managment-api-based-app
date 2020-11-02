@@ -181,9 +181,5 @@ class Api::V1::ApiMasterController < ApplicationController
       event.end_date < DateTime.now
     end
 
-   
-
-   
-
 end
 

@@ -159,6 +159,9 @@ GEM
     ffi (1.12.2)
     ffi (1.12.2-x64-mingw32)
     ffi (1.12.2-x86-mingw32)
+    file_validators (2.3.0)
+      activemodel (>= 3.2)
+      mime-types (>= 1.0)
     font-awesome-sass (5.11.2)
       sassc (>= 1.11)
     globalid (0.4.2)
@@ -408,6 +411,7 @@ DEPENDENCIES
   dotenv-rails
   eventbrite_sdk
   execjs
+  file_validators
   font-awesome-sass (~> 5.11.2)
   gon
   google_places
