@@ -9,9 +9,9 @@ class Api::V1::NewsFeedsController < Api::V1::ApiMasterController
        render json: {
         code: 200,
         success: true,
-        message: 'business_id is required field.',
+        message: '',
         data: {
-          data: @news_feeds
+          news_feeds: @news_feeds
         }
       }
     else

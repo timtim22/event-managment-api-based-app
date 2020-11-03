@@ -439,7 +439,6 @@ end
    gives_away = get_ambassador_gives_away(user)
   end #is_ambassador if
 
-
   user.events_to_attend.each do |event|
     attending << {
       "event_id" => event.id,
@@ -628,6 +627,175 @@ else
     data: nil
   }
 end  
+ end
+
+
+
+ def activity_logs
+   if !params[:user_id].blank?
+     user = User.find(params[:user_id])
+     activity_logs = []
+     user.activity_logs.page(params[:page]).per(10).each do |log|
+      resource = {}
+      case log.resource_type
+      when 'Event'
+       resource['id'] = log.resource_id
+       resource['name'] = log.resource.name
+       resource['host_name'] = get_full_name(log.resource.user)
+       resource['location'] = log.resource.location
+       resource['start_date'] = log.resource.start_date
+       resource['interested_people_count'] = log.resource.interest_levels.size
+
+      when 'FriendRequest'
+      resource["friend_name"] = get_full_name(log.resource.user)
+      resource['friends_count'] = log.resource.user.friends.size
+      resource['mutual_friends_count'] = request_user.friends.size
+
+      when 'Follow'
+      resource['name'] = get_full_name(log.resource.following)
+      resource['followers_count'] = log.resource.following.followers.size
+      resource['mututal_followers_count'] = request_user.followings.size
+
+      when 'AmbassadorRequest'
+        resource['profile_name'] = log.resource.business.business_profile.profile_name
+
+      when 'Pass'
+        resource['title'] = log.resource.title
+        resource['host_name'] = get_full_name(log.resource.user)
+        resource['location'] = log.resource.event.location
+        resource['start_date'] = log.resource.event.start_date
+        resource['grabbers_counts'] = log.resource.wallets.size
+
+      when 'SpecialOffer'
+        resource['title'] = log.resource.title
+        resource['host_name'] = get_full_name(log.resource.user)
+        resource['location'] = log.resource.location
+        resource['start_date'] = log.resource.date
+        resource['grabbers_counts'] = log.resource.wallets.size
+        
+      when 'Competition'
+        resource['title'] = log.resource.title
+        resource['host_name'] = get_full_name(log.resource.user)
+        resource['location'] = log.resource.location
+        resource['validity'] = log.resource.validity_time
+
+      when 'OfferForwarding'
+        resource['title'] = log.resource.offer.title
+        resource['host_name'] = get_full_name(log.resource.user)
+        resource['forwarded_to'] =  get_full_name(log.resource.recipient)
+        
+      else
+        "do nothing"
+      end #case
+
+      activity_logs << {
+        "id" => log.id,
+        "action_type" => log.action_type,
+        "action" => log.action,
+        "resource_type" => log.resource_type,
+        "resource" => resource,
+        "created_at" => log.created_at
+       
+      }
+    end #each
+
+     render json: {
+       code: 200,
+       success: true,
+       message: '',
+       data: {
+         activity_logs: activity_logs
+       }
+     }
+   else
+    render json: {
+      code: 400,
+      success: false,
+      message: 'user_id is required field.',
+      data: nil
+    }
+   end
+ end
+
+
+ def attending
+   if !params[:user_id].blank?
+     attending = []
+     user = User.find(params[:user_id])
+     attendings = user.events_to_attend.page(params[:page]).per(30).each do |event|
+      attending << {
+        "event_id" => event.id,
+        "name" => event.name,
+        "start_date" => event.start_date,
+        "end_date" => event.end_date,
+        "start_time" => event.start_time,
+        "end_time" => event.end_time,
+        "location" => event.location,
+        "lat" => event.lat,
+        "lng" => event.lng,
+        "event_type" => event.event_type,
+        "image" => event.image,
+        "price_type" => event.price_type,
+        "price" => event.price,
+        "additional_media" => event.event_attachments,
+        "created_at" => event.created_at,
+        "updated_at" => event.updated_at,
+        "host" => event.host,
+        "host_image" => event.user.avatar,
+        "interest_count" => event.interested_interest_levels.size,
+        "going_count" => event.going_interest_levels.size,
+        "demographics" => get_demographics(event),
+        'has_passes' => has_passes?(event)
+      }
+     end#each
+
+     render json: {
+       code: 200,
+       success: true,
+       message: '',
+       data: {
+         attending: attending
+       }
+     }
+   else
+    render json: {
+      code: 400,
+      message: "user_id is required field.",
+      data: nil
+    }
+  end
+ end
+
+
+ def gives_away
+  if !params[:user_id].blank?
+    user = User.find(params[:user_id])
+    if is_ambassador?(user)
+      gives_away = get_ambassador_gives_away(user)
+      render json: {
+        code: 200,
+        success: true,
+        message: '',
+        data: {
+          gives_away: gives_away
+        }
+      }
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: 'this user is not an ambassador.',
+        data: nil
+      }
+    end #is_ambassador if
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: 'user_id is required field.',
+      data: nil
+    }
+  end
  end
 
  #own profile
