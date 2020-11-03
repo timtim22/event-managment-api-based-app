@@ -34,9 +34,12 @@
                     <label for="email">Type</label>
                     <select class="form-control" id="type" name="type">
                       <option value="0" selected>Select Type</option>
-                    <% getRoles.each do |role| %>
-                     <option value="<%= role.id %>"><%= role.name %></option>
-                    <% end %>
+                       
+                      <% getRoles.each do |role| %>
+                       <% if role.id != 1 %>
+                       <option value="<%= role.id %>"><%= role.name %></option>
+                       <% end %>
+                       <% end %>
                     </select>
                 </div>
                
