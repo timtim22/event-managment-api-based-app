@@ -115,6 +115,7 @@ Rails.application.routes.draw do
        post 'get-business-events' => 'events#get_business_events'
        post 'get-business-offers' => 'special_offers#get_business_special_offers'
        post 'get-business-competitions' => 'competitions#get_business_competitions'
+       post 'get-business-news-feeds' => 'news_feeds#get_business_news_feeds'
        post 'event/get-tickets' => 'tickets#get_tickets'
        post 'payments/get-stripe-params' => 'payments#get_stripe_params'
        post 'users/update-profile-picture' => 'users#update_profile_pictures'

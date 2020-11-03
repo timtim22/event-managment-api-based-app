@@ -335,9 +335,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   def get_business_events
     if !params[:business_id].blank?
       business = User.find(params[:business_id])
-      events = []
-      business.events.page(params[:page]).per(30).map { |e| get_simple_event_object(e) }
-       
+      events =  business.events.page(params[:page]).per(30).map { |e| get_simple_event_object(e) }
         render json: {
           code: 200,
           success:true,
