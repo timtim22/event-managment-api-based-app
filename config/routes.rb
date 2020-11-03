@@ -122,6 +122,9 @@ Rails.application.routes.draw do
        post 'user-activity-logs' => 'users#activity_logs'
        post 'user-attending' => 'users#attending'
        post 'user-gives-away' => 'users#gives_away'
+       get 'my-gives-away' => 'users#my_gives_away'
+       get 'my-attending' => 'users#my_attending'
+       get 'my-activity-logs' => 'users#my_activity_logs'
       
     
       # get '/*a', to: 'application#not_found'
