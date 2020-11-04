@@ -446,7 +446,7 @@ end
   def get_business_competitions
     if !params[:business_id].blank?
       business = User.find(params[:business_id])
-      competitions = business.competitions.map {|competition| get_competition_object(competition) }
+      competitions = business.competitions.not_expired.map {|competition| get_competition_object(competition) }
        render json: {
          code: 200,
          success:true,

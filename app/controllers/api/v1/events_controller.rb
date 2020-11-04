@@ -335,46 +335,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   def get_business_events
     if !params[:business_id].blank?
       business = User.find(params[:business_id])
-      events = []
-      business.events.page(params[:page]).per(30).each do |e|
-        events << {
-          'id' => e.id,
-          'name' => e.name,
-          'description' => e.description,
-          'start_date' => e.start_date,
-          'end_date' => e.end_date,
-          'start_time' => e.start_time,
-          'end_time' => e.end_time,
-          'price' => get_formated_price(e.price), # check for price if it is zero
-          'price_type' => e.price_type,
-          'event_type' => e.event_type,
-          'additional_media' => e.event_attachments,
-          'location' => e.location,
-          'lat' => e.lat,
-          'lng' => e.lng,
-          'image' => e.image,
-          'is_interested' => is_interested?(e),
-          'is_going' => is_attending?(e),
-          'is_followed' => is_followed(e.user),
-          'interest_count' => e.interested_interest_levels.size,
-          'going_count' => e.going_interest_levels.size,
-          'followers_count' => e.user ? e.user.followers.size : nil ,
-          'following_count' => e.user ? e.user.followings.size : nil,
-          'demographics' => get_demographics(e),
-          'passes_grabbers_friends_count' =>  get_passes_grabbers_friends_count(e),
-          'going_users' => e.going_users,
-          "interested_users" => getInterestedUsers(e),
-          'creator_name' => e.user.business_profile.profile_name,
-          'creator_id' => e.user.id,
-          'creator_image' => e.user.avatar,
-          'categories' => !e.categories.blank? ? e.categories : @empty,
-          'grabbers' => get_event_passes_grabbers(e),
-          'sponsors' => e.sponsors,
-          "mute_chat" => get_mute_chat_status(e),
-          "mute_notifications" => get_mute_notifications_status(e) 
-        }
-      end #each
-
+      events =  business.events.page(params[:page]).per(30).map { |e| get_simple_event_object(e) }
         render json: {
           code: 200,
           success:true,

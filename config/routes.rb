@@ -115,9 +115,16 @@ Rails.application.routes.draw do
        post 'get-business-events' => 'events#get_business_events'
        post 'get-business-offers' => 'special_offers#get_business_special_offers'
        post 'get-business-competitions' => 'competitions#get_business_competitions'
+       post 'get-business-news-feeds' => 'news_feeds#get_business_news_feeds'
        post 'event/get-tickets' => 'tickets#get_tickets'
        post 'payments/get-stripe-params' => 'payments#get_stripe_params'
        post 'users/update-profile-picture' => 'users#update_profile_pictures'
+       post 'user-activity-logs' => 'users#activity_logs'
+       post 'user-attending' => 'users#attending'
+       post 'user-gives-away' => 'users#gives_away'
+       get 'my-gives-away' => 'users#my_gives_away'
+       get 'my-attending' => 'users#my_attending'
+       get 'my-activity-logs' => 'users#my_activity_logs'
       
     
       # get '/*a', to: 'application#not_found'

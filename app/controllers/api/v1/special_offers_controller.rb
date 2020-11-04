@@ -76,14 +76,14 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
   def get_business_special_offers
     if !params[:business_id].blank?
        business = User.find(params[:business_id])
-       offers = business.special_offers.map {|offer| get_special_offer_object(offer) }
+       offers = business.special_offers.not_expired.map {|offer| get_special_offer_object(offer) }
 
         render json: {
           code: 200,
           success:true,
           message: '',
           data: {
-            offers: offers
+            special_offers: offers
           }
         }
 
