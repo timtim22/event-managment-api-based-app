@@ -2,6 +2,7 @@
 class Api::V1::ApiMasterController < ApplicationController
     SECRET_KEY = Rails.application.secrets.secret_key_base.to_s
     protect_from_forgery with: :null_session
+    before_action :check_if_app_user?
 
  
      
@@ -179,6 +180,20 @@ class Api::V1::ApiMasterController < ApplicationController
 
     def event_expired?(event)
       event.end_date < DateTime.now
+    end
+
+    private
+
+    def check_if_app_user?
+      if request_user && request_user.app_user != true
+         render json: {
+           code: 400,
+           success: false,
+           message: 'Being a business user you can not perform any app operation here.',
+           data: nil
+         }
+         return
+      end
     end
 
 end

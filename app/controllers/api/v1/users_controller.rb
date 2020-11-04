@@ -242,154 +242,7 @@ end
 
   def get_profile
     user = request_user
-      attending = []
-      competitions = []
-      activity_logs = []
-      user.events_to_attend.each do |event|
-      attending << {
-        "event_id" => event.id,
-        "name" => event.name,
-        "start_date" => event.start_date,
-        "end_date" => event.end_date,
-        "start_time" => event.start_time,
-        "end_time" => event.end_time,
-        "location" => event.location,
-        "lat" => event.lat,
-        "lng" => event.lng,
-        "event_type" => event.event_type,
-        "image" => event.image,
-        "price_type" => event.price_type,
-        "price" => get_formated_price(event.price),
-        "additional_media" => event.event_attachments,
-        "created_at" => event.created_at,
-        "updated_at" => event.updated_at,
-        "host" => event.host,
-        "host_image" => event.user.avatar,
-        "interest_count" => event.interested_interest_levels.size,
-        "going_count" => event.going_interest_levels.size,
-        "demographics" => get_demographics(event),
-        'has_passes' => has_passes?(event)
-      }
-    end
-
-    user.interested_in_events.each do |event|
-      attending << {
-        "event_id" => event.id,
-        "name" => event.name,
-        "start_date" => event.start_date,
-        "end_date" => event.end_date,
-        "start_time" => event.start_time,
-        "end_time" => event.end_time,
-        "location" => event.location,
-        "lat" => event.lat,
-        "lng" => event.lng,
-        "event_type" => event.event_type,
-        "image" => event.image,
-        "price_type" => event.price_type,
-        "price" => event.price,
-        "additional_media" => event.event_attachments,
-        "created_at" => event.created_at,
-        "updated_at" => event.updated_at,
-        "host" => event.host,
-        "host_image" => event.user.avatar,
-        "interest_count" => event.interested_interest_levels.size,
-        "going_count" => event.going_interest_levels.size,
-        "demographics" => get_demographics(event),
-        'has_passes' => has_passes?(event)
-      }
-    end
-    user.competitions_to_attend.each do |competition|
-    competitions << {
-      id: competition.id,
-      title: competition.title,
-      description: competition.description,
-      location: competition.location,
-      start_date: competition.start_date,
-      end_date: competition.end_date,
-      start_time: competition.start_time,
-      end_time: competition.end_time,
-      price: competition.price,
-      lat: competition.lat,
-      lng: competition.lng,
-      image: competition.image.url,
-      friends_participants_count: competition.registrations.map {|reg| if(request_user.friends.include? reg.user) then reg.user end }.size,
-      creator_name: get_full_name(competition.user),
-      creator_image: competition.user.avatar,
-      total_entries_count: get_entry_count(request_user, competition),
-      issued_by: get_full_name(competition.user),
-      validity: competition.validity
-      }
-     end
-
-      user.activity_logs.each do |log|
-        resource = {}
-        case log.resource_type
-        when 'Event'
-         resource['id'] = log.resource_id
-         resource['name'] = log.resource.name
-         resource['host_name'] = get_full_name(log.resource.user)
-         resource['location'] = log.resource.location
-         resource['start_date'] = log.resource.start_date
-         resource['interested_people_count'] = log.resource.interest_levels.size
-
-        when 'FriendRequest'
-        resource["friend_name"] = get_full_name(log.resource.user)
-        resource['friends_count'] = log.resource.user.friends.size
-        resource['mutual_friends_count'] = request_user.friends.size
-
-        when 'Follow'
-        resource['name'] = get_full_name(log.resource.following)
-        resource['followers_count'] = log.resource.following.followers.size
-        resource['mututal_followers_count'] = request_user.followings.size
-
-        when 'AmbassadorRequest'
-          resource['profile_name'] = log.resource.business.business_profile.profile_name
-
-        when 'Pass'
-          resource['title'] = log.resource.title
-          resource['host_name'] = get_full_name(log.resource.user)
-          resource['location'] = log.resource.event.location
-          resource['start_date'] = log.resource.event.start_date
-          resource['grabbers_counts'] = log.resource.wallets.size
-
-        when 'SpecialOffer'
-          resource['title'] = log.resource.title
-          resource['host_name'] = get_full_name(log.resource.user)
-          resource['location'] = log.resource.location
-          resource['start_date'] = log.resource.date
-          resource['grabbers_counts'] = log.resource.wallets.size
-          
-        when 'Competition'
-          resource['title'] = log.resource.title
-          resource['host_name'] = get_full_name(log.resource.user)
-          resource['location'] = log.resource.location
-          resource['validity'] = log.resource.validity_time
-
-        when 'OfferForwarding'
-          resource['title'] = log.resource.offer.title
-          resource['host_name'] = get_full_name(log.resource.user)
-          resource['forwarded_to'] =  get_full_name(log.resource.recipient)
-          
-        else
-          "do nothing"
-        end #case
-
-        activity_logs << {
-          "id" => log.id,
-          "action_type" => log.action_type,
-          "action" => log.action,
-          "resource_type" => log.resource_type,
-          "resource" => resource,
-          "created_at" => log.created_at
-         
-        }
-      end
-
-
- 
-
       profile = {
-
           'first_name' => user.profile.first_name, 
           'last_name' => user.profile.last_name,
           'avatar' => user.avatar,
@@ -409,10 +262,7 @@ end
           'youtube' => user.profile.youtube,
           'friends_count' => user.friends.size,
           'follows_count' => user.followings.size,
-          'followers_count' => user.followers.size,
-          'competitions' => competitions,
-          'attending' => attending,
-          'activities' => activity_logs
+          'followers_count' => user.followers.size
       }
 
       render json: {
@@ -478,7 +328,7 @@ end
    if !params[:user_id].blank?
      user = User.find(params[:user_id])
      activity_logs = []
-     user.activity_logs.page(params[:page]).per(10).each do |log|
+     user.activity_logs.sort_by_date.page(params[:page]).per(10).each do |log|
       resource = {}
       case log.resource_type
       when 'Event'
@@ -644,7 +494,7 @@ end
  def my_activity_logs
     user = request_user
     activity_logs = []
-    user.activity_logs.page(params[:page]).per(10).each do |log|
+    user.activity_logs.sort_by_date.page(params[:page]).per(10).each do |log|
      resource = {}
      case log.resource_type
      when 'Event'
