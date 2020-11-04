@@ -210,6 +210,8 @@ Rails.application.routes.draw do
           resources :comments
         end
 
+        resources :competitions
+
         resources :special_offers 
         post '/auth/login', to: 'authentication#login'
         post '/send-verification-code', to: 'users#send_verification_code'

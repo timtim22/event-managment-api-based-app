@@ -74,11 +74,8 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
     @special_offer.image = params[:image]
     @special_offer.redeem_code = generate_code
     @special_offer.terms_conditions = params[:terms_conditions]
-    if !params[:location].blank? 
-      @special_offer.location = params[:location][:name]
-      @special_offer.lat = params[:location][:geometry][:lat] 
-      @special_offer.lng = params[:location][:geometry][:lng]
-    end
+    @special_offer.location = params[:location]
+    
     
     if @special_offer.save
      # create_activity(request_user, "created special offer", @special_offer, "SpecialOffer", admin_special_offer_path(@special_offer),@special_offer.title, 'post', 'created_special_offer')
