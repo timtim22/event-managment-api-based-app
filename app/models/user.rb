@@ -49,6 +49,7 @@ class User < ApplicationRecord
   has_many :to_me_replies, foreign_key: :reply_to_id, class_name: 'Reply', dependent: :destroy
   has_many :ticket_purchases, dependent: :destroy
   has_many :tickets, dependent: :destroy
+  has_many :transactions, dependent: :destroy
   has_many :received_payments, foreign_key: :payee_id, class_name: 'Transaction', dependent: :destroy
   has_many :refund_requests, dependent: :destroy
   has_many :business_refund_requests, foreign_key: :business_id, class_name: 'RefundRequest', dependent: :destroy

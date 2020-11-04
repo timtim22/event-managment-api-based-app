@@ -870,13 +870,16 @@ end
  end
 
 
- def approve_ambassador(ambassador_request_id)
+ def approve_ambassador(user, ambassador_request_id)
    request = AmbassadorRequest.find(ambassador_request_id)
    request.status = 'accepted' 
    profile =  request.user.profile
    profile.is_ambassador = true
 
    if request.save && profile.save
+      #create business activity
+      create_activity(user, " approved #{User.get_full_name(user)} as an ambassador ", request, 'AmbassadorRequest', '', '', 'post', 'approved_ambassador')
+      create_activity(request.user, "become ambassador ", request, 'AmbassadorRequest', '', '', 'post', 'become_ambassador')
     true
    else
     false
@@ -959,10 +962,6 @@ def get_mime_type(filename)
   mime_type = Rack::Mime.mime_type(File.extname(filename))
 end
   
-
-
-  
-
   helper_method :SetJsVariables
   helper_method :is_admin_or_super_admin?
   helper_method :create_activity

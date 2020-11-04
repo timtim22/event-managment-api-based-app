@@ -6,7 +6,7 @@ class Admin::AmbassadorsController < Admin::AdminMasterController
   end
 
   def approve
-    if approve_ambassador(params[:id])
+    if approve_ambassador(current_user,params[:id])
       flash[:notice] = "Ambassador successfully approved."
       redirect_to admin_ambassadors_path 
     else

@@ -243,6 +243,7 @@ end
   def get_profile
     user = request_user
       profile = {
+          'id' => user.id,
           'first_name' => user.profile.first_name, 
           'last_name' => user.profile.last_name,
           'avatar' => user.avatar,
@@ -413,35 +414,10 @@ end
 
  def attending
    if !params[:user_id].blank?
-     attending = []
+    
      user = User.find(params[:user_id])
-     attendings = user.events_to_attend.page(params[:page]).per(30).each do |event|
-      attending << {
-        "event_id" => event.id,
-        "name" => event.name,
-        "start_date" => event.start_date,
-        "end_date" => event.end_date,
-        "start_time" => event.start_time,
-        "end_time" => event.end_time,
-        "location" => event.location,
-        "lat" => event.lat,
-        "lng" => event.lng,
-        "event_type" => event.event_type,
-        "image" => event.image,
-        "price_type" => event.price_type,
-        "price" => event.price,
-        "additional_media" => event.event_attachments,
-        "created_at" => event.created_at,
-        "updated_at" => event.updated_at,
-        "host" => event.host,
-        "host_image" => event.user.avatar,
-        "interest_count" => event.interested_interest_levels.size,
-        "going_count" => event.going_interest_levels.size,
-        "demographics" => get_demographics(event),
-        'has_passes' => has_passes?(event)
-      }
-     end#each
-
+     attending = user.events_to_attend.page(params[:page]).per(30).map {|event| get_simple_event_object(event) }
+     
      render json: {
        code: 200,
        success: true,

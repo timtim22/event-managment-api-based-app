@@ -13,7 +13,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
     if check.blank?
     if  @ambassador_request = @business.business_ambassador_requests.create!(user_id: request_user.id)
      
-       approve_ambassador(@ambassador_request.id)
+       approve_ambassador(request_user, @ambassador_request.id)
      
 
       if @notification = Notification.create(recipient: @business, actor: request_user, action: get_full_name(request_user) + " sent you ambassador request", notifiable: @ambassador_request, url: '/admin/ambassadors', notification_type: 'web', action_type: 'send_request')  
