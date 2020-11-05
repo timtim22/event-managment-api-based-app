@@ -22103,3 +22103,22 @@ ul.errors li {
 }
 
 /*# sourceMappingURL=maps/style.css.map */
+
+
+/* Footer */
+
+.footer {
+    
+    position: relative;
+    height: 50px;
+    background-color: #EAEAEA;
+    bottom: 0%;
+    width: 100%;
+}
+
+.ft-left{
+  position: relative;
+  left: 250px;
+}
+
+/* Footer-End */

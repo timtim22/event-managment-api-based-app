@@ -104,7 +104,6 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
 
   
   def create
-
     @competition = Competition.new
     @competition.title = params[:title]
     @competition.description = params[:description]
@@ -161,8 +160,8 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
          message: payload
          ) do |envelope|
              puts envelope.status
-        end
-       end # notification end
+           end
+          end # notification end
       end #competition setting
       end #each
       end # not blank
