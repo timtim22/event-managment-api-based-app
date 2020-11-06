@@ -205,7 +205,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         #do nothing
       end #case end
     else
-      render json: {
+      render json: { 
         code: 400,
         success: false,
         message: 'business_id, current_time_slot_dates,before_current_time_slot_dates and resource are required fields.',

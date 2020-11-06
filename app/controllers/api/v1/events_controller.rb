@@ -197,16 +197,16 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 
               @response = @events.sort_by_date.page(params[:page]).per(75).map {|event| get_simple_event_object(event) }
 
-     render json: {
-       code: 200,
-       size: @response.size,
-       operator: operator,
-       cats_ids: cats_ids,
-       success: true,
-       data:  {
-         events: @response
-       }
-     }
+              render json: {
+                code: 200,
+                size: @response.size,
+                operator: operator,
+                cats_ids: cats_ids,
+                success: true,
+                data:  {
+                  events: @response
+                }
+              }
 
     end #func
 

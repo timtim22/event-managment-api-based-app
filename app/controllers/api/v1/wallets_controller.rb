@@ -180,7 +180,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
 
    sort_by_date_passes = Pass.where(id: pass_ids).sort_by_date.page(params[:page]).per(get_per_page).map {|pass| @sorted_passes.push(pass) }
   
-@sorted_passes.each do |pass|
+@sorted_passes.uniq.each do |pass|
   @passes << {
     id: pass.id,
     title: pass.title,

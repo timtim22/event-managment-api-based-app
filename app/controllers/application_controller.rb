@@ -220,7 +220,8 @@ class ApplicationController < ActionController::Base
       "is_my_following" => is_my_following?(user),
       "role" => 2, 
       "is_my_friend" => false,
-      "mutual_friends_count" => 0
+      "mutual_friends_count" => 0,
+      "total_followers_count" => user.followers.size
     }
   end
 
