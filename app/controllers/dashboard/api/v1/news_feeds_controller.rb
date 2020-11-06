@@ -19,6 +19,7 @@ class Dashboard::Api::V1::NewsFeedsController < Dashboard::Api::V1::ApiMasterCon
     @news_feed = NewsFeed.new
   end
 
+  
   def create
     @news_feed  = request_user.news_feeds.new(news_feed_parmas)
     if @news_feed.save

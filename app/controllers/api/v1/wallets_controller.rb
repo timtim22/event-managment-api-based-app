@@ -151,7 +151,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         is_expired: is_expired?(wallet.offer),
         grabbers_count: wallet.offer.wallets.size,
         is_redeemed: is_redeemed(wallet.offer.id, 'SpecialOffer', request_user.id),
-        redeem_time: redee_time(wallet.offer.id, 'SpecialOffer', request_user.id),
+        redeem_time: redeem_time(wallet.offer.id, 'SpecialOffer', request_user.id),
         grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
         terms_and_conditions: wallet.offer.terms_conditions,
         issued_by: get_full_name(wallet.offer.user),
@@ -173,10 +173,14 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
 
  def get_passes
   @passes = []
+  @sorted_passes = []
    pass_ids = request_user.wallets.where(offer_type: 'Pass').where(is_removed: false).page(params[:page]).per(get_per_page).map {|w| w.offer.id }
-   passes = Pass.where(id: pass_ids).sort_by_date.page(params[:page]).per(get_per_page)
   
-   passes.each do |pass|
+   sort_by_redemption_passes = request_user.redemptions.sort_by_date.where(offer_type: 'Pass').page(params[:page]).per(get_per_page).map {|redemption| @sorted_passes.push(redemption.offer) }
+
+   sort_by_date_passes = Pass.where(id: pass_ids).sort_by_date.page(params[:page]).per(get_per_page).map {|pass| @sorted_passes.push(pass) }
+  
+@sorted_passes.each do |pass|
   @passes << {
     id: pass.id,
     title: pass.title,
@@ -195,7 +199,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
     is_expired: is_expired?(pass),
     grabbers_count: pass.wallets.size,
     is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id),
-    redeem_time: redee_time(pass.id, 'Pass', request_user.id),
+    redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
     grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
     terms_and_conditions: pass.terms_conditions,
     redeem_count: get_redeem_count(pass),
@@ -284,11 +288,9 @@ def get_tickets
     purchased_quantity: getPurchaseQuantity(wallet.offer.id),
     per_head: wallet.offer.per_head,
     is_redeemed: is_redeemed(wallet.offer.id, "Ticket", request_user.id),
-    redeem_time: redee_time(wallet.offer.id, "Ticket", request_user.id),
+    redeem_time: redeem_time(wallet.offer.id, "Ticket", request_user.id),
     validity: wallet.offer.event.end_date,
     is_expired: event_expired?(wallet.offer.event),
-
-
   
   }
 end #each
@@ -334,22 +336,6 @@ def remove_offer
   }
  end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -541,7 +527,7 @@ def is_redeemed(offer_id, offer_type,user_id)
   end
 end
 
-def redee_time(offer_id, offer_type,user_id)
+def redeem_time(offer_id, offer_type,user_id)
   @check = Redemption.where(offer_id: offer_id).where(offer_type: offer_type).where(user_id: user_id)
   if !@check.blank?
      @check.first.created_at

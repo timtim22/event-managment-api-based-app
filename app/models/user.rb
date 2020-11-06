@@ -10,6 +10,7 @@ class User < ApplicationRecord
   has_one :business_detail, dependent: :destroy
   has_one :profile, dependent: :destroy
   has_many :friend_requests, dependent: :destroy
+  has_many :redemptions, dependent: :destroy
   
   has_many :accepted_friend_requests, -> {where(status: 'accepted') }, foreign_key: :friend_id, class_name: 'FriendRequest',dependent: :destroy
   has_many :friends, through: :accepted_friend_requests, source: :user

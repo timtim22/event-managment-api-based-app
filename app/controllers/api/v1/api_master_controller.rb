@@ -101,8 +101,6 @@ class Api::V1::ApiMasterController < ApplicationController
      end
 
     
-
-   
   
      def is_my_friend?(user)
       request_user.friends.include?  user

@@ -150,7 +150,7 @@ class ApplicationController < ActionController::Base
    end
 
    def is_friend?(request_user,friend)
-    friend_request = FriendRequest.where(friend_id: friend.id).where(status: 'accepted').first
+    friend_request = request_user.friend_requests.where(friend_id: friend.id).where(status: 'accepted').first
     if friend_request
       true
     else
@@ -827,7 +827,7 @@ end
 
   def showability?(user, competition)
     if is_entered_competition_updated?(user, competition.id)
-       reg = competition.registrations.where(user: user).first
+       reg = competition.registrations.where(user: user).last
         Time.now > reg.created_at + 24.hours          
     else
      true
