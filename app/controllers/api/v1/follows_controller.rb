@@ -169,7 +169,7 @@ end
     request_user.followings.each do |following|
       @followings << {
         "business" => get_business_object(following),
-        "friends_follwoing_count" =>  get_following_friends_count(following)
+        "total_followers_count" =>  following.followers.size
       }
     end#each
 
@@ -345,7 +345,7 @@ end
     if not_me?(business) && !is_my_following?(business)
       @businesses << {
         "business" => get_business_object(business),
-        "friends_follwoing_count" =>  get_following_friends_count(business)
+        "total_followers_count" =>  business.followers.size
       }
     end #if       
    end #each
