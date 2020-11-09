@@ -61,7 +61,9 @@ Rails.application.configure do
   #   arguments: '-i'
   # }
  
-  config.action_mailer.default_options = {from: 'kamran.ali@mygo.io'}
+  config.action_mailer.default_options = {from: 'no-reply@mygo.io'}
+  config.action_mailer.default_url_options = { host: 'localhost', port: 2525 }
+
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.
   # config.file_watcher = ActiveSupport::EventedFileUpdateChecker
@@ -70,11 +72,14 @@ Rails.application.configure do
   config.action_mailer.raise_delivery_errors= true
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address:              'smtp.mailtrap.io',
-    port:                  2525,
-    domain:               'https://mygo.io',
-    user_name:            ENV['MAILTRAP_USERNAME'],
-    password:             ENV['MAILTRAP_PASSWORD'],
-    authentication:       'cram_md5',
-    enable_starttls_auto: true  }
+    address:              'smtp.gmail.com',
+    port:                  587,
+    domain:               'smtp.gmail.com',
+    user_name:            'taimoor.hassan@mygo.io',
+    password:             'vkvrqvdxhfxnkvbj',
+    authentication:       'plain',
+    enable_starttls_auto: true,
+    openssl_verify_mode: "none",
+
+      }
 end

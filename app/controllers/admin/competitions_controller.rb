@@ -30,6 +30,8 @@ class Admin::CompetitionsController < Admin::AdminMasterController
       @competition.host = params[:host]
       @competition.validity_time = params[:end_time]
       @competition.location = params[:location]
+      @competition.terms_conditions = params[:terms_conditions]
+
       @competition.lat = params[:lat]
       @competition.lng = params[:lng]
     if @competition.save
@@ -102,6 +104,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
         @competition.validity = string_to_DateTime(params[:validity])
         @competition.host = params[:host]
         @competition.validity_time = params[:end_time]
+        @competition.terms_conditions = params[:terms_conditions]
         @competition.location = params[:location]
         @competition.lat = params[:lat]
         @competition.lng = params[:lng]
@@ -126,7 +129,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
 
   private
   def competition_params
-		params.permit(:title,:user_id,:description,:start_date,:end_date,:price,:start_time, :end_time,:image,:validity,:validity_time,:lat,:lng,:location,:host)
+		params.permit(:title,:user_id,:description,:start_date,:end_date,:price, :terms_conditions, :start_time, :end_time,:image,:validity,:validity_time,:lat,:lng,:location,:host)
   end
 
 
