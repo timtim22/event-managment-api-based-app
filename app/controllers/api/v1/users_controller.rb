@@ -861,10 +861,7 @@ end
   end
 
 
-  
-   
-
-  private
+private
 
   def find_user
     @user = User.find_by_email!(params[:email])
