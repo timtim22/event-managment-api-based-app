@@ -1014,5 +1014,19 @@ $(document).on('submit','#reset_password_form', function(event){
     });//ajax
 });//click
 
-
+tinymce.init({
+  selector: '.tinymce',
+  height: 500,
+  menubar: false,
+  height: "400",
+  plugins: [
+    'advlist autolink lists link image charmap print preview anchor',
+    'searchreplace visualblocks code fullscreen',
+    'insertdatetime media table paste code help wordcount'
+  ],
+    toolbar: 'undo redo | formatselect | ' +
+    ' bold italic backcolor | alignleft aligncenter ' +
+    ' alignright alignjustify | bullist numlist outdent indent | ' +
+    ' removeformat | help'
+});
 });//ready
