@@ -82,7 +82,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
     if !params[:competition_id].blank?
       @competition = Competition.find(params[:competition_id])
       if @competition.user != request_user
-      check = @competition.registrations.where(user_id: request_user.id)
+      check = @competition.registrations.where(user_id: request_use.id)
       if !check.blank?
          last_entry = check.last
          entry_time = last_entry.created_at
