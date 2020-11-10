@@ -61,7 +61,7 @@ Rails.application.configure do
   #   arguments: '-i'
   # }
  
-  config.action_mailer.default_options = {from: 'no-reply@mygo.io'}
+
 
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.
@@ -69,13 +69,14 @@ Rails.application.configure do
 
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors= true
+  config.action_mailer.default_options = {from: 'no-reply@mygo.io'}
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address:              'smtp.gmail.com',
     port:                  587,
     domain:               'smtp.gmail.com',
-    user_name:            'taimoor.hassan@mygo.io',
-    password:             'vkvrqvdxhfxnkvbj',
+    user_name:            'dev.team@mygo.io',
+    password:             'gneseduhasuqdvdv',
     authentication:       'plain',
     enable_starttls_auto: true,
     openssl_verify_mode: "none",
