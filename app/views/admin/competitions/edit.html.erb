@@ -9,8 +9,9 @@
         <h4 class="card-title">Update competition</h4>
          <%= render "shared/form_errors", object: @competition %>
          <%= render "shared/notice" %>
-        <form method="post" action="<%= admin_competitions_path %>" class="forms-sample" enctype="multipart/form-data">
+        <form method="post" action="<%= admin_competition_path(@competition) %>" class="forms-sample" enctype="multipart/form-data">
         <input type='hidden' name="authenticity_token" value="<%= form_authenticity_token %>">
+         <input type="hidden" name="_method" value="patch" >
         <div class="form-group">
         <label for="title">Title</label>
         <input type="text" class="form-control" id="name" name="title" value="<%= @competition.title %>">
@@ -31,7 +32,7 @@
           <input type="hidden" name="creator_name" value="<%= get_full_name(current_user) %>">
           <input type="hidden" name="creator_image" value="<%= current_user.avatar %>">
           <span class="error" id="location_error"></span><br>
-          <input type="text" class="form-control" name="location" id="competition_location" placeholder="Location">
+          <input type="text" class="form-control" name="location" id="location" value = "<%= @competition.location %>">
        </div>
         <div class="form-group">
             <label for="start_date">Start date</label>
@@ -64,9 +65,9 @@
          </div>
 
          <div class="form-group">
-         <label for="terms_conditions">Terms and Conditions</label>
-         <textarea name="terms_conditions" class="form-control" id="terms_conditions" rows="12"><%= @competition.terms_conditions %></textarea>
-      </div>
+           <label for="terms_conditions">Terms and Conditions</label>
+           <textarea name="terms_conditions" class="form-control" id="terms_conditions" rows="12"><%= @competition.terms_conditions %></textarea>
+        </div>
 
          <div class="form-group">
             <label for="start_date">Validity Date</label>

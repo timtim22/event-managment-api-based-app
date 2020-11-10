@@ -12,4 +12,9 @@ class UserMailer < ApplicationMailer
       @code = code
       mail(to: @user.email, subject: 'MyGo User Verification')
     end
+
+    def welcome_email(user)
+      @user = user
+      mail(to: @user.email, subject: 'Welcome to MyGo')
+    end
 end

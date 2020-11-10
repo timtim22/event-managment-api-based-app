@@ -18,7 +18,6 @@ class Competition < ApplicationRecord
   validates :description, presence: true 
   validates :location, presence: true
   validates :validity, presence: true
-  validates :competition_winner_ids, presence: true
 
 
   scope :not_expired, -> { where(['validity > ?', DateTime.now]) }

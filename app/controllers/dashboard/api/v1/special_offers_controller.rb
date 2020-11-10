@@ -143,6 +143,10 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
     end 
 end
 
+def edit
+
+end
+
 
 def update
   if !params[:id].blank?

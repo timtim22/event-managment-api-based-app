@@ -38,6 +38,7 @@ class UsersController < ApplicationController
          flash[:notice] = "Registered successfully, please login now."
          session[:phone_number] = @user.phone_number
          redirect_to new_admin_session_path
+         UserMailer.welcome_email(@user).deliver_now
         else
          render :new
         end

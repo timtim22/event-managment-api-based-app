@@ -212,6 +212,8 @@ Rails.application.routes.draw do
 
         resources :competitions
 
+        patch 'dashboard/api/v1/competitions/:id', to: 'competition#update'
+
         resources :special_offers 
         post '/auth/login', to: 'authentication#login'
         post '/send-verification-code', to: 'users#send_verification_code'

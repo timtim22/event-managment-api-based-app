@@ -182,9 +182,6 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
     end
   end
 
-  def edit
-    @competition = Competition.find(params[:id])
-  end
 
   def update
     if !params[:id].blank?
@@ -199,7 +196,13 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
     @competition.validity_time = params[:validity_time]
     @competition.image = params[:image]
     @competition.price = params[:price]
-    @competition.location = params[:location]
+    @competition.terms_conditions = params[:terms_conditions]
+    if !params[:location].blank? 
+      @competition.location = params[:location][:name]
+      @competition.lat = params[:location][:geometry][:lat] 
+      @competition.lng = params[:location][:geometry][:lng]
+    end
+
 
     if @competition.save
       @pubnub = Pubnub.new(
@@ -299,7 +302,7 @@ end
 
 
   def competition_params
-		params.permit(:title,:user_id,:description,:start_date,:end_date,:price,:start_time, :end_time,:image,:validity,:validity_time,:lat,:lng,:location,:host)
+		params.permit(:title,:user_id,:description, :terms_conditions, :start_date,:end_date,:price,:start_time, :end_time,:image,:validity,:validity_time,:lat,:lng,:location,:host)
   end
 
 
