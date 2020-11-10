@@ -125,6 +125,7 @@ Rails.application.routes.draw do
        get 'my-gives-away' => 'users#my_gives_away'
        get 'my-attending' => 'users#my_attending'
        get 'my-activity-logs' => 'users#my_activity_logs'
+       post 'special_offers/show' => "special_offers#show"
       
     
       # get '/*a', to: 'application#not_found'

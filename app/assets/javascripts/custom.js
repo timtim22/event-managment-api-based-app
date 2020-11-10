@@ -1018,6 +1018,8 @@ tinymce.init({
   selector: '.tinymce',
   height: 500,
   menubar: false,
+  inline_styles : true,
+  content_style: "@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300&display=swap'); p { font-family: 'Nunito Sans', sans-serif; }",
   height: "400",
   plugins: [
     'advlist autolink lists link image charmap print preview anchor',
