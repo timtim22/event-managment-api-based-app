@@ -657,6 +657,7 @@ end
   profile['instagram'] = user.business_profile.instagram
   profile['linkedin'] = user.business_profile.linkedin
   profile['youtube'] = user.business_profile.youtube
+  profile['website'] = user.business_profile.website
   profile['followers_count'] = user.followers.size
   profile['events_count'] = user.events.size
   profile['competitions_count'] = user.competitions.size

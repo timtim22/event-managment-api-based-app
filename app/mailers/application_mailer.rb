@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'kamran.ali@mygo.io'
+  default from: 'dev.team@mygo.io'
   layout 'mailer'
 end
