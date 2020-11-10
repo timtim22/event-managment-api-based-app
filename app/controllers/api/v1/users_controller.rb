@@ -105,7 +105,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
         email_sent =  send_verification_email(@user)
        else
         email_sent = "No email was sent"
-       end      
+       end     
 
        #applicable only if user is invited
        if !params[:inviter_phone].blank?

@@ -161,8 +161,10 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
     @user = User.find_by(email: params[:email])
     if @user
     if @user.verification_code == params[:verification_code]
-        @user.update!(is_email_verified: true)
-        flash.now[:notice] = "Email verified successfully. Thanks for the verification."
+        if @user.update!(is_email_verified: true)
+          flash.now[:notice] = "Email verified successfully. Thanks for the verification."
+          UserMailer.welcome_email(@user).deliver_now
+        end
         render ('user_mailer/verifciation_redirect_page')
     else
       flash.now[:alert_danger] = "Verification code didn't match."
