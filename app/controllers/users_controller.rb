@@ -27,9 +27,20 @@ class UsersController < ApplicationController
        else
          charity_number = ''
         end
+        
+        website = ""
+        if params[:website] != [/\Ahttp:\/\//] || [/\Ahttps:\/\//] || [/\Awww\/\//]
+          website = "https://www.#{params[:website]}"
+        elsif params[:website] != [/\Ahttp:\/\//] || [/\Ahttps:\/\//]
+          website = "https://#{params[:website]}"
+        elsif params[:website] != [/\Awww\/\//]
+            website = "www.#{params[:website]}"
+        else
+          website = params[:website]
+        end
 
         if @user.save    
-          profile = BusinessProfile.create!(profile_name: params[:profile_name], contact_name: params[:contact_name], user: @user, address: params[:address], website: params[:website], about: params[:about], vat_number: params[:vat_number], charity_number: charity_number)
+          profile = BusinessProfile.create!(profile_name: params[:profile_name], contact_name: params[:contact_name], user: @user, address: params[:address], website: website, about: params[:about], vat_number: params[:vat_number], charity_number: charity_number)
 
           #create role
            assignment = @user.assignments.create!(role_id: params[:type])
@@ -43,6 +54,8 @@ class UsersController < ApplicationController
          render :new
         end
     end
+
+
 
     def verify_phone_page
       render :phone_verification
@@ -77,4 +90,7 @@ class UsersController < ApplicationController
     def getRoles
      @roles = Role.all
     end
+
+
+
 end
