@@ -116,7 +116,8 @@ def friend_requests
       "status" => request.status,
       "user_id" => request.user_id,
       "friend_id" => request.friend_id,
-      'mutual_friends_count' =>  sender.friends.size
+      'mutual_friends_count' =>  sender.friends.size,
+      'is_ambassador' => sender.profile.is_ambassador
     }
   end
   render json: {
@@ -239,6 +240,7 @@ def my_friends
     friend = {}
     friend['friend'] = get_user_object(@friend)
     friend['friends_count'] = @friend.friends.size
+    friend['is_ambassador'] = @friend.profile.is_ambassador
     friends_array.push(friend)
   end
   render json: {

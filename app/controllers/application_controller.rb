@@ -878,8 +878,6 @@ end
    profile.is_ambassador = true
 
    if request.save && profile.save
-      #create business activity
-      create_activity(user, " approved #{User.get_full_name(user)} as an ambassador ", request, 'AmbassadorRequest', '', '', 'post', 'approved_ambassador')
       create_activity(request.user, "become ambassador ", request, 'AmbassadorRequest', '', '', 'post', 'become_ambassador')
     true
    else

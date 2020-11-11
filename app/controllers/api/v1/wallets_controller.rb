@@ -172,7 +172,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
 
 
  def get_passes
-  @passes = []
+  @redeemed_passes = []
+  @unredeemed_passes = []
   @sorted_passes = []
    pass_ids = request_user.wallets.where(offer_type: 'Pass').where(is_removed: false).page(params[:page]).per(get_per_page).map {|w| w.offer.id }
    
@@ -181,7 +182,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
    sort_by_redemption_passes = request_user.redemptions.sort_by_date.where(offer_type: 'Pass').page(params[:page]).per(get_per_page).map {|redemption| @sorted_passes.push(redemption.offer) }
   
 @sorted_passes.uniq.each do |pass|
-  @passes << {
+ if is_redeemed(pass.id, 'Pass', request_user.id)
+  @redeemed_passes << {
     id: pass.id,
     title: pass.title,
     description: pass.description,
@@ -198,7 +200,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
     validity: pass.valid_to.strftime(get_time_format),
     is_expired: is_expired?(pass),
     grabbers_count: pass.wallets.size,
-    is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id),
+    is_redeemed: true,
     redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
     grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
     terms_and_conditions: pass.terms_conditions,
@@ -206,18 +208,46 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
     quantity: pass.quantity,
     issued_by: get_full_name(pass.user)
   }
+else
+  @unredeemed_passes << {
+    id: pass.id,
+    title: pass.title,
+    description: pass.description,
+    host_name: get_full_name(pass.event.user),
+    host_image: pass.event.user.avatar,
+    event_name: pass.event.name,
+    event_id: pass.event.id,
+    event_image: pass.event.image,
+    event_location: pass.event.location,
+    event_start_time: pass.event.start_time,
+    event_end_time: pass.event.end_time,
+    event_date: pass.event.start_date,
+    distributed_by: distributed_by(pass),
+    validity: pass.valid_to.strftime(get_time_format),
+    is_expired: is_expired?(pass),
+    grabbers_count: pass.wallets.size,
+    is_redeemed: false,
+    redeem_time: redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
+    grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+    terms_and_conditions: pass.terms_conditions,
+    redeem_count: get_redeem_count(pass),
+    quantity: pass.quantity,
+    issued_by: get_full_name(pass.user)
+  }
+ end #if
  end #each
+
+ @final_sorted = custom_sort(@unredeemed_passes, @redeemed_passes)
 
  render json:  {
   code: 200,
   success: true,
   message: '',
   data: {
-    passes: @passes,
+    passes: @final_sorted,
     user: request_user
   }
 }
-
  end
 
 
@@ -547,6 +577,10 @@ end
 
 private
 
+
+def custom_sort(array, array2push2End)
+  sorted = array - array2push2End + array2push2End
+end
 
 
 end

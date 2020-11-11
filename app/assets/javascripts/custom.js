@@ -996,7 +996,7 @@ $(document).on('submit','#reset_password_form', function(event){
     type: "POST",             
     data: formData, 
     contentType: false,        
-    cache: false,           
+    cache: false,       
     processData:false,       
     success: function(data) {
       if(data.code ==  200) {
@@ -1017,7 +1017,7 @@ $(document).on('submit','#reset_password_form', function(event){
 tinymce.init({
   selector: '.tinymce',
   height: 500,
-  menubar: false,
+  menubar: true,
   inline_styles : true,
   content_style: "@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300&display=swap'); p { font-family: 'Nunito Sans', sans-serif; }",
   height: "400",
