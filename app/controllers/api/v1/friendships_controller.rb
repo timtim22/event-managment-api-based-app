@@ -386,7 +386,8 @@ end
            "mutual_friends_count" => get_mutual_friends(request_user, follower).size,
            "is_my_following" => false,
            "app_user" => follower.app_user,
-           "is_self" =>  !not_me?(follower) 
+           "is_self" =>  !not_me?(follower),
+           "followers_count" => user.followers.size 
          }
          end #each
       end #not empty
