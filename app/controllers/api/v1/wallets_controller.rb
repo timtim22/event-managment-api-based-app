@@ -185,54 +185,100 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
  if is_redeemed(pass.id, 'Pass', request_user.id)
   @redeemed_passes << {
     id: pass.id,
+
     title: pass.title,
+
     description: pass.description,
+
     host_name: get_full_name(pass.event.user),
+
     host_image: pass.event.user.avatar,
+
     event_name: pass.event.name,
+
     event_id: pass.event.id,
+
     event_image: pass.event.image,
+
     event_location: pass.event.location,
+
     event_start_time: pass.event.start_time,
+
     event_end_time: pass.event.end_time,
+
     event_date: pass.event.start_date,
+
     distributed_by: distributed_by(pass),
+
     validity: pass.valid_to.strftime(get_time_format),
+
     is_expired: is_expired?(pass),
+
     grabbers_count: pass.wallets.size,
+
     is_redeemed: true,
+
     redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
+
     grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+
     terms_and_conditions: pass.terms_conditions,
+
     redeem_count: get_redeem_count(pass),
+
     quantity: pass.quantity,
+
     issued_by: get_full_name(pass.user)
+
   }
 else
   @unredeemed_passes << {
     id: pass.id,
+
     title: pass.title,
+
     description: pass.description,
+
     host_name: get_full_name(pass.event.user),
+
     host_image: pass.event.user.avatar,
+
     event_name: pass.event.name,
+
     event_id: pass.event.id,
+
     event_image: pass.event.image,
+
     event_location: pass.event.location,
+
     event_start_time: pass.event.start_time,
+
     event_end_time: pass.event.end_time,
+
     event_date: pass.event.start_date,
+
     distributed_by: distributed_by(pass),
+
     validity: pass.valid_to.strftime(get_time_format),
+
     is_expired: is_expired?(pass),
+
     grabbers_count: pass.wallets.size,
+
     is_redeemed: false,
-    redeem_time: redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
+
+    redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
+
     grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+
     terms_and_conditions: pass.terms_conditions,
+
     redeem_count: get_redeem_count(pass),
+
     quantity: pass.quantity,
+
     issued_by: get_full_name(pass.user)
+
   }
  end #if
  end #each

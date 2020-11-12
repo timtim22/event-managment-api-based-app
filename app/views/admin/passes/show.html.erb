@@ -7,13 +7,13 @@
 
    <h3><strong>Title: </stong><span class="unbold"><%= @pass.title %></span></h3>
  
-   <p class="so_p"><strong>Description: </strong><span class="unbold"><%= @pass.description %></span></p>
+   <p class="so_p"><strong>Description: </strong><span class="unbold"><%= @pass.description.html_safe %></span></p>
 
    <p class="so_p"><strong>Validity: </strong><span class="unbold"><%= @pass.validity %></span> </p>
 
    <p class="so_p"><strong>Event: </strong><%= link_to @pass.event.name, admin_event_path(@pass.event) %></p>
 
-   <p class="so_p"><strong>Terms and conditions: </strong><span class="unbold"><%= @pass.terms_conditions %></span></p>
+   <p class="so_p"><strong>Terms and conditions: </strong><span class="unbold"><%= @pass.terms_conditions.html_safe %></span></p>
    <p class="so_p"><strong>QRcode: <br> </strong><span class="unbold"><img src="<%= render_qr_code(@pass.redeem_code) %>" class="qr"></p>
  </div>
   <%=  render 'shared/footer' %>

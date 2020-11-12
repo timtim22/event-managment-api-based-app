@@ -7,7 +7,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
   # GET /users
   def index
     all_users = []
-    app = User.app_users.page(params[:page]).per(20).map  { |user| all_users.push(get_user_object(user)) }
+    app = User.app_users.page(params[:page]).per(100).map  { |user| all_users.push(get_user_object(user)) }
     business = User.web_users.page(params[:page]).per(20).map { |user| all_users.push(get_business_object(user)) }
       
     render json: {

@@ -16,7 +16,7 @@
  <img src="<%= !@event.image.url.blank? ? @event.image.url : @event.eventbrite_image %>" onError='this.onerror=null;this.src="<%= @event.placeholder %>" ' style="border-radius:3px;width: 692px;">
  <hr>
  <!-- event Content -->
- <p><%= @event.description %></p>
+ <p><%= @event.description.html_safe %></p>
  <hr>
  <% if !@event.passes.blank? %>
   <h5> Passes: </h5>
