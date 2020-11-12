@@ -1,5 +1,4 @@
-
-class Dashboard::Api::V1::ApiMasterController < Api::V1::ApplicationController
+class Dashboard::Api::V1::ApiMasterController < ApplicationController
   require 'date'
   SECRET_KEY = Rails.application.secrets.secret_key_base.to_s
   protect_from_forgery with: :null_session

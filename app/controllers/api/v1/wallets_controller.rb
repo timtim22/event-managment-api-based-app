@@ -227,7 +227,7 @@ else
     is_expired: is_expired?(pass),
     grabbers_count: pass.wallets.size,
     is_redeemed: false,
-    redeem_time: redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
+    redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
     grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
     terms_and_conditions: pass.terms_conditions,
     redeem_count: get_redeem_count(pass),
