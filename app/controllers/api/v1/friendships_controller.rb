@@ -388,8 +388,7 @@ end
            "mutual_friends_count" => get_mutual_friends(request_user, follower).size,
            "is_my_following" => false,
            "app_user" => follower.app_user,
-           "is_self" =>  !not_me?(follower),
-           "followers_count" => 0
+           "is_self" =>  !not_me?(follower)
          }
          end #each
       end #not empty
@@ -407,8 +406,7 @@ end
             "mutual_friends_count" => 0,
             "is_my_following" => is_my_following?(following),
             "app_user" => following.app_user,
-            "is_self" =>  !not_me?(following),
-            "followers_count" => user.followers.size  
+            "is_self" =>  !not_me?(following)
 
           }
          end #each
@@ -426,8 +424,7 @@ end
             "mutual_friends_count" => get_mutual_friends(request_user, friend).size,
             "is_my_following" => false,
             "app_user" => friend.app_user,
-            "is_self" =>  !not_me?(friend),
-            "followers_count" => 0 
+            "is_self" =>  !not_me?(friend)
  
           }
           end #each
