@@ -389,7 +389,7 @@ end
            "is_my_following" => false,
            "app_user" => follower.app_user,
            "is_self" =>  !not_me?(follower),
-           "followers_count" => user.followers.size 
+           "followers_count" => 0
          }
          end #each
       end #not empty
@@ -408,7 +408,7 @@ end
             "is_my_following" => is_my_following?(following),
             "app_user" => following.app_user,
             "is_self" =>  !not_me?(following),
-            "followers_count" => 0 
+            "followers_count" => user.followers.size  
 
           }
          end #each
