@@ -428,7 +428,6 @@ end
             "app_user" => friend.app_user,
             "is_self" =>  !not_me?(friend),
             "followers_count" => friend.followings.size
- 
           }
           end #each
         end #not empty
