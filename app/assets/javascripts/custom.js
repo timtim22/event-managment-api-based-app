@@ -1014,13 +1014,14 @@ $(document).on('submit','#reset_password_form', function(event){
     });//ajax
 });//click
 
-tinymce.init({
+ ed = tinymce.init({
   selector: '.tinymce',
   height: 500,
   menubar: true,
   inline_styles : true,
-  content_style: "@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300&display=swap'); p { font-family: 'Nunito Sans', sans-serif; }",
+  content_style: "@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300&display=swap'); body p { font-family: 'Nunito Sans', sans-serif; }",
   height: "400",
+  font_formats: "Nunito Sans, sans-serif;",
   plugins: [
     'advlist autolink lists link image charmap print preview anchor',
     'searchreplace visualblocks code fullscreen',
@@ -1031,4 +1032,6 @@ tinymce.init({
     ' alignright alignjustify | bullist numlist outdent indent | ' +
     ' removeformat | help'
 });
+
+
 });//ready

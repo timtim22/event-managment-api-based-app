@@ -106,7 +106,6 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
        else
         email_sent = "No email was sent"
        end     
-
        #applicable only if user is invited
        if !params[:inviter_phone].blank?
          inviter = User.where(phone_number: params[:inviter_phone]).first

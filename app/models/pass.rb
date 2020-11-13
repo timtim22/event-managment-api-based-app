@@ -13,7 +13,6 @@ class Pass < ApplicationRecord
 
   validates :title, presence: true
  # validates :description, presence: true
-  validates :validity, presence: true
   # validates :redeem_code, presence: true, length: {maximum: 3}, numericality: {only_integer: true}
 
   scope :not_expired, -> { where(['validity > ?', DateTime.now]) }

@@ -239,7 +239,7 @@ def my_friends
     @friend = User.find(request.friend_id)
     friend = {}
     friend['friend'] = get_user_object(@friend)
-    friend['friends_count'] = @friend.friends.size
+    friend['friends_count'] = get_mutual_friends(request_user, @friend).size
     friend['is_ambassador'] = @friend.profile.is_ambassador
     friends_array.push(friend)
   end
@@ -351,7 +351,7 @@ end
 
  @all_suggessions = []  
  @friends_suggestions.uniq.each do  |user| 
-  if not_me?(user) && !is_my_friend?(user) && !is_business?(user)
+  if not_me?(user) && !is_my_friend?(user) && !is_business?(user) && !request_status(request_user, user)
     @all_suggessions << {
      user:  get_user_object(user),
      mutual_friends_count: get_mutual_friends(request_user, user).size,
@@ -388,7 +388,8 @@ end
            "mutual_friends_count" => get_mutual_friends(request_user, follower).size,
            "is_my_following" => false,
            "app_user" => follower.app_user,
-           "is_self" =>  !not_me?(follower) 
+           "is_self" =>  !not_me?(follower),
+           "followers_count" => user.followings.size 
          }
          end #each
       end #not empty
@@ -406,7 +407,9 @@ end
             "mutual_friends_count" => 0,
             "is_my_following" => is_my_following?(following),
             "app_user" => following.app_user,
-            "is_self" =>  !not_me?(following)
+            "is_self" =>  !not_me?(following),
+            "followers_count" => following.followers.size 
+
           }
          end #each
        end #not empty
@@ -423,7 +426,9 @@ end
             "mutual_friends_count" => get_mutual_friends(request_user, friend).size,
             "is_my_following" => false,
             "app_user" => friend.app_user,
-            "is_self" =>  !not_me?(friend) 
+            "is_self" =>  !not_me?(friend),
+            "followers_count" => friend.followings.size
+ 
           }
           end #each
         end #not empty

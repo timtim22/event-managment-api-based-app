@@ -30,7 +30,7 @@ class Admin::EventsController < Admin::AdminMasterController
  def create
   @errors = []
   @event = current_user.events.new
-  if params[:free_ticket].blank? && params[:paid_ticket].blank? && params[:pay_at_door].blank? && params[:pass].blank?
+  if params[:free_ticket].blank? && params[:paid_ticket].blank? && params[:pay_at_door].blank? 
     flash[:alert_danger] = "One of the admission process must be defined."
     render :new
     return
