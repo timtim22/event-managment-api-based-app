@@ -16,7 +16,7 @@
  <img src="<%= @news_feed.image.url  %>" style="border-radius:3px;width: 692px;">
  <hr>
  <!-- news_feed Content -->
- <p><%= @news_feed.description %></p>
+ <p><%= @news_feed.description.html_safe %></p>
  
 </div>
  </div><!--container -->
