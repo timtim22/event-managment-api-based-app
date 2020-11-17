@@ -13,7 +13,7 @@ Rails.application.routes.draw do
        resource :passes
        #resources :events
        resources :special_offers
-       post "/events" => "events#index" 
+       post "/events" => "events#index"
        get '/categories' => "categories#index"
        post '/auth/login', to: 'authentication#login'
        post '/auth/logout', to: 'authentication#logout'
@@ -65,6 +65,7 @@ Rails.application.routes.draw do
        post '/send-location' => "notifications#send_location"
        get '/notifications/get-notifications' => "notifications#index"
        get '/notifications/mark-as-read' => "notifications#mark_as_read"
+       get '/notifications/delete-notification' => "notifications#delete_notification"
        post '/chats/mark-as-read' => "chats#mark_as_read"
        post '/comments/mark-as-read' => "comments#mark_as_read"
        get '/send-events-reminder' => "notifications#send_events_reminder"
@@ -126,8 +127,8 @@ Rails.application.routes.draw do
        get 'my-attending' => 'users#my_attending'
        get 'my-activity-logs' => 'users#my_activity_logs'
        post 'special_offers/show' => "special_offers#show"
-      
-    
+
+
       # get '/*a', to: 'application#not_found'
      end
    end
@@ -152,8 +153,8 @@ Rails.application.routes.draw do
      get '/eventbrite-authorize' => "eventbrite#authorize_page"
      get "/import/events" => "eventbrite#import_events"
      get '/oauth/authorize' => "eventbrite#authorize_user"
-   
-     get '/ticketmaster/import-events' => "ticketmaster#select_date" 
+
+     get '/ticketmaster/import-events' => "ticketmaster#select_date"
      post '/ticketmaster/import-events' => "ticketmaster#import_events"
      get '/get-notificaitons' => "notifications#index"
      get '/get-notifications-count' => "notifications#get_notifications_count"
@@ -184,7 +185,7 @@ Rails.application.routes.draw do
 
      resources :news_feeds
      resources :categories
-     
+
      resources :events do
        resources :comments
      end
@@ -197,16 +198,16 @@ Rails.application.routes.draw do
      resources :special_offers
      resources :competitions
      resources :tickets
-  
+
    end
 
    namespace :dashboard do
     namespace :api do
       namespace :v1 do
-        
+
         resources :users
         resources :news_feeds
-        
+
         resources :events do
           resources :comments
         end
@@ -215,7 +216,7 @@ Rails.application.routes.draw do
 
         patch 'dashboard/api/v1/competitions/:id', to: 'competition#update'
 
-        resources :special_offers 
+        resources :special_offers
         post '/auth/login', to: 'authentication#login'
         post '/send-verification-code', to: 'users#send_verification_code'
         get  '/get-followers' => 'users#get_followers'
@@ -229,18 +230,17 @@ Rails.application.routes.draw do
         post '/get-user' => 'users#get_user'
         get '/get-categories' => 'events#get_categories'
         post '/cancel-event' => 'events#cancel_event'
-    
+
       end
     end
    end
- 
+
    namespace :business do
    end
 
 
- 
+
    namespace :college_society do
    end
-   
+
  end
- 

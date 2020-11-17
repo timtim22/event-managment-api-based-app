@@ -5,8 +5,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
   require 'action_view'
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
- 
- 
+
+
   def index
     @notifications = []
     notifications = request_user.notifications
@@ -23,7 +23,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         "action": notification.action,
         "action_type": notification.action_type,
         "location": location,
-        "created_at": notification.created_at  
+        "created_at": notification.created_at
       }
     end
     render json: {
@@ -48,18 +48,18 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         )
       @success = false
       askee_ids_array.each do |id|
-     
+
       @askee = User.find(id)
-      if @notification = Notification.create!(recipient: @askee, actor: request_user, action: get_full_name(request_user) + " is asking for your current location.", notifiable: @askee, url: "/admin/users/#{@askee.id}", notification_type: 'mobile',action_type: 'ask_location')  
-        @location_request = LocationRequest.create!(user_id: request_user.id, askee_id: id, notification_id: @notification.id) 
+      if @notification = Notification.create!(recipient: @askee, actor: request_user, action: get_full_name(request_user) + " is asking for your current location.", notifiable: @askee, url: "/admin/users/#{@askee.id}", notification_type: 'mobile',action_type: 'ask_location')
+        @location_request = LocationRequest.create!(user_id: request_user.id, askee_id: id, notification_id: @notification.id)
         @current_push_token = @pubnub.add_channels_to_push(
           push_token: @askee.profile.device_token,
           type: 'gcm',
           add: @askee.profile.device_token
           ).value
-          
-         
-          payload = { 
+
+
+          payload = {
             "pn_gcm":{
               "notification":{
                 "title": get_full_name(request_user),
@@ -74,7 +74,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                 "action_type": @notification.action_type,
                 "action": @notification.action,
                 "created_at": @notification.created_at,
-                "body": ''   
+                "body": ''
               }
             }
           }
@@ -126,16 +126,16 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
        )
-      if @notification = Notification.create(recipient: @asker, actor: request_user, action: get_full_name(request_user) + " has sent you #{if request_user.gender ==  'male' then 'his' else 'her' end } current location.", notifiable: @askee, url: "/admin/users/#{@asker.id}", notification_type: 'mobile', action_type: 'get_location')  
-        
+      if @notification = Notification.create(recipient: @asker, actor: request_user, action: get_full_name(request_user) + " has sent you #{if request_user.gender ==  'male' then 'his' else 'her' end } current location.", notifiable: @askee, url: "/admin/users/#{@asker.id}", notification_type: 'mobile', action_type: 'get_location')
+
         @current_push_token = @pubnub.add_channels_to_push(
           push_token: @asker.profile.device_token,
           type: 'gcm',
           add: @asker.profile.device_token
           ).value
 
-          @channel = "event" 
-           payload = { 
+          @channel = "event"
+           payload = {
             "pn_gcm":{
               "notification":{
                 "title": get_full_name(request_user),
@@ -150,7 +150,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                 "action": @notification.action,
                 "action_type": @notification.action_type,
                 "created_at": @notification.created_at,
-                "body": ''   
+                "body": ''
               }
             }
           }
@@ -198,10 +198,10 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
           )
-         @channel = "event" 
+         @channel = "event"
          if ids_array.kind_of?(Array)
          ids_array.each do |id|
-         
+
           @recipient = User.find(id)
          if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{if request_user.profile.gender ==  'male' then 'his' else 'her' end } current location.", notifiable: @recipient, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "send_location")
 
@@ -213,7 +213,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
              add: @recipient.profile.device_token
              ).value
 
-            payload = { 
+            payload = {
             "pn_gcm":{
               "notification":{
                 "title": get_full_name(request_user),
@@ -229,11 +229,11 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                 "location": location,
                 "action": @notification.action,
                 "created_at": @notification.created_at,
-                "body": ''   
+                "body": ''
               }
             }
           }
-   
+
             @pubnub.publish(
               channel: [@recipient.profile.device_token],
               message: payload
@@ -269,7 +269,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           data: nil
         }
       end
-    
+
       else
         render json:  {
           code: 400,
@@ -322,8 +322,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                  type: 'gcm',
                  add: request_user.profile.device_token
                  ).value
-    
-                payload = { 
+
+                payload = {
                 "pn_gcm":{
                   "notification":{
                     "title": "Reminder about '#{event.name}'",
@@ -339,11 +339,11 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                     "location": location,
                     "action": @notification.action,
                     "created_at": @notification.created_at,
-                    "body": ''   
+                    "body": ''
                   }
                 }
               }
-       
+
                 @pubnub.publish(
                   channel: [request_user.device_token],
                   message: payload
@@ -372,8 +372,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                  type: 'gcm',
                  add: request_user.device_token
                  ).value
-    
-                payload = { 
+
+                payload = {
                 "pn_gcm":{
                   "notification":{
                     "title": "Reminder about '#{event.name}'",
@@ -389,11 +389,11 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                     "location": location,
                     "action": @notification.action,
                     "created_at": @notification.created_at,
-                    "body": ''   
+                    "body": ''
                   }
                 }
               }
-       
+
                 @pubnub.publish(
                   channel: [request_user.device_token],
                   message: payload
@@ -406,14 +406,14 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
          end #cheak
         end #time equal
       end # each
-      
+
         if  @reminder_sent
           render json: {
             code: 200,
             success: true,
             message: 'Reminder sent successfully.',
             data: nil
-          }    
+          }
         else
           render json: {
             code: 400,
@@ -421,10 +421,39 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             message: 'Reminder was not sent.',
             token: request_user.profile.device_token,
             data: nil
-          }  
-        end 
+          }
+        end
     end
 
- 
-  
+
+    def delete_notification
+     if !params[:notification_id].blank?
+       notifcation = Notification.find(params[:notification_id])
+        if notification.destroy
+          render json: {
+            code: 200,
+            success: true,
+            message: "Notification deleted successfully.",
+            data: nil
+          }
+        else
+          render json: {
+            code: 400,
+            success: false,
+            message: "Notification deletion failed.",
+            data: nil
+          }
+        end
+        else
+          render json: {
+            code: 400,
+            success: false,
+            message: 'notification_id is required field.',
+            data: nil
+          }
+        end
+   end
+
+
+
 end
