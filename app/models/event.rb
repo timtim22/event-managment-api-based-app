@@ -13,6 +13,7 @@ validates :image, file_size: { less_than: 3.megabytes }
 
 belongs_to :user, optional: true
 has_many :comments, dependent: :destroy
+has_many :notifications, dependent: :destroy, as: :notifiable
 has_many :users, through: :comments
 has_many :categorizations, dependent: :destroy
 has_many :categories, through: :categorizations
