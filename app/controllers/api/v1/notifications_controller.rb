@@ -441,7 +441,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
     def delete_notification
      if !params[:notification_id].blank?
-       notifcation = Notification.find(params[:notification_id])
+       notification = Notification.find(params[:notification_id])
         if notification.destroy
           render json: {
             code: 200,

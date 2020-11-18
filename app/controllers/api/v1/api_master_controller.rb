@@ -4,8 +4,8 @@ class Api::V1::ApiMasterController < ApplicationController
     protect_from_forgery with: :null_session
     before_action :check_if_app_user?
 
- 
-     
+
+
       def not_found
         render json: { error: 'not_found' }
       end
@@ -40,12 +40,12 @@ class Api::V1::ApiMasterController < ApplicationController
         payload[:exp] = exp.to_i
         JWT.encode(payload, SECRET_KEY)
       end
-    
+
       def decode(token)
         decoded = JWT.decode(token, SECRET_KEY)[0]
         HashWithIndifferentAccess.new decoded
       end
-      
+
       #API based user
       def request_user
         header = request.headers['Authorization']
@@ -60,7 +60,7 @@ class Api::V1::ApiMasterController < ApplicationController
         @decoded = decode(token)
         @current_user = User.find(@decoded[:user_id])
       end
-    
+
 
       #Applicable to invite frineds only
       def auto_friendship(inviter, invitee)
@@ -71,14 +71,14 @@ class Api::V1::ApiMasterController < ApplicationController
             end
       end
 
-    
+
       def get_demographics(event)
         males = []
         females = []
         gays = []
         demographics = {}
         total_count = event.interest_levels.size
-        event.interest_levels.each do |level| 
+        event.interest_levels.each do |level|
          case level.user.profile.gender
            when 'male'
              males.push(level.user)
@@ -90,22 +90,22 @@ class Api::V1::ApiMasterController < ApplicationController
               'No users'
             end
          end #each
-         
+
           demographics['males_percentage'] = if males.size > 0 then males.uniq.size.to_f / total_count.to_f * 100.0 else 0 end
-    
+
           demographics['females_percentage'] = if females.size > 0 then females.uniq.size.to_f / total_count.to_f * 100.0  else 0 end
-    
+
           demographics['gays_percentage'] = if gays.size > 0 then gays.uniq.size.to_f / total_count.to_f * 100.0  else 0 end
-    
+
           demographics
      end
 
-    
-  
+
+
      def is_my_friend?(user)
       request_user.friends.include?  user
      end
-  
+
      def is_my_following?(user)
       if request_user
        request_user.followings.include? user
@@ -128,7 +128,7 @@ class Api::V1::ApiMasterController < ApplicationController
       event.interested_users.uniq.each do |user|
      if request_user
       if request_user.friends.include? user
-         @interested_followers.push(get_user_object(user)) 
+         @interested_followers.push(get_user_object(user))
       else
          if not_me?(user)
           @interested_others.push(get_user_object(user))
@@ -141,9 +141,9 @@ class Api::V1::ApiMasterController < ApplicationController
       "interested_others" => @interested_others
     }
     @interested_users
-   
+
     end
-  
+
      def get_simple_event_object(event)
         if request_user
           all_pass_added = has_passes?(event) && all_passes_added_to_wallet?(request_user,event.passes)
@@ -183,7 +183,7 @@ class Api::V1::ApiMasterController < ApplicationController
     private
 
     def check_if_app_user?
-      if request_user && request_user.app_user != true
+      if request_user && request_user.app_user != true && params["controller"] != "api/v1/analytics"
          render json: {
            code: 400,
            success: false,

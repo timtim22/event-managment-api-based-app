@@ -65,7 +65,7 @@ Rails.application.routes.draw do
        post '/send-location' => "notifications#send_location"
        get '/notifications/get-notifications' => "notifications#index"
        get '/notifications/mark-as-read' => "notifications#mark_as_read"
-       get '/notifications/delete-notification' => "notifications#delete_notification"
+       post '/notifications/delete-notification' => "notifications#delete_notification"
        post '/chats/mark-as-read' => "chats#mark_as_read"
        post '/comments/mark-as-read' => "comments#mark_as_read"
        get '/send-events-reminder' => "notifications#send_events_reminder"
