@@ -2,8 +2,6 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
   before_action :authorize_request
 
   def get_dashboard
-    render json: params
-    return
 
 
    if !params[:business_id].blank? && !params[:resource].blank? && !params[:current_time_slot_dates].blank? && !params[:before_current_time_slot_dates].blank?
