@@ -8,15 +8,15 @@ class Competition < ApplicationRecord
   has_many :viewers, through: :views, source: :user
   has_many :activity_logs, dependent: :destroy, as: :resource
   has_many :wallets, dependent: :destroy, as: :offer
-  has_many :notifications, dependent: :destroy, as: :notifiable
-  
+  has_many :notifications, dependent: :destroy, as: :resource
+
   validates :title, presence: true
   validates :start_date, presence: true
-  validates :end_date, presence: true 
+  validates :end_date, presence: true
   validates :start_time, presence: true
-  validates :end_time, presence: true 
-  validates :validity_time, presence: true 
-  validates :description, presence: true 
+  validates :end_time, presence: true
+  validates :validity_time, presence: true
+  validates :description, presence: true
   validates :location, presence: true
   validates :validity, presence: true
 
