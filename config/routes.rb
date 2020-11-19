@@ -233,6 +233,7 @@ Rails.application.routes.draw do
         get '/get-categories' => 'events#get_categories'
         post '/cancel-event' => 'events#cancel_event'
         post '/payments/create-intant' => 'payments#create_intant'
+        post '/payments/confirm-payment' => 'payments#confirm_payment'
 
       end
     end
