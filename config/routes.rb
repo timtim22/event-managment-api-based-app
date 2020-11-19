@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  apipie
   resources :users
   resources :events
   get '/verify-phone' => "users#verify_phone_page"
@@ -106,6 +107,7 @@ Rails.application.routes.draw do
        get '/get-business-competitions' => 'business_dashboard#competitions'
        get '/get-phone-numbers' => 'users#get_phone_numbers'
        post '/events/show' => 'events#show_event'
+       post '/events/map-event-list' => 'events#map_event_list'
        get '/events/search' => 'search#events_live_search'
        post '/events/passes' => 'passes#index'
        get 'wallet/get-offers' => 'wallets#get_offers'

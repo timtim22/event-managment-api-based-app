@@ -8,7 +8,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
   include ActionView::Helpers::DateHelper
 
  def get_wallet
- 
+
   @wallet_data = {}
   @special_offers = []
   @passes = []
@@ -40,7 +40,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         redeem_count: get_redeem_count(wallet.offer),
         quantity: wallet.offer.quantity
       }
-     when 'Pass' 
+     when 'Pass'
       @passes << {
         id: wallet.offer.id,
         title: wallet.offer.title,
@@ -83,7 +83,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         purchased_quantity: getPurchaseQuantity(wallet.offer.id),
         per_head: wallet.offer.per_head,
         is_redeemed: is_redeemed(wallet.offer.id, "Ticket", request_user.id)
-      
+
       }
     when 'Competition'
       @competitions << {
@@ -111,8 +111,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         terms_and_conditions: wallet.offer.terms_conditions
        }
     else
-       'do nothing' 
-    end #case 
+       'do nothing'
+    end #case
   end #each
   @wallet_data['special_offers'] = @special_offers
   @wallet_data['passes'] = @passes
@@ -176,11 +176,11 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
   @unredeemed_passes = []
   @sorted_passes = []
    pass_ids = request_user.wallets.where(offer_type: 'Pass').where(is_removed: false).page(params[:page]).per(get_per_page).map {|w| w.offer.id }
-   
+
    sort_by_date_passes = Pass.where(id: pass_ids).sort_by_date.page(params[:page]).per(get_per_page).map {|pass| @sorted_passes.push(pass) }
 
    sort_by_redemption_passes = request_user.redemptions.sort_by_date.where(offer_type: 'Pass').page(params[:page]).per(get_per_page).map {|redemption| @sorted_passes.push(redemption.offer) }
-  
+
 @sorted_passes.uniq.each do |pass|
  if is_redeemed(pass.id, 'Pass', request_user.id)
   @redeemed_passes << {
@@ -367,7 +367,7 @@ def get_tickets
     redeem_time: redeem_time(wallet.offer.id, "Ticket", request_user.id),
     validity: wallet.offer.event.end_date,
     is_expired: event_expired?(wallet.offer.event),
-  
+
   }
 end #each
 
@@ -425,10 +425,10 @@ end
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
        )
-      if @notification = Notification.create(recipient: @wallet.offer.user, actor: request_user, action: get_full_name(request_user) + " added your offer '#{@wallet.offer.title}' to wallet.", notifiable: @wallet.offer, url: "/admin/#{ if @wallet.offer_type == 'Pass' then 'passes' else 'special_offers' end }/#{@wallet.offer.id}", notification_type: 'web', action_type: 'add_to_wallet')  
+      if @notification = Notification.create(recipient: @wallet.offer.user, actor: request_user, action: get_full_name(request_user) + " added your offer '#{@wallet.offer.title}' to wallet.", notifiable: @wallet.offer, url: "/admin/#{ if @wallet.offer_type == 'Pass' then 'passes' else 'special_offers' end }/#{@wallet.offer.id}", notification_type: 'web', action_type: 'add_to_wallet')
         @pubnub.publish(
           channel: [@wallet.offer.user.id.to_s],
-          message: { 
+          message: {
             action: @notification.action,
             avatar: request_user.avatar,
             time: time_ago_in_words(@notification.created_at),
@@ -441,15 +441,15 @@ end
         #also notify request_user friends
         if !request_user.friends.blank?
           request_user.friends.each do |friend|
-            if @notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has grabbed #{@wallet.offer.class.name.downcase} '#{@wallet.offer.title}'.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet') 
+            if @notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has grabbed #{@wallet.offer.class.name.downcase} '#{@wallet.offer.title}'.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
                push_token: friend.profile.device_token,
                type: 'gcm',
                add: friend.profile.device_token
                ).value
-    
-             payload = { 
+
+             payload = {
               "pn_gcm":{
                "notification":{
                  "title": @wallet.offer.title,
@@ -464,7 +464,7 @@ end
                 "action": @notification.action,
                 "action_type": @notification.action_type,
                 "created_at": @notification.created_at,
-                "body": ''   
+                "body": ''
                }
               }
              }
@@ -476,7 +476,7 @@ end
              end
           end ##notification create
         end #each
-      end #if not blank 
+      end #if not blank
       create_activity(request_user, "added to wallet", @wallet.offer, params[:offer_type], '', @wallet.offer.title, 'post',"added_#{params[:offer_type]}_to_wallet")
       render json: {
         code: 200,
@@ -533,7 +533,7 @@ end
       is_expired: is_expired?(pass),
       grabbers_count: pass.wallets.size,
       terms_and_conditions: pass.terms_conditions
-    } 
+    }
    elsif(params[:offer_type] == 'SpecialOffer')
     offer = SpecialOffer.find(params[:offer_id])
     @offer_array << {
@@ -550,7 +550,7 @@ end
       creator_name: get_full_name(offer.user),
       creator_image: offer.user.avatar,
       validity: offer.validity.strftime(get_time_format),
-      end_time: offer.end_time, 
+      end_time: offer.end_time,
       is_expired: is_expired?(offer),
       grabbers_count: offer.wallets.size,
       is_added_to_wallet: is_added_to_wallet?(offer.id),
@@ -568,7 +568,7 @@ end
     }
   }
 
-  
+
 
   else
     render json: {
