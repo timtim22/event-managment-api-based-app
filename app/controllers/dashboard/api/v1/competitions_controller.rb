@@ -5,7 +5,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
     require 'action_view'
     require 'action_view/helpers'
     include ActionView::Helpers::DateHelper
- 
+
     def get_past_competitions
     @competitions = []
     Competition.page(params[:page]).per(20).expired.order(created_at: 'DESC').each do |competition|
@@ -35,8 +35,8 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
        draw_date: competition.end_date.strftime("%a %d %b %y%:z "),
        views: 0,
        entries: competition.registrations.size,
-       winners: winners    
-  
+       winners: winners
+
       }
     end
     render json: {
@@ -48,7 +48,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
       }
     }
   end
-  
+
   def index
     @competitions = request_user.competitions.page(params[:page]).per(20).order(created_at: "DESC")
     render json: {
@@ -90,7 +90,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
        'winner' => comp.competition_winners.size
 
       }
-  
+
      render json: {
        code: 200,
        success: true,
@@ -102,7 +102,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
 
   end
 
-  
+
   def create
     @competition = Competition.new
     @competition.title = params[:title]
@@ -127,15 +127,15 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
       if !request_user.followers.blank?
         request_user.followers.each do |follower|
        if follower.competitions_notifications_setting.is_on == true
-          if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition') 
-      
+          if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
+
             @current_push_token = @pubnub.add_channels_to_push(
              push_token: follower.profile.device_token,
              type: 'gcm',
              add: follower.profile.device_token
              ).value
- 
-             payload = { 
+
+             payload = {
               "pn_gcm":{
                "notification":{
                  "title": get_full_name(request_user),
@@ -150,11 +150,11 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
                 "action": @notification.action,
                 "action_type": @notification.action_type,
                 "created_at": @notification.created_at,
-                "body": '' 
+                "body": ''
                }
               }
              }
-        
+
        @pubnub.publish(
          channel: follower.profile.device_token,
          message: payload
@@ -178,7 +178,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
             message: @competition.errors.full_messages,
             data: nil
 
-          }    
+          }
     end
   end
 
@@ -197,9 +197,9 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
     @competition.image = params[:image]
     @competition.price = params[:price]
     @competition.terms_conditions = params[:terms_conditions]
-    if !params[:location].blank? 
+    if !params[:location].blank?
       @competition.location = params[:location][:name]
-      @competition.lat = params[:location][:geometry][:lat] 
+      @competition.lat = params[:location][:geometry][:lat]
       @competition.lng = params[:location][:geometry][:lng]
     end
 
@@ -213,15 +213,15 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
       if !request_user.followers.blank?
         request_user.followers.each do |follower|
        if follower.competitions_notifications_setting.is_on == true
-          if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " Updated new competition '#{@competition.title}'.", notifiable: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition') 
-          
+          if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " Updated new competition '#{@competition.title}'.", notifiable: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
+
             @current_push_token = @pubnub.add_channels_to_push(
              push_token: follower.profile.device_token,
              type: 'gcm',
              add: follower.profile.device_token
              ).value
 
-             payload = { 
+             payload = {
               "pn_gcm":{
                "notification":{
                  "title": get_full_name(request_user),
@@ -236,11 +236,11 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
                 "action": @notification.action,
                 "action_type": @notification.action_type,
                 "created_at": @notification.created_at,
-                "body": '' 
+                "body": ''
                }
               }
              }
-        
+
              @pubnub.publish(
                channel: follower.profile.device_token,
                message: payload
@@ -264,9 +264,9 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
                 message: @competition.errors.full_messages,
                 data: nil
 
-              }    
+              }
     end
-    
+
   else
     render json: {
       code: 400,

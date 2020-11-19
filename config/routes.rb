@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  apipie
   resources :users
   resources :events
   get '/verify-phone' => "users#verify_phone_page"

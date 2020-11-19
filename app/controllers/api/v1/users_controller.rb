@@ -9,7 +9,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     all_users = []
     app = User.app_users.page(params[:page]).per(100).map  { |user| all_users.push(get_user_object(user)) }
     business = User.web_users.page(params[:page]).per(20).map { |user| all_users.push(get_business_object(user)) }
-      
+
     render json: {
       code: 200,
       success: true,
@@ -49,7 +49,9 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     render json: @user, status: :ok
   end
 
- 
+  api :GET, '/api/v1/users', 'To SignUp/Register'
+  param :first_name, String, :desc => "First Name", :required => true
+  param :device_token, String, :desc => "pass any string ", :required => true
   # POST /users
   def create
     required_fields = ['first_name', 'last_name','dob', 'device_token', 'gender','is_email_subscribed', 'type']
@@ -62,18 +64,18 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
 
    if errors.blank?
     @user = User.new
-    if params[:avatar].blank? 
+    if params[:avatar].blank?
      @user.remote_avatar_url = get_dummy_avatar
     else
       @user.avatar= params[:avatar]
     end
-   
+
     @user.app_user = true
     @user.phone_number = params[:phone_number]
     @user.email = params[:email]
     @user.verification_code = generate_code
     @user.stripe_state = generate_code
-    if @user.save 
+    if @user.save
       @profile = Profile.new
       @profile.dob = params[:dob]
       @profile.user = @user
@@ -95,17 +97,17 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
       @profile_data["avatar"] = @user.avatar
        #Also save default setting
        setting_name_values = ['all_chat_notifications','event_notifications','special_offers_notifications','passes_notifications','competitions_notifications','location']
-       
-       setting_name_values.each do |name|     
+
+       setting_name_values.each do |name|
          new_setting = Setting.create!(user_id: @user.id, name: name, is_on: true)
        end #each
-     
+
        if params[:is_email_subscribed] ==  'true'
        #send verification email
         email_sent =  send_verification_email(@user)
        else
         email_sent = "No email was sent"
-       end     
+       end
        #applicable only if user is invited
        if !params[:inviter_phone].blank?
          inviter = User.where(phone_number: params[:inviter_phone]).first
@@ -114,22 +116,22 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
           auto_friendship(inviter, invitee)
          end
        end
-        
+
        #create role
        assignment = @user.assignments.create!(role_id: params[:type])
-       
-      render json: { 
+
+      render json: {
             code: 200,
             success: true,
             message: "Registered successfully.",
             data: {
               user: @profile_data,
               token: encode(user_id: @user.id),
-              email_sent: email_sent 
+              email_sent: email_sent
             }
           }
     else
-      render json: { 
+      render json: {
         code: 400,
         success: false,
         message: @user.errors.full_messages,
@@ -161,7 +163,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
   end
 
   def update_avatar
-    @user = current_user()      
+    @user = current_user()
     if @user.update(profile_update_params)
       #create_activity("updated profile picture.", @user, "User")
       render json: {
@@ -182,7 +184,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     profile = user.profile
     user.profile.first_name = params[:first_name]
     user.profile.last_name = params[:last_name]
-    user.avatar = params[:avatar] 
+    user.avatar = params[:avatar]
     user.profile.gender = params[:gender]
     profile.about = params[:about]
     profile.add_social_media_links = params[:add_social_media_links]
@@ -201,7 +203,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
   if profile.save && user.save
    # create_activity("updated profile.", profile, "Profile")
    profile_object = {
-    'first_name' => user.profile.first_name, 
+    'first_name' => user.profile.first_name,
     'last_name' => user.profile.last_name,
     'avatar' => user.avatar,
     'lat' => user.profile.lat,
@@ -243,7 +245,7 @@ end
     user = request_user
       profile = {
           'id' => user.id,
-          'first_name' => user.profile.first_name, 
+          'first_name' => user.profile.first_name,
           'last_name' => user.profile.last_name,
           'avatar' => user.avatar,
           'lat' => user.profile.lat,
@@ -272,17 +274,17 @@ end
         data: {
           profile: profile,
           user: request_user
-        } 
-      }  
+        }
+      }
 end
 
  def get_others_profile
   if !params[:user_id].blank?
   user = User.find(params[:user_id])
   profile = {}
- 
+
   profile['user_id'] = user.id
-  profile['first_name'] = user.profile.first_name 
+  profile['first_name'] = user.profile.first_name
   profile['last_name'] = user.profile.last_name
   profile['avatar'] = user.avatar
   profile['about'] = user.profile.about
@@ -302,7 +304,7 @@ end
   profile['friends_count'] = user.friends.size
   profile['follows_count'] = user.followings.size
   profile['followers_count'] = user.followers.size
- 
+
   render json: {
     code: 200,
     success: true,
@@ -310,7 +312,7 @@ end
     data: {
       profile: profile,
       user: request_user
-    } 
+    }
   }
 else
   render json: {
@@ -319,7 +321,7 @@ else
     message: 'user_id is required.',
     data: nil
   }
-end  
+end
 end
 
 
@@ -365,7 +367,7 @@ end
         resource['location'] = log.resource.location
         resource['start_date'] = log.resource.date
         resource['grabbers_counts'] = log.resource.wallets.size
-        
+
       when 'Competition'
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
@@ -376,7 +378,7 @@ end
         resource['title'] = log.resource.offer.title
         resource['host_name'] = get_full_name(log.resource.user)
         resource['forwarded_to'] =  get_full_name(log.resource.recipient)
-        
+
       else
         "do nothing"
       end #case
@@ -388,7 +390,7 @@ end
         "resource_type" => log.resource_type,
         "resource" => resource,
         "created_at" => log.created_at
-       
+
       }
     end #each
 
@@ -413,10 +415,10 @@ end
 
  def attending
    if !params[:user_id].blank?
-    
+
      user = User.find(params[:user_id])
      attending = user.events_to_attend.page(params[:page]).per(30).map {|event| get_simple_event_object(event) }
-     
+
      render json: {
        code: 200,
        success: true,
@@ -506,7 +508,7 @@ end
        resource['location'] = log.resource.location
        resource['start_date'] = log.resource.date
        resource['grabbers_counts'] = log.resource.wallets.size
-       
+
      when 'Competition'
        resource['title'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
@@ -517,7 +519,7 @@ end
        resource['title'] = log.resource.offer.title
        resource['host_name'] = get_full_name(log.resource.user)
        resource['forwarded_to'] =  get_full_name(log.resource.recipient)
-       
+
      else
        "do nothing"
      end #case
@@ -529,7 +531,7 @@ end
        "resource_type" => log.resource_type,
        "resource" => resource,
        "created_at" => log.created_at
-      
+
      }
    end #each
 
@@ -541,7 +543,7 @@ end
         activity_logs: activity_logs
       }
     }
-  
+
 end
 
 
@@ -583,7 +585,7 @@ def my_attending
         attending: attending
       }
     }
-  
+
 end
 
 
@@ -616,7 +618,7 @@ end
       offers = {}
       offers['special_offers'] = user.special_offers
       offers['passes'] = user.passes
-      profile['first_name'] = user.business_profile.profile_name 
+      profile['first_name'] = user.business_profile.profile_name
       profile['last_name'] = ''
       profile['avatar'] = user.avatar
       profile['about'] = user.profile.about
@@ -634,7 +636,7 @@ end
         message: '',
         data: {
           profile: profile
-        } 
+        }
       }
  end
 
@@ -646,7 +648,7 @@ end
   profile['id'] = user.id
   profile['profile_name'] = user.business_profile.profile_name
   profile['first_name'] = user.business_profile.profile_name
-  profile['last_name'] = ''   
+  profile['last_name'] = ''
   profile['avatar'] = user.avatar
   profile['address'] = user.business_profile.address
   profile['about'] = user.business_profile.about
@@ -662,7 +664,7 @@ end
   profile['competitions_count'] = user.competitions.size
   profile['offers_count'] = user.special_offers.size
   profile['news_feeds'] = user.news_feeds
-  profile['ambassador_request_status'] = status 
+  profile['ambassador_request_status'] = status
   profile['is_ambassador'] = if get_request_status(user.id) == 'accepted' then true else false end
   render json: {
     code: 200,
@@ -670,8 +672,8 @@ end
     message: '',
     data: {
       profile: profile,
-      user: user 
-    } 
+      user: user
+    }
   }
 else
   render json: {
@@ -880,19 +882,19 @@ private
  def profile_update_params
   params.permit(:avatar)
  end
- 
+
 
  def getRoles
    @roles = Role.all
  end
 
  def send_verification_email(user)
-    @code = user.verification_code 
+    @code = user.verification_code
     base_url = request.base_url
     @url = "#{base_url}/api/v1/auth/verify-code?email=#{user.email}&&verification_code=#{@code}"
     # @url = "#{ENV['BASE_URL']}/api/v1/auth/verify-code?email=#{user.email}&&verification_code=#{@code}"
     if UserMailer.with(user: user).verification_email(user,@url).deliver_now#UserMailer.deliver_now
-     true   
+     true
   else
     false
   end
