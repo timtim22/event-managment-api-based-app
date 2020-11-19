@@ -34,6 +34,24 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "event_location": notification.notifiable.location,
           "event_start_date": notification.notifiable.start_date
         }
+
+      when "create_competition"
+          @notifications << {
+            "competition_id": notification.id,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "location": location,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?,
+            "competition_name": notification.notifiable.title,
+            "business_name": User.get_full_name(notification.notifiable.user),
+            "competition_draw_date": notification.notifiable.validity
+
+          }
       else
          "do nothing"
       end #switch
