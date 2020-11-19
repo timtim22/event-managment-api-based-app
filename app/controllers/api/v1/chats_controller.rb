@@ -235,6 +235,8 @@ def chat_people
 }
 end
 
+
+
 def clear_conversation
   if !params[:user_id].blank?
   @conversation = Message.where(user_id: params[:user_id]).where(recipient_id: request_user.id).or(Message.where(user_id: request_user.id).where(recipient_id: params[:user_id]))
@@ -262,6 +264,8 @@ else
     }
 end
 end
+
+
 
 def clear_chat #specific chat
   message = Message.find(params[:message_id])
