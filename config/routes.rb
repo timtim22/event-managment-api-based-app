@@ -234,6 +234,7 @@ Rails.application.routes.draw do
         post '/cancel-event' => 'events#cancel_event'
         post '/payments/create-intant' => 'payments#create_intant'
         post '/payments/confirm-payment' => 'payments#confirm_payment'
+        post '/payments/get-invoice' => 'payments#get_invoice'
 
       end
     end
