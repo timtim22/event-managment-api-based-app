@@ -14,7 +14,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       location = {}
       location['lat'] = if !notification.location_share.blank? then notification.location_share.lat else '' end
       location['lng'] = if !notification.location_share.blank? then notification.location_share.lng else '' end
-        
+
       case notification.action_type
       when "create_event"
         @notifications << {
@@ -32,11 +32,11 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "event_name": notification.notifiable.name,
           "event_id": notification.notifiable.id,
           "event_location": notification.notifiable.location,
-          "start_date": notification.notifiable.start_date
+          "event_start_date": notification.notifiable.start_date
         }
       else
          "do nothing"
-      end #switch    
+      end #switch
     end #end
 
     render json: {
