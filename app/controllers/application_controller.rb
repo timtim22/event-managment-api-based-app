@@ -676,7 +676,6 @@ end
    end
 
 
-  
 
 
    def get_participants_stats(competition) 
@@ -693,6 +692,8 @@ end
    }
    @stats
   end
+
+  
 
   def is_attending?(event)
     if request_user

@@ -87,7 +87,6 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
        'location' => comp.location,
        'validity' => comp.validity,
        'validity_time' => comp.validity_time,
-       'validity_time' => comp.validity_time,
        'price' => comp.price,
        'terms_conditions' => comp.terms_conditions,
        'winner' => comp.competition_winners.size
