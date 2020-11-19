@@ -66,8 +66,24 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "location": location,
             "created_at": notification.created_at,
             "is_read": !notification.read_at.nil?
+          }
+        when "create_pass"
+          @notifications << {
+            "pass_id": notification.id,
+            "business_name": User.get_full_name(notification.resource.user),
+            "event_name": notification.resource.event.name,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "location": location,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?
 
           }
+
       else
          "do nothing"
       end #switch

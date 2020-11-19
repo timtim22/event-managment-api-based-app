@@ -43,7 +43,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
       if !current_user.followers.blank?
         current_user.followers.each do |follower|
    if follower.competitions_notifications_setting.is_on == true
-      if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, notifiable: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
+      if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, resource: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
 
         @current_push_token = @pubnub.add_channels_to_push(
          push_token: follower.profile.device_token,
