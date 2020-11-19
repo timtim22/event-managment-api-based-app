@@ -6,8 +6,8 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
     require 'action_view/helpers'
     include ActionView::Helpers::DateHelper
 
+    api :GET, '/api/v1/competitions', 'Shows All competitions - Required a user'
 
-    api :GET, '/api/v1/competitions', 'Shows All competition - Required a User'
     def index
     @competitions = []
     if request_user
@@ -78,7 +78,13 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
     }
   end
 
-
+  api :GET, '/api/v1/competitions', 'To SignUp/Register'
+  param :first_name, String, :desc => "First Name"
+  param :last_name, String, :desc => "last Name"
+  param :email, String, :desc => "Email"
+  param :phone_number, :number, :desc => "Phone Number - Required for Mobile App users", :required => true
+  param :password, String, :desc => "Password", :required => true
+  param :password_confirmation, String, :desc => "Password Confirmation", :required => true
 
   def register
     if !params[:competition_id].blank?

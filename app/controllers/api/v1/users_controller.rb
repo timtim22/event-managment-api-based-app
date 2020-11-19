@@ -5,6 +5,8 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
   # GET /users
+
+
   def index
     all_users = []
     app = User.app_users.page(params[:page]).per(100).map  { |user| all_users.push(get_user_object(user)) }
@@ -50,8 +52,13 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
   end
 
   api :GET, '/api/v1/users', 'To SignUp/Register'
-  param :first_name, String, :desc => "First Name", :required => true
-  param :device_token, String, :desc => "pass any string ", :required => true
+  param :first_name, String, :desc => "First Name"
+  param :last_name, String, :desc => "last Name"
+  param :email, String, :desc => "Email"
+  param :phone_number, :number, :desc => "Phone Number - Required for Mobile App users", :required => true
+  param :password, String, :desc => "Password", :required => true
+  param :password_confirmation, String, :desc => "Password Confirmation", :required => true
+
   # POST /users
   def create
     required_fields = ['first_name', 'last_name','dob', 'device_token', 'gender','is_email_subscribed', 'type']
