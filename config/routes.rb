@@ -209,6 +209,7 @@ Rails.application.routes.draw do
 
         resources :users
         resources :news_feeds
+        resources :invoices
 
         resources :events do
           resources :comments
