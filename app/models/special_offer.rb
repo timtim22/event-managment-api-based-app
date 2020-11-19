@@ -9,6 +9,7 @@ class SpecialOffer < ApplicationRecord
   has_many :offer_shares, dependent: :destroy, as: :offer
   has_many :offer_forwardings, dependent: :destroy, as: :offer
   has_many :activity_logs, dependent: :destroy, as: :resource
+  has_many :notifications, dependent: :destroy, as: :resource
 
   validates :title, presence: true
   validates :description, presence: true

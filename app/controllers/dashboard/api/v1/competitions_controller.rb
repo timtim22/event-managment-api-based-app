@@ -19,7 +19,6 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
      }
 
      winners = []
-
      competition.competition_winners.each do |winner|
        winners << {
          "id" => winner.user.id,
