@@ -121,27 +121,18 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   end
 
 def map_event_list
-      if !params[:event_id].blank?
-        e = Event.find(params[:event_id])
-
-        @event = {
-          'id' => e.id,
-          'lat' => e.lat,
-          'lng' => e.lng,
-          'categories' => !e.categories.blank? ? e.category_ids : @empty
-        }
-
-         render json: {
-             event: @event
-           }
-      else
-       render json: {
-        code: 400,
-        success: false,
-        message: "event_id is required.",
-        data: nil
-      }
-    end
+        @events = []
+          Event.page(params[:page]).each do |event|
+            @events << {
+              id: event.id,
+              lat: event.lat,
+              lng: event.lng,
+              category_ids: !event.category_ids.blank? ? event.category_ids : @empty
+            }
+          end
+            render json: {
+                events: @events
+              }
 end
 
 
