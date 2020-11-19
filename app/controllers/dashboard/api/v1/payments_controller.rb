@@ -50,12 +50,14 @@ class Dashboard::Api::V1::PaymentsController < Dashboard::Api::V1::ApiMasterCont
  def confirm_payment
   if !params[:status].blank? && !params[:stripe_response].blank? && !params[:transaction_id].blank?
     transaction = Transaction.find(params[:transaction_id])
-    if transaction.update!(status: params[:status], stripe_response: params[:stripe_response])
+    if transaction.update!(status: params[:status], stripe_response: params[:stripe_response]) && request_user.invoices.create!(amount: transaction.amount, tax_invoice_number: "243546454", total_amount: transaction.amount)
     render json: {
       code: 200,
       success: true,
       message: "Payment is successful.",
-      data: nil
+      data: {
+        invoice_id: Invoice.last.id
+      }
     }
   else
     render json: {
@@ -94,12 +96,14 @@ class Dashboard::Api::V1::PaymentsController < Dashboard::Api::V1::ApiMasterCont
 
   
   def get_invoice
-    if !params[:transaction_id].blank?
-           
-      @transaction = Transaction.find(params[:transaction_id])
+    if !params[:invoice_id].blank? 
+      @invoice = Invoice.find(params[:invoice_id])
         invoice = {
-          "id" => transaction_id,
-          "Ticket Event" => @transaction.amount
+          "id" =>  @invoice,
+          "tax_invoice_number" =>  @invoice.tax_invoice_number,
+          "total_amount" => @invoice.total_amount,
+          "business_name" => User.get_full_name(@invoice.user),
+          "business_contact" =>  @invoice.user.phone_number
         }
      
        render json: {
@@ -114,7 +118,7 @@ class Dashboard::Api::V1::PaymentsController < Dashboard::Api::V1::ApiMasterCont
       render json: {
         code: 400,
         success: false,
-        message: "transaction_id is required field.",
+        message: "invoice_id is required field.",
         data: nil
       }
     end

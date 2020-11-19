@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_29_045858) do
+ActiveRecord::Schema.define(version: 2020_11_19_115726) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -274,6 +274,15 @@ ActiveRecord::Schema.define(version: 2020_10_29_045858) do
     t.index ["event_id", "user_id"], name: "index_interest_levels_on_event_id_and_user_id"
     t.index ["event_id"], name: "index_interest_levels_on_event_id"
     t.index ["user_id"], name: "index_interest_levels_on_user_id"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "amount"
+    t.integer "total_amount"
+    t.string "tax_invoice_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "location_requests", force: :cascade do |t|

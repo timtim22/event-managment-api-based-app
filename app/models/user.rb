@@ -16,7 +16,7 @@ class User < ApplicationRecord
   has_many :friends, through: :accepted_friend_requests, source: :user
   has_many :chat_channels, dependent: :destroy
   has_many :notifications, foreign_key: :recipient_id, dependent: :destroy
-  has_many :outgoing_notifications, foreign_key: :actor_id, dependent: :destroy
+  has_many :outgoing_notifications, foreign_key: :actor_id, class_name: 'Notification', dependent: :destroy
   has_many :followers_relationships, -> { where(status: true ) }, foreign_key: :following_id, class_name: 'Follow', dependent: :destroy 
   has_many :followers, through: :followers_relationships, source: :follower
   has_many :following_relationships, -> { where(status: true ) }, foreign_key: :user_id, class_name: "Follow", dependent: :destroy
@@ -70,6 +70,7 @@ class User < ApplicationRecord
   has_many :remove_offers, -> { where(name: 'remove_offers', resource_type: 'SpecialOffer') }, class_name: 'UserSetting', source_type: :special_offer, dependent: :destroy
   has_many :remove_passes, -> { where(name: 'remove_passes', resource_type: 'Pass') }, class_name: 'UserSetting', source_type: :pass, dependent: :destroy
   has_many :news_feeds, dependent: :destroy
+  has_many :invoices, dependent: :destroy
   
   has_many :password_resets, dependent: :destroy
   has_many :event_shares, dependent: :destroy
