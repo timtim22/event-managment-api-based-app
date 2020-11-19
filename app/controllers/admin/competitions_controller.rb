@@ -3,7 +3,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
   require 'action_view'
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
-  
+
   def index
     @competitions = current_user.own_competitions.order(created_at: "DESC")
   end
@@ -15,9 +15,9 @@ class Admin::CompetitionsController < Admin::AdminMasterController
   def new
     @competition = Competition.new
   end
-  
+
   def create
-      @competition = current_user.own_competitions.new   
+      @competition = current_user.own_competitions.new
       @competition.title = params[:title]
       @competition.description = params[:description]
       @competition.start_date = params[:start_date]
@@ -43,15 +43,15 @@ class Admin::CompetitionsController < Admin::AdminMasterController
       if !current_user.followers.blank?
         current_user.followers.each do |follower|
    if follower.competitions_notifications_setting.is_on == true
-      if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition') 
-  
+      if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, notifiable: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
+
         @current_push_token = @pubnub.add_channels_to_push(
          push_token: follower.profile.device_token,
          type: 'gcm',
          add: follower.profile.device_token
          ).value
 
-         payload = { 
+         payload = {
           "pn_gcm":{
            "notification":{
              "title": get_full_name(current_user),
@@ -66,11 +66,11 @@ class Admin::CompetitionsController < Admin::AdminMasterController
             "action": @notification.action,
             "action_type": @notification.action_type,
             "created_at": @notification.created_at,
-            "body": '' 
+            "body": ''
            }
           }
          }
-        
+
        @pubnub.publish(
          channel: follower.profile.device_token,
          message: payload
@@ -114,7 +114,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
     else
       flash[:alert_danger] = "Competition update failed."
       redirect_to admin_competitions_path
-    end 
+    end
   end
 
   def destroy
