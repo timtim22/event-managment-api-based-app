@@ -28,11 +28,11 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "location": location,
           "created_at": notification.created_at,
           "is_read": !notification.read_at.nil?,
-          "business_name": User.get_full_name(notification.notifiable.user),
-          "event_name": notification.notifiable.name,
-          "event_id": notification.notifiable.id,
-          "event_location": notification.notifiable.location,
-          "event_start_date": notification.notifiable.start_date
+          "business_name": User.get_full_name(notification.resource.user),
+          "event_name": notification.resource.name,
+          "event_id": notification.resource.id,
+          "event_location": notification.resource.location,
+          "event_start_date": notification.resource.start_date
         }
 
       when "create_competition"
@@ -47,9 +47,25 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "location": location,
             "created_at": notification.created_at,
             "is_read": !notification.read_at.nil?,
-            "competition_name": notification.notifiable.title,
-            "business_name": User.get_full_name(notification.notifiable.user),
-            "competition_draw_date": notification.notifiable.validity
+            "competition_name": notification.resource.title,
+            "business_name": User.get_full_name(notification.resource.user),
+            "competition_draw_date": notification.resource.validity
+
+          }
+        when "create_offer"
+          @notifications << {
+            "special_offers_id": notification.id,
+            "business_name": User.get_full_name(notification.resource.user),
+            "special_offer_name": notification.resource.title,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "location": location,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?
 
           }
       else
