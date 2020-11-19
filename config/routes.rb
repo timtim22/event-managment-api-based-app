@@ -158,7 +158,7 @@ Rails.application.routes.draw do
 
      get '/ticketmaster/import-events' => "ticketmaster#select_date"
      post '/ticketmaster/import-events' => "ticketmaster#import_events"
-     get '/get-notificaitons' => "notifications#index"
+     get '/get-notificatons' => "notifications#index"
      get '/get-notifications-count' => "notifications#get_notifications_count"
      get '/mark-as-read' => "notifications#mark_as_read"
      get '/clear-notifications' => "notifications#clear_notifications"
