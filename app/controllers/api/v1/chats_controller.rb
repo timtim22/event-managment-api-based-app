@@ -77,7 +77,23 @@ if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipie
    end #publish
   end #all chat and event chat true
 
-   chat = Message.get_messages(@sender.id,@recipient.id).order(created_at: 'ASC')
+   chat = []
+   messages = Message.get_messages(@sender.id,@recipient.id).order(created_at: 'ASC')
+   if !messages.blank?
+    messages.each do |msg|
+      chat << {
+        "id" => msg.id,
+        "recipient_id" =>  msg.recipient_id,
+        "message" => msg.message,
+        "read_at" => msg.read_at,
+        "sender_id" => msg.user_id,
+        "created_at" => msg.created_at,
+        "updated_at" => msg.updated_at,
+        "from" => msg.from,
+        "user_avatar": msg.user_avatar
+      }
+    end #each
+   end
   
    render json: {
      code: 200,

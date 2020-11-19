@@ -16,6 +16,7 @@ class User < ApplicationRecord
   has_many :friends, through: :accepted_friend_requests, source: :user
   has_many :chat_channels, dependent: :destroy
   has_many :notifications, foreign_key: :recipient_id, dependent: :destroy
+  has_many :outgoing_notifications, foreign_key: :actor_id, dependent: :destroy
   has_many :followers_relationships, -> { where(status: true ) }, foreign_key: :following_id, class_name: 'Follow', dependent: :destroy 
   has_many :followers, through: :followers_relationships, source: :follower
   has_many :following_relationships, -> { where(status: true ) }, foreign_key: :user_id, class_name: "Follow", dependent: :destroy

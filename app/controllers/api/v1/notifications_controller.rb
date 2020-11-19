@@ -14,18 +14,31 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       location = {}
       location['lat'] = if !notification.location_share.blank? then notification.location_share.lat else '' end
       location['lng'] = if !notification.location_share.blank? then notification.location_share.lng else '' end
-      @notifications << {
-        "id": notification.id,
-        "actor_id": notification.actor_id,
-        "actor_image": notification.actor.avatar,
-        "notifiable_id": notification.notifiable_id,
-        "notifiable_type": notification.notifiable_type,
-        "action": notification.action,
-        "action_type": notification.action_type,
-        "location": location,
-        "created_at": notification.created_at
-      }
-    end
+        
+      case notification.action_type
+      when "create_event"
+        @notifications << {
+          "id": notification.id,
+          "actor_id": notification.actor_id,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "location": location,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?,
+          "business_name": User.get_full_name(notification.notifiable.user),
+          "event_name": notification.notifiable.name,
+          "event_id": notification.notifiable.id,
+          "event_location": notification.notifiable.location,
+          "start_date": notification.notifiable.start_date
+        }
+      else
+         "do nothing"
+      end #switch    
+    end #end
+
     render json: {
       code: 200,
       success: true,

@@ -351,7 +351,7 @@ end
 
  @all_suggessions = []  
  @friends_suggestions.uniq.each do  |user| 
-  if not_me?(user) && !is_my_friend?(user) && !is_business?(user) && !request_status(request_user, user)
+  if not_me?(user) && !is_my_friend?(user) && !is_business?(user)
     @all_suggessions << {
      user:  get_user_object(user),
      mutual_friends_count: get_mutual_friends(request_user, user).size,
