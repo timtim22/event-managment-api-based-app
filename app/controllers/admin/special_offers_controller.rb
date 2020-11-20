@@ -29,7 +29,6 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
       @special_offer.time = params[:time]
       @special_offer.end_time = params[:validity_time]
       @special_offer.image = params[:image]
-      @special_offer.redeem_code = generate_code
       @special_offer.terms_conditions = params[:terms_conditions]
       @special_offer.quantity = params[:quantity]
       @special_offer.validity = params[:validity]
@@ -42,16 +41,16 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
             uuid: @username
             )
           current_user.followers.each do |follower|
-     if follower.special_offers_notifications_setting.is_on == true 
-        if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event') 
+     if follower.special_offers_notifications_setting.is_on == true
+        if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_offer')
           @channel = "event" #encrypt later
           @current_push_token = @pubnub.add_channels_to_push(
            push_token: follower.profile.device_token,
            type: 'gcm',
            add: follower.profile.device_token
            ).value
-  
-           payload = { 
+
+           payload = {
             "pn_gcm":{
              "notification":{
                "title": get_full_name(current_user),
@@ -66,11 +65,11 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
               "action": @notification.action,
               "action_type": @notification.action_type,
               "created_at": @notification.created_at,
-              "body": '' 
+              "body": ''
              }
             }
            }
-          
+
          @pubnub.publish(
            channel: follower.profile.device_token,
            message: payload
@@ -84,9 +83,9 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
         flash[:notice] = "Special offer created successfully."
         redirect_to admin_special_offers_path
       else
-       
+
         render :new
-      end 
+      end
   end
 
   def edit
@@ -110,13 +109,13 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
      @special_offer.redeem_code = generate_code
      @special_offer.terms_conditions = params[:terms_conditions]
      @special_offer.quantity = params[:quantity]
-     @special_offer.validity = params[:validity] 
+     @special_offer.validity = params[:validity]
     if @special_offer.save
       #create_activity("updated special offer", @special_offer, "SpecialOffer", admin_special_offer_path(@special_offer),@special_offer.title, 'patch')
       if !current_user.followers.blank?
         current_user.followers.each do |follower|
-    if follower.special_offers_notifications_setting.is_on == true 
-      if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'update_special_offer') 
+    if follower.special_offers_notifications_setting.is_on == true
+      if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'update_special_offer')
         @channel = "event" #encrypt later
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
@@ -129,7 +128,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
          add: follower.profile.device_token
          ).value
 
-         payload = { 
+         payload = {
           "pn_gcm":{
            "notification":{
              "title": get_full_name(current_user),
@@ -144,11 +143,11 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
             "action": @notification.action,
             "action_type": @notification.action_type,
             "created_at": @notification.created_at,
-            "body": '' 
+            "body": ''
            }
           }
          }
-        
+
        @pubnub.publish(
          channel: follower.profile.device_token,
          message: payload
@@ -164,7 +163,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
     else
       flash[:alert_danger] = @special_offer.errors.full_messages
       redirect_to admin_special_offers_path
-    end 
+    end
   end
 
   def destroy

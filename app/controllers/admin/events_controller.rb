@@ -6,41 +6,41 @@ class Admin::EventsController < Admin::AdminMasterController
   require 'action_view'
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
- 
+
 
 	def index
 		@events = current_user.events.sort_by_date.page(params[:page])
 	end
 
   def new
-    
+
     @event = Event.new
     @event_attachment = @event.event_attachments.build
   end
-  
+
   def edit
-    @event = Event.find(params[:id]) 
+    @event = Event.find(params[:id])
   end
 
 	def show
 		@event = Event.find(params[:id]) or not_found
   end
-  
+
 
  def create
   @errors = []
   @event = current_user.events.new
-  if params[:free_ticket].blank? && params[:paid_ticket].blank? && params[:pay_at_door].blank? 
+  if params[:free_ticket].blank? && params[:paid_ticket].blank? && params[:pay_at_door].blank?
     flash[:alert_danger] = "One of the admission process must be defined."
     render :new
     return
    end
-   
+
   @pubnub = Pubnub.new(
     publish_key: ENV['PUBLISH_KEY'],
     subscribe_key: ENV['SUBSCRIBE_KEY']
    )
-   
+
    if params[:start_date] == params[:end_date]
         @event.name = params[:name]
         @event.start_date = params[:start_date].to_date
@@ -94,18 +94,18 @@ class Admin::EventsController < Admin::AdminMasterController
          end#each
        end
      end #if
-          
-          
+
+
         # notifiy all users about new event creation
 
         if !params[:free_ticket].blank?
             @ticket = @event.tickets.create!(user: current_user, title: params[:free_ticket][:title], ticket_type: 'free', quantity: params[:free_ticket]["quantity"], per_head: params[:free_ticket]["per_head"], price: 0)
-            
+
         end #if
 
         if !params[:paid_ticket].blank?
-          
-          tickets = []      
+
+          tickets = []
           tota_count =  params[:paid_ticket][:price].size
           if tota_count > 1
           price_one =  params[:paid_ticket][:price].first.to_f
@@ -137,7 +137,7 @@ class Admin::EventsController < Admin::AdminMasterController
           end #if
 
       if !params[:pass].blank?
-            passes = []      
+            passes = []
             count = params[:pass]['quantity'].size
             count.to_i.times.each do |count|
           passes << {
@@ -154,8 +154,8 @@ class Admin::EventsController < Admin::AdminMasterController
 
             @event.update!(pass: 'true')
           end
-          end #each 
-        
+          end #each
+
       end #if
 
       if !params[:pay_at_door].blank?
@@ -163,11 +163,11 @@ class Admin::EventsController < Admin::AdminMasterController
           @event.update!(start_price: params[:pay_at_door]["start_price"], end_price:params[:pay_at_door]["end_price"])
       end #if
         # notifiy all users about new event creation
-      
+
         if !current_user.followers.blank?
           current_user.followers.each do |follower|
         if follower.all_chat_notifications_setting.is_on == true && follower.event_notifications_setting.is_on == true
-        if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event') 
+        if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event')
           @channel = "event" #encrypt later
           @current_push_token = @pubnub.add_channels_to_push(
           push_token: follower.profile.device_token,
@@ -175,7 +175,7 @@ class Admin::EventsController < Admin::AdminMasterController
           add: @channel
           ).value
 
-          payload = { 
+          payload = {
             "pn_gcm":{
             "notification":{
               "title": get_full_name(current_user),
@@ -190,11 +190,11 @@ class Admin::EventsController < Admin::AdminMasterController
               "action": @notification.action,
               "action_type": @notification.action_type,
               "created_at": @notification.created_at,
-              "body": '' 
+              "body": ''
             }
             }
           }
-          
+
         @pubnub.publish(
           channel: @channel,
           message: payload
@@ -211,7 +211,7 @@ class Admin::EventsController < Admin::AdminMasterController
           render :new
       end
    else###############################
-    dates = generate_date_range(params[:start_date], params[:end_date])  
+    dates = generate_date_range(params[:start_date], params[:end_date])
     dates.each do |date|
       @event = current_user.events.new
       @event.name = params[:name]
@@ -233,7 +233,7 @@ class Admin::EventsController < Admin::AdminMasterController
       @event.event_forwarding = params[:event_forwarding]
       @event.allow_additional_media = params[:allow_additional_media]
      if @event.save
-        
+
       if !params[:event_attachments].blank?
 
         params[:event_attachments]['media'].each do |m|
@@ -258,18 +258,18 @@ class Admin::EventsController < Admin::AdminMasterController
          end#each
        end
      end #if
-        
-        
+
+
       # notifiy all users about new event creation
 
       if !params[:free_ticket].blank?
           @ticket = @event.tickets.create!(user: current_user, title: params[:free_ticket][:title], ticket_type: 'free', quantity: params[:free_ticket]["quantity"], per_head: params[:free_ticket]["per_head"], price: 0)
-          
+
        end #if
 
        if !params[:paid_ticket].blank?
-         
-        tickets = []      
+
+        tickets = []
         tota_count =  params[:paid_ticket][:price].size
         if tota_count > 1
          price_one =  params[:paid_ticket][:price].first.to_f
@@ -301,7 +301,7 @@ class Admin::EventsController < Admin::AdminMasterController
         end #if
 
      if !params[:pass].blank?
-          passes = []      
+          passes = []
           count = params[:pass]['quantity'].size
           count.to_i.times.each do |count|
         passes << {
@@ -319,8 +319,8 @@ class Admin::EventsController < Admin::AdminMasterController
 
           @event.update!(pass: 'true')
          end
-        end #each 
-      
+        end #each
+
      end #if
 
     if !params[:pay_at_door].blank?
@@ -328,11 +328,11 @@ class Admin::EventsController < Admin::AdminMasterController
         @event.update!(start_price: params[:pay_at_door]["start_price"], end_price:params[:pay_at_door]["end_price"])
      end #if
       # notifiy all users about new event creation
-     
+
        if !current_user.followers.blank?
         current_user.followers.each do |follower|
       if follower.all_chat_notifications_setting.is_on == true && follower.event_notifications_setting.is_on == true
-      if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event') 
+      if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event')
         @channel = "event" #encrypt later
         @current_push_token = @pubnub.add_channels_to_push(
          push_token: follower.profile.device_token,
@@ -340,7 +340,7 @@ class Admin::EventsController < Admin::AdminMasterController
          add: @channel
          ).value
 
-         payload = { 
+         payload = {
           "pn_gcm":{
            "notification":{
              "title": get_full_name(current_user),
@@ -355,11 +355,11 @@ class Admin::EventsController < Admin::AdminMasterController
             "action": @notification.action,
             "action_type": @notification.action_type,
             "created_at": @notification.created_at,
-            "body": '' 
+            "body": ''
            }
           }
          }
-        
+
        @pubnub.publish(
          channel: @channel,
          message: payload
@@ -370,7 +370,7 @@ class Admin::EventsController < Admin::AdminMasterController
       end #all chat and event chat true
       end #each
       end # not blank
-        
+
 
      else
        @errors.push(@event.errors.full_messages)
@@ -406,7 +406,7 @@ class Admin::EventsController < Admin::AdminMasterController
       start_price = 0.00
       end_price = 0.00
     end
-   end  
+   end
 
     @event = Event.find(params[:id])
     @event.name = params[:name]
@@ -447,31 +447,31 @@ class Admin::EventsController < Admin::AdminMasterController
       #in case of update attachments
       if !params[:update_attachments].blank?
          ids = params[:attachments][:ids]
-      
+
          ids.each do |id|
           if !params[:update_attachments]["#{id}"].blank?
           @event.event_attachments.find(id).update(:media => params[:update_attachments]["#{id}"]["media"][0], media_type: 'image')
           end
          end #each
         end #if
-        
-      
+
+
 
 
          #in case of updsate sponsors
         if !params[:update_sponsors].blank?
           ids = params[:update_sponsors][:ids]
           ids.each do |id|
-          if !params[:update_sponsors]["#{id}"][:images].blank? 
+          if !params[:update_sponsors]["#{id}"][:images].blank?
             @event.sponsors.find(id).update!(sponsor_image: params[:update_sponsors]["#{id}"][:images][0], external_url: params[:update_sponsors]["#{id}"][:external_urls][0])
-            elsif !params[:update_sponsors]["#{id}"][:external_urls].blank? 
+            elsif !params[:update_sponsors]["#{id}"][:external_urls].blank?
               @event.sponsors.find(id).update!(external_url: params[:update_sponsors]["#{id}"][:external_urls][0])
-            end  
+            end
        end #each
       end#if
 
 
-   
+
         #in case of new sponsors
         if !params[:sponsors].blank?
            sponsors = []
@@ -488,13 +488,13 @@ class Admin::EventsController < Admin::AdminMasterController
           end#each
         end
       end #if
-      
+
     #     sponsors.each do |sponsor|
     #         @event_sponsor = @event.sponsors.create!(:sponsor_image => sponsor["image"], :external_url => sponsor["external_url"])
-    #     end #each 
+    #     end #each
     #     end#if
-        
-   
+
+
       # notifiy all users about new event creation
 
       if !params[:free_ticket].blank?
@@ -509,7 +509,7 @@ class Admin::EventsController < Admin::AdminMasterController
 
        #if paid tickets already existed
        if !params[:update_paid_ticket].blank?
-        tickets = []      
+        tickets = []
         tota_count =  params[:update_paid_ticket][:price].size
         if tota_count > 1
          price_one =  params[:update_paid_ticket][:price].first.to_f
@@ -527,7 +527,7 @@ class Admin::EventsController < Admin::AdminMasterController
         else
           @event.update!(price: params[:paid_ticket][:price].first)
         end
-       
+
         tota_count.times.each do |count|
          tickets << {
            "id" => params[:update_paid_ticket]["ids"][count-1],
@@ -537,7 +537,7 @@ class Admin::EventsController < Admin::AdminMasterController
            "per_head" => params[:update_paid_ticket][:per_head][count-1]
          }
         end #each
-         
+
          tickets.each do |ticket|
           @ticket = @event.tickets.find(ticket["id"]).update!(user: current_user, title: ticket["title"], ticket_type: 'buy', quantity: ticket["quantity"], per_head: ticket["per_head"], price: ticket["price"])
          end #each
@@ -546,7 +546,7 @@ class Admin::EventsController < Admin::AdminMasterController
 
         #new paid ticket
         if !params[:paid_ticket].blank?
-          tickets = []      
+          tickets = []
           tota_count =  params[:paid_ticket][:price].size
           if tota_count > 1
            price_one =  params[:paid_ticket][:price].first.to_f
@@ -576,12 +576,12 @@ class Admin::EventsController < Admin::AdminMasterController
             @ticket = @event.tickets.create!(user: current_user, title: ticket["title"], ticket_type: 'buy', quantity: ticket["quantity"], per_head: ticket["per_head"], price: ticket["price"])
            end #each
           end #if
-  
+
 
 
          #if pass is already existed.
         if !params[:update_pass].blank?
-          passes = []      
+          passes = []
           count = params[:update_pass]['quantity'].size
           count.to_i.times.each do |count|
             passes << {
@@ -598,13 +598,13 @@ class Admin::EventsController < Admin::AdminMasterController
 
       passes.each do |pass|
         @pass = @event.passes.find(pass["id"]).update!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"], terms_conditions: pass["terms_conditions"], redeem_code: generate_code)
-      end #each 
+      end #each
    end #if
 
 
       #if pass ins new
       if !params[:pass].blank?
-        passes = []      
+        passes = []
         count = params[:pass]['quantity'].size
         count.to_i.times.each do |count|
       passes << {
@@ -619,11 +619,11 @@ class Admin::EventsController < Admin::AdminMasterController
         passes.each do |pass|
         @pass = @event.passes.create!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"], redeem_code: generate_code)
         @event.update!(pass: 'true')
-      end #each 
+      end #each
    end #if
 
 
-      
+
     if !params[:pay_at_door].blank?
       if !params[:pay_at_door]["id"].nil?
         @ticket = @event.tickets.find(params[:pay_at_door][:id]).update!(user: current_user, ticket_type: 'pay_at_door', start_price: params[:pay_at_door]["start_price"], end_price: params[:pay_at_door]["end_price"])
@@ -692,13 +692,13 @@ class Admin::EventsController < Admin::AdminMasterController
   end
 
   private
-  
+
   def setCategories
     @categories = Category.all
   end
-	
+
   def event_params
-		params.permit(:name,:start_date,:end_date,:price,:price_type,:event_type,:start_time, :end_time, :host, :description,:location,:image, :feature_media_link, :lat,:lng,:allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18, :category_ids => [], event_attachments_attributes: 
+		params.permit(:name,:start_date,:end_date,:price,:price_type,:event_type,:start_time, :end_time, :host, :description,:location,:image, :feature_media_link, :lat,:lng,:allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18, :category_ids => [], event_attachments_attributes:
     [:id, :event_id, :media])
   end
 

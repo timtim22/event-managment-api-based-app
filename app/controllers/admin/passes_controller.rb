@@ -5,7 +5,7 @@ class Admin::PassesController < Admin::AdminMasterController
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
   require 'rqrcode'
-  
+
   before_action :require_signin
   def index
     @passes = current_user.passes.order(created_at: "DESC")
@@ -58,7 +58,7 @@ class Admin::PassesController < Admin::AdminMasterController
     flash.now[:alert_danger] = "No event is selected."
     render :new
   end
-   
+
   end
 
 
@@ -72,7 +72,7 @@ class Admin::PassesController < Admin::AdminMasterController
       subscribe_key: ENV['SUBSCRIBE_KEY']
       )
     ids.each do |id|
-     
+
       @pass = Pass.new
       @pass.title = params[:title]
       @pass.description = params[:description]
@@ -90,8 +90,8 @@ class Admin::PassesController < Admin::AdminMasterController
        # create_activity("created pass", @pass, "Pass", admin_pass_path(@pass),@pass.title, 'post')
         if !current_user.followers.blank?
           current_user.followers.each do |follower|
-      if follower.passes_notifications_setting.is_on == true 
-        if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new pass '#{@pass.title}'.", notifiable: @pass, url: "/admin/passes/#{@pass.id}", notification_type: 'mobile', action_type: 'create_pass') 
+      if follower.passes_notifications_setting.is_on == true
+        if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new pass '#{@pass.title}'.", notifiable: @pass, resource: @pass, url: "/admin/passes/#{@pass.id}", notification_type: 'mobile', action_type: 'create_pass')
           @channel = "event" #encrypt later
           @current_push_token = @pubnub.add_channels_to_push(
            push_token: follower.profile.device_token,
@@ -99,7 +99,7 @@ class Admin::PassesController < Admin::AdminMasterController
            add: follower.profile.device_token
            ).value
 
-           payload = { 
+           payload = {
             "pn_gcm":{
              "notification":{
                "title": get_full_name(current_user),
@@ -114,11 +114,11 @@ class Admin::PassesController < Admin::AdminMasterController
               "action": @notification.action,
               "action_type": @notification.action_type,
               "created_at": @notification.created_at,
-              "body": '' 
+              "body": ''
              }
             }
            }
-          
+
          @pubnub.publish(
            channel: follower.profile.device_token,
            message: payload
@@ -145,7 +145,7 @@ class Admin::PassesController < Admin::AdminMasterController
     flash.now[:alert_danger] = "No event is selected."
     render :new
   end
-   
+
   end
 
   # def destroy
@@ -157,9 +157,9 @@ class Admin::PassesController < Admin::AdminMasterController
   #   if(@pass.redeem_code == params[:code])
       #@redemption = @pass.redemption.create!(:user_id =>  current_user.id, code: params[:code])
   #   else
-  #     
+  #
   #   end
-   
+
   # end
 
   def destroy
@@ -195,15 +195,15 @@ class Admin::PassesController < Admin::AdminMasterController
   #         subscribe_key: ENV['SUBSCRIBE_KEY']
   #        )
   #            #also notify current_user friends
-  #             if @notification = Notification.create(recipient: user, actor: current_user, action: get_full_name(current_user) + " has sent you a VIP pass to join their event.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet') 
-           
+  #             if @notification = Notification.create(recipient: user, actor: current_user, action: get_full_name(current_user) + " has sent you a VIP pass to join their event.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
+
   #             @current_push_token = @pubnub.add_channels_to_push(
   #                push_token: user.profile.device_token,
   #                type: 'gcm',
   #                add: user.profile.device_token
   #                ).value
-      
-  #              payload = { 
+
+  #              payload = {
   #               "pn_gcm":{
   #                "notification":{
   #                  "title": @wallet.offer.title,
@@ -218,7 +218,7 @@ class Admin::PassesController < Admin::AdminMasterController
   #                 "action": @notification.action,
   #                 "action_type": @notification.action_type,
   #                 "created_at": @notification.created_at,
-  #                 "body": ''   
+  #                 "body": ''
   #                }
   #               }
   #              }
@@ -229,8 +229,8 @@ class Admin::PassesController < Admin::AdminMasterController
   #                   puts envelope.status
   #              end
   #           end ##notification create
-  #         end #each 
-       
+  #         end #each
+
   #      # create_activity("added to wallet '#{@wallet.offer.title}'", @wallet, 'Wallet', '', @wallet.offer.title, 'post')
   #      flash[:notice] = "Pass successfully sent."
   #      redirect_to admin_passes_path
@@ -242,7 +242,7 @@ class Admin::PassesController < Admin::AdminMasterController
   #     flash[:alert_danger] = "Pass is already shared."
   #     redirect_to admin_passes_path
   #   end
- 
+
   #   else
   #    flash[:alert_danger] = "user_id is required."
   #    redirect_to admin_passes_path
@@ -251,7 +251,7 @@ class Admin::PassesController < Admin::AdminMasterController
 
 
 
-  
+
 
 
   private
@@ -259,6 +259,6 @@ class Admin::PassesController < Admin::AdminMasterController
     params.permit(:title,:description, :validity,:user_id, :pass_type)
    end
 
-  
+
 
 end
