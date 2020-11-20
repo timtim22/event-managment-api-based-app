@@ -125,7 +125,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         when "comment"
           @notifications << {
             "friend_name": User.get_full_name(notification.resource.user),
-            "comment": notification.resource.comment,
+            "comment": notification.resource.event.comments,
             "user": notification.resource.user.id,
             "event_id": notification.resource.event.id,
             "actor_id": notification.actor_id,
