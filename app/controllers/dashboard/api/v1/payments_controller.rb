@@ -44,13 +44,11 @@ class Dashboard::Api::V1::PaymentsController < Dashboard::Api::V1::ApiMasterCont
  end
 
 
-
- 
  
  def confirm_payment
-  if !params[:status].blank? && !params[:stripe_response].blank? && !params[:transaction_id].blank?
+  if !params[:status].blank? && !params[:stripe_response].blank? && !params[:transaction_id].blank? && !params[:total_tickets].blank? && !params[:vat_amount].blank? 
     transaction = Transaction.find(params[:transaction_id])
-    if transaction.update!(status: params[:status], stripe_response: params[:stripe_response]) && request_user.invoices.create!(amount: transaction.amount, tax_invoice_number: "243546454", total_amount: transaction.amount)
+    if transaction.update!(status: params[:status], stripe_response: params[:stripe_response]) && request_user.invoices.create!(amount: transaction.amount, tax_invoice_number: "243546454", total_amount: transaction.amount, total_tickets: params[:total_tickets], vat_amount: params[:vat_amount])
     render json: {
       code: 200,
       success: true,
@@ -71,7 +69,7 @@ class Dashboard::Api::V1::PaymentsController < Dashboard::Api::V1::ApiMasterCont
     render json: {
         code: 400,
         status: false,
-        message: 'status, stripe_response and transaction_id are required fields.',
+        message: 'status, stripe_response, total_tickets, vat_amount and transaction_id are required fields.',
         data: nil
       }
   end
@@ -80,7 +78,7 @@ class Dashboard::Api::V1::PaymentsController < Dashboard::Api::V1::ApiMasterCont
 
 
   private
-  
+
   def calculate_application_fee(amount, application_fee_percent)
    application_fee = application_fee_percent.to_f  / 100.0 * amount.to_f
   end 
