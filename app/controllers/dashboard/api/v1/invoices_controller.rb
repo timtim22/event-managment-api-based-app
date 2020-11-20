@@ -27,6 +27,8 @@ class Dashboard::Api::V1::InvoicesController < Dashboard::Api::V1::ApiMasterCont
           "id" =>  @invoice.id,
           "tax_invoice_number" =>  @invoice.tax_invoice_number,
           "total_amount" => @invoice.total_amount,
+          "total_tickets" => @invoice.total_tickets,
+          "vat_amount" => @invoice.vat_amount,
           "business_name" => User.get_full_name(@invoice.user),
           "business_contact" =>  @invoice.user.phone_number
         }
