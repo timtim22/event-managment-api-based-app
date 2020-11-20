@@ -22,10 +22,9 @@ class Dashboard::Api::V1::InvoicesController < Dashboard::Api::V1::ApiMasterCont
 
 
    def show
-    if !params[:invoice_id].blank? 
-      @invoice = Invoice.find(params[:invoice_id])
+      @invoice = Invoice.find(params[:id])
         invoice = {
-          "id" =>  @invoice,
+          "id" =>  @invoice.id,
           "tax_invoice_number" =>  @invoice.tax_invoice_number,
           "total_amount" => @invoice.total_amount,
           "business_name" => User.get_full_name(@invoice.user),
@@ -40,17 +39,8 @@ class Dashboard::Api::V1::InvoicesController < Dashboard::Api::V1::ApiMasterCont
            invoice: invoice
          }
        }
-    else
-      render json: {
-        code: 400,
-        success: false,
-        message: "invoice_id is required field.",
-        data: nil
-      }
-    end
+   
   end
-
-
 
 
 end
