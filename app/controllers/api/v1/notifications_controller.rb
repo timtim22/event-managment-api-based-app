@@ -122,21 +122,26 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "interest_level": notification.resource.level
           }
 
-        when "comment"
-          @notifications << {
-            "friend_name": User.get_full_name(notification.resource.user),
-            "comment": notification.resource.comment,
-            "user": notification.resource.user.id,
-            "event_id": notification.resource.event.id,
-            "actor_id": notification.actor_id,
-            "actor_image": notification.actor.avatar,
-            "notifiable_id": notification.notifiable_id,
-            "notifiable_type": notification.notifiable_type,
-            "action": notification.action,
-            "action_type": notification.action_type,
-            "created_at": notification.created_at,
-            "is_read": !notification.read_at.nil?,
-          }
+        # when "comment"
+        #   @notifications << {
+        #     "friend_name": User.get_full_name(notification.resource.user),
+        #     "comment": notification.resource.comment,
+        #     "user": notification.resource.user.id,
+        #     "event_id": notification.resource.event.id,
+        #     "actor_id": notification.actor_id,
+        #     "actor_image": notification.actor.avatar,
+        #     "notifiable_id": notification.notifiable_id,
+        #     "notifiable_type": notification.notifiable_type,
+        #     "action": notification.action,
+        #     "action_type": notification.action_type,
+        #     "created_at": notification.created_at,
+        #     "is_read": !notification.read_at.nil?,
+        #   }
+
+      # when "add_to_wallet"
+      #   @notifications << {
+      #     "offer_type": notification.resource.offer_type,
+      #   }
 
       else
          "do nothing"

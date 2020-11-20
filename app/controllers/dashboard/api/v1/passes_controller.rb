@@ -143,7 +143,7 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
           subscribe_key: ENV['SUBSCRIBE_KEY']
          )
              #also notify request_user friends
-              if @notification = Notification.create(recipient: user, actor: request_user, action: get_full_name(request_user) + " has sent you a VIP pass to join their event.", notifiable: @wallet.offer, resource: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
+              if @notification = Notification.create(recipient: user, actor: request_user, action: get_full_name(request_user) + " has sent you a VIP pass to join their event.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
 
               @current_push_token = @pubnub.add_channels_to_push(
                  push_token: user.profile.device_token,
