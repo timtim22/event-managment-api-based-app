@@ -41,7 +41,7 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
         #also notify request_user friends
         if !request_user.friends.blank?
           request_user.friends.each do |friend|
-          if @notification = Notification.create(recipient: friend, actor: request_user, action: "Your friend " + get_full_name(request_user) + " followed #{get_full_name(@following)}.", notifiable: fr, url: "#", notification_type: 'mobile', action_type: 'add_to_wallet')
+          if @notification = Notification.create(recipient: friend, actor: request_user, action: "Your friend " + get_full_name(request_user) + " followed #{get_full_name(@following)}.", notifiable: fr, resource: fr,url: "#", notification_type: 'mobile', action_type: 'add_to_wallet')
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
                push_token: friend.profile.device_token,
@@ -117,7 +117,7 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
     if @follow && @follow.destroy
       @following = User.find(params[:following_id])
      # create_activity(request_user, "unfollowed #{get_full_name(@following)}", @follow, 'Follow', '', '', 'post','unfollow')
-      if @notification = Notification.create(recipient: @following, actor: request_user, action: get_full_name(request_user) + " unfollowed you", notifiable: @follow, url: '#', notification_type: 'web')
+      if @notification = Notification.create(recipient: @following, actor: request_user, action: get_full_name(request_user) + " unfollowed you", notifiable: @follow, resource: @follow, url: '#', notification_type: 'web')
        #publish to web channel
        @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],

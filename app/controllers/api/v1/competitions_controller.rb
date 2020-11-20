@@ -94,7 +94,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
              publish_key: ENV['PUBLISH_KEY'],
              subscribe_key: ENV['SUBSCRIBE_KEY']
             )
-           if @notification = Notification.create(recipient: @registration.event.user, actor: request_user, action: get_full_name(request_user) + " is interested in your competition '#{@registration.event.title}'.", notifiable: @registration.event, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile_web', action_type: 'register')
+           if @notification = Notification.create(recipient: @registration.event.user, actor: request_user, action: get_full_name(request_user) + " is interested in your competition '#{@registration.event.title}'.", notifiable: @registration.event, resource: @registration.event, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile_web', action_type: 'register')
              @pubnub.publish(
                channel: [@registration.event.user.id.to_s],
                message: {
@@ -111,7 +111,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
              if !request_user.friends.blank?
                request_user.friends.each do |friend|
                if friend.competitions_notifications_setting.is_on == true
-                 if @notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has entered in competition '#{@registration.event.title}'.", notifiable: @registration.event, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
+                 if @notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has entered in competition '#{@registration.event.title}'.", notifiable: @registration.event, resource: @registration.event, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
                  @push_channel = "event" #encrypt later
                  @current_push_token = @pubnub.add_channels_to_push(
                     push_token: friend.profile.device_token,
@@ -171,7 +171,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
          )
-        if @notification = Notification.create(recipient: @registration.event.user, actor: request_user, action: get_full_name(request_user) + " is interested in your competition '#{@registration.event.title}'.", notifiable: @registration.event, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile_web', action_type: 'register')
+        if @notification = Notification.create(recipient: @registration.event.user, actor: request_user, action: get_full_name(request_user) + " is interested in your competition '#{@registration.event.title}'.", notifiable: @registration.event, resource: @registration.event, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile_web', action_type: 'register')
           @pubnub.publish(
             channel: [@registration.event.user.id.to_s],
             message: {
@@ -188,7 +188,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
           if !request_user.friends.blank?
             request_user.friends.each do |friend|
             if friend.competitions_notifications_setting.is_on == true
-              if @notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has entered in competition '#{@registration.event.title}'.", notifiable: @registration.event, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
+              if @notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has entered in competition '#{@registration.event.title}'.", notifiable: @registration.event, resource: @registration.event, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
               @push_channel = "event" #encrypt later
               @current_push_token = @pubnub.add_channels_to_push(
                  push_token: friend.profile.device_token,
@@ -267,7 +267,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                participants.each do |participant|
                  notification = Notification.where(recipient: participant).where(notifiable: competition).where(action_type: 'get_winner_and_notify').first
                 if notification.blank?
-                  if @notification = Notification.create(recipient: participant, actor: winner, action: get_full_name(winner) + " is the winner.", notifiable: competition, url: "", notification_type: 'mobile', action_type: 'get_winner_and_notify')
+                  if @notification = Notification.create(recipient: participant, actor: winner, action: get_full_name(winner) + " is the winner.", notifiable: competition,  resource: competition, url: "", notification_type: 'mobile', action_type: 'get_winner_and_notify')
                     success = true
 
                     @pubnub = Pubnub.new(

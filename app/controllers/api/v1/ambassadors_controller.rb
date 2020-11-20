@@ -16,7 +16,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
        approve_ambassador(request_user, @ambassador_request.id)
      
 
-      if @notification = Notification.create(recipient: @business, actor: request_user, action: get_full_name(request_user) + " sent you ambassador request", notifiable: @ambassador_request, url: '/admin/ambassadors', notification_type: 'web', action_type: 'send_request')  
+      if @notification = Notification.create(recipient: @business, actor: request_user, action: get_full_name(request_user) + " sent you ambassador request", notifiable: @ambassador_request,resource: @ambassador_request, url: '/admin/ambassadors', notification_type: 'web', action_type: 'send_request')  
         @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
