@@ -87,6 +87,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           @notifications << {
             "business_name": User.get_full_name(notification.resource.event.user),
             "friend_name": User.get_full_name(notification.resource.user),
+            "event_name": notification.resource.event.name,
             "event_id": notification.resource.event.id,
             "event_start_date": notification.resource.event.start_date,
             "event_location": notification.resource.event.location,
@@ -106,6 +107,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           @notifications << {
             "business_name": User.get_full_name(notification.resource.event.user),
             "friend_name": User.get_full_name(notification.resource.user),
+            "event_name": notification.resource.event.name,
             "event_id": notification.resource.event.id,
             "event_start_date": notification.resource.event.start_date,
             "event_location": notification.resource.event.location,
