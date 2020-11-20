@@ -83,6 +83,42 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "is_read": !notification.read_at.nil?
 
           }
+        when "create_interest"
+          @notifications << {
+            "business_name": User.get_full_name(notification.resource.event.user),
+            "friend_name": User.get_full_name(notification.resource.user),
+            "event_id": notification.resource.event.id,
+            "event_start_date": notification.resource.event.start_date,
+            "event_location": notification.resource.event.location,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?,
+            "interest_level": notification.resource.level
+
+          }
+
+        when "create_going"
+          @notifications << {
+            "business_name": User.get_full_name(notification.resource.event.user),
+            "friend_name": User.get_full_name(notification.resource.user),
+            "event_id": notification.resource.event.id,
+            "event_start_date": notification.resource.event.start_date,
+            "event_location": notification.resource.event.location,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?,
+            "interest_level": notification.resource.level
+          }
 
       else
          "do nothing"
