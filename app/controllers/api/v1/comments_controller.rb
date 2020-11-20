@@ -7,7 +7,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
   include ActionView::Helpers::DateHelper
 
   def create
-    
+
    if !params[:event_id].blank? && !params[:is_reply].blank?
     @event = Event.find(params[:event_id])
     if !blocked_event?(request_user, @event)
@@ -15,7 +15,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
      @comment = @event.comments.new
      @comment.user = request_user
      @comment.user_avatar = request_user.avatar
-     @comment.from = get_full_name(request_user) 
+     @comment.from = get_full_name(request_user)
      @comment.comment = params[:comment]
      if @comment.save
       # resource should be parent resource in case of api so that event id should be available in order to show event based comment.
@@ -24,10 +24,10 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
        )
-     if @notification = Notification.create(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')  
+     if @notification = Notification.create(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')
         @pubnub.publish(
           channel: [@event.user.id.to_s],
-          message: { 
+          message: {
             action: @notification.action,
             avatar: request_user.avatar,
             time: time_ago_in_words(@notification.created_at),
@@ -44,8 +44,8 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          end #each
         @comment_users.uniq.each do |comment_user|
       if comment_user != request_user
-      
-        if @notification = Notification.create(recipient: comment_user, actor: request_user, action: get_full_name(request_user) + " commented on event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')  
+
+        if @notification = Notification.create(recipient: comment_user, actor: request_user, action: get_full_name(request_user) + " commented on event '#{@event.name}'.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')
 
          if !event_chat_muted?(comment_user, @event) && !comment_user.all_chat_notifications_setting.blank?  && comment_user.all_chat_notifications_setting.is_on == true && !comment_user.event_notifications_setting.blank? && comment_user.event_notifications_setting.is_on == true
 
@@ -55,9 +55,9 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
              add: comment_user.profile.device_token
              ).value
 
-          
-  
-           payload = { 
+
+
+           payload = {
             "pn_gcm":{
              "notification":{
                "title": @event.name,
@@ -77,7 +77,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
               "created_at": @notification.created_at,
               "body": @comment.comment,
               "last_comment": @comment,
-              "is_host" => is_host?(@comment.user, @event)    
+              "is_host" => is_host?(@comment.user, @event)
              }
             }
            }
@@ -89,7 +89,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
            end #publish
           end# mute if
         end ##notification create
-   
+
       end #not request_user
       end #each
 
@@ -106,7 +106,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
         "reader_id" => @comment.reader_id,
         "is_host" => is_host?(@comment.user, @event)
        }
- 
+
        render json: {
          code: 200,
          success: true,
@@ -115,17 +115,17 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
            comment: comments_hash
          }
        }
-    else 
+    else
       render json: {
          success: false,
          message: @comment.errors.full_messages
        }
-    end 
+    end
      else
      if !params[:comment_id].blank?
-        
+
          @comment = Comment.find(params[:comment_id])
-        
+
       if @reply = @comment.replies.create!(user: request_user, msg: params[:comment])
        # resource should be parent resource in case of api so that event id should be available in order to show event based comment.
        action_arg = "commented on event '#{@event.name}'";
@@ -135,10 +135,10 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          publish_key: ENV['PUBLISH_KEY'],
          subscribe_key: ENV['SUBSCRIBE_KEY']
         )
-      if @notification = Notification.create!(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')  
+      if @notification = Notification.create!(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')
          @pubnub.publish(
            channel: [@event.user.id.to_s],
-           message: { 
+           message: {
              action: @notification.action,
              avatar: request_user.avatar,
              time: time_ago_in_words(@notification.created_at),
@@ -155,18 +155,18 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
           end #each
          @comment_users.uniq.each do |comment_user|
        if comment_user != request_user
-       
-         if @notification = Notification.create(recipient: comment_user, actor: request_user, action: get_full_name(request_user) + " replied to a comment on event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')  
-        
+
+         if @notification = Notification.create(recipient: comment_user, actor: request_user, action: get_full_name(request_user) + " replied to a comment on event '#{@event.name}'.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')
+
           if !event_chat_muted?(comment_user, @event) && !comment_user.all_chat_notifications_setting.blank?  && comment_user.all_chat_notifications_setting.is_on == true && !comment_user.event_notifications_setting.blank? && comment_user.event_notifications_setting.is_on == true
- 
+
            @current_push_token = @pubnub.add_channels_to_push(
               push_token: comment_user.profile.device_token,
               type: 'gcm',
               add: comment_user.profile.device_token
               ).value
-   
-            payload = { 
+
+            payload = {
              "pn_gcm":{
               "notification":{
                 "title": @event.name,
@@ -186,7 +186,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
                "created_at": @notification.created_at,
                "body": @reply.msg,
                "last_comment": @reply.msg,
-               "is_host" => is_host?(@reply.user,  @event)    
+               "is_host" => is_host?(@reply.user,  @event)
               }
              }
             }
@@ -198,7 +198,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
             end #publish
            end# mute if
          end ##notification create
-    
+
        end #not request_user
        end #each
 
@@ -209,9 +209,9 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
         "from" => get_full_name(@reply.user),
         "avatar" => @reply.user.avatar,
         "created_at": @reply.created_at,
-        "is_host" => is_host?(@reply.user,  @event) 
+        "is_host" => is_host?(@reply.user,  @event)
        }
-  
+
         render json: {
           code: 200,
           success: true,
@@ -220,12 +220,12 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
             reply: reply_hash
            }
         }
-     else 
+     else
        render json: {
           success: false,
           message: @reply.errors.full_messages
         }
-     end 
+     end
       else
         render json: {
           code: 400,
@@ -235,7 +235,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
         }
       end
      end
- 
+
 
   else
     render json: {
@@ -244,15 +244,15 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
       message: "The operation has been blocked!",
       data: nil
     }
-  end 
+  end
 else
   render json: {
     code: 400,
     success: false,
     message: 'event_id and is_reply fields are required.',
     data: nil
-  } 
-end 
+  }
+end
 end
 
 
@@ -276,7 +276,7 @@ end
           "user_avatar" => comment.user.avatar,
           "read_at" => comment.read_at,
           "reader_id" => comment.reader_id,
-          "is_host" => is_host?(comment.user,  @event)  
+          "is_host" => is_host?(comment.user,  @event)
         }
         comment.replies.each do |reply|
           @replies << {
@@ -287,34 +287,34 @@ end
           "avatar" => reply.user.avatar,
           "created_at" => reply.created_at,
           "reply_to" =>  if !reply.reply_to_user.blank?  then reply.reply_to_user else @empty end,
-          "is_host" => is_host?(reply.user,  @event)  
+          "is_host" => is_host?(reply.user,  @event)
         }
       end
         @comments << {
           "comment" => comment_modified,
           "replies" => @replies
         }
-      end 
+      end
     else
       blocked_at = request_user.user_settings.where(resource: @event).first.created_at
       @comments = @event.comments.where(['created_at < ?', blocked_at])
     end
- 
+
     render json: {
      code: 200,
      success: true,
      message: '',
      data:  {
-        comments:  @comments 
-     }    
+        comments:  @comments
+     }
   }
    end
 
-   
+
    def get_commented_events
      @events = []
      @response = []
-     @commented_events = request_user.comments.each do |comment| 
+     @commented_events = request_user.comments.each do |comment|
        @events.push(comment.event)
      end#each
      @events.uniq.each do |e|
@@ -329,7 +329,7 @@ end
        "from" => get_full_name(last_comment.user),
        "user_avatar" => last_comment.user.avatar,
        "read_at" => last_comment.read_at,
-       "reader_id" => last_comment.reader_id   
+       "reader_id" => last_comment.reader_id
       }
 
       @response << {
@@ -383,7 +383,7 @@ end
             message: 'event_id is required field.',
             data: nil
           }
-        end   
+        end
    end
 
 
