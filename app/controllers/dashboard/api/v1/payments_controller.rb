@@ -79,54 +79,8 @@ class Dashboard::Api::V1::PaymentsController < Dashboard::Api::V1::ApiMasterCont
 
 
 
-
-
-
-
- def get_stripe_params
-    render json: {
-      code: 200,
-      success: true,
-      data: {
-        params: params
-      }
-    }
-  end
-
-
-  
-  def get_invoice
-    if !params[:invoice_id].blank? 
-      @invoice = Invoice.find(params[:invoice_id])
-        invoice = {
-          "id" =>  @invoice,
-          "tax_invoice_number" =>  @invoice.tax_invoice_number,
-          "total_amount" => @invoice.total_amount,
-          "business_name" => User.get_full_name(@invoice.user),
-          "business_contact" =>  @invoice.user.phone_number
-        }
-     
-       render json: {
-         code: 200,
-         success: true,
-         message: '',
-         data: {
-           invoice: invoice
-         }
-       }
-    else
-      render json: {
-        code: 400,
-        success: false,
-        message: "invoice_id is required field.",
-        data: nil
-      }
-    end
-  end
-
-
-
   private
+  
   def calculate_application_fee(amount, application_fee_percent)
    application_fee = application_fee_percent.to_f  / 100.0 * amount.to_f
   end 
