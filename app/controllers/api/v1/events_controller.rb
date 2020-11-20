@@ -251,7 +251,7 @@ end
       subscribe_key: ENV['SUBSCRIBE_KEY']
     )
     (User.all - [request_user]).each do |user|
-      if @notification = Notification.create(recipient: user, actor: request_user, action: get_full_name(request_user) + " posted a new event.", notifiable: @event, url: '/admin/events', notification_type: 'web')
+      if @notification = Notification.create(recipient: user, actor: request_user, action: get_full_name(request_user) + " posted a new event.", notifiable: @event, resource: @event, url: '/admin/events', notification_type: 'web')
         @current_push_token = @pubnub.add_channels_to_push(
           push_token: user.profile.device_token,
           type: 'gcm',

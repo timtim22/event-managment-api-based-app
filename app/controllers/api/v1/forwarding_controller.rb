@@ -20,16 +20,16 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
         )
-       @channel = "event" 
+       @channel = "event"
        if ids_array.kind_of?(Array)
        ids_array.each do |id|
        @check = OfferForwarding.where(offer_id: @offer.id).where(recipient_id: id).where(user_id: request_user.id).where(offer_type: params[:offer_type]).first
-       if @check.blank?  
+       if @check.blank?
        @recipient = User.find(id)
        if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{if params[:offer_type] ==  'Pass' then 'a pass ' + @offer.title else 'a Special Offer ' + @offer.title end }.", notifiable: @offer, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{if params[:offer_type] ==  'Pass' then 'pass_recieved' else 'special_offer_recieved'  end }")
 
         @offer_forward = OfferForwarding.create!(user_id: request_user.id, is_ambassador: request_user.profile.is_ambassador, recipient_id: id, offer_type:params[:offer_type], offer_id: params[:offer_id])
-  
+
        # create_activity(request_user, "forwarded '#{if params[:offer_type] == 'SpecialOffer' then 'special offer' else 'pass' end} '", @offer_forward, 'OfferForwarding', '', '', 'post', "forwarded_#{params[:offer_type]}")
 
          @current_push_token = @pubnub.add_channels_to_push(
@@ -38,7 +38,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
            add: @recipient.profile.device_token
            ).value
 
-          payload = { 
+          payload = {
           "pn_gcm":{
             "notification":{
               "title": get_full_name(request_user),
@@ -54,11 +54,11 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
               "action": @notification.action,
               "action_type": @notification.action_type,
               "created_at": @notification.created_at,
-              "body": ''   
+              "body": ''
             }
           }
         }
- 
+
           @pubnub.publish(
             channel: [@recipient.profile.device_token],
             message: payload
@@ -97,7 +97,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         data: nil
       }
     end
-  
+
     else
       render json:  {
         code: 400,
@@ -110,7 +110,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
    end
 
    def share_offer
-    if !params[:offer_shared].blank? && params[:offer_shared] ==  'true' 
+    if !params[:offer_shared].blank? && params[:offer_shared] ==  'true'
       if !params[:sender_token].blank? && !params[:offer_id].blank? && !params[:offer_type].blank?
         @sender = get_user_from_token(params[:sender_token])
         if params[:offer_type] == 'Pass'
@@ -119,25 +119,25 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
           @offer = SpecialOffer.find(params[:offer_id])
         end
         @check = OfferShare.where(offer_id: @offer.id).where(recipient_id: request_user.id).where(user_id: @sender.id).first
-        if @check.blank?  
+        if @check.blank?
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
           )
-  
+
           @recipient = request_user
-        
+
           if @notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " has sent you #{if params[:offer_type] ==  'Pass' then 'a pass ' + @offer.title else 'a Special Offer ' + @offer.title end }.", notifiable: @offer, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{if params[:offer_type] ==  'Pass' then 'pass_recieved' else 'special_offer_recieved'  end }")
-  
+
            @offer_share = OfferShare.create!(user_id: @sender.id, is_ambassador: @sender.profile.is_ambassador, recipient_id: request_user.id, offer_type:params[:offer_type], offer_id: params[:offer_id])
-  
+
             @current_push_token = @pubnub.add_channels_to_push(
               push_token: @recipient.profile.device_token,
               type: 'gcm',
               add: @recipient.profile.device_token
               ).value
-  
-             payload = { 
+
+             payload = {
              "pn_gcm":{
                "notification":{
                  "title": get_full_name(request_user),
@@ -153,11 +153,11 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
                  "action": @notification.action,
                  "action_type": @notification.action_type,
                  "created_at": @notification.created_at,
-                 "body": ''   
+                 "body": ''
                }
              }
            }
-    
+
              @pubnub.publish(
                channel: [@recipient.device_token],
                message: payload
@@ -165,7 +165,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
                   puts envelope.status
                 end
             end ##notification create
-  
+
             render json: {
               code: 200,
               success: true,
@@ -180,7 +180,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
               data: nil
             }
           end
-                
+
       else
        render json: {
          code: 400,
@@ -198,21 +198,21 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
   def forward_event
     if !params[:event_id].blank? && !params[:user_ids].blank?
       ids_array = params[:user_ids].split(',').map {|s| s.to_i } # convert into array
-       
+
           @event = Event.find(params[:event_id])
-      
+
        success = false
        @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
         )
-       @channel = "event" 
+       @channel = "event"
        if ids_array.kind_of?(Array)
        ids_array.each do |id|
        @check = EventForwarding.where(event_id: @event.id).where(recipient_id: id).where(user_id: request_user.id).first
-       if @check.blank?  
+       if @check.blank?
        @recipient = User.find(id)
-       if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has forwarded you and event.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "forward_event")
+       if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has forwarded you and event.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "forward_event")
 
         @event_forward = EventForwarding.create!(user_id: request_user.id, recipient_id: id, event_id: params[:event_id])
 
@@ -224,7 +224,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
            add: @recipient.profile.device_token
            ).value
 
-          payload = { 
+          payload = {
           "pn_gcm":{
             "notification":{
               "title": get_full_name(request_user),
@@ -240,11 +240,11 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
               "action": @notification.action,
               "action_type": @notification.action_type,
               "created_at": @notification.created_at,
-              "body": ''   
+              "body": ''
             }
           }
         }
- 
+
           @pubnub.publish(
             channel: [@recipient.profile.device_token],
             message: payload
@@ -283,7 +283,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         data: nil
       }
     end
-  
+
     else
       render json:  {
         code: 400,
@@ -296,32 +296,32 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
    end
 
    def share_event
-    if !params[:event_shared].blank? && params[:event_shared] ==  'true' 
+    if !params[:event_shared].blank? && params[:event_shared] ==  'true'
       if !params[:sender_token].blank? && !params[:event_id].blank?
         @sender = get_user_from_token(params[:sender_token])
-       
+
         @event = Event.find(params[:event_id])
-        
+
         @check = EventShare.where(event_id: @event.id).where(recipient_id: request_user.id).where(user_id: @sender.id).first
-        if @check.blank?  
+        if @check.blank?
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
           )
-  
+
           @recipient = request_user
-        
-          if @notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " shared an event with you.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "share_event")
-  
+
+          if @notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " shared an event with you.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "share_event")
+
            @event_share = EventShare.create!(user_id: @sender.id, recipient_id: request_user.id, event_id: params[:event_id])
-  
+
             @current_push_token = @pubnub.add_channels_to_push(
               push_token: @recipient.device_token,
               type: 'gcm',
               add: @recipient.device_token
               ).value
-  
-             payload = { 
+
+             payload = {
              "pn_gcm":{
                "notification":{
                  "title": get_full_name(request_user),
@@ -337,11 +337,11 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
                  "offer": @offer,
                  "action": @notification.action,
                  "created_at": @notification.created_at,
-                 "body": ''   
+                 "body": ''
                }
              }
            }
-    
+
              @pubnub.publish(
                channel: [@recipient.profile.device_token],
                message: payload
@@ -349,7 +349,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
                   puts envelope.status
                 end
             end ##notification create
-  
+
             render json: {
               code: 200,
               success: true,
@@ -364,7 +364,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
               data: nil
             }
           end
-                
+
       else
        render json: {
          code: 400,
