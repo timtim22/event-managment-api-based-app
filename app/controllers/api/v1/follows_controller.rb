@@ -22,12 +22,12 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
         )
-      if @notification = Notification.create(recipient: @following, actor: request_user, action: get_full_name(request_user) + " followed you", notifiable: fr, url: '#', notification_type: 'web', action_type: 'add_to_wallet')  
+      if @notification = Notification.create(recipient: @following, actor: request_user, action: get_full_name(request_user) + " followed you", notifiable: fr, resource: fr, url: '#', notification_type: 'web', action_type: 'add_to_wallet')
 
        #publish web channel
        @pubnub.publish(
          channel: [@following.id.to_s],
-         message: { 
+         message: {
            action: @notification.action,
            avatar: request_user.avatar,
            time: time_ago_in_words(@notification.created_at),
@@ -41,15 +41,15 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
         #also notify request_user friends
         if !request_user.friends.blank?
           request_user.friends.each do |friend|
-          if @notification = Notification.create(recipient: friend, actor: request_user, action: "Your friend " + get_full_name(request_user) + " followed #{get_full_name(@following)}.", notifiable: fr, url: "#", notification_type: 'mobile', action_type: 'add_to_wallet')  
+          if @notification = Notification.create(recipient: friend, actor: request_user, action: "Your friend " + get_full_name(request_user) + " followed #{get_full_name(@following)}.", notifiable: fr, resource: fr, url: "#", notification_type: 'mobile', action_type: 'add_to_wallet')
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
                push_token: friend.profile.device_token,
                type: 'gcm',
                add: friend.profile.device_token
                ).value
-    
-             payload = { 
+
+             payload = {
               "pn_gcm":{
                "notification":{
                  "title": get_full_name(request_user),
@@ -64,7 +64,7 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
                 "action": @notification.action,
                 "action_type": @notification.action_type,
                 "created_at": @notification.created_at,
-                "body": ''   
+                "body": ''
                }
               }
              }
@@ -117,7 +117,7 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
     if @follow && @follow.destroy
       @following = User.find(params[:following_id])
      # create_activity(request_user, "unfollowed #{get_full_name(@following)}", @follow, 'Follow', '', '', 'post','unfollow')
-      if @notification = Notification.create(recipient: @following, actor: request_user, action: get_full_name(request_user) + " unfollowed you", notifiable: @follow, url: '#', notification_type: 'web')  
+      if @notification = Notification.create(recipient: @following, actor: request_user, action: get_full_name(request_user) + " unfollowed you", notifiable: @follow, url: '#', notification_type: 'web')
        #publish to web channel
        @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
@@ -125,7 +125,7 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
         )
        @pubnub.publish(
          channel: [@following.id.to_s],
-         message: { 
+         message: {
            action: @notification.action,
            avatar: request_user.avatar,
            time: time_ago_in_words(@notification.created_at),
@@ -165,7 +165,7 @@ end
   end
 
   def followings
-    @followings = [] 
+    @followings = []
     request_user.followings.each do |following|
       @followings << {
         "business" => get_business_object(following),
@@ -187,19 +187,19 @@ end
 #      fr = Follow.where(user_id: params[:user_id]).where(following_id: request_user.id).first
 #      if fr.update(:status => true)
 #       fr.follow_request.destroy
-#       if @notification = Notification.create(recipient: fr.follower, actor: request_user, action: get_full_name(request_user) + " accepted your follow request", notifiable: fr, url: '/admin/follow-requests', notification_type: 'mobile')  
+#       if @notification = Notification.create(recipient: fr.follower, actor: request_user, action: get_full_name(request_user) + " accepted your follow request", notifiable: fr, url: '/admin/follow-requests', notification_type: 'mobile')
 #         @pubnub = Pubnub.new(
 #         publish_key: ENV['PUBLISH_KEY'],
 #         subscribe_key: ENV['SUBSCRIBE_KEY']
 #         )
-  
+
 #         @current_push_token = @pubnub.add_channels_to_push(
 #           push_token: fr.follower.profile.device_token,
 #           type: 'gcm',
 #           add: fr.follower.profile.device_token
 #           ).value
-  
-#         payload = { 
+
+#         payload = {
 #         "pn_gcm":{
 #           "notification":{
 #             "title": @notification.action
@@ -207,7 +207,7 @@ end
 #           "type": @notification.notifiable_type
 #         }
 #       }
-  
+
 #         @pubnub.publish(
 #          channel: [fr.follower.profile.device_token],
 #          message: payload
@@ -234,7 +234,7 @@ end
    def requests_list
      follow_requests = request_user.follow_requests
     render json: {
-          code: 200, 
+          code: 200,
           success: true,
           message: '',
           data: {
@@ -302,7 +302,7 @@ end
 
    def suggest_businesses
     @businesses_suggestions = []
-   
+
    if !request_user.friends.blank?
      request_user.friends.each do |friend|
       # 1. If an ambassador is my friend his/her business should be in my business suggestion.
@@ -324,7 +324,7 @@ end
      end #each
    end #if
 
- #if there are no users based on the above principle then suggest poineer user upto 7 
+ #if there are no users based on the above principle then suggest poineer user upto 7
   if @businesses_suggestions.blank? || @businesses_suggestions.size < 30
     if User.web_users.size > 30
       User.web_users[1..30].each do |user|
@@ -334,7 +334,7 @@ end
       User.web_users.each do |user|
        @businesses_suggestions.push(user)
      end#each
-     end  
+     end
   end
 
 # I want to see that how many of my friends are already following a suggested business
@@ -347,7 +347,7 @@ end
         "business" => get_business_object(business),
         "total_followers_count" =>  business.followers.size
       }
-    end #if       
+    end #if
    end #each
 
   render json: {
@@ -362,19 +362,19 @@ end
   end
 
   private
-  
+
   def get_following_friends_count(business)
     friends_following = []
      request_user.friends.each do |friend|
        if business.followers.include? friend
          friends_following.push(friend)
-       end# each 
+       end# each
     end#each
 
     friends_following.size
   end
 
- 
- 
+
+
 
 end# class
