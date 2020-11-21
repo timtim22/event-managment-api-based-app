@@ -209,8 +209,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "accept_request"
         @notifications << {
-          "friend_name": User.get_full_name(notification.resource.user),
-          "friend_id": notification.resource.user.id,
+          "friend_name": User.get_full_name(notification.resource.friend),
+          "friend_id": notification.resource.friend.id,
           "mutual_friends_count": notification.resource.user.friends.size,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
