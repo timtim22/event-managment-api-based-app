@@ -8,7 +8,7 @@ class Dashboard::Api::V1::InvoicesController < Dashboard::Api::V1::ApiMasterCont
   Stripe.api_key = ENV['STRIPE_API_KEY']
 
    def index
-    @invoices = request_user.invoices
+    @invoices = request_user.invoices.order(id: 'DESC')
     render json: {
       code: 200,
       success: true,

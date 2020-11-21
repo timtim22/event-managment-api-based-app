@@ -94,7 +94,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
              publish_key: ENV['PUBLISH_KEY'],
              subscribe_key: ENV['SUBSCRIBE_KEY']
             )
-           if @notification = Notification.create(recipient: @registration.event.user, actor: request_user, action: get_full_name(request_user) + " is interested in your competition '#{@registration.event.title}'.", notifiable: @registration.event, resource: @registration.event, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile_web', action_type: 'register')
+           if @notification = Notification.create(recipient: @registration.event.user, actor: request_user, action: get_full_name(request_user) + " is interested in your competition '#{@registration.event.title}'.", notifiable: @registration.event, resource: @registration.event, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile_web', action_type: 'enter_in_competition')
              @pubnub.publish(
                channel: [@registration.event.user.id.to_s],
                message: {

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_20_074957) do
+ActiveRecord::Schema.define(version: 2020_11_21_175336) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -278,14 +278,14 @@ ActiveRecord::Schema.define(version: 2020_11_20_074957) do
 
   create_table "invoices", force: :cascade do |t|
     t.integer "user_id"
-    t.integer "amount"
-    t.integer "total_amount"
+    t.decimal "amount", precision: 8, scale: 2, default: "0.0"
+    t.decimal "total_amount", precision: 8, scale: 2, default: "0.0"
     t.string "tax_invoice_number"
+    t.integer "total_tickets"
+    t.decimal "vat_amount", precision: 8, scale: 2, default: "0.0"
+    t.integer "event_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "total_tickets"
-    t.integer "vat_amount"
-    t.integer "event_id"
   end
 
   create_table "location_requests", force: :cascade do |t|

@@ -138,6 +138,24 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "is_read": !notification.read_at.nil?,
           }
 
+        # when "enter_in_competition"
+        #   @notifications << {
+        #     "friend_name": User.get_full_name(notification.resource.user),
+        #     "competition_id": notification.resource.id,
+        #     "competition_name": notification.resource.title,
+        #     "competition_draw_date": notification.resource.end_date,
+        #     "business_name": User.get_full_name(notification.resource.user),
+        #     "actor_id": notification.actor_id,
+        #     "actor_image": notification.actor.avatar,
+        #     "notifiable_id": notification.notifiable_id,
+        #     "notifiable_type": notification.notifiable_type,
+        #     "action": notification.action,
+        #     "action_type": notification.action_type,
+        #     "created_at": notification.created_at,
+        #     "is_read": !notification.read_at.nil?,
+        #   }
+
+
       # when "add_to_wallet"
       #   @notifications << {
       #     "offer_type": notification.resource.offer_type,
