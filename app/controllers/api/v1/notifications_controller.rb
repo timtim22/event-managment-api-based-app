@@ -135,11 +135,13 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "action": notification.action,
             "action_type": notification.action_type,
             "created_at": notification.created_at,
-            "is_read": !notification.read_at.nil?,
+            "is_read": !notification.read_at.nil?
           }
 
       when "competition_add_to_wallet"
         @notifications << {
+          "friend_name": User.get_full_name(notification.resource.user),
+          "business_name": User.get_full_name(notification.resource.offer.user),
           "competition_id": notification.resource.offer.id,
           "competition_name": notification.resource.offer.title,
           "competition_host": notification.resource.offer.host,
@@ -151,8 +153,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "action": notification.action,
           "action_type": notification.action_type,
           "created_at": notification.created_at,
-          "is_read": !notification.read_at.nil?,
-
+          "is_read": !notification.read_at.nil?
         }
 
       else
