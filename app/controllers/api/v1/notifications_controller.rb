@@ -196,6 +196,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         @notifications << {
           "friend_name": User.get_full_name(notification.resource.user),
           "friend_id": notification.resource.user.id,
+          "request_id": notification.resource.id,
           "mutual_friends_count": notification.resource.user.friends.size,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
