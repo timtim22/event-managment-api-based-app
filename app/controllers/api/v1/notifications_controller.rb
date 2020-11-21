@@ -67,6 +67,24 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "created_at": notification.created_at,
             "is_read": !notification.read_at.nil?
           }
+
+        # when "update_special_offer"
+        #   @notifications << {
+        #     "special_offers_id": notification.id,
+        #     "business_name": User.get_full_name(notification.resource.user),
+        #     "special_offer_name": notification.resource.title,
+        #     "actor_id": notification.actor_id,
+        #     "actor_image": notification.actor.avatar,
+        #     "notifiable_id": notification.notifiable_id,
+        #     "notifiable_type": notification.notifiable_type,
+        #     "action": notification.action,
+        #     "action_type": notification.action_type,
+        #     "location": location,
+        #     "created_at": notification.created_at,
+        #     "is_read": !notification.read_at.nil?
+
+        #   }
+
         when "create_pass"
           @notifications << {
             "pass_id": notification.id,
@@ -156,22 +174,51 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "is_read": !notification.read_at.nil?
         }
 
-        when "add_pass_to_wallet"
-          @notifications << {
-            "friend_name": User.get_full_name(notification.resource.offer.user),
-            "event_name": notification.resource.offer.name,
-            "event_start_date": notification.resource.offer.start_date,
-            "pass_id": notification.resource.offer.id,
-            "event_location": notification.resource.event.location,
-            "user_id": notification.resource.user.id,
-            "actor_image": notification.actor.avatar,
-            "notifiable_id": notification.notifiable_id,
-            "notifiable_type": notification.notifiable_type,
-            "action": notification.action,
-            "action_type": notification.action_type,
-            "created_at": notification.created_at,
-            "is_read": !notification.read_at.nil?
-          }
+        # when "add_pass_to_wallet"
+        #   @notifications << {
+        #     "friend_name": User.get_full_name(notification.resource.offer.user),
+        #     "event_name": notification.resource.offer.name,
+        #     "event_start_date": notification.resource.offer.start_date,
+        #     "pass_id": notification.resource.offer.id,
+        #     "event_location": notification.resource.event.location,
+        #     "user_id": notification.resource.user.id,
+        #     "actor_image": notification.actor.avatar,
+        #     "notifiable_id": notification.notifiable_id,
+        #     "notifiable_type": notification.notifiable_type,
+        #     "action": notification.action,
+        #     "action_type": notification.action_type,
+        #     "created_at": notification.created_at,
+        #     "is_read": !notification.read_at.nil?
+        #   }
+
+
+      when "send_request"
+        @notifications << {
+          "friend_request_name": User.get_full_name(notification.resource.user),
+          "user_id": notification.resource.user.id,
+          "mutual_friends_count": notification.resource.user.friends.size,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+        }
+
+      when "accept_request"
+        @notifications << {
+          "added_friend_name": User.get_full_name(notification.resource.user),
+          "added_friend_id": notification.resource.user.id,
+          "mutual_friends_count": notification.resource.user.friends.size,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+        }
 
       else
          "do nothing"

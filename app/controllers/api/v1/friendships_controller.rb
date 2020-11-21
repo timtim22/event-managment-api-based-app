@@ -4,11 +4,11 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
   require 'action_view'
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
-  
+
   def initialize
     @request_data = {}
   end
-  
+
   def send_request
     if !params[:friend_id].blank?
      @friend = User.find(params[:friend_id])
@@ -18,7 +18,7 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
     @friend_request.status = "pending"
     if @friend_request.save
       #create_activity("sent friend request to #{get_full_name(@friend)}", @friend_request, 'FriendRequest', '', '', 'post', 'send_friend_request')
-      if @notification = Notification.create(recipient: @friend, actor: @sender, action: get_full_name(@sender) + " sent you a friend request", notifiable: @friend_request, resource: @friend_request, url: '/admin/friend-requests', notification_type: 'mobile', action_type: 'send_request')  
+      if @notification = Notification.create(recipient: @friend, actor: @sender, action: get_full_name(@sender) + " sent you a friend request", notifiable: @friend_request, resource: @friend_request, url: '/admin/friend-requests', notification_type: 'mobile', action_type: 'send_request')
         @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -30,7 +30,7 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
           add: @friend.profile.device_token
           ).value
 
-        payload = { 
+        payload = {
         "pn_gcm":{
           "notification": {
             "title": get_full_name(@friend),
@@ -45,7 +45,7 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
             "action": @notification.action,
             "action_type": @notification.action_type,
             "created_at": @notification.created_at,
-            "body": ''   
+            "body": ''
            }
         }
       }
@@ -127,7 +127,7 @@ def friend_requests
     data: {
       requests: @requests
     }
-  }  
+  }
 end
 
 def accept_request
@@ -143,9 +143,9 @@ def accept_request
       create_activity(request_user, "become friend", request, 'FriendRequest', '', '', 'post', 'accept_friend_request')
       #clear friend request notifcation on accpet
       @notification =  Notification.where(notifiable_id: request.id).where(notifiable_type: 'FriendRequest').first.destroy
-     
-      
-      if @notification = Notification.create(recipient: request.user, actor: request_user, action: get_full_name(request_user) + " accepted your friend request", notifiable: request, resource: request, url: '/admin/my-friends', notification_type: 'mobile', action_type: 'accept_request')  
+
+
+      if @notification = Notification.create(recipient: request.user, actor: request_user, action: get_full_name(request_user) + " accepted your friend request", notifiable: request, resource: @friend_request, url: '/admin/my-friends', notification_type: 'mobile', action_type: 'accept_request')
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -156,7 +156,7 @@ def accept_request
           add: request.user.profile.device_token
           ).value
 
-          payload = { 
+          payload = {
             "pn_gcm":{
               "notification":{
                 "title": get_full_name(request_user),
@@ -171,7 +171,7 @@ def accept_request
                 "action": @notification.action,
                 "action_type": @notification.action_type,
                 "created_at": @notification.created_at,
-                "body": ''   
+                "body": ''
               }
             }
           }
@@ -213,9 +213,9 @@ def remove_request
    #clear friend request notifcation on remove
    @notification =  Notification.where(notifiable_id: friend_request.id).where(notifiable_type: 'FriendRequest').first.destroy
   if friend_request.destroy
-    
+
     #create_activity(request_user, "removed friend request of #{get_full_name(friend_request.user)}", friend_request, 'FriendRequest', '', '', 'post', 'remove_friend_request')
-    
+
     render json: {
       code: 200,
       success: true,
@@ -258,7 +258,7 @@ def remove_friend
   @requests = FriendRequest.where(user_id: request_user.id).where(friend_id: params[:friend_id]).where(status: 'accepted').or(FriendRequest.where(friend_id: request_user.id).where(user_id: params[:friend_id]).where(status: 'accepted'))
    if @requests.blank?
     render json: {
-      code: 400, 
+      code: 400,
       success: false,
       message: "No such friend found.",
       data:nil
@@ -269,12 +269,12 @@ def remove_friend
     @request = FriendRequest.find_by(friend_id: params[:friend_id])
     #create_activity("removed #{get_full_name(User.find(params[:friend_id]))} from your friend list", @request, 'FriendRequest', '', '', 'post')
     render json: {
-      code: 200, 
+      code: 200,
       success: true,
       message: "Unfriend successfully.",
       data:nil
     }
-  end # main  
+  end # main
 end# #func
 
 def suggest_friends
@@ -289,14 +289,14 @@ def suggest_friends
 end #if
 
   # 2. Poeple who are attending same event as logged in user
-  if !request_user.events_to_attend.blank? 
+  if !request_user.events_to_attend.blank?
        request_user.events_to_attend.each do  |event|
        event.going_users.each do |user|
         @friends_suggestions.push(user)
        end #each
       end #each
     end #if
-    
+
     # 3. Poeple who are interested in same event as logged in user
    if !request_user.interested_in_events.blank?
        request_user.interested_in_events.each do |event|
@@ -315,19 +315,19 @@ end #if
         end
       end #each
   end#if
-  
+
   # 5. People who has same special offers in their wallet as logged in user
   if !request_user.owned_special_offers.blank?
     request_user.owned_special_offers.each do |special_offer|
       #users who added it to wallet
-      special_offer.owners.each do |owner| 
+      special_offer.owners.each do |owner|
         @friends_suggestions.push(owner)
       end
     end #each
 end#if
 
 #  6. people who are going to attend same competition.
- if !request_user.competitions_to_attend.blank? 
+ if !request_user.competitions_to_attend.blank?
   request_user.competitions_to_attend.each do  |competition|
     competition.participants.each do |participant|
   (participant)
@@ -336,7 +336,7 @@ end#if
  end #each
 end #if
 
-#if there are no users based on the above principle then suggest poineer user upto 7 
+#if there are no users based on the above principle then suggest poineer user upto 7
 if @friends_suggestions.blank? || @friends_suggestions.size < 30
   if User.app_users.size > 30
    User.app_users[1..30].each do |user|
@@ -346,11 +346,11 @@ if @friends_suggestions.blank? || @friends_suggestions.size < 30
    User.app_users.each do |user|
     @friends_suggestions.push(user)
   end#each
-  end  
+  end
 end
 
- @all_suggessions = []  
- @friends_suggestions.uniq.each do  |user| 
+ @all_suggessions = []
+ @friends_suggestions.uniq.each do  |user|
   if not_me?(user) && !is_my_friend?(user) && !is_business?(user)
     @all_suggessions << {
      user:  get_user_object(user),
@@ -358,7 +358,7 @@ end
      is_request_sent: request_status(request_user, user)
     }
   end#if
-  end #each 
+  end #each
 
  render json: {
    code: 200,
@@ -367,7 +367,7 @@ end
    data:  {
      suggested_friends: @all_suggessions
    }
- }  
+ }
 
  end #func
 
@@ -389,7 +389,7 @@ end
            "is_my_following" => false,
            "app_user" => follower.app_user,
            "is_self" =>  !not_me?(follower),
-           "followers_count" => user.followings.size 
+           "followers_count" => user.followings.size
          }
          end #each
       end #not empty
@@ -408,12 +408,12 @@ end
             "is_my_following" => is_my_following?(following),
             "app_user" => following.app_user,
             "is_self" =>  !not_me?(following),
-            "followers_count" => following.followers.size 
+            "followers_count" => following.followers.size
 
           }
          end #each
        end #not empty
-       else 
+       else
          friends = user.friends
          if !friends.blank?
         friends.each do |friend|
@@ -433,7 +433,7 @@ end
         end #not empty
       end #if
     end
-    
+
 
     render json: {
       code: 200,
@@ -452,13 +452,13 @@ end
     }
     end
 end
-  
+
   private
-  
+
   def get_mutual_friends(request_user, user)
     user_friends = user.friends
     request_user_friends = request_user.friends
     mutual = user_friends & request_user_friends
   end
-  
+
 end
