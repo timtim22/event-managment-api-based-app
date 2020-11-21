@@ -3,7 +3,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
 
    # POST /auth/login
 
-    api :GET, '/api/v1/auth/login', 'To login'
+    api :GET, '/api/v1/auth/login', 'To login and Generate Auhtorization Token'
     param :id, :number, :desc => "The ID of the user", :required => true
     param :device_token, String, :desc => "pass any string ", :required => true
 
