@@ -138,10 +138,22 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "is_read": !notification.read_at.nil?,
           }
 
-      # when "add_to_wallet"
-      #   @notifications << {
-      #     "offer_type": notification.resource.offer_type,
-      #   }
+      when "competition_add_to_wallet"
+        @notifications << {
+          "competition_id": notification.resource.offer.id,
+          "competition_name": notification.resource.offer.title,
+          "competition_host": notification.resource.offer.host,
+          "competition_draw_date": notification.resource.offer.validity,
+          "user_id": notification.resource.user.id,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?,
+
+        }
 
       else
          "do nothing"
