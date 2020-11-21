@@ -67,6 +67,24 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "created_at": notification.created_at,
             "is_read": !notification.read_at.nil?
           }
+
+        # when "update_special_offer"
+        #   @notifications << {
+        #     "special_offers_id": notification.id,
+        #     "business_name": User.get_full_name(notification.resource.user),
+        #     "special_offer_name": notification.resource.title,
+        #     "actor_id": notification.actor_id,
+        #     "actor_image": notification.actor.avatar,
+        #     "notifiable_id": notification.notifiable_id,
+        #     "notifiable_type": notification.notifiable_type,
+        #     "action": notification.action,
+        #     "action_type": notification.action_type,
+        #     "location": location,
+        #     "created_at": notification.created_at,
+        #     "is_read": !notification.read_at.nil?
+
+        #   }
+
         when "create_pass"
           @notifications << {
             "pass_id": notification.id,
@@ -135,35 +153,111 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "action": notification.action,
             "action_type": notification.action_type,
             "created_at": notification.created_at,
-            "is_read": !notification.read_at.nil?,
+            "is_read": !notification.read_at.nil?
           }
 
-        # when "enter_in_competition"
-        #   @notifications << {
-        #     "friend_name": User.get_full_name(notification.resource.user),
-        #     "competition_id": notification.resource.id,
-        #     "competition_name": notification.resource.title,
-        #     "competition_draw_date": notification.resource.end_date,
-        #     "business_name": User.get_full_name(notification.resource.user),
-        #     "actor_id": notification.actor_id,
-        #     "actor_image": notification.actor.avatar,
-        #     "notifiable_id": notification.notifiable_id,
-        #     "notifiable_type": notification.notifiable_type,
-        #     "action": notification.action,
-        #     "action_type": notification.action_type,
-        #     "created_at": notification.created_at,
-        #     "is_read": !notification.read_at.nil?,
-        #   }
+      when "add_competition_to_wallet"
+        @notifications << {
+          "friend_name": User.get_full_name(notification.resource.user),
+          "business_name": User.get_full_name(notification.resource.offer.user),
+          "competition_id": notification.resource.offer.id,
+          "competition_name": notification.resource.offer.title,
+          "competition_host": User.get_full_name(notification.resource.offer.user),
+          "competition_draw_date": notification.resource.offer.end_date,
+          "user_id": notification.resource.user.id,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+        }
+
+        when "add_pass_to_wallet"
+          @notifications << {
+            "friend_name": User.get_full_name(notification.resource.user),
+            "event_name": notification.resource.offer.event.name,
+            "event_start_date": notification.resource.offer.event.start_date,
+            "pass_id": notification.resource.offer.id,
+            "event_location": notification.resource.offer.event.location,
+            "user_id": notification.resource.offer.user.id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?
+          }
+
+        when "add_special_offer_to_wallet"
+          @notifications << {
+            "friend_name": User.get_full_name(notification.resource.user),
+             "special_offer_id": notification.resource.offer.id,
+             "special_offer_title": notification.resource.offer.title,
+              "host_name": User.get_full_name(notification.resource.offer.user),
+              "total_grab_count": notification.resource.offer.wallets.size,
+              "user_id": notification.resource.user.id,
+              "actor_image": notification.actor.avatar,
+              "notifiable_id": notification.notifiable_id,
+              "notifiable_type": notification.notifiable_type,
+              "action": notification.action,
+              "action_type": notification.action_type,
+              "created_at": notification.created_at,
+              "is_read": !notification.read_at.nil?
+          }
 
 
-      # when "add_to_wallet"
-      #   @notifications << {
-      #     "offer_type": notification.resource.offer_type,
-      #   }
+      when "send_request"
+        @notifications << {
+          "friend_name": User.get_full_name(notification.resource.user),
+          "friend_id": notification.resource.user.id,
+          "request_id": notification.resource.id,
+          "mutual_friends_count": notification.resource.user.friends.size,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+        }
+
+      when "accept_request"
+        @notifications << {
+          "friend_name": User.get_full_name(notification.resource.friend),
+          "friend_id": notification.resource.friend.id,
+          "mutual_friends_count": notification.resource.user.friends.size,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+        }
+
+      when "enter_in_competition"
+        @notifications << {
+          "user_name": User.get_full_name(notification.resource.user),
+          "competition_id": notification.resource.event.id,
+          "competition_name": notification.resource.event.title,
+          "host_name": User.get_full_name(notification.resource.event.user),
+          "draw_date": notification.resource.event.end_date,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+        }
 
       else
          "do nothing"
       end #switch
+
     end #end
 
     render json: {
