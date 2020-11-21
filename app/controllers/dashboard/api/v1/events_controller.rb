@@ -1,11 +1,11 @@
-class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterController 
+class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterController
   before_action :authorize_request
 
   require 'action_view'
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
-  
-  
+
+
   def index
 
     @events = request_user.events.map {|e| get_dashboard_event_object(e) }
@@ -18,7 +18,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       }
     }
   end
-  
+
 
   def show
    e = Event.find(params[:id])
@@ -50,9 +50,9 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
      e.event_attachments.each do |attachment|
      additional_media << {
        "media_type" => attachment.media_type,
-       "media" => attachment.media.url 
+       "media" => attachment.media.url
      }
-    end#each 
+    end#each
    end
 
    @event = {
@@ -68,15 +68,16 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
      'categories' => e.categories,
      "allow_chat" => e.allow_chat,
      "event_forwarding" => e.event_forwarding,
-     'admission_resources' => admission_resources, 
+     'admission_resources' => admission_resources,
      'sponsors' => sponsors,
      "terms_conditions" => e.terms_conditions,
      'event_attachments' => additional_media,
      'creator_name' => get_full_name(e.user),
      'creator_id' => e.user.id,
      'creator_image' => e.user.avatar,
+     'event_status' => e.status
   }
-  
+
    render json: {
      code: 200,
      success: true,
@@ -86,8 +87,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
      }
    }
   end
-  
-  
+
+
 
   def user_events
     @events = []
@@ -120,9 +121,9 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
         e.event_attachments.each do |attachment|
         additional_media << {
           "media_type" => attachment.media_type,
-          "media" => attachment.media.url 
+          "media" => attachment.media.url
         }
-       end#each 
+       end#each
       end
 
       @events << {
@@ -137,26 +138,26 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
         'description' => e.description,
         "terms_conditions" => e.terms_conditions,
         'categories' => e.categories,
-        'admission_resources' => admission_resources, 
+        'admission_resources' => admission_resources,
         'sponsors' => sponsors,
         'event_attachments' => additional_media,
         'creator_name' => get_full_name(e.user),
         'creator_id' => e.user.id,
         'creator_image' => e.user.avatar,
      }
-     
+
     end #each
 		render json: {
       code: 200,
       success: true,
       message: '',
-			data: { 
+			data: {
        "events" =>  @events
      }
   }
 
   end
-  
+
 
   def get_past_events
     @events = []
@@ -170,14 +171,14 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
            'lng' => e.lng
          }
       }
-      
+
         stats['going_count'] = e.going_interest_levels.size
         stats['views_count'] = e.views.size
         stats['total_tickets'] = if e.ticket then e.ticket.quantity else 0 end
         stats['redeemed_passes'] =  get_redeemed_passes(e)
         stats['vips_count'] = 0
         stats['sales_count'] = 0
-     
+
       @events << {
         'id' => e.id,
         'name' => e.name,
@@ -193,13 +194,13 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
         'lng' => e.lng,
         'stats' => stats
      }
-     
+
     end #each
 		render json: {
       code: 200,
       success: true,
       message: '',
-			data: { 
+			data: {
        "events" =>  @events
      }
   }
@@ -207,10 +208,10 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
 
   def create
-    
+
     success = false
     @error_messages = []
-    
+
     if params[:admission_resources].blank?
       render json: {
         code: 400,
@@ -231,7 +232,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
               end #if
             end #each
            end #each
-          
+
         when 'paid'
           required_fields = ['title', 'quantity', 'per_head','price']
           resource[:fields].each do |f|
@@ -241,7 +242,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
               end #if
             end #each
           end #each
-         
+
           when 'pay_at_door'
            required_fields = ['start_price', 'end_price']
            resource[:fields].each do |f|
@@ -251,7 +252,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
               end #if
              end #each
            end #each
-           
+
           when 'pass'
             required_fields = ['title', 'description', 'valid_from','valid_to','quantity','ambassador_rate']
             resource[:fields].each do |f|
@@ -261,12 +262,12 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
                 end #if
                end #each
              end #each
-           
+
           else
             @error_messages.push('invalid resource type is submitted.')
             process_validated = false
-          end    
-        end #each 
+          end
+        end #each
     end #admission resource validation
 
      if !params[:sponsors].blank?
@@ -277,7 +278,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
             @error_messages.push("In sponsors " + field + ' is required.')
           end #if
          end #each
-      end #each  
+      end #each
      end #blank
 
      if !params[:event_attachments].blank?
@@ -288,9 +289,9 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
             @error_messages.push("In event attachements " + field + ' is required.')
           end #if
          end #each
-      end #each  
+      end #each
      end #blank
-   
+
   if @error_messages.blank?
     @event = request_user.events.new
     @event.name = params[:name]
@@ -304,16 +305,16 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     @event.terms_conditions = params[:terms_conditions]
     @event.allow_chat = params[:allow_chat]
     @event.event_forwarding = params[:event_forwarding]
-    if !params[:location].blank? 
+    if !params[:location].blank?
     @event.location = params[:location][:name]
-    @event.lat = params[:location][:geometry][:lat] 
+    @event.lat = params[:location][:geometry][:lat]
     @event.lng = params[:location][:geometry][:lng]
     end
     @event.price = params[:price]
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
-  
+
     if @event.save
       success = true
     # Admisssion sectiion
@@ -345,11 +346,11 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
         else
           @error_messages.push('invalid resource type is submitted.')
-        end    
+        end
       end #each
     end#if
 
- 
+
     #save attachement if there is any
     if !params[:event_attachments].blank?
       params[:event_attachments].each do |attachment|
@@ -394,16 +395,16 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
         message: @error_messages,
         data: nil
       }
-    end  
+    end
   end
 
 
 
   def update
-    
+
     success = false
     @error_messages = []
-    
+
     if params[:admission_resources].blank?
       render json: {
         code: 400,
@@ -424,7 +425,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
               end #if
             end #each
            end #each
-          
+
         when 'paid'
           required_fields = ['id', 'title', 'quantity', 'per_head','price']
           resource[:fields].each do |f|
@@ -434,7 +435,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
               end #if
             end #each
           end #each
-         
+
           when 'pay_at_door'
            required_fields = ['id', 'start_price', 'end_price']
            resource[:fields].each do |f|
@@ -444,7 +445,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
               end #if
              end #each
            end #each
-           
+
           when 'pass'
             required_fields = ['id','title', 'description', 'valid_from','valid_to','quantity','ambassador_rate']
             resource[:fields].each do |f|
@@ -454,12 +455,12 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
                 end #if
                end #each
              end #each
-           
+
           else
             @error_messages.push('invalid resource type is submitted.')
             process_validated = false
-          end    
-        end #each 
+          end
+        end #each
     end #admission resource validation
 
      if !params[:sponsors].blank?
@@ -470,7 +471,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
             @error_messages.push("In sponsors " + field + ' is required.')
           end #if
          end #each
-      end #each  
+      end #each
      end #blank
 
      if !params[:event_attachments].blank?
@@ -481,9 +482,9 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
             @error_messages.push("In event attachements " + field + ' is required.')
           end #if
          end #each
-      end #each  
+      end #each
      end #blank
-   
+
   if @error_messages.blank?
     @event = Event.find(params[:id])
     @event.name = params[:name]
@@ -497,16 +498,16 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     @event.terms_conditions = params[:terms_conditions]
     @event.allow_chat = params[:allow_chat]
     @event.event_forwarding = params[:event_forwarding]
-    if !params[:location].blank? 
+    if !params[:location].blank?
     @event.location = params[:location][:name]
-    @event.lat = params[:location][:geometry][:lat] 
+    @event.lat = params[:location][:geometry][:lat]
     @event.lng = params[:location][:geometry][:lng]
     end
     @event.price = params[:price]
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
-  
+
     if @event.save
       success = true
     # Admisssion sectiion
@@ -537,11 +538,11 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
         else
           @error_messages.push('invalid resource type is submitted.')
-        end    
+        end
       end #each
     end#if
 
- 
+
     #save attachement if there is any
     if !params[:event_attachments].blank?
       params[:event_attachments].each do |attachment|
@@ -585,7 +586,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
         message: @error_messages,
         data: nil
       }
-    end  
+    end
   end
 
 
@@ -650,7 +651,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
             message: 'Event deletion failed.',
             data: nil
           }
-         end        
+         end
       else
         render json: {
           code: 400,
@@ -668,9 +669,9 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
   def setCategories
     @categories = Category.all
   end
-	
+
   def event_params
-		params.permit(:name,:start_date,:end_date,:price,:price_type,:event_type,:start_time, :end_time, :external_link, :host, :description,:location,:image, :feature_media_link, :additional_media, :lat,:lng,:allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18, :category_ids => [], event_attachments_attributes: 
+		params.permit(:name,:start_date,:end_date,:price,:price_type,:event_type,:start_time, :end_time, :external_link, :host, :description,:location,:image, :feature_media_link, :additional_media, :lat,:lng,:allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18, :category_ids => [], event_attachments_attributes:
     [:id, :event_id, :media])
   end
 

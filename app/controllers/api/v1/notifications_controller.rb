@@ -140,12 +140,12 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "competition_add_to_wallet"
         @notifications << {
-          "friend_name": User.get_full_name(notification.resource.user),
-          "business_name": User.get_full_name(notification.resource.offer.user),
-          "competition_id": notification.resource.offer.id,
-          "competition_name": notification.resource.offer.title,
-          "competition_host": notification.resource.offer.host,
-          "competition_draw_date": notification.resource.offer.validity,
+          "friend_name": User.get_full_name(notification.resource.offer.user),
+          "business_name": User.get_full_name(notification.resource.user),
+          "competition_id": notification.resource.id,
+          "competition_name": notification.resource.title,
+          "competition_host": notification.resource.host,
+          "competition_draw_date": notification.resource.validity,
           "user_id": notification.resource.user.id,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
