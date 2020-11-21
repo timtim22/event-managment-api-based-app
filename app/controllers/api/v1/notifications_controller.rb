@@ -194,8 +194,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "send_request"
         @notifications << {
-          "friend_request_name": User.get_full_name(notification.resource.user),
-          "user_id": notification.resource.user.id,
+          "friend_name": User.get_full_name(notification.resource.user),
+          "friend_id": notification.resource.user.id,
           "mutual_friends_count": notification.resource.user.friends.size,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
@@ -208,8 +208,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "accept_request"
         @notifications << {
-          "added_friend_name": User.get_full_name(notification.resource.user),
-          "added_friend_id": notification.resource.user.id,
+          "friend_name": User.get_full_name(notification.resource.user),
+          "friend_id": notification.resource.user.id,
           "mutual_friends_count": notification.resource.user.friends.size,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
