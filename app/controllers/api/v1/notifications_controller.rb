@@ -138,40 +138,40 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "is_read": !notification.read_at.nil?
           }
 
-      # when "competition_add_to_wallet"
-      #   @notifications << {
-      #     "friend_name": User.get_full_name(notification.resource.offer.user),
-      #     "business_name": User.get_full_name(notification.resource.user),
-      #     "competition_id": notification.resource.id,
-      #     "competition_name": notification.resource.title,
-      #     "competition_host": notification.resource.host,
-      #     "competition_draw_date": notification.resource.validity,
-      #     "user_id": notification.resource.user.id,
-      #     "actor_image": notification.actor.avatar,
-      #     "notifiable_id": notification.notifiable_id,
-      #     "notifiable_type": notification.notifiable_type,
-      #     "action": notification.action,
-      #     "action_type": notification.action_type,
-      #     "created_at": notification.created_at,
-      #     "is_read": !notification.read_at.nil?
-      #   }
+      when "add_competition_to_wallet"
+        @notifications << {
+          "friend_name": User.get_full_name(notification.resource.offer.user),
+          "business_name": User.get_full_name(notification.resource.user),
+          "competition_id": notification.resource.offer.id,
+          "competition_name": notification.resource.offer.title,
+          "competition_host": notification.resource.offer.host,
+          "competition_draw_date": notification.resource.offer.validity,
+          "user_id": notification.resource.user.id,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+        }
 
-    when "add_pass_to_wallet"
-      @notifications << {
-        "friend_name": User.get_full_name(notification.resource.offer.user),
-        "event_name": notification.resource.offer.name,
-        "event_start_date": notification.resource.offer.start_date,
-        "pass_id": notification.resource.offer.id,
-        "event_location": notification.resource.event.location,
-        "user_id": notification.resource.user.id,
-        "actor_image": notification.actor.avatar,
-        "notifiable_id": notification.notifiable_id,
-        "notifiable_type": notification.notifiable_type,
-        "action": notification.action,
-        "action_type": notification.action_type,
-        "created_at": notification.created_at,
-        "is_read": !notification.read_at.nil?
-      }
+        # when "add_pass_to_wallet"
+        #   @notifications << {
+        #     "friend_name": User.get_full_name(notification.resource.offer.user),
+        #     "event_name": notification.resource.offer.name,
+        #     "event_start_date": notification.resource.offer.start_date,
+        #     "pass_id": notification.resource.offer.id,
+        #     "event_location": notification.resource.event.location,
+        #     "user_id": notification.resource.user.id,
+        #     "actor_image": notification.actor.avatar,
+        #     "notifiable_id": notification.notifiable_id,
+        #     "notifiable_type": notification.notifiable_type,
+        #     "action": notification.action,
+        #     "action_type": notification.action_type,
+        #     "created_at": notification.created_at,
+        #     "is_read": !notification.read_at.nil?
+        #   }
 
       else
          "do nothing"

@@ -441,7 +441,7 @@ end
         #also notify request_user friends
         if !request_user.friends.blank?
           request_user.friends.each do |friend|
-            if @notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has grabbed #{@wallet.offer.class.name.downcase} '#{@wallet.offer.title}'.", notifiable: @wallet.offer, resource: @wallet.offer,  url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
+            if @notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has grabbed #{@wallet.offer.class.name.downcase} '#{@wallet.offer.title}'.", notifiable: @wallet.offer, resource: @wallet,  url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
                push_token: friend.profile.device_token,
