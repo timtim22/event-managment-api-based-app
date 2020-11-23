@@ -142,11 +142,6 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
         when "comment"
           @notifications << {
-<<<<<<< HEAD
-            "replier_name": User.get_full_name(notification.resource),
-            "comment": notification.resource.comment,
-=======
->>>>>>> d572094024f6b3db39a69b5c1f9a1ab50f6490e6
             "user_id": notification.resource.user.id,
             "event_id": notification.resource.event.id,
             "actor_id": notification.actor_id,
@@ -162,7 +157,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         when "reply_comment"
           @notifications << {
             "replier_name": User.get_full_name(notification.resource.user),
-            "comment": notification.resource.msg,
+            "comment": notification.resource.comment.comment,
             "actor_id": notification.actor_id,
             "actor_image": notification.actor.avatar,
             "notifiable_id": notification.notifiable_id,
@@ -274,13 +269,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "ask_location"
         @notifications << {
-<<<<<<< HEAD
-          "user_name": User.get_full_name(notification.resource),
-          "user_id:": notification.resource.user.id,
-=======
           "friend_name": User.get_full_name(notification.resource),
           "friend_id:": notification.resource.id,
->>>>>>> d572094024f6b3db39a69b5c1f9a1ab50f6490e6
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,
@@ -292,13 +282,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "send_location"
         @notifications << {
-<<<<<<< HEAD
-          "user_name": User.get_full_name(notification.resource),
-          "user_id:": notification.resource.id,
-=======
           "friend_name": User.get_full_name(notification.resource),
           "friend_id:": notification.resource.id,
->>>>>>> d572094024f6b3db39a69b5c1f9a1ab50f6490e6
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,
@@ -308,7 +293,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "is_read": !notification.read_at.nil?,
           "location": location
         }
-      
+
       when "become_ambassador"
         @notifications << {
           "business_name": User.get_full_name(notification.resource.business),
