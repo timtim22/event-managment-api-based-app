@@ -254,6 +254,32 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "is_read": !notification.read_at.nil?
         }
 
+      when "ask_location"
+        @notifications << {
+          "user_name": User.get_full_name(notification.resource.user),
+          "user_id:": notification.resource.user.id,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+        }
+
+      when "get_location"
+        @notifications << {
+          "user_name": User.get_full_name(notification.resource.user),
+          "user_id:": notification.resource.user.id,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+        }
+
       else
          "do nothing"
       end #switch
