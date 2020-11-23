@@ -157,7 +157,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         when "reply_comment"
           @notifications << {
             "replier_name": User.get_full_name(notification.resource.user),
-            "comment": notification.resource.msg,
+            "comment": notification.resource.comment.comment,
             "actor_id": notification.actor_id,
             "actor_image": notification.actor.avatar,
             "notifiable_id": notification.notifiable_id,

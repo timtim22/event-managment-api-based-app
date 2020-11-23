@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-
+  require "pubnub"
   include ActionView::Helpers::NumberHelper
   # include ActionController::MimeResponds
   # require 'ruby-graphviz'
@@ -886,8 +886,12 @@ end
    profile.is_ambassador = true
 
    if request.save && profile.save
-     #send notifcition to ambassador as well
-    if @notification = Notification.create!(recipient: request.user, actor: user, action: get_full_name(request_user) + " has approved you as an ambassador.", notifiable: @request, url: "/admin/users/#{request.user.id}", resource: request, notification_type: 'mobile',action_type: 'become_ambassador')
+     #send notifcition to ambassador in order to inform
+     @pubnub = Pubnub.new(
+      publish_key: ENV['PUBLISH_KEY'],
+      subscribe_key: ENV['SUBSCRIBE_KEY']
+      )
+    if @notification = Notification.create!(recipient: request.user, actor: user, action: get_full_name(request_user) + " has approved you as an ambassador.", notifiable: request, url: "/admin/users/#{request.user.id}", resource: request, notification_type: 'mobile',action_type: 'become_ambassador')
      
       @current_push_token = @pubnub.add_channels_to_push(
         push_token: request.user.profile.device_token,
@@ -895,10 +899,9 @@ end
         add: request.user.profile.device_token
         ).value
 
-
         payload = {
           "pn_gcm":{
-            "notification":{
+            "notification": {
               "title": get_full_name(user),
               "body": @notification.action
             },
