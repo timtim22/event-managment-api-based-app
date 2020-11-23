@@ -453,12 +453,8 @@ end
     end
 end
 
-  private
+  
 
-  def get_mutual_friends(request_user, user)
-    user_friends = user.friends
-    request_user_friends = request_user.friends
-    mutual = user_friends & request_user_friends
-  end
+ 
 
 end

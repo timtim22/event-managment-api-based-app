@@ -156,7 +156,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "is_read": !notification.read_at.nil?
           }
 
-      when "add_competition_to_wallet"
+      when "add_Competition_to_wallet"
         @notifications << {
           "friend_name": User.get_full_name(notification.resource.user),
           "business_name": User.get_full_name(notification.resource.offer.user),
@@ -174,7 +174,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "is_read": !notification.read_at.nil?
         }
 
-        when "add_pass_to_wallet"
+        when "add_Pass_to_wallet"
           @notifications << {
             "friend_name": User.get_full_name(notification.resource.user),
             "event_name": notification.resource.offer.event.name,
@@ -183,6 +183,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "event_location": notification.resource.offer.event.location,
             "user_id": notification.resource.offer.user.id,
             "actor_image": notification.actor.avatar,
+            "total_grabbers_count": notification.resource.offer.wallets.size,
             "notifiable_id": notification.notifiable_id,
             "notifiable_type": notification.notifiable_type,
             "action": notification.action,
@@ -191,13 +192,13 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "is_read": !notification.read_at.nil?
           }
 
-        when "add_special_offer_to_wallet"
+        when "add_SpecialOffer_to_wallet"
           @notifications << {
             "friend_name": User.get_full_name(notification.resource.user),
              "special_offer_id": notification.resource.offer.id,
              "special_offer_title": notification.resource.offer.title,
-              "host_name": User.get_full_name(notification.resource.offer.user),
-              "total_grab_count": notification.resource.offer.wallets.size,
+              "business_name": User.get_full_name(notification.resource.offer.user),
+              "total_grabbers_count": notification.resource.offer.wallets.size,
               "user_id": notification.resource.user.id,
               "actor_image": notification.actor.avatar,
               "notifiable_id": notification.notifiable_id,
@@ -214,7 +215,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "friend_name": User.get_full_name(notification.resource.user),
           "friend_id": notification.resource.user.id,
           "request_id": notification.resource.id,
-          "mutual_friends_count": notification.resource.user.friends.size,
+          "mutual_friends_count": get_mutual_friends(request_user, notification.resource.user).size,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,
@@ -228,7 +229,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         @notifications << {
           "friend_name": User.get_full_name(notification.resource.friend),
           "friend_id": notification.resource.friend.id,
-          "mutual_friends_count": notification.resource.user.friends.size,
+          "mutual_friends_count": get_mutual_friends(request_user, notification.resource.friend).size,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,
@@ -243,7 +244,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "friend_name": User.get_full_name(notification.resource.user),
           "competition_id": notification.resource.event.id,
           "competition_name": notification.resource.event.title,
-          "host_name": User.get_full_name(notification.resource.event.user),
+          "business_name": User.get_full_name(notification.resource.event.user),
           "draw_date": notification.resource.event.end_date,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
