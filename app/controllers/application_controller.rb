@@ -827,6 +827,13 @@ end
   end
 
 
+  def get_mutual_friends(request_user, user)
+    user_friends = user.friends
+    request_user_friends = request_user.friends
+    mutual = user_friends & request_user_friends
+  end
+
+
   def showability?(user, competition)
     if is_entered_competition_updated?(user, competition.id)
        reg = competition.registrations.where(user: user).last
@@ -879,6 +886,47 @@ end
    profile.is_ambassador = true
 
    if request.save && profile.save
+     #send notifcition to ambassador as well
+    if @notification = Notification.create!(recipient: request.user, actor: user, action: get_full_name(request_user) + " has approved you as an ambassador.", notifiable: @request, url: "/admin/users/#{request.user.id}", resource: request, notification_type: 'mobile',action_type: 'become_ambassador')
+     
+      @current_push_token = @pubnub.add_channels_to_push(
+        push_token: request.user.profile.device_token,
+        type: 'gcm',
+        add: request.user.profile.device_token
+        ).value
+
+
+        payload = {
+          "pn_gcm":{
+            "notification":{
+              "title": get_full_name(user),
+              "body": @notification.action
+            },
+            data: {
+              "id": @notification.id,
+              "actor_id": @notification.actor_id,
+              "actor_image": @notification.actor.avatar,
+              "notifiable_id": @notification.notifiable_id,
+              "notifiable_type": @notification.notification_type,
+              "action_type": @notification.action_type,
+              "action": @notification.action,
+              "created_at": @notification.created_at,
+              "body": ''
+            }
+          }
+        }
+
+        @pubnub.publish(
+          channel: [request.user.profile.device_token],
+          message: payload
+           ) do |envelope|
+             puts envelope.status
+         end
+
+         @success = true
+        else
+          @success = false
+      end ##notification create
       create_activity(request.user, "become ambassador ", request, 'AmbassadorRequest', '', '', 'post', 'become_ambassador')
     true
    else

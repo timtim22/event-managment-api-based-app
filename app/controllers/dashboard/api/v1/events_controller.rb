@@ -636,7 +636,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     end
 
 
-    def destroy
+    def delete_event
+      if !params[:event_id].blank?
       event = Event.find(params[:id])
       if event.status == "cancelled"
          if event.destroy
@@ -661,6 +662,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
         }
       end
     end
+  end
 
 
 
