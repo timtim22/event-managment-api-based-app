@@ -638,7 +638,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
     def delete_event
       if !params[:event_id].blank?
-      event = Event.find(params[:id])
+      event = Event.find(params[:event_id])
       if event.status == "cancelled"
          if event.destroy
            render json: {
@@ -654,6 +654,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
           }
          end
       else
+
         render json: {
           code: 400,
           success: false,
@@ -661,7 +662,15 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
           data: nil
         }
       end
-    end
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "Event ID is required",
+      data: nil
+    }
+  end
+
   end
 
 
