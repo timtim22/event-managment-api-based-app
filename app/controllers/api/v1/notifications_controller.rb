@@ -142,7 +142,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
         when "comment"
           @notifications << {
-            "friend_name": User.get_full_name(notification.resource.user),
+            "replier_name": User.get_full_name(notification.resource),
             "comment": notification.resource.comment,
             "user_id": notification.resource.user.id,
             "event_id": notification.resource.event.id,
@@ -256,7 +256,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "ask_location"
         @notifications << {
-          "user_name": User.get_full_name(notification.resource.user),
+          "user_name": User.get_full_name(notification.resource),
           "user_id:": notification.resource.user.id,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
@@ -267,10 +267,10 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "is_read": !notification.read_at.nil?
         }
 
-      when "get_location"
+      when "send_location"
         @notifications << {
-          "user_name": User.get_full_name(notification.resource.user),
-          "user_id:": notification.resource.user.id,
+          "user_name": User.get_full_name(notification.resource),
+          "user_id:": notification.resource.id,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,
