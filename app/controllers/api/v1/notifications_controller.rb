@@ -293,7 +293,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "is_read": !notification.read_at.nil?,
           "location": location
         }
-      
+
       when "become_ambassador"
         @notifications << {
           "business_name": User.get_full_name(notification.resource.business),

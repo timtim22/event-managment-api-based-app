@@ -27,16 +27,16 @@ class ApplicationController < ActionController::Base
       status
   end
 
- 
-  
+
+
 
   def current_user
-    user = User.find(session[:user_id]) if session[:user_id] 
+    user = User.find(session[:user_id]) if session[:user_id]
   end
 
   helper_method :current_user
   # push variable to gon in order to make them available for js
-  
+
 
   def SetJsVariables
     if current_user
@@ -74,7 +74,7 @@ class ApplicationController < ActionController::Base
      blocked = setting.is_on
     else
       false
-    end      
+    end
   end
 
 
@@ -84,7 +84,7 @@ class ApplicationController < ActionController::Base
       mute = setting.is_on
      else
        false
-     end   
+     end
   end
 
   def blocked_user?(request_user, user)
@@ -97,11 +97,11 @@ class ApplicationController < ActionController::Base
           true
         end
       else
-        false 
+        false
       end
      else
        false
-     end     
+     end
   end
 
 
@@ -111,7 +111,7 @@ class ApplicationController < ActionController::Base
       mute = setting.is_on
      else
        false
-     end   
+     end
   end
 
   def is_removed_offer?(request_user, offer)
@@ -174,21 +174,21 @@ class ApplicationController < ActionController::Base
 
   def is_business?(user)
     role_ids = user.roles.map {|role| role.id }
-    role_ids.include? 2  
+    role_ids.include? 2
   end
 
   def get_full_name(user)
     if is_business?(user)
       name = user.business_profile.profile_name
     else
-      name = user.profile.first_name + " " + user.profile.last_name    
+      name = user.profile.first_name + " " + user.profile.last_name
      end
   end
 
   def is_admin_or_super_admin?(user)
     role_ids = user.roles.map {|role| role.id }
     if role_ids.include? 3 then true else false end || if role_ids.include? 4 then true else false end
-   
+
   end
 
 
@@ -218,7 +218,7 @@ class ApplicationController < ActionController::Base
       "is_ambassador" => user.business_profile.is_ambassador,
       "is_request_sent" => false,
       "is_my_following" => is_my_following?(user),
-      "role" => 2, 
+      "role" => 2,
       "is_my_friend" => false,
       "mutual_friends_count" => 0,
       "total_followers_count" => user.followers.size
@@ -303,7 +303,7 @@ class ApplicationController < ActionController::Base
       free_tickets = event.tickets.where(ticket_type: 'free')
      if !free_tickets.blank?
       free_tickets.each do |ticket|
-       
+
         fields = []
         fields << {
           "id" => ticket.id,
@@ -318,7 +318,7 @@ class ApplicationController < ActionController::Base
         }
 
         admission_resources.push(resource)
-        
+
       end #each
     end #if not blank
 
@@ -326,7 +326,7 @@ class ApplicationController < ActionController::Base
      paid_tickets = event.tickets.where(ticket_type: 'paid')
      if !paid_tickets.blank?
       paid_tickets.each do |ticket|
-       
+
         fields = []
         fields << {
           "id" => ticket.id,
@@ -349,7 +349,7 @@ class ApplicationController < ActionController::Base
      pay_at_door = event.tickets.where(ticket_type: 'pay_at_door')
      if !pay_at_door.blank?
       pay_at_door.each do |ticket|
-       
+
         fields = []
         fields << {
           "id" => ticket.id,
@@ -363,7 +363,7 @@ class ApplicationController < ActionController::Base
         }
 
         admission_resources.push(resource)
-        
+
       end #each
     end #if not blank
 
@@ -379,7 +379,7 @@ class ApplicationController < ActionController::Base
           "valid_from" => pass.valid_from,
           "valid_to" => pass.valid_to,
           "quantity" =>  pass.quantity,
-          "ambassador_rate" => pass.ambassador_rate 
+          "ambassador_rate" => pass.ambassador_rate
         }
 
         resource = {
@@ -452,7 +452,7 @@ class ApplicationController < ActionController::Base
       creator_image: offer.user.avatar,
       description: offer.description,
       validity: offer.validity.strftime(get_time_format),
-      end_time: offer.validity.strftime(get_time_format), 
+      end_time: offer.validity.strftime(get_time_format),
       grabbers_count: offer.wallets.size,
       is_added_to_wallet: is_added_to_wallet?(offer.id),
       grabbers_friends_count: get_grabbers_friends_count(offer),
@@ -505,7 +505,7 @@ class ApplicationController < ActionController::Base
    end
 
    def create_activity(actor, action, resource, resource_type, resource_url,resrource_title, method, action_type = '')
-    
+
    if activity = ActivityLog.create!(user: actor, action: action, resource: resource, resource_type: resource_type, browser: request.env['HTTP_USER_AGENT'], ip_address: request.env['REMOTE_ADDR'], params: params.inspect,url: resource_url, method: method, resource_title: resrource_title, action_type: action_type)
     true
    else
@@ -534,7 +534,7 @@ class ApplicationController < ActionController::Base
         per_offer_earning = offer.ambassador_rate * redeemed_count
         if per_offer_earning.blank? then per_offer_earning = 0 end
         @stats['per_offer_earning'] = per_offer_earning
-       
+
     else
       @stats['info'] = "You didn't share this offer."
     end
@@ -547,7 +547,7 @@ class ApplicationController < ActionController::Base
     @offers = []
     @businesses.each do |business|
       if !business.passes.blank?
-      business.passes.not_expired.order(created_at: 'DESC').each do |pass| 
+      business.passes.not_expired.order(created_at: 'DESC').each do |pass|
         @offers << {
           id: pass.id,
           type: 'pass',
@@ -575,7 +575,7 @@ class ApplicationController < ActionController::Base
           quantity: pass.quantity,
           issued_by: get_full_name(pass.user),
           business: get_business_object(business)
-           
+
         }
         end #each
       end #not empty
@@ -597,7 +597,7 @@ class ApplicationController < ActionController::Base
           creator_image: offer.user.avatar,
           description: offer.description,
           validity: offer.validity.strftime(get_time_format),
-          end_time:  offer.validity.strftime(get_time_format), 
+          end_time:  offer.validity.strftime(get_time_format),
           grabbers_count: offer.wallets.size,
           ambassador_stats: ambassador_stats(offer, request_user),
           is_added_to_wallet: is_added_to_wallet?(offer.id),
@@ -608,14 +608,14 @@ class ApplicationController < ActionController::Base
           issued_by: get_full_name(offer.user),
           redeem_count: get_redeem_count(offer),
           quantity: offer.quantity,
-          terms_and_conditions: offer.terms_conditions, 
+          terms_and_conditions: offer.terms_conditions,
           business: get_business_object(business),
-       
+
         }
         end #each
       end #not empty
-    end #each 
-    @offers   
+    end #each
+    @offers
 end
 
   def is_ambassador?(user)
@@ -678,7 +678,7 @@ end
 
 
 
-   def get_participants_stats(competition) 
+   def get_participants_stats(competition)
     participants = []
     if !competition.registrations.blank?
     competition.registrations.each do |reg|
@@ -693,7 +693,7 @@ end
    @stats
   end
 
-  
+
 
   def is_attending?(event)
     if request_user
@@ -706,7 +706,7 @@ end
      false
    end
    end
- 
+
    def is_interested?(event)
     if request_user
      if request_user.interested_in_events.include? event
@@ -718,9 +718,9 @@ end
       false
    end
    end
- 
-   
- 
+
+
+
     def is_ticket_purchased(ticket_id)
       if request_user
        ticket = TicketPurchase.where(user_id: request_user.id).where(ticket_id: ticket_id)
@@ -733,7 +733,7 @@ end
        false
      end
     end
- 
+
    def get_event_passes_grabbers(e)
       @grabbers_avatars = []
       @total_count = 0
@@ -741,7 +741,7 @@ end
        @total_count  = @total_count + pass.wallets.size
        pass.wallets.each do |w|
          @grabbers_avatars.push(w.user.avatar)
-       end      
+       end
      end
      stats = []
      stats << {
@@ -766,9 +766,9 @@ end
     end
     distributed_by
 end
- 
-  
- 
+
+
+
   def get_passes_grabbers_friends_count(e)
    if request_user
      e.passes.map {|pass| pass.wallets.map { |wallet| if (request_user.friends.include? wallet.user) then wallet.user end } }.size
@@ -776,9 +776,9 @@ end
      @empty = []
    end
   end
- 
+
   def get_mute_chat_status(event)
-   if request_user  
+   if request_user
      setting = request_user.mute_chat_for_events.where(resource: event).first
      if setting
       is_mute = setting.is_on
@@ -789,7 +789,7 @@ end
      false
    end
   end
- 
+
   def get_mute_notifications_status(event)
     if request_user
       setting = request_user.mute_notifications_for_events.where(resource: event).first
@@ -807,7 +807,7 @@ end
   def get_request_status(business_id)
     ar = AmbassadorRequest.where(business_id: business_id).where(user_id: request_user.id).first
     if ar
-    ar.status 
+    ar.status
     else
       'signup'
     end
@@ -837,7 +837,7 @@ end
   def showability?(user, competition)
     if is_entered_competition_updated?(user, competition.id)
        reg = competition.registrations.where(user: user).last
-        Time.now > reg.created_at + 24.hours          
+        Time.now > reg.created_at + 24.hours
     else
      true
     end
@@ -881,7 +881,7 @@ end
 
  def approve_ambassador(user, ambassador_request_id)
    request = AmbassadorRequest.find(ambassador_request_id)
-   request.status = 'accepted' 
+   request.status = 'accepted'
    profile =  request.user.profile
    profile.is_ambassador = true
 
@@ -941,7 +941,7 @@ end
 
 
 
- 
+
   def get_price_type(event)
     price_type = ''
     if !event.tickets.blank?
@@ -982,8 +982,8 @@ end
       false
     end
   end
-  
-  
+
+
   def generate_date_range(first, last)
     first, last = "", first unless last
     if last.nil? || last.empty?
@@ -1012,7 +1012,7 @@ end
 def get_mime_type(filename)
   mime_type = Rack::Mime.mime_type(File.extname(filename))
 end
-  
+
   helper_method :SetJsVariables
   helper_method :is_admin_or_super_admin?
   helper_method :create_activity
