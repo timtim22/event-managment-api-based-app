@@ -307,6 +307,24 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "location": location
         }
 
+        case "get_winner_and_notify"
+          @notifications << {
+            "business_name": User.get_full_name(notification.resource.user),
+            "competition_title": notification.resource.title,
+            "total_entries": notification.resource.registrations.size,
+            "winner_name": User.get_full_name(notification.notifiable.user),
+            "winner_avatar": notification.notifiable.user.avatar,
+            "winner_id": notification.notifiable.user.id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?,
+            "location": location
+          }
+
       else
          "do nothing"
       end #switch

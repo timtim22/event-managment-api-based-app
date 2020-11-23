@@ -263,11 +263,11 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
               user_ids.push(reg.user_id)
               winner = User.find(user_ids.sample) # .sample will pick an id randomly
               participants = User.where(id: [user_ids])
-              CompetitionWinner.create!(user_id: winner.id, competition_id: competition.id)
+              cometition_winner = CompetitionWinner.create!(user_id: winner.id, competition_id: competition.id)
                participants.each do |participant|
                  notification = Notification.where(recipient: participant).where(notifiable: competition).where(action_type: 'get_winner_and_notify').first
                 if notification.blank?
-                  if @notification = Notification.create(recipient: participant, actor: winner, action: get_full_name(winner) + " is the winner.", notifiable: competition,  resource: competition, url: "", notification_type: 'mobile', action_type: 'get_winner_and_notify')
+                  if @notification = Notification.create(recipient: participant, actor: competition.user, action: get_full_name(winner) + " is the winner.", notifiable: cometition_winner,  resource: competition, url: "", notification_type: 'mobile', action_type: 'get_winner_and_notify')
                     success = true
 
                     @pubnub = Pubnub.new(
