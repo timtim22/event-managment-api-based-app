@@ -256,8 +256,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "ask_location"
         @notifications << {
-          "user_name": User.get_full_name(notification.resource.user),
-          "user_id:": notification.resource.user.id,
+          "user_name": User.get_full_name(notification.resource),
+          "user_id:": notification.resource.id,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,
@@ -269,8 +269,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "get_location"
         @notifications << {
-          "user_name": User.get_full_name(notification.resource.user),
-          "user_id:": notification.resource.user.id,
+          "user_name": User.get_full_name(notification.resource),
+          "user_id:": notification.resource.id,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,
