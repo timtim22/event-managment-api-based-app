@@ -269,8 +269,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "ask_location"
         @notifications << {
-          "friend_name": User.get_full_name(notification.resource),
-          "friend_id:": notification.resource.id,
+          "friend_name": User.get_full_name(notification.actor),
+          "friend_id:": notification.actor.id,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,
@@ -307,7 +307,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "location": location
         }
 
-        case "get_winner_and_notify"
+      when "get_winner_and_notify"
           @notifications << {
             "business_name": User.get_full_name(notification.resource.user),
             "competition_title": notification.resource.title,

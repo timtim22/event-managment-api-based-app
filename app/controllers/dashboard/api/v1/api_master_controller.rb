@@ -196,6 +196,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
      end
   e = {
     "id" => event.id,
+    "name" => event.name,
     "image" => event.image,
     "status"  => event.status,
     "qr" => qr
