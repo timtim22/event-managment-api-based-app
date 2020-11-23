@@ -240,7 +240,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "enter_in_competition"
         @notifications << {
-          "user_name": User.get_full_name(notification.resource.user),
+          "friend_name": User.get_full_name(notification.resource.user),
           "competition_id": notification.resource.event.id,
           "competition_name": notification.resource.event.title,
           "host_name": User.get_full_name(notification.resource.event.user),
@@ -256,8 +256,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "ask_location"
         @notifications << {
-          "user_name": User.get_full_name(notification.resource),
-          "user_id:": notification.resource.id,
+          "friend_name": User.get_full_name(notification.resource),
+          "friend_id:": notification.resource.id,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,
@@ -267,17 +267,18 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "is_read": !notification.read_at.nil?
         }
 
-      when "get_location"
+      when "send_location"
         @notifications << {
-          "user_name": User.get_full_name(notification.resource),
-          "user_id:": notification.resource.id,
+          "friend_name": User.get_full_name(notification.resource),
+          "friend_id:": notification.resource.id,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,
           "action": notification.action,
           "action_type": notification.action_type,
           "created_at": notification.created_at,
-          "is_read": !notification.read_at.nil?
+          "is_read": !notification.read_at.nil?,
+          "location": location
         }
 
       else
