@@ -54,9 +54,9 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           }
         when "create_offer"
           @notifications << {
-            "special_offers_id": notification.id,
+            "special_offer_id": notification.id,
             "business_name": User.get_full_name(notification.resource.user),
-            "special_offer_name": notification.resource.title,
+            "special_offer_title": notification.resource.title,
             "actor_id": notification.actor_id,
             "actor_image": notification.actor.avatar,
             "notifiable_id": notification.notifiable_id,
@@ -142,10 +142,22 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
         when "comment"
           @notifications << {
-            "friend_name": User.get_full_name(notification.resource.user),
-            "comment": notification.resource.comment,
             "user_id": notification.resource.user.id,
             "event_id": notification.resource.event.id,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?
+          }
+
+        when "reply_comment"
+          @notifications << {
+            "replier_name": User.get_full_name(notification.resource.user),
+            "comment": notification.resource.msg,
             "actor_id": notification.actor_id,
             "actor_image": notification.actor.avatar,
             "notifiable_id": notification.notifiable_id,
@@ -272,6 +284,19 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         @notifications << {
           "friend_name": User.get_full_name(notification.resource),
           "friend_id:": notification.resource.id,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?,
+          "location": location
+        }
+      
+      when "become_ambassador"
+        @notifications << {
+          "business_name": User.get_full_name(notification.resource.business),
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,
