@@ -37,7 +37,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
       #also notify request_user friends
      if !request_user.friends.blank?
       request_user.friends.each do |friend|
-      if @notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " is interested in event '#{@event.name}'.", notifiable: @interest_level, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_interest')
+      if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " is interested in event '#{@event.name}'.", notifiable: @interest_level, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_interest')
         @push_channel = "event" #encrypt later
         @current_push_token = @pubnub.add_channels_to_push(
            push_token: friend.profile.device_token,
@@ -49,18 +49,25 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
           "pn_gcm":{
            "notification":{
              "title": @event.name,
-             "body": @notification.action
+             "body": notification.action
            },
            data: {
-            "id": @notification.id,
-            "actor_id": @notification.actor_id,
-            "actor_image": @notification.actor.avatar,
-            "notifiable_id": @notification.notifiable_id,
-            "notifiable_type": @notification.notifiable_type,
-            "action": @notification.action,
-            "action_type": @notification.action_type,
-            "created_at": @notification.created_at,
-            "body": ''
+            "id": notification.id,
+            "business_name": User.get_full_name(notification.resource.event.user),
+            "friend_name": User.get_full_name(notification.resource.user),
+            "event_name": notification.resource.event.name,
+            "event_id": notification.resource.event.id,
+            "event_start_date": notification.resource.event.start_date,
+            "event_location": notification.resource.event.location,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?,
+            "interest_level": notification.resource.level
            }
           }
          }
@@ -135,7 +142,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
       #also notify request_user friends
       if !request_user.friends.blank?
         request_user.friends.each do |friend|
-        if @notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " is going to attend event '#{@event.name}'.", notifiable: @interest_level, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_going')
+        if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " is going to attend event '#{@event.name}'.", notifiable: @interest_level, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_going')
           @push_channel = "event" #encrypt later
           @current_push_token = @pubnub.add_channels_to_push(
              push_token: friend.profile.device_token,
@@ -147,18 +154,25 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
             "pn_gcm":{
              "notification":{
                "title": @event.name,
-               "body": @notification.action
+               "body": notification.action
              },
              data: {
-              "id": @notification.id,
-              "actor_id": @notification.actor_id,
-              "actor_image": @notification.actor.avatar,
-              "notifiable_id": @notification.notifiable_id,
-              "notifiable_type": @notification.notifiable_type,
-              "action": @notification.action,
-              "action_type": @notification.action_type,
-              "created_at": @notification.created_at,
-              "body": ''
+              "id": notification.id,
+              "business_name": User.get_full_name(notification.resource.event.user),
+              "friend_name": User.get_full_name(notification.resource.user),
+              "event_name": notification.resource.event.name,
+              "event_id": notification.resource.event.id,
+              "event_start_date": notification.resource.event.start_date,
+              "event_location": notification.resource.event.location,
+              "actor_id": notification.actor_id,
+              "actor_image": notification.actor.avatar,
+              "notifiable_id": notification.notifiable_id,
+              "notifiable_type": notification.notifiable_type,
+              "action": notification.action,
+              "action_type": notification.action_type,
+              "created_at": notification.created_at,
+              "is_read": !notification.read_at.nil?,
+              "interest_level": notification.resource.level
              }
             }
            }

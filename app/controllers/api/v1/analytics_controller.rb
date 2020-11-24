@@ -3,7 +3,6 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
 
   def get_dashboard
 
-
    if !params[:business_id].blank? && !params[:resource].blank? && !params[:current_time_slot_dates].blank? && !params[:before_current_time_slot_dates].blank?
 
     @business = User.find(params[:business_id])

@@ -167,7 +167,7 @@ class Admin::EventsController < Admin::AdminMasterController
         if !current_user.followers.blank?
           current_user.followers.each do |follower|
         if follower.all_chat_notifications_setting.is_on == true && follower.event_notifications_setting.is_on == true
-        if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event')
+        if notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event')
           @channel = "event" #encrypt later
           @current_push_token = @pubnub.add_channels_to_push(
           push_token: follower.profile.device_token,
@@ -179,20 +179,26 @@ class Admin::EventsController < Admin::AdminMasterController
             "pn_gcm":{
             "notification":{
               "title": get_full_name(current_user),
-              "body": @notification.action
+              "body": notification.action
             },
             data: {
-              "id": @notification.id,
-              "actor_id": @notification.actor_id,
-              "actor_image": @notification.actor.avatar,
-              "notifiable_id": @notification.notifiable_id,
-              "notifiable_type": @notification.notifiable_type,
-              "action": @notification.action,
-              "action_type": @notification.action_type,
-              "created_at": @notification.created_at,
-              "body": ''
+              "id": notification.id,
+              "actor_id": notification.actor_id,
+              "actor_image": notification.actor.avatar,
+              "notifiable_id": notification.notifiable_id,
+              "notifiable_type": notification.notifiable_type,
+              "action": notification.action,
+              "action_type": notification.action_type,
+              "location": location,
+              "created_at": notification.created_at,
+              "is_read": !notification.read_at.nil?,
+              "business_name": User.get_full_name(notification.resource.user),
+              "event_name": notification.resource.name,
+              "event_id": notification.resource.id,
+              "event_location": notification.resource.location,
+              "event_start_date": notification.resource.start_date
             }
-            }
+           }
           }
 
         @pubnub.publish(
@@ -332,7 +338,7 @@ class Admin::EventsController < Admin::AdminMasterController
        if !current_user.followers.blank?
         current_user.followers.each do |follower|
       if follower.all_chat_notifications_setting.is_on == true && follower.event_notifications_setting.is_on == true
-      if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event')
+      if notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event')
         @channel = "event" #encrypt later
         @current_push_token = @pubnub.add_channels_to_push(
          push_token: follower.profile.device_token,
@@ -342,23 +348,30 @@ class Admin::EventsController < Admin::AdminMasterController
 
          payload = {
           "pn_gcm":{
-           "notification":{
-             "title": get_full_name(current_user),
-             "body": @notification.action
-           },
-           data: {
-            "id": @notification.id,
-            "actor_id": @notification.actor_id,
-            "actor_image": @notification.actor.avatar,
-            "notifiable_id": @notification.notifiable_id,
-            "notifiable_type": @notification.notifiable_type,
-            "action": @notification.action,
-            "action_type": @notification.action_type,
-            "created_at": @notification.created_at,
-            "body": ''
-           }
+          "notification":{
+            "title": get_full_name(current_user),
+            "body": notification.action
+          },
+          data: {
+            "id": notification.id,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "location": location,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?,
+            "business_name": User.get_full_name(notification.resource.user),
+            "event_name": notification.resource.name,
+            "event_id": notification.resource.id,
+            "event_location": notification.resource.location,
+            "event_start_date": notification.resource.start_date
           }
          }
+        }
+
 
        @pubnub.publish(
          channel: @channel,

@@ -45,7 +45,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
         @comment_users.uniq.each do |comment_user|
       if comment_user != request_user
 
-        if @notification = Notification.create(recipient: comment_user, actor: request_user, action: get_full_name(request_user) + " commented on event '#{@event.name}'.", notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')
+        if notification = Notification.create(recipient: comment_user, actor: request_user, action: get_full_name(request_user) + " commented on event '#{@event.name}'.", notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')
 
          if !event_chat_muted?(comment_user, @event) && !comment_user.all_chat_notifications_setting.blank?  && comment_user.all_chat_notifications_setting.is_on == true && !comment_user.event_notifications_setting.blank? && comment_user.event_notifications_setting.is_on == true
 
@@ -61,23 +61,23 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
             "pn_gcm":{
              "notification":{
                "title": @event.name,
-               "body": @notification.action
+               "body": notification.action
              },
              data: {
-              "id": @comment.id,
-              "comment_id": @comment.id,
-              "reply_id": '',
-              "sender_name": get_full_name(request_user),
-              "actor_id": @notification.actor_id,
-              "actor_image": @notification.actor.avatar,
-              "notifiable_id": @notification.notifiable_id,
-              "notifiable_type": @notification.notifiable_type,
-              "action": @notification.action,
-              "action_type": @notification.action_type,
-              "created_at": @notification.created_at,
-              "body": @comment.comment,
-              "last_comment": @comment,
-              "is_host" => is_host?(@comment.user, @event)
+              "id": notification.id,
+              "user_name": User.get_full_name(notification.resource.user),
+              "comment": notification.resource.comment,
+              "event_name": notification.resource.event.name,
+              "user_id": notification.resource.user.id,
+              "event_id": notification.resource.event.id,
+              "actor_id": notification.actor_id,
+              "actor_image": notification.actor.avatar,
+              "notifiable_id": notification.notifiable_id,
+              "notifiable_type": notification.notifiable_type,
+              "action": notification.action,
+              "action_type": notification.action_type,
+              "created_at": notification.created_at,
+              "is_read": !notification.read_at.nil?
              }
             }
            }
@@ -149,7 +149,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          end
        end ##notification create
         #also notify who commented on the event
-        if @notification = Notification.create!(recipient: @comment.user, actor: request_user, action: "#{User.get_full_name(request_user)}  replied to your comemnt on the event '#{@event.name}'.", notifiable: @reply, resource: @reply, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'reply_comment')
+        if notification = Notification.create!(recipient: @comment.user, actor: request_user, action: "#{User.get_full_name(request_user)}  replied to your comemnt on the event '#{@event.name}'.", notifiable: @reply, resource: @reply, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'reply_comment')
 
           if !event_chat_muted?(@comment.user, @event) && !@comment.user.all_chat_notifications_setting.blank?  && @comment.user.all_chat_notifications_setting.is_on == true && !@comment.user.event_notifications_setting.blank? && @comment.user.event_notifications_setting.is_on == true
 
@@ -163,23 +163,24 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
              "pn_gcm":{
               "notification":{
                 "title": @event.name,
-                "body": @notification.action
+                "body": notification.action
               },
               data: {
-               "id": @notification.id,
-               "sender_name": get_full_name(request_user),
-               "comment_id": @comment.id,
-               "reply_id": @reply.id,
-               "actor_id": @notification.actor_id,
-               "actor_image": @notification.actor.avatar,
-               "notifiable_id": @notification.notifiable_id,
-               "notifiable_type": @notification.notifiable_type,
-               "action": @notification.action,
-               "action_type": @notification.action_type,
-               "created_at": @notification.created_at,
-               "body": @reply.msg,
-               "last_comment": @reply.msg,
-               "is_host" => is_host?(@reply.user,  @event)
+                "id": notification.id,
+                "event_id": notification.resource.comment.event.id,
+                "event_name": notification.resource.comment.event.name,
+                "replier_id": notification.resource.user.id,
+                "replier_name": User.get_full_name(notification.resource.user),
+                "comment_id": notification.resource.comment.id,
+                "comment": notification.resource.comment.comment,
+                "actor_id": notification.actor_id,
+                "actor_image": notification.actor.avatar,
+                "notifiable_id": notification.notifiable_id,
+                "notifiable_type": notification.notifiable_type,
+                "action": notification.action,
+                "action_type": notification.action_type,
+                "created_at": notification.created_at,
+                "is_read": !notification.read_at.nil?
               }
              }
             }

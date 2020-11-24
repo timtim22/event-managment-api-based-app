@@ -43,7 +43,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
       if !current_user.followers.blank?
         current_user.followers.each do |follower|
    if follower.competitions_notifications_setting.is_on == true
-      if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, resource: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
+      if notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, resource: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
 
         @current_push_token = @pubnub.add_channels_to_push(
          push_token: follower.profile.device_token,
@@ -55,18 +55,23 @@ class Admin::CompetitionsController < Admin::AdminMasterController
           "pn_gcm":{
            "notification":{
              "title": get_full_name(current_user),
-             "body": @notification.action
+             "body": notification.action
            },
            data: {
-            "id": @notification.id,
-            "actor_id": @notification.actor_id,
-            "actor_image": @notification.actor.avatar,
-            "notifiable_id": @notification.notifiable_id,
-            "notifiable_type": @notification.notifiable_type,
-            "action": @notification.action,
-            "action_type": @notification.action_type,
-            "created_at": @notification.created_at,
-            "body": ''
+            "id": notification.id,
+            "competition_id": notification.resource.id,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "location": location,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?,
+            "competition_name": notification.resource.title,
+            "business_name": User.get_full_name(notification.resource.user),
+            "draw_date": notification.resource.validity.strftime(get_time_format)
            }
           }
          }

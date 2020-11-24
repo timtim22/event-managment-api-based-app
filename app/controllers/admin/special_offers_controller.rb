@@ -42,7 +42,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
             )
           current_user.followers.each do |follower|
      if follower.special_offers_notifications_setting.is_on == true
-        if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_offer')
+        if notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_offer')
           @channel = "event" #encrypt later
           @current_push_token = @pubnub.add_channels_to_push(
            push_token: follower.profile.device_token,
@@ -54,18 +54,22 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
             "pn_gcm":{
              "notification":{
                "title": get_full_name(current_user),
-               "body": @notification.action
+               "body": notification.action
              },
              data: {
-              "id": @notification.id,
-              "actor_id": @notification.actor_id,
-              "actor_image": @notification.actor.avatar,
-              "notifiable_id": @notification.notifiable_id,
-              "notifiable_type": @notification.notifiable_type,
-              "action": @notification.action,
-              "action_type": @notification.action_type,
-              "created_at": @notification.created_at,
-              "body": ''
+              "id": notification.id,
+              "special_offer_id": notification.resource.id,
+              "business_name": User.get_full_name(notification.resource.user),
+              "special_offer_title": notification.resource.title,
+              "actor_id": notification.actor_id,
+              "actor_image": notification.actor.avatar,
+              "notifiable_id": notification.notifiable_id,
+              "notifiable_type": notification.notifiable_type,
+              "action": notification.action,
+              "action_type": notification.action_type,
+              "location": location,
+              "created_at": notification.created_at,
+              "is_read": !notification.read_at.nil?
              }
             }
            }
@@ -115,7 +119,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
       if !current_user.followers.blank?
         current_user.followers.each do |follower|
     if follower.special_offers_notifications_setting.is_on == true
-      if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'update_special_offer')
+      if notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'update_special_offer')
         @channel = "event" #encrypt later
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
@@ -132,18 +136,22 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
           "pn_gcm":{
            "notification":{
              "title": get_full_name(current_user),
-             "body": @notification.action
+             "body": notification.action
            },
            data: {
-            "id": @notification.id,
-            "actor_id": @notification.actor_id,
-            "actor_image": @notification.actor.avatar,
-            "notifiable_id": @notification.notifiable_id,
-            "notifiable_type": @notification.notifiable_type,
-            "action": @notification.action,
-            "action_type": @notification.action_type,
-            "created_at": @notification.created_at,
-            "body": ''
+            "id": notification.id,
+            "special_offer_id": notification.resource.id,
+            "business_name": User.get_full_name(notification.resource.user),
+            "special_offer_title": notification.resource.title,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "location": location,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?
            }
           }
          }
