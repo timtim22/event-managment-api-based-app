@@ -944,7 +944,7 @@ end
              payload = {
               "pn_gcm":{
                "notification":{
-                 "title": @wallet.offer.title,
+                 "title": User.get_full_name(request.user),
                  "body": @notification.action
                },
                data: {

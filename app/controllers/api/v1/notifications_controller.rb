@@ -646,10 +646,10 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         subscribe_key: ENV['SUBSCRIBE_KEY']
         )
        interested_in_events.each do |event|
-        end_date = event.end_date
-        end_date_yesterday = (end_date - 1.day).to_date
+        start_date = event.start_date
+        start_date_yesterday = (start_date - 1.day).to_date
         now = Time.now.to_date
-        if now  ==  end_date_yesterday
+        if now  ==  start_date_yesterday
          check = request_user.reminders.where(event_id: event.id).where(level: 'interested')
          if check.blank?
           if @reminder = request_user.reminders.create!(event_id: event.id, level: 'interested')
@@ -762,6 +762,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           }
         end
     end
+
+    
 
 
     def delete_notification
