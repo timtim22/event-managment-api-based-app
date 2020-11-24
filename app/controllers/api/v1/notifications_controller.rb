@@ -49,7 +49,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "is_read": !notification.read_at.nil?,
             "competition_name": notification.resource.title,
             "business_name": User.get_full_name(notification.resource.user),
-            "competition_draw_date": notification.resource.validity
+            "draw_date": notification.resource.validity.strftime(get_time_format)
 
           }
         when "create_offer"
@@ -294,18 +294,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "location": location
         }
 
-      when "become_ambassador"
-        @notifications << {
-          "business_name": User.get_full_name(notification.resource.business),
-          "actor_image": notification.actor.avatar,
-          "notifiable_id": notification.notifiable_id,
-          "notifiable_type": notification.notifiable_type,
-          "action": notification.action,
-          "action_type": notification.action_type,
-          "created_at": notification.created_at,
-          "is_read": !notification.read_at.nil?,
-          "location": location
-        }
+    
 
       when "get_winner_and_notify"
           @notifications << {
@@ -315,6 +304,19 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "winner_name": User.get_full_name(notification.notifiable.user),
             "winner_avatar": notification.notifiable.user.avatar,
             "winner_id": notification.notifiable.user.id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?,
+            "location": location
+          }
+
+        when "become_ambassador"
+          @notifications << {
+            "business_name": User.get_full_name(notification.resource.business),
             "actor_image": notification.actor.avatar,
             "notifiable_id": notification.notifiable_id,
             "notifiable_type": notification.notifiable_type,

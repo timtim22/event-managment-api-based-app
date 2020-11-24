@@ -931,9 +931,9 @@ end
           @success = false
       end ##notification create
 
-        if !request_user.friends.blank?
-          request_user.friends.each do |friend|
-            if @notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has become ambassador.", notifiable: request, resource: request,  url: "/admin/users/#{request.user.id}", notification_type: 'mobile', action_type: "friend_become_ambassador")
+        if !request.user.friends.blank?
+          request.user.friends.each do |friend|
+            if @notification = Notification.create(recipient: friend, actor: request.user, action: get_full_name(request.user) + " has become ambassador of #{User.get_full_name(request.business)}", notifiable: request, resource: request,  url: "/admin/users/#{request.user.id}", notification_type: 'mobile', action_type: "friend_become_ambassador")
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
                push_token: friend.profile.device_token,
@@ -970,16 +970,12 @@ end
         end #each
       end #if not blank
 
-
       create_activity(request.user, "become ambassador ", request, 'AmbassadorRequest', '', '', 'post', 'become_ambassador')
     true
    else
     false
    end
  end
-
-
-
 
 
 

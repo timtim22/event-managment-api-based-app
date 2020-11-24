@@ -261,12 +261,16 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
           if competition.end_date.to_date == Time.now.to_date
               user_ids = []
               user_ids.push(reg.user_id)
+              winner_ids = CompetitionWinner.all.map {|w| w.user_id }
+              if !winner_ids.blank?
+                user_ids = winner_ids - user_ids
+              end
               winner = User.find(user_ids.sample) # .sample will pick an id randomly
               participants = User.where(id: [user_ids])
               cometition_winner = CompetitionWinner.create!(user_id: winner.id, competition_id: competition.id)
                participants.each do |participant|
                  notification = Notification.where(recipient: participant).where(notifiable: competition).where(action_type: 'get_winner_and_notify').first
-                if notification.blank?
+                # if notification.blank?
                   if @notification = Notification.create(recipient: participant, actor: competition.user, action: get_full_name(winner) + " is the winner.", notifiable: cometition_winner,  resource: competition, url: "", notification_type: 'mobile', action_type: 'get_winner_and_notify')
                     success = true
 
@@ -297,7 +301,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                           puts envelope.status
                      end
                   end #notification create
-                end
+                #end
           end #end date
       end #each
       if success
