@@ -122,7 +122,6 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "created_at": notification.created_at,
             "is_read": !notification.read_at.nil?,
             "interest_level": notification.resource.level
-
           }
 
         when "create_going"
@@ -148,6 +147,9 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         when "comment"
           @notifications << {
             "id": notification.id,
+            "user_name": User.get_full_name(notification.resource.user),
+            "comment": notification.resource.comment,
+            "event_name": notification.resource.event.name,
             "user_id": notification.resource.user.id,
             "event_id": notification.resource.event.id,
             "actor_id": notification.actor_id,
@@ -163,7 +165,11 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         when "reply_comment"
           @notifications << {
             "id": notification.id,
+            "event_id": notification.resource.comment.event.id,
+            "event_name": notification.resource.comment.event.name,
+            "replier_id": notification.resource.user.id,
             "replier_name": User.get_full_name(notification.resource.user),
+            "comment_id": notification.resource.comment.id,
             "comment": notification.resource.comment.comment,
             "actor_id": notification.actor_id,
             "actor_image": notification.actor.avatar,
@@ -439,7 +445,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       askee_ids_array.each do |id|
 
       @askee = User.find(id)
-      if @notification = Notification.create!(recipient: @askee, actor: request_user, action: get_full_name(request_user) + " is asking for your current location.", notifiable: @askee, url: "/admin/users/#{@askee.id}", resource: @askee, notification_type: 'mobile',action_type: 'ask_location')
+      if notification = Notification.create!(recipient: @askee, actor: request_user, action: get_full_name(request_user) + " is asking for your current location.", notifiable: @askee, url: "/admin/users/#{@askee.id}", resource: @askee, notification_type: 'mobile',action_type: 'ask_location')
         @location_request = LocationRequest.create!(user_id: request_user.id, askee_id: id, notification_id: @notification.id)
         @current_push_token = @pubnub.add_channels_to_push(
           push_token: @askee.profile.device_token,
@@ -452,18 +458,19 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "pn_gcm":{
               "notification":{
                 "title": get_full_name(request_user),
-                "body": @notification.action
+                "body": notification.action
               },
               data: {
-                "id": @notification.id,
-                "actor_id": @notification.actor_id,
-                "actor_image": @notification.actor.avatar,
-                "notifiable_id": @notification.notifiable_id,
-                "notifiable_type": @notification.notification_type,
-                "action_type": @notification.action_type,
-                "action": @notification.action,
-                "created_at": @notification.created_at,
-                "body": ''
+                "id": notification.id,
+                "friend_name": User.get_full_name(notification.actor),
+                "friend_id": notification.actor.id,
+                "actor_image": notification.actor.avatar,
+                "notifiable_id": notification.notifiable_id,
+                "notifiable_type": notification.notifiable_type,
+                "action": notification.action,
+                "action_type": notification.action_type,
+                "created_at": notification.created_at,
+                "is_read": !notification.read_at.nil?
               }
             }
           }
@@ -592,7 +599,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
          ids_array.each do |id|
 
           @recipient = User.find(id)
-         if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{if request_user.profile.gender ==  'male' then 'his' else 'her' end } current location.", notifiable: @recipient, resource: @recipient, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "send_location")
+         if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{if request_user.profile.gender ==  'male' then 'his' else 'her' end } current location.", notifiable: @recipient, resource: @recipient, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "send_location")
 
           @location_share = LocationShare.create!(user_id: request_user.id, recipient_id: id, lat:params[:lat], lng: params[:lng], notification_id: @notification.id)
 
@@ -606,19 +613,20 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "pn_gcm":{
               "notification":{
                 "title": get_full_name(request_user),
-                "body": @notification.action
+                "body": notification.action
               },
               data: {
-                "id": @notification.id,
-                "actor_id": @notification.actor_id,
-                "actor_image": @notification.actor.avatar,
-                "notifiable_id": @notification.notifiable_id,
-                "notifiable_type": @notification.notifiable_type,
-                "action_type": @notification.action_type,
-                "location": location,
-                "action": @notification.action,
-                "created_at": @notification.created_at,
-                "body": ''
+                "id": notification.id,
+                "friend_name": User.get_full_name(notification.actor),
+                "friend_id": notification.actor.id,
+                "actor_image": notification.actor.avatar,
+                "notifiable_id": notification.notifiable_id,
+                "notifiable_type": notification.notifiable_type,
+                "action": notification.action,
+                "action_type": notification.action_type,
+                "created_at": notification.created_at,
+                "is_read": !notification.read_at.nil?,
+                "location": location
               }
             }
           }
@@ -712,24 +720,66 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                  add: request_user.profile.device_token
                  ).value
 
+                 case event.price_type
+                  when "free"
+                    data = {
+                      "id": notification.id,
+                      "event_name": notification.resource.name,
+                      "event_id": notification.resource.id,
+                      "event_location": notification.resource.location,
+                      "event_start_date": notification.resource.start_date,
+                      "event_type": notification.resource.event_type,
+                      "actor_image": notification.actor.avatar,
+                      "notifiable_id": notification.notifiable_id,
+                      "notifiable_type": notification.notifiable_type,
+                      "action": notification.action,
+                      "action_type": notification.action_type,
+                      "created_at": notification.created_at,
+                      "is_read": !notification.read_at.nil?
+                    }
+                  when  "buy"
+                     data ={
+                      "id": notification.id,
+                      "event_name": notification.resource.name,
+                      "event_id": notification.resource.id,
+                      "event_location": notification.resource.location,
+                      "event_start_date": notification.resource.start_date,
+                      "event_type": notification.resource.event_type,
+                      "actor_image": notification.actor.avatar,
+                      "notifiable_id": notification.notifiable_id,
+                      "notifiable_type": notification.notifiable_type,
+                      "action": notification.action,
+                      "action_type": notification.action_type,
+                      "created_at": notification.created_at,
+                      "is_read": !notification.read_at.nil?
+                     }
+                  when  "pay_at_door"
+                    data = {
+                      "id": notification.id,
+                      "event_name": notification.resource.name,
+                      "event_id": notification.resource.id,
+                      "event_location": notification.resource.location,
+                      "event_start_date": notification.resource.start_date,
+                      "event_type": notification.resource.event_type,
+                      "actor_image": notification.actor.avatar,
+                      "notifiable_id": notification.notifiable_id,
+                      "notifiable_type": notification.notifiable_type,
+                      "action": notification.action,
+                      "action_type": notification.action_type,
+                      "created_at": notification.created_at,
+                      "is_read": !notification.read_at.nil?
+                    }
+                  else
+                    "do nothing"
+                  end
+
                 payload = {
                 "pn_gcm":{
                   "notification":{
                     "title": "Reminder about '#{event.name}'",
                     "body": @notification.action
                   },
-                  data: {
-                    "id": @notification.id,
-                    "actor_id": @notification.actor_id,
-                    "actor_image": @notification.actor.avatar,
-                    "notifiable_id": @notification.notifiable_id,
-                    "notifiable_type": @notification.notifiable_type,
-                    "action_type": @notification.action_type,
-                    "location": location,
-                    "action": @notification.action,
-                    "created_at": @notification.created_at,
-                    "body": ''
-                  }
+                  data: data
                 }
               }
 

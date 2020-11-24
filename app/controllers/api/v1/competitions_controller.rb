@@ -111,7 +111,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
              if !request_user.friends.blank?
                request_user.friends.each do |friend|
                if friend.competitions_notifications_setting.is_on == true
-                 if @notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has entered in competition '#{@registration.event.title}'.", notifiable: @registration.event, resource: @registration, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile', action_type: 'enter_in_competition')
+                 if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has entered in competition '#{@registration.event.title}'.", notifiable: @registration.event, resource: @registration, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile', action_type: 'enter_in_competition')
                  @push_channel = "event" #encrypt later
                  @current_push_token = @pubnub.add_channels_to_push(
                     push_token: friend.profile.device_token,
@@ -123,18 +123,22 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                    "pn_gcm":{
                     "notification":{
                       "title": @registration.event.title,
-                      "body": @notification.action
+                      "body": notification.action
                     },
                     data: {
-                     "id": @notification.id,
-                     "actor_id": @notification.actor_id,
-                     "actor_image": @notification.actor.avatar,
-                     "notifiable_id": @notification.notifiable_id,
-                     "notifiable_type": @notification.notifiable_type,
-                     "action": @notification.action,
-                     "action_type": @notification.action_type,
-                     "created_at": @notification.created_at,
-                     "body": ''
+                      "id": notification.id,
+                      "friend_name": User.get_full_name(notification.resource.user),
+                      "competition_id": notification.resource.event.id,
+                      "competition_name": notification.resource.event.title,
+                      "business_name": User.get_full_name(notification.resource.event.user),
+                      "draw_date": notification.resource.event.end_date,
+                      "actor_image": notification.actor.avatar,
+                      "notifiable_id": notification.notifiable_id,
+                      "notifiable_type": notification.notifiable_type,
+                      "action": notification.action,
+                      "action_type": notification.action_type,
+                      "created_at": notification.created_at,
+                      "is_read": !notification.read_at.nil?
                     }
                    }
                   }
@@ -188,7 +192,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
           if !request_user.friends.blank?
             request_user.friends.each do |friend|
             if friend.competitions_notifications_setting.is_on == true
-              if @notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has entered in competition '#{@registration.event.title}'.", notifiable: @registration.event, resource: @registration, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile', action_type: 'enter_in_competition')
+              if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has entered in competition '#{@registration.event.title}'.", notifiable: @registration.event, resource: @registration, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile', action_type: 'enter_in_competition')
               @push_channel = "event" #encrypt later
               @current_push_token = @pubnub.add_channels_to_push(
                  push_token: friend.profile.device_token,
@@ -200,18 +204,22 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                 "pn_gcm":{
                  "notification":{
                    "title": @registration.event.title,
-                   "body": @notification.action
+                   "body": notification.action
                  },
                  data: {
-                  "id": @notification.id,
-                  "actor_id": @notification.actor_id,
-                  "actor_image": @notification.actor.avatar,
-                  "notifiable_id": @notification.notifiable_id,
-                  "notifiable_type": @notification.notifiable_type,
-                  "action": @notification.action,
-                  "action_type": @notification.action_type,
-                  "created_at": @notification.created_at,
-                  "body": ''
+                  "id": notification.id,
+                  "friend_name": User.get_full_name(notification.resource.user),
+                  "competition_id": notification.resource.event.id,
+                  "competition_name": notification.resource.event.title,
+                  "business_name": User.get_full_name(notification.resource.event.user),
+                  "draw_date": notification.resource.event.end_date,
+                  "actor_image": notification.actor.avatar,
+                  "notifiable_id": notification.notifiable_id,
+                  "notifiable_type": notification.notifiable_type,
+                  "action": notification.action,
+                  "action_type": notification.action_type,
+                  "created_at": notification.created_at,
+                  "is_read": !notification.read_at.nil?
                  }
                 }
                }
@@ -271,7 +279,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                participants.each do |participant|
                  notification = Notification.where(recipient: participant).where(notifiable: competition).where(action_type: 'get_winner_and_notify').first
                  if notification.blank?
-                  if @notification = Notification.create(recipient: participant, actor: competition.user, action: get_full_name(winner) + " is the winner.", notifiable: cometition_winner,  resource: competition, url: "", notification_type: 'mobile', action_type: 'get_winner_and_notify')
+                  if notification = Notification.create(recipient: participant, actor: competition.user, action: get_full_name(winner) + " is the winner.", notifiable: cometition_winner,  resource: competition, url: "", notification_type: 'mobile', action_type: 'get_winner_and_notify')
                     success = true
 
                     @pubnub = Pubnub.new(
@@ -290,8 +298,26 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                       "pn_gcm":{
                        "notification":{
                          "title": competition.title,
-                         "body": @notification.action
+                         "body": notification.action
+                       },
+                       "data": {
+                        "id": notification.id,
+                        "business_name": User.get_full_name(notification.resource.user),
+                        "competition_name": notification.resource.title,
+                        "total_competition_entries": notification.resource.registrations.size,
+                        "winner_name": User.get_full_name(notification.notifiable.user),
+                        "winner_avatar": notification.notifiable.user.avatar,
+                        "winner_id": notification.notifiable.user.id,
+                        "actor_image": notification.resource.user.avatar,
+                        "notifiable_id": notification.notifiable_id,
+                        "notifiable_type": notification.notifiable_type,
+                        "action": notification.action,
+                        "action_type": notification.action_type,
+                        "created_at": notification.created_at,
+                        "is_read": !notification.read_at.nil?,
+                        "location": location
                        }
+
                       }
                      }
                      @pubnub.publish(
