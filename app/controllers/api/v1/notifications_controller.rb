@@ -310,8 +310,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       when "get_winner_and_notify"
           @notifications << {
             "business_name": User.get_full_name(notification.resource.user),
-            "competition_title": notification.resource.title,
-            "total_entries": notification.resource.registrations.size,
+            "competition_name": notification.resource.title,
+            "total_competition_entries": notification.resource.registrations.size,
             "winner_name": User.get_full_name(notification.notifiable.user),
             "winner_avatar": notification.notifiable.user.avatar,
             "winner_id": notification.notifiable.user.id,
@@ -338,6 +338,22 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "is_read": !notification.read_at.nil?,
           "location": location
 
+          }
+
+        when "event_reminder"
+          @notifications << {
+          "event_name": User.get_full_name(notification.resource),
+          "event_id": notification.resource.id,
+          "event_location": notification.resource.location,
+          "event_start_date": notification.resource.start_date,
+          "event_type": notification.resource.event_type,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
           }
 
       else
