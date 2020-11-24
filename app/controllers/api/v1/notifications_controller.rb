@@ -37,7 +37,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "create_competition"
           @notifications << {
-            "competition_id": notification.id,
+            "id": notification.id,
+            "competition_id": notification.resource.id,
             "actor_id": notification.actor_id,
             "actor_image": notification.actor.avatar,
             "notifiable_id": notification.notifiable_id,
@@ -54,7 +55,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           }
         when "create_offer"
           @notifications << {
-            "special_offer_id": notification.id,
+            "id": notification.id,
+            "special_offer_id": notification.resource.id,
             "business_name": User.get_full_name(notification.resource.user),
             "special_offer_title": notification.resource.title,
             "actor_id": notification.actor_id,
@@ -87,7 +89,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
         when "create_pass"
           @notifications << {
-            "pass_id": notification.id,
+            "id": notification.id,
+            "pass_id": notification.resource.id,
             "business_name": User.get_full_name(notification.resource.user),
             "event_name": notification.resource.event.name,
             "actor_id": notification.actor_id,
@@ -103,6 +106,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           }
         when "create_interest"
           @notifications << {
+            "id": notification.id,
             "business_name": User.get_full_name(notification.resource.event.user),
             "friend_name": User.get_full_name(notification.resource.user),
             "event_name": notification.resource.event.name,
@@ -123,6 +127,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
         when "create_going"
           @notifications << {
+            "id": notification.id,
             "business_name": User.get_full_name(notification.resource.event.user),
             "friend_name": User.get_full_name(notification.resource.user),
             "event_name": notification.resource.event.name,
@@ -142,6 +147,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
         when "comment"
           @notifications << {
+            "id": notification.id,
             "user_id": notification.resource.user.id,
             "event_id": notification.resource.event.id,
             "actor_id": notification.actor_id,
@@ -156,6 +162,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
         when "reply_comment"
           @notifications << {
+            "id": notification.id,
             "replier_name": User.get_full_name(notification.resource.user),
             "comment": notification.resource.comment.comment,
             "actor_id": notification.actor_id,
@@ -170,6 +177,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "add_Competition_to_wallet"
         @notifications << {
+          "id": notification.id,
           "friend_name": User.get_full_name(notification.resource.user),
           "business_name": User.get_full_name(notification.resource.offer.user),
           "competition_id": notification.resource.offer.id,
@@ -188,6 +196,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
         when "add_Pass_to_wallet"
           @notifications << {
+            "id": notification.id,
             "friend_name": User.get_full_name(notification.resource.user),
             "event_name": notification.resource.offer.event.name,
             "event_start_date": notification.resource.offer.event.start_date,
@@ -206,24 +215,26 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
         when "add_SpecialOffer_to_wallet"
           @notifications << {
+            "id": notification.id,
             "friend_name": User.get_full_name(notification.resource.user),
-             "special_offer_id": notification.resource.offer.id,
-             "special_offer_title": notification.resource.offer.title,
-              "business_name": User.get_full_name(notification.resource.offer.user),
-              "total_grabbers_count": notification.resource.offer.wallets.size,
-              "user_id": notification.resource.user.id,
-              "actor_image": notification.actor.avatar,
-              "notifiable_id": notification.notifiable_id,
-              "notifiable_type": notification.notifiable_type,
-              "action": notification.action,
-              "action_type": notification.action_type,
-              "created_at": notification.created_at,
-              "is_read": !notification.read_at.nil?
+            "special_offer_id": notification.resource.offer.id,
+            "special_offer_title": notification.resource.offer.title,
+            "business_name": User.get_full_name(notification.resource.offer.user),
+            "total_grabbers_count": notification.resource.offer.wallets.size,
+            "user_id": notification.resource.user.id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?
           }
 
 
       when "send_request"
         @notifications << {
+          "id": notification.id,
           "friend_name": User.get_full_name(notification.resource.user),
           "friend_id": notification.resource.user.id,
           "request_id": notification.resource.id,
@@ -239,6 +250,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "accept_request"
         @notifications << {
+          "id": notification.id,
           "friend_name": User.get_full_name(notification.resource.friend),
           "friend_id": notification.resource.friend.id,
           "mutual_friends_count": get_mutual_friends(request_user, notification.resource.friend).size,
@@ -253,6 +265,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "enter_in_competition"
         @notifications << {
+          "id": notification.id,
           "friend_name": User.get_full_name(notification.resource.user),
           "competition_id": notification.resource.event.id,
           "competition_name": notification.resource.event.title,
@@ -269,6 +282,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "ask_location"
         @notifications << {
+          "id": notification.id,
           "friend_name": User.get_full_name(notification.actor),
           "friend_id": notification.actor.id,
           "actor_image": notification.actor.avatar,
@@ -282,6 +296,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "send_location"
         @notifications << {
+          "id": notification.id,
           "friend_name": User.get_full_name(notification.actor),
           "friend_id": notification.actor.id,
           "actor_image": notification.actor.avatar,
@@ -296,6 +311,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "get_winner_and_notify"
           @notifications << {
+            "id": notification.id,
             "business_name": User.get_full_name(notification.resource.user),
             "competition_name": notification.resource.title,
             "total_competition_entries": notification.resource.registrations.size,
@@ -314,6 +330,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
         when "become_ambassador"
           @notifications << {
+            "id": notification.id,
             "business_name": User.get_full_name(notification.resource.business),
             "actor_image": notification.actor.avatar,
             "notifiable_id": notification.notifiable_id,
@@ -327,6 +344,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
         when "friend_become_ambassador"
           @notifications << {
+          "id": notification.id,
           "friend_name": User.get_full_name(notification.resource.user),
           "friend_id": notification.resource.user.id,
           "business_name": User.get_full_name(notification.resource.business),
@@ -343,6 +361,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
         when "free_event_reminder"
           @notifications << {
+          "id": notification.id,
           "event_name": User.get_full_name(notification.resource),
           "event_id": notification.resource.id,
           "event_location": notification.resource.location,
@@ -359,6 +378,24 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
         when "buy_event_reminder"
           @notifications << {
+          "id": notification.id,
+          "event_name": User.get_full_name(notification.resource),
+          "event_id": notification.resource.id,
+          "event_location": notification.resource.location,
+          "event_start_date": notification.resource.start_date,
+          "event_type": notification.resource.event_type,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+          }
+
+        when "pay_at_door_event_reminder"
+          @notifications << {
+          "id": notification.id,
           "event_name": User.get_full_name(notification.resource),
           "event_id": notification.resource.id,
           "event_location": notification.resource.location,
