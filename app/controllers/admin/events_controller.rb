@@ -128,11 +128,12 @@ class Admin::EventsController < Admin::AdminMasterController
             "title" =>  params[:paid_ticket][:title][count-1],
             "price" => params[:paid_ticket][:price][count-1],
             "quantity" => params[:paid_ticket][:quantity][count-1],
-            "per_head" => params[:paid_ticket][:per_head][count-1]
+            "per_head" => params[:paid_ticket][:per_head][count-1],
+            "terms_conditions" => params[:paid_ticket][:per_head][count-1]
           }
           end #each
           tickets.each do |ticket|
-            @ticket = @event.tickets.create!(user: current_user, title: ticket["title"], ticket_type: 'buy', quantity: ticket["quantity"], per_head: ticket["per_head"], price: ticket["price"])
+            @ticket = @event.tickets.create!(user: current_user, title: ticket["title"], ticket_type: 'buy', quantity: ticket["quantity"], per_head: ticket["per_head"], price: ticket["price"], terms_conditions: ticket["terms_conditions"])
           end #each
           end #if
 
@@ -298,11 +299,12 @@ class Admin::EventsController < Admin::AdminMasterController
            "title" =>  params[:paid_ticket][:title][count-1],
            "price" => params[:paid_ticket][:price][count-1],
            "quantity" => params[:paid_ticket][:quantity][count-1],
-           "per_head" => params[:paid_ticket][:per_head][count-1]
+           "per_head" => params[:paid_ticket][:per_head][count-1],
+           "terms_conditions" => params[:paid_ticket][:per_head][count-1]
          }
         end #each
          tickets.each do |ticket|
-          @ticket = @event.tickets.create!(user: current_user, title: ticket["title"], ticket_type: 'buy', quantity: ticket["quantity"], per_head: ticket["per_head"], price: ticket["price"])
+          @ticket = @event.tickets.create!(user: current_user, title: ticket["title"], ticket_type: 'buy', quantity: ticket["quantity"], per_head: ticket["per_head"], price: ticket["price"], terms_conditions: ticket["terms_conditions"])
          end #each
         end #if
 

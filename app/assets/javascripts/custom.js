@@ -8,14 +8,14 @@ $(document).ready(function(){
     else {
     	 $("div.business_details").hide();
     }
-   });//change 
+   });//change
    $(document).on('click','#allow_additional_media', function(event){
    	 if($(this).is(":checked") == true) {
    	  $("div.additional_media_wrapper").show();
    }
    else {
    	  $("div.additional_media_wrapper").hide();
-   } 
+   }
    });//click
 
    $(document).on('click','#update_password_modal_btn', function(event){
@@ -31,12 +31,12 @@ $(document).ready(function(){
             $(value).css('border-color','transparent');
           }
        });//each
-       
+
        if(validated == true) {
-        $('form#change_password_form').submit(); 
+        $('form#change_password_form').submit();
       }
    });//click
-    
+
    $(document).on('submit', 'form#change_password_form',function(event){
      $('div.alert-danger').hide();
      $(".flash_alert").hide();
@@ -44,12 +44,12 @@ $(document).ready(function(){
       var formData = new FormData(this);
       var url = "/admin/user/update-password";
       $.ajax({
-      url: url, 
-      type: "POST",             
-      data: formData, 
-      contentType: false,        
-      cache: false,           
-      processData:false,       
+      url: url,
+      type: "POST",
+      data: formData,
+      contentType: false,
+      cache: false,
+      processData:false,
       success: function(data) {
           console.log(data.success);
              if(data.success == true) {
@@ -60,16 +60,16 @@ $(document).ready(function(){
               $("div.alert-danger").show()
               $('div.alert-danger').text(data.message);
              }
-           
+
              $("#modalChangePassword").modal('hide');
             //location.reload();
-        }  
+        }
       });//ajax
    });//submit
 
    $(document).on('click','#update_user_info_modal_btn', function(event){
      event.preventDefault();
-     $('form#update_user_info_form').submit(); 
+     $('form#update_user_info_form').submit();
 });//click
 
 $(document).on('submit', 'form#update_user_info_form',function(event){
@@ -79,12 +79,12 @@ $(document).on('submit', 'form#update_user_info_form',function(event){
   var formData = new FormData(this);
   var url = "/admin/user/update-info";
   $.ajax({
-  url: url, 
-  type: "POST",             
-  data: formData, 
-  contentType: false,        
-  cache: false,           
-  processData:false,       
+  url: url,
+  type: "POST",
+  data: formData,
+  contentType: false,
+  cache: false,
+  processData:false,
   success: function(data) {
       console.log(data.success);
          if(data.success == true) {
@@ -95,10 +95,10 @@ $(document).on('submit', 'form#update_user_info_form',function(event){
           $("div.alert-danger").show()
           $('div.alert-danger').text(data.message);
          }
-       
+
          $("#modalUpdateInfo").modal('hide');
         //location.reload();
-    }  
+    }
   });//ajax
 });//submit
 
@@ -191,7 +191,7 @@ var options = {
     {
       listLocation: "friends",
       header: "<strong>Suggested Friends</strong>",
-    } 
+    }
   ],
   list: {
     onChooseEvent: function() {
@@ -201,17 +201,17 @@ var options = {
       var current_user_id = $input.getSelectedItemData().current_user_id;
       var friend_id = $input.getSelectedItemData().friend_id;
       console.log('friend_id_os',friend_id);
-      var is_friend = $input.getSelectedItemData().is_friend;  
+      var is_friend = $input.getSelectedItemData().is_friend;
       if(current_user_id ==  friend_id) {
         $("#add_friend_modal button#add_friend_btn").hide();
         $("#add_friend_modal_heading").html(name + "<br>&nbsp;&nbsp;(you)");
       }
       else {
-      
+
         $("#add_friend_modal button#add_friend_btn").show();
         $("#add_friend_modal_heading").text(name);
       }
-     
+
       $.ajax({
          type: 'get',
          url: '/admin/check-request?id=' + friend_id,
@@ -223,7 +223,7 @@ var options = {
            else if(resp.status == 'accepted') {
             $("#add_friend_modal button#add_friend_btn").attr('disabled', true);
             $("#add_friend_modal button#add_friend_btn").text('Friend');
-           } 
+           }
            else {
             $("#add_friend_modal button#add_friend_btn").attr('disabled', false);
             $("#add_friend_modal button#add_friend_btn").text('Add Friend');
@@ -233,7 +233,7 @@ var options = {
       $input.val("")
        $("#add_friend_modal img").attr('src',avatar);
        $("#add_friend_modal img").attr('onError',"this.onerror=null;this.src='/assets/avatar.png';");
-  
+
        $("#add_friend_modal button#add_friend_btn").attr('data-url',url);
        $('#add_friend_modal').modal('show');
     }
@@ -287,11 +287,11 @@ function getNotifications() {
                  + '<div class="item-content">'
                  + '<h6 class="font-weight-normal">' + value.action.substr(0, 80) + '...' + '</h6>'
                  +  '<p class="font-weight-light small-text mb-0 text-muted">'
-                 +  value.time 
+                 +  value.time
                  +  '</p>'
                  + '</div>'
                  + '</a>';
-                
+
                  $('div.notifications_wrapper').append(html);
                  if(value.unread_notification_count > 0) {
                    $("span.count").show();
@@ -324,7 +324,7 @@ function getRealTimeNotifications() {
          listenToPubNubAndPrepend(counter);
        }
      })
-   
+
 }
 
 function listenToPubNubAndPrepend(counter) {
@@ -353,7 +353,7 @@ pubnub.addListener({message: function(m) {
     + '<div class="item-content">'
     + '<h6 class=""><strong>' + action + '</strong></h6>'
     +  '<p class="font-weight-light small-text mb-0 text-muted">'
-    +   time 
+    +   time
     +  '</p>'
     + '</div>'
     + '</a>';
@@ -389,7 +389,7 @@ getRealTimeNotifications();
 //   }});
 
 // input.addEventListener('keypress', function (e) {
-//     (e.keyCode || e.charCode) === 13 && pubnub.publish({ // Publish new message when enter is pressed. 
+//     (e.keyCode || e.charCode) === 13 && pubnub.publish({ // Publish new message when enter is pressed.
 //         channel : channel, message : input.value, x : (input.value='')
 //     });
 // });
@@ -416,10 +416,10 @@ $(document).on('change','input#competition_location',function(event){
           else {
             $("span#location_error").show();
             $("span#location_error").text(resp.message);
-          } 
+          }
 
        }
-      });//ajax  
+      });//ajax
   }
 });//change
 
@@ -431,15 +431,15 @@ $(document).on('change','input#competition_location',function(event){
   });//ready
 
   var paid_tikcets_count = 0;
-  var passes_count = 0;   
+  var passes_count = 0;
  $(document).one('click','.free_ticket', function(event){
    handle_process_btn();
-   handle_free_ticket_input();  
+   handle_free_ticket_input();
   $('input.price_type').val('free');
   $(".pay_at_door_input").remove();
   $(".paid_ticket_input").remove();
     $('.input_section').show();
-    var inputs = '<br><div class="free_ticket_wrapper"><div class="form-group free_ticket_input input">' 
+    var inputs = '<br><div class="free_ticket_wrapper"><div class="form-group free_ticket_input input">'
         + '<label style="margin-right: 30px; " class="free_ticket_input">Ticket Name </label>'
         + '<input type="text" name="free_ticket[title]" required style="margin-right: 30px;" class="free_ticket_input input">'
         + '<label style="margin-right: 30px;" class="free_ticket_input">Quantity</label>'
@@ -451,14 +451,14 @@ $(document).on('change','input#competition_location',function(event){
   })//click
 
   $(document).on('click','.paid_ticket', function(event){
-    
-    paid_tikcets_count += 1; 
+
+    paid_tikcets_count += 1;
     $('input.price_type').val('buy');
     $("input#paid_tickets_count").val(paid_tikcets_count);
     $(".free_ticket_input").remove();
     $(".pay_at_door_input").remove();
     $('.input_section').show();
-    var inputs = '<div class="new_paid_ticket_wrapper"><h5 style="font-weight:bold;">Paid Ticket</h5><div class="form-group paid_ticket_input">' 
+    var inputs = '<div class="new_paid_ticket_wrapper"><h5 style="font-weight:bold;">Paid Ticket</h5><div class="form-group paid_ticket_input">'
         + '<label style="margin-right: 30px;">Ticket Name </label><br>'
         + '<input type="text" name="paid_ticket[title][]" required class="input" style="margin-right: 30px;">'
         + '</div>'
@@ -473,7 +473,11 @@ $(document).on('change','input#competition_location',function(event){
         + '<div class="form-group paid_ticket_input" >'
         + '<label style="margin-right: 30px;">Max Per Order</label><br>'
         + '<input type="number" name="paid_ticket[per_head][]"  required class="input" style="margin-right: 30px;">'
-        + '</div><div><br>';
+        + '</div>'
+        + '<div class="form-group paid_ticket_input" >'
+        + '<label style="margin-right: 30px;">Terms and Conditions</label><br>'
+        + '<textarea name="paid_ticket[terms_conditions][]"  required class="input" style="margin-right: 30px;"></textarea>'
+        + '</div><br>';
     $('.input_section').prepend(inputs);
     $('.new_paid_ticket_wrapper').css({"position": "relative", "top": '40px'});
   })//click
@@ -485,7 +489,7 @@ $(document).on('change','input#competition_location',function(event){
     $("input#passes_count").val(passes_count)
     var inputs = ' <div class="passes_wrapper new_pass_wrapper" style="position: relative;margin-top: -13px;">'
         + '<h5 style="font-weight:bold;">Pass </h5><hr>'
-        + '<div class="form-group pass_input">' 
+        + '<div class="form-group pass_input">'
         + '<label style="margin-right: 30px;">Pass Name </label><br>'
         + '<input type="text" name="pass[title][]" class="input" required style="margin-right: 30px;">'
         + '</div>'
@@ -524,7 +528,7 @@ $(document).on('change','input#competition_location',function(event){
     $(".free_ticket_input").remove();
     $(".paid_ticket_input").remove();
     $('.input_section').show();
-    var inputs = '<div class="pay_at_door_inputs" ><div class="form-group pay_at_door_input">' 
+    var inputs = '<div class="pay_at_door_inputs" ><div class="form-group pay_at_door_input">'
         + '<label style="margin-right: 30px;">Start Price</label>'
         + '<input type="number" name="pay_at_door[start_price]" step="0.01" required class="input" style="margin-right: 30px;">'
         + '<label style="margin-right: 30px;">End Price</label>'
@@ -535,7 +539,7 @@ $(document).on('change','input#competition_location',function(event){
   })//click
 
   $(document).on('click', '.add_sponsor', function(event){
-   
+
     var html = '<div class="form-group">'
               + '<label for="sponsor_image">Sponsor Logo</label>'
               + '<input type="file" class="form-control" required id="" name="sponsors[images][]">'
@@ -543,8 +547,8 @@ $(document).on('change','input#competition_location',function(event){
               + '<div class="form-group">'
               + '<label for="external_url">Link External Url</label>'
               + '<input type="text" class="form-control" name="sponsors[external_urls][]" required id="external_url" name="external_urls[]" placeholder="example.com">'
-              + '</div>'; 
-              $(".sponsor_input_section").prepend(html);  
+              + '</div>';
+              $(".sponsor_input_section").prepend(html);
    });//click
 
 
@@ -567,7 +571,7 @@ $(document).on('change','input#competition_location',function(event){
               location.reload();
             }
           });//ajax
-        
+
       }
    });//click
 
@@ -579,20 +583,20 @@ $(document).on('change','input#competition_location',function(event){
        $('button.paid_ticket').attr('disabled', true);
        $('button.pay_at_door').attr('disabled', true);
      }
-    
+
 
      if ($("#paid_ticket_exist").length > 0) {
       $('button.free_ticket').attr('disabled', true);
       $('button.pay_at_door').attr('disabled', true);
      }
-    
+
 
      if($("#pay_at_door_exist").length > 0) {
       $('button.free_ticket').attr('disabled', true);
       $('button.paid_ticket').attr('disabled', true);
       $('button.pay_at_door').attr('disabled', true);
      }
-   
+
    }
 
    function handle_free_ticket_input() {
@@ -653,16 +657,16 @@ $(document).on('change','#price_type',function(e){
     // When the user selects an address from the drop-down, populate the
     // address fields in the form.
     autocomplete.addListener('place_changed', fillInLatLng);
-       
-  } 
+
+  }
 
 
   function fillInLatLng() {
-     var lat = autocomplete.getPlace().geometry.location.lat(); 
-     var lng = autocomplete.getPlace().geometry.location.lng(); 
+     var lat = autocomplete.getPlace().geometry.location.lat();
+     var lng = autocomplete.getPlace().geometry.location.lng();
 
      $('input#lat').val(lat);
-     $('input#lng').val(lng);      
+     $('input#lng').val(lng);
   }
 
   function CompetitionInitialize() {
@@ -703,7 +707,7 @@ $(document).on('change','#price_type',function(e){
   //       // event['lng'] = $($(this).parent().parent('tr')[0]).children('td.lng').text();
   //       event['image'] = $($(this).parent().parent('tr')[0]).children('td.image').text();
   //       var venue_id = $($(this).parent().parent('tr')[0]).children('td.venue_id').children('input').val();
-  //       var category_id = $($(this).parent().parent('tr')[0]).children('td.category_id').children('input').val();     
+  //       var category_id = $($(this).parent().parent('tr')[0]).children('td.category_id').children('input').val();
   //       console.log('venue_id',venue_id);
   //       console.log('category_id',category_id);
   //       $.ajax({
@@ -714,7 +718,7 @@ $(document).on('change','#price_type',function(e){
   //           authenticity_token: gon.authenticity_token
   //         }
   //       }).done(function(p_resp){
-         
+
   //         if(venue_id != '') {
   //           $.ajax({
   //             type: 'post',
@@ -730,7 +734,7 @@ $(document).on('change','#price_type',function(e){
   //               console.log('ajx_cat',p_resp);
   //             }
   //           });//ajax
-  //         } 
+  //         }
   //       });//ajax
   //   console.log("event object",event);
   // });//click
@@ -752,7 +756,7 @@ $(document).on('change','#price_type',function(e){
     event['image'] = $($(this).parent().parent('tr')[0]).children('td.image').text();
     var venue_id = $($(this).parent().parent('tr')[0]).children('td.venue_id').children('input').val();
     var eventbrite_image = $($(this).parent().parent('tr')[0]).children('td.eventbrite_image').find('img').attr('src');
-    var category_id = $($(this).parent().parent('tr')[0]).children('td.category_id').children('input').val();     
+    var category_id = $($(this).parent().parent('tr')[0]).children('td.category_id').children('input').val();
     console.log('venue_id',venue_id);
     console.log('category_id',category_id);
     $.ajax({
@@ -763,7 +767,7 @@ $(document).on('change','#price_type',function(e){
         authenticity_token: gon.authenticity_token
       }
     }).done(function(p_resp){
-     
+
       if(venue_id != '') {
         $.ajax({
           type: 'post',
@@ -776,7 +780,7 @@ $(document).on('change','#price_type',function(e){
             get_venue_ajax = true;
             event['category'] = p_resp.data.category['name'];
             event['location'] = resp.data.venue['localized_address_display'];
-            
+
             // console.log('ajx',resp.data.venue['localized_address_display']);
             // console.log('lat',resp.data.venue['latitude']);
             // console.log('long', resp.data.venue['longitude']);
@@ -796,9 +800,9 @@ $(document).on('change','#price_type',function(e){
             $("#eventbrite_edit").modal('show');
           }
         });//ajax
-      } 
+      }
     });//ajax
-     
+
     if(get_venue_ajax == false) {
             $(".modal-body #eventbrite_image").val(eventbrite_image);
             $(".modal-body #name").val(event['name']);
@@ -815,7 +819,7 @@ $(document).on('change','#price_type',function(e){
 $(document).on('click','#eventbrite_save_btn', function(e){
   e.preventDefault();
   var validate = false;
-  
+
   var form = $("form#eventbrite_import_form");
    if($('#categories_select').val() == null) {
       alert("Category shouldn't be empty");
@@ -855,12 +859,12 @@ $(document).on('submit','#eventbrite_import_form', function(event){
   var formData = new FormData(this);
   var url = "/admin/eventbrite/store-imported";
   $.ajax({
-    url: url, 
-    type: "POST",             
-    data: formData, 
-    contentType: false,        
-    cache: false,           
-    processData:false,       
+    url: url,
+    type: "POST",
+    data: formData,
+    contentType: false,
+    cache: false,
+    processData:false,
     success: function(data) {
         console.log(data.success);
            if(data.success == true) {
@@ -868,16 +872,16 @@ $(document).on('submit','#eventbrite_import_form', function(event){
            }
            else {
             alert('Event import failed.');
-           
+
            }
            $("#eventbrite_edit").modal('hide');
           //location.reload();
-      }  
+      }
     });//ajax
 });//click
 
 // import form validation
- 
+
 function validate_import_form() {
    var validate = false;
    var form = $("form#eventbrite_import_form");
@@ -891,7 +895,7 @@ function validate_import_form() {
         $(this).css('border-color','transparent');
         validate = true;
       }
-     
+
       if($(this).hasClass('description') && $(this).val() == '') {
         $(this).css('border-color','red');
         validate = false;
@@ -936,9 +940,9 @@ function validate_import_form() {
         $(this).css('border-color','transparent');
         validate = true;
       }
-     
+
    });//each
-  
+
 }
 
 //phone number validation
@@ -959,12 +963,12 @@ $(document).on('click','#send_reset_email', function(event){
   event.preventDefault();
   var url = "/admin/send-reset-email";
   $.ajax({
-    url: url, 
-    type: "POST",             
+    url: url,
+    type: "POST",
     data: {
       authenticity_token: gon.authenticity_token,
       email: $('#email').val()
-    },   
+    },
     success: function(data) {
       if(data.code ==  200) {
         $(".email_success").show();
@@ -976,7 +980,7 @@ $(document).on('click','#send_reset_email', function(event){
         $(".email_success").hide();
        $(".email_danger").html(data.message);
        }
-      }  
+      }
     });//ajax
 });//click
 
@@ -986,18 +990,18 @@ $(document).on('click','#reset_password', function(event){
   $(form).submit();
 });//click
 
-// reset password 
+// reset password
 $(document).on('submit','#reset_password_form', function(event){
   event.preventDefault();
   var formData = new FormData(this);
   var url = "/admin/reset-password";
   $.ajax({
-    url: url, 
-    type: "POST",             
-    data: formData, 
-    contentType: false,        
-    cache: false,       
-    processData:false,       
+    url: url,
+    type: "POST",
+    data: formData,
+    contentType: false,
+    cache: false,
+    processData:false,
     success: function(data) {
       if(data.code ==  200) {
         $(".email_success").show();
@@ -1009,8 +1013,8 @@ $(document).on('submit','#reset_password_form', function(event){
         $(".email_success").hide();
        $(".email_danger").html(data.message);
        }
-       
-      }  
+
+      }
     });//ajax
 });//click
 

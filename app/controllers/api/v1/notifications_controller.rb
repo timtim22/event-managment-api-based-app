@@ -784,7 +784,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
               }
 
                 @pubnub.publish(
-                  channel: [request_user.device_token],
+                  channel: [request_user.profile.device_token],
                   message: payload
                    ) do |envelope|
                      puts envelope.status
@@ -807,9 +807,9 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             if @notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are attening an event '#{event.name}' which is happening tomorrow. ", notifiable: event, resource: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "event_reminder")
 
                @current_push_token = @pubnub.add_channels_to_push(
-                 push_token: request_user.device_token,
+                 push_token: request_user.profile.device_token,
                  type: 'gcm',
-                 add: request_user.device_token
+                 add: request_user.profile.device_token
                  ).value
 
                 payload = {
@@ -834,7 +834,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
               }
 
                 @pubnub.publish(
-                  channel: [request_user.device_token],
+                  channel: [request_user.profile.device_token],
                   message: payload
                    ) do |envelope|
                      puts envelope.status
