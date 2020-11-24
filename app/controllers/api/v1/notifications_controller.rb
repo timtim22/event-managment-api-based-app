@@ -270,7 +270,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       when "ask_location"
         @notifications << {
           "friend_name": User.get_full_name(notification.actor),
-          "friend_id:": notification.actor.id,
+          "friend_id": notification.actor.id,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,
@@ -282,8 +282,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       when "send_location"
         @notifications << {
-          "friend_name": User.get_full_name(notification.resource),
-          "friend_id:": notification.resource.id,
+          "friend_name": User.get_full_name(notification.actor),
+          "friend_id": notification.actor.id,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,
@@ -294,8 +294,6 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "location": location
         }
 
-    
-
       when "get_winner_and_notify"
           @notifications << {
             "business_name": User.get_full_name(notification.resource.user),
@@ -304,7 +302,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "winner_name": User.get_full_name(notification.notifiable.user),
             "winner_avatar": notification.notifiable.user.avatar,
             "winner_id": notification.notifiable.user.id,
-            "actor_image": notification.actor.avatar,
+            "actor_image": notification.resource.user.avatar,
             "notifiable_id": notification.notifiable_id,
             "notifiable_type": notification.notifiable_type,
             "action": notification.action,
@@ -330,6 +328,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         when "friend_become_ambassador"
           @notifications << {
           "friend_name": User.get_full_name(notification.resource.user),
+          "friend_id": notification.resource.user.id,
           "business_name": User.get_full_name(notification.resource.business),
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
@@ -342,7 +341,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
           }
 
-        when "event_reminder"
+        when "free_event_reminder"
           @notifications << {
           "event_name": User.get_full_name(notification.resource),
           "event_id": notification.resource.id,
@@ -358,6 +357,21 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "is_read": !notification.read_at.nil?
           }
 
+        when "buy_event_reminder"
+          @notifications << {
+          "event_name": User.get_full_name(notification.resource),
+          "event_id": notification.resource.id,
+          "event_location": notification.resource.location,
+          "event_start_date": notification.resource.start_date,
+          "event_type": notification.resource.event_type,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+          }
       else
          "do nothing"
       end #switch
@@ -653,7 +667,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
          check = request_user.reminders.where(event_id: event.id).where(level: 'interested')
          if check.blank?
           if @reminder = request_user.reminders.create!(event_id: event.id, level: 'interested')
-            if @notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are interested in event '#{event.name}' which is happening tomorrow. ", notifiable: event, resource: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "event_reminder")
+            if @notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are interested in event '#{event.name}' which is happening tomorrow. ", notifiable: event, resource: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "#{event.price_type}_event_reminder")
 
                @current_push_token = @pubnub.add_channels_to_push(
                  push_token: request_user.profile.device_token,
