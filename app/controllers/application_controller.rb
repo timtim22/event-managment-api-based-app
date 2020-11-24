@@ -891,7 +891,7 @@ end
       publish_key: ENV['PUBLISH_KEY'],
       subscribe_key: ENV['SUBSCRIBE_KEY']
       )
-    if @notification = Notification.create!(recipient: request.user, actor: user, action: get_full_name(user) + " has approved you as an ambassador.", notifiable: request, url: "/admin/users/#{request.user.id}", resource: request, notification_type: 'mobile',action_type: 'become_ambassador')
+    if notification = Notification.create!(recipient: request.user, actor: user, action: get_full_name(user) + " has approved you as an ambassador.", notifiable: request, url: "/admin/users/#{request.user.id}", resource: request, notification_type: 'mobile',action_type: 'become_ambassador')
 
       @current_push_token = @pubnub.add_channels_to_push(
         push_token: request.user.profile.device_token,
@@ -903,18 +903,19 @@ end
           "pn_gcm":{
             "notification": {
               "title": get_full_name(user),
-              "body": @notification.action
+              "body": notification.action
             },
             data: {
-              "id": @notification.id,
-              "actor_id": @notification.actor_id,
-              "actor_image": @notification.actor.avatar,
-              "notifiable_id": @notification.notifiable_id,
-              "notifiable_type": @notification.notification_type,
-              "action_type": @notification.action_type,
-              "action": @notification.action,
-              "created_at": @notification.created_at,
-              "body": ''
+              "id": notification.id,
+              "business_name": User.get_full_name(notification.resource.business),
+              "actor_image": notification.actor.avatar,
+              "notifiable_id": notification.notifiable_id,
+              "notifiable_type": notification.notifiable_type,
+              "action": notification.action,
+              "action_type": notification.action_type,
+              "created_at": notification.created_at,
+              "is_read": !notification.read_at.nil?,
+              "location": location
             }
           }
         }
@@ -933,7 +934,7 @@ end
 
         if !request.user.friends.blank?
           request.user.friends.each do |friend|
-            if @notification = Notification.create(recipient: friend, actor: request.user, action: get_full_name(request.user) + " has become ambassador of #{User.get_full_name(request.business)}", notifiable: request, resource: request,  url: "/admin/users/#{request.user.id}", notification_type: 'mobile', action_type: "friend_become_ambassador")
+            if notification = Notification.create(recipient: friend, actor: request.user, action: get_full_name(request.user) + " has become ambassador of #{User.get_full_name(request.business)}", notifiable: request, resource: request,  url: "/admin/users/#{request.user.id}", notification_type: 'mobile', action_type: "friend_become_ambassador")
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
                push_token: friend.profile.device_token,
@@ -945,18 +946,22 @@ end
               "pn_gcm":{
                "notification":{
                  "title": User.get_full_name(request.user),
-                 "body": @notification.action
+                 "body": notification.action
                },
                data: {
-                "id": @notification.id,
-                "actor_id": @notification.actor_id,
-                "actor_image": @notification.actor.avatar,
-                "notifiable_id": @notification.notifiable_id,
-                "notifiable_type": @notification.notifiable_type,
-                "action": @notification.action,
-                "action_type": @notification.action_type,
-                "created_at": @notification.created_at,
-                "body": ''
+                "id": notification.id,
+                "friend_name": User.get_full_name(notification.resource.user),
+                "friend_id": notification.resource.user.id,
+                "business_name": User.get_full_name(notification.resource.business),
+                "actor_image": notification.actor.avatar,
+                "notifiable_id": notification.notifiable_id,
+                "notifiable_type": notification.notifiable_type,
+                "action": notification.action,
+                "action_type": notification.action_type,
+                "created_at": notification.created_at,
+                "is_read": !notification.read_at.nil?,
+                "location": location
+
                }
               }
              }

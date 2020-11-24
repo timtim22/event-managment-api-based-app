@@ -148,7 +148,7 @@ def accept_request
       @notification =  Notification.where(notifiable_id: request.id).where(notifiable_type: 'FriendRequest').first.destroy
 
 
-      if @notification = Notification.create(recipient: request.user, actor: request_user, action: get_full_name(request_user) + " accepted your friend request", notifiable: request, resource: request, url: '/admin/my-friends', notification_type: 'mobile', action_type: 'accept_request')
+      if notification = Notification.create(recipient: request.user, actor: request_user, action: get_full_name(request_user) + " accepted your friend request", notifiable: request, resource: request, url: '/admin/my-friends', notification_type: 'mobile', action_type: 'accept_request')
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -163,18 +163,20 @@ def accept_request
             "pn_gcm":{
               "notification":{
                 "title": get_full_name(request_user),
-                "body": @notification.action
+                "body": notification.action
               },
               data: {
-                "id": @notification.id,
-                "actor_id": @notification.actor_id,
-                "actor_image": @notification.actor.avatar,
-                "notifiable_id": @notification.notifiable_id,
-                "notifiable_type": @notification.notifiable_type,
-                "action": @notification.action,
-                "action_type": @notification.action_type,
-                "created_at": @notification.created_at,
-                "body": ''
+                "id": notification.id,
+                "friend_name": User.get_full_name(notification.resource.friend),
+                "friend_id": notification.resource.friend.id,
+                "mutual_friends_count": get_mutual_friends(request_user, notification.resource.friend).size,
+                "actor_image": notification.actor.avatar,
+                "notifiable_id": notification.notifiable_id,
+                "notifiable_type": notification.notifiable_type,
+                "action": notification.action,
+                "action_type": notification.action_type,
+                "created_at": notification.created_at,
+                "is_read": !notification.read_at.nil?
               }
             }
           }
