@@ -891,8 +891,8 @@ end
       publish_key: ENV['PUBLISH_KEY'],
       subscribe_key: ENV['SUBSCRIBE_KEY']
       )
-    if @notification = Notification.create!(recipient: request.user, actor: user, action: get_full_name(request_user) + " has approved you as an ambassador.", notifiable: request, url: "/admin/users/#{request.user.id}", resource: request, notification_type: 'mobile',action_type: 'become_ambassador')
-     
+    if @notification = Notification.create!(recipient: request.user, actor: user, action: get_full_name(user) + " has approved you as an ambassador.", notifiable: request, url: "/admin/users/#{request.user.id}", resource: request, notification_type: 'mobile',action_type: 'become_ambassador')
+
       @current_push_token = @pubnub.add_channels_to_push(
         push_token: request.user.profile.device_token,
         type: 'gcm',
@@ -930,6 +930,47 @@ end
         else
           @success = false
       end ##notification create
+
+        if !request_user.friends.blank?
+          request_user.friends.each do |friend|
+            if @notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has become ambassador.", notifiable: request, resource: request,  url: "/admin/users/#{request.user.id}", notification_type: 'mobile', action_type: "friend_become_ambassador")
+            @push_channel = "event" #encrypt later
+            @current_push_token = @pubnub.add_channels_to_push(
+               push_token: friend.profile.device_token,
+               type: 'gcm',
+               add: friend.profile.device_token
+               ).value
+
+             payload = {
+              "pn_gcm":{
+               "notification":{
+                 "title": @wallet.offer.title,
+                 "body": @notification.action
+               },
+               data: {
+                "id": @notification.id,
+                "actor_id": @notification.actor_id,
+                "actor_image": @notification.actor.avatar,
+                "notifiable_id": @notification.notifiable_id,
+                "notifiable_type": @notification.notifiable_type,
+                "action": @notification.action,
+                "action_type": @notification.action_type,
+                "created_at": @notification.created_at,
+                "body": ''
+               }
+              }
+             }
+             @pubnub.publish(
+              channel: friend.profile.device_token,
+              message: payload
+              ) do |envelope|
+                  puts envelope.status
+             end
+          end ##notification create
+        end #each
+      end #if not blank
+
+
       create_activity(request.user, "become ambassador ", request, 'AmbassadorRequest', '', '', 'post', 'become_ambassador')
     true
    else
