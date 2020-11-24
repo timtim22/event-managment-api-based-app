@@ -446,7 +446,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
       @askee = User.find(id)
       if notification = Notification.create!(recipient: @askee, actor: request_user, action: get_full_name(request_user) + " is asking for your current location.", notifiable: @askee, url: "/admin/users/#{@askee.id}", resource: @askee, notification_type: 'mobile',action_type: 'ask_location')
-        @location_request = LocationRequest.create!(user_id: request_user.id, askee_id: id, notification_id: @notification.id)
+        @location_request = LocationRequest.create!(user_id: request_user.id, askee_id: id, notification_id: notification.id)
         @current_push_token = @pubnub.add_channels_to_push(
           push_token: @askee.profile.device_token,
           type: 'gcm',
@@ -601,7 +601,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           @recipient = User.find(id)
          if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{if request_user.profile.gender ==  'male' then 'his' else 'her' end } current location.", notifiable: @recipient, resource: @recipient, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "send_location")
 
-          @location_share = LocationShare.create!(user_id: request_user.id, recipient_id: id, lat:params[:lat], lng: params[:lng], notification_id: @notification.id)
+          @location_share = LocationShare.create!(user_id: request_user.id, recipient_id: id, lat:params[:lat], lng: params[:lng], notification_id: notification.id)
 
            @current_push_token = @pubnub.add_channels_to_push(
              push_token: @recipient.profile.device_token,

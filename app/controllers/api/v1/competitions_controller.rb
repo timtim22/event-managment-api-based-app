@@ -277,6 +277,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
               participants = User.where(id: [user_ids])
               cometition_winner = CompetitionWinner.create!(user_id: winner.id, competition_id: competition.id)
                participants.each do |participant|
+                 if participant.id != request_user.id
                  notification = Notification.where(recipient: participant).where(notifiable: competition).where(action_type: 'get_winner_and_notify').first
                  if notification.blank?
                   if notification = Notification.create(recipient: participant, actor: competition.user, action: get_full_name(winner) + " is the winner.", notifiable: cometition_winner,  resource: competition, url: "", notification_type: 'mobile', action_type: 'get_winner_and_notify')
@@ -329,6 +330,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                   end #notification create
                 end
           end #end date
+        end #not current user
       end #each
       if success
         render json: {
