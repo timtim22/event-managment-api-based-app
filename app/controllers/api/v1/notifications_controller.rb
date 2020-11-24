@@ -368,7 +368,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         when "free_event_reminder"
           @notifications << {
           "id": notification.id,
-          "event_name": User.get_full_name(notification.resource),
+          "event_name": notification.resource.name,
           "event_id": notification.resource.id,
           "event_location": notification.resource.location,
           "event_start_date": notification.resource.start_date,
@@ -385,7 +385,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         when "buy_event_reminder"
           @notifications << {
           "id": notification.id,
-          "event_name": User.get_full_name(notification.resource),
+          "event_name": notification.resource.name,
           "event_id": notification.resource.id,
           "event_location": notification.resource.location,
           "event_start_date": notification.resource.start_date,
@@ -402,7 +402,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         when "pay_at_door_event_reminder"
           @notifications << {
           "id": notification.id,
-          "event_name": User.get_full_name(notification.resource),
+          "event_name": notification.resource.name,
           "event_id": notification.resource.id,
           "event_location": notification.resource.location,
           "event_start_date": notification.resource.start_date,
