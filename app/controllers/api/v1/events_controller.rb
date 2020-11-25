@@ -376,6 +376,6 @@ end
   # calculates interest level demographics interested + going
 
 	def event_params
-		params.permit(:name,:date,:start_time, :end_time, :external_link, :host, :description,:location,:image, :feature_media_link, :additinal_media, :allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18)
+		params.permit(:name,:date,:start_time, :end_time, :external_link, :terms_conditions, :host, :description,:location,:image, :feature_media_link, :additinal_media, :allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18)
   end
 end

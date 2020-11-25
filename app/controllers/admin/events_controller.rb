@@ -129,7 +129,7 @@ class Admin::EventsController < Admin::AdminMasterController
             "price" => params[:paid_ticket][:price][count-1],
             "quantity" => params[:paid_ticket][:quantity][count-1],
             "per_head" => params[:paid_ticket][:per_head][count-1],
-            "terms_conditions" => params[:paid_ticket][:per_head][count-1]
+            "terms_conditions" => params[:paid_ticket][:terms_conditions][count-1]
           }
           end #each
           tickets.each do |ticket|
