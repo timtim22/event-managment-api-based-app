@@ -9,7 +9,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
   def index
     @notifications = []
-    notifications = request_user.notifications.order(id: 'DESC')
+    notifications = request_user.notifications.page(params[:page]).per(10).order(id: 'DESC')
     notifications.each do |notification|
       location = {}
       location['lat'] = if !notification.location_share.blank? then notification.location_share.lat else '' end
