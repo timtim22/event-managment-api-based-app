@@ -8,9 +8,9 @@ class Admin::EventsController < Admin::AdminMasterController
   include ActionView::Helpers::DateHelper
 
 
-	def index
-		@events = current_user.events.sort_by_date.page(params[:page])
-	end
+  def index
+    @events = current_user.events.sort_by_date.page(params[:page])
+  end
 
   def new
 
@@ -22,8 +22,8 @@ class Admin::EventsController < Admin::AdminMasterController
     @event = Event.find(params[:id])
   end
 
-	def show
-		@event = Event.find(params[:id]) or not_found
+  def show
+    @event = Event.find(params[:id]) or not_found
   end
 
 
@@ -715,7 +715,7 @@ class Admin::EventsController < Admin::AdminMasterController
   end
 
   def event_params
-		params.permit(:name,:start_date,:end_date,:price,:price_type,:event_type,:start_time, :end_time, :host, :description,:location,:image, :terms_conditions, :feature_media_link, :lat,:lng,:allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18, :category_ids => [], event_attachments_attributes:
+    params.permit(:name,:start_date,:end_date,:price,:price_type,:event_type,:start_time, :end_time, :host, :description,:location,:image, :terms_conditions, :feature_media_link, :lat,:lng,:allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18, :category_ids => [], event_attachments_attributes:
     [:id, :event_id, :media])
   end
 
