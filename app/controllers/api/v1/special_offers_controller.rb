@@ -72,7 +72,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
 
   def special_offer_single
    if !params[:special_offer_id].blank? 
-    offer = SpecialOffer.find(params[:offer_id])
+    offer = SpecialOffer.find(params[:special_offer_id])
     @special_offer = {
       id: offer.id,
       title: offer.title,

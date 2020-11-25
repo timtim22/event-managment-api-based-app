@@ -81,7 +81,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
   def competition_single
     if !params[:competition_id].blank? 
       competition = Competition.find(params[:competition_id])
-      @cometition = {
+      @competition = {
         id: competition.id,
         title: competition.title,
         description: competition.description,
@@ -111,7 +111,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
         success: true,
         message: '',
         data: {
-          pass: @competition
+          competition: @competition
         }
       }
     else

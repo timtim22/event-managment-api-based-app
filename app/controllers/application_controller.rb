@@ -635,6 +635,11 @@ end
   end
   end
 
+  def added_to_wallet?(resource)
+    wallet = request_user.wallets.where(offer: resource)
+    !wallet.blank?
+  end
+
   def string_to_DateTime(string)
     DateTime.parse(string)
   end

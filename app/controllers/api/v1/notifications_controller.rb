@@ -197,7 +197,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "action": notification.action,
           "action_type": notification.action_type,
           "created_at": notification.created_at,
-          "is_read": !notification.read_at.nil?
+          "is_read": !notification.read_at.nil?,
+          "is_added_to_wallet": added_to_wallet?(notification.resource)
         }
 
         when "add_Pass_to_wallet"
@@ -216,7 +217,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "action": notification.action,
             "action_type": notification.action_type,
             "created_at": notification.created_at,
-            "is_read": !notification.read_at.nil?
+            "is_read": !notification.read_at.nil?,
+            "is_added_to_wallet": added_to_wallet?(notification.resource)
           }
 
         when "add_SpecialOffer_to_wallet"
@@ -234,7 +236,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "action": notification.action,
             "action_type": notification.action_type,
             "created_at": notification.created_at,
-            "is_read": !notification.read_at.nil?
+            "is_read": !notification.read_at.nil?,
+            "is_added_to_wallet": added_to_wallet?(notification.resource.offer)
           }
 
 

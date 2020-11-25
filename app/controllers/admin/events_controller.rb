@@ -28,6 +28,7 @@ class Admin::EventsController < Admin::AdminMasterController
 
 
  def create
+    
   @errors = []
   @event = current_user.events.new
   if params[:free_ticket].blank? && params[:paid_ticket].blank? && params[:pay_at_door].blank?
@@ -152,9 +153,54 @@ class Admin::EventsController < Admin::AdminMasterController
         end #each
           passes.each do |pass|
           if @pass = @event.passes.create!(user: current_user, title: pass["title"], quantity: pass["quantity"], valid_from: pass["valid_from"], valid_to: pass["valid_to"], validity: pass["valid_to"], ambassador_rate: pass["ambassador_rate"], description: pass["description"], redeem_code: generate_code)
-
-            @event.update!(pass: 'true')
-          end
+          @event.update!(pass: 'true')
+           #send notification to follower as well
+           if !current_user.followers.blank?
+            current_user.followers.each do |follower|
+        if follower.passes_notifications_setting.is_on == true
+          if notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new pass '#{@pass.title}'.", notifiable: @pass, resource: @pass, url: "/admin/passes/#{@pass.id}", notification_type: 'mobile', action_type: 'create_pass')
+            @channel = "event" #encrypt later
+            @current_push_token = @pubnub.add_channels_to_push(
+             push_token: follower.profile.device_token,
+             type: 'gcm',
+             add: follower.profile.device_token
+             ).value
+  
+             payload = {
+              "pn_gcm":{
+               "notification":{
+                 "title": get_full_name(current_user),
+                 "body": notification.action
+               },
+               data: {
+                "id": notification.id,
+                "pass_id": notification.resource.id,
+                "business_name": User.get_full_name(notification.resource.user),
+                "event_name": notification.resource.event.name,
+                "actor_id": notification.actor_id,
+                "actor_image": notification.actor.avatar,
+                "notifiable_id": notification.notifiable_id,
+                "notifiable_type": notification.notifiable_type,
+                "action": notification.action,
+                "action_type": notification.action_type,
+                "location": location,
+                "created_at": notification.created_at,
+                "is_read": !notification.read_at.nil?
+               }
+              }
+             }
+  
+           @pubnub.publish(
+             channel: follower.profile.device_token,
+             message: payload
+             ) do |envelope|
+                 puts envelope.status
+            end
+           end # notificatiob end
+          end # passes setting
+          end #each
+          end # not blank
+          end #if pass creast
           end #each
 
       end #if
@@ -650,9 +696,6 @@ class Admin::EventsController < Admin::AdminMasterController
         @event.update!(start_price: params[:pay_at_door]["start_price"], end_price:params[:pay_at_door]["end_price"])
       end
      end #if
-
-
-
 
       flash[:notice] = "Event updated successfully."
       redirect_to admin_events_path
