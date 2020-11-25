@@ -93,6 +93,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "pass_id": notification.resource.id,
             "business_name": User.get_full_name(notification.resource.user),
             "event_name": notification.resource.event.name,
+            "event_location": notification.resource.event.location,
+            "event_end_date": notification.resource.event.end_date,
             "actor_id": notification.actor_id,
             "actor_image": notification.actor.avatar,
             "notifiable_id": notification.notifiable_id,
