@@ -300,7 +300,7 @@ class Admin::EventsController < Admin::AdminMasterController
            "price" => params[:paid_ticket][:price][count-1],
            "quantity" => params[:paid_ticket][:quantity][count-1],
            "per_head" => params[:paid_ticket][:per_head][count-1],
-           "terms_conditions" => params[:paid_ticket][:per_head][count-1]
+           "terms_conditions" => params[:paid_ticket][:terms_conditions][count-1]
          }
         end #each
          tickets.each do |ticket|
@@ -549,12 +549,13 @@ class Admin::EventsController < Admin::AdminMasterController
            "title" =>  params[:update_paid_ticket][:title][count-1],
            "price" => params[:update_paid_ticket][:price][count-1],
            "quantity" => params[:update_paid_ticket][:quantity][count-1],
-           "per_head" => params[:update_paid_ticket][:per_head][count-1]
+           "per_head" => params[:update_paid_ticket][:per_head][count-1],
+           "terms_conditions" => params[:update_paid_ticket][:terms_conditions][count-1]
          }
         end #each
 
          tickets.each do |ticket|
-          @ticket = @event.tickets.find(ticket["id"]).update!(user: current_user, title: ticket["title"], ticket_type: 'buy', quantity: ticket["quantity"], per_head: ticket["per_head"], price: ticket["price"])
+          @ticket = @event.tickets.find(ticket["id"]).update!(user: current_user, title: ticket["title"], ticket_type: 'buy', quantity: ticket["quantity"], per_head: ticket["per_head"], price: ticket["price"], terms_conditions: ticket["terms_conditions"])
          end #each
         end #if
 
@@ -584,11 +585,12 @@ class Admin::EventsController < Admin::AdminMasterController
              "title" =>  params[:paid_ticket][:title][count-1],
              "price" => params[:paid_ticket][:price][count-1],
              "quantity" => params[:paid_ticket][:quantity][count-1],
-             "per_head" => params[:paid_ticket][:per_head][count-1]
+             "per_head" => params[:paid_ticket][:per_head][count-1],
+             "terms_conditions" => params[:paid_ticket][:terms_conditions][count-1]
            }
           end #each
            tickets.each do |ticket|
-            @ticket = @event.tickets.create!(user: current_user, title: ticket["title"], ticket_type: 'buy', quantity: ticket["quantity"], per_head: ticket["per_head"], price: ticket["price"])
+            @ticket = @event.tickets.create!(user: current_user, title: ticket["title"], ticket_type: 'buy', quantity: ticket["quantity"], per_head: ticket["per_head"], price: ticket["price"], terms_conditions: ticket["terms_conditions"])
            end #each
           end #if
 
@@ -713,7 +715,7 @@ class Admin::EventsController < Admin::AdminMasterController
   end
 
   def event_params
-		params.permit(:name,:start_date,:end_date,:price,:price_type,:event_type,:start_time, :end_time, :host, :description,:location,:image, :feature_media_link, :lat,:lng,:allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18, :category_ids => [], event_attachments_attributes:
+		params.permit(:name,:start_date,:end_date,:price,:price_type,:event_type,:start_time, :end_time, :host, :description,:location,:image, :terms_conditions, :feature_media_link, :lat,:lng,:allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18, :category_ids => [], event_attachments_attributes:
     [:id, :event_id, :media])
   end
 
