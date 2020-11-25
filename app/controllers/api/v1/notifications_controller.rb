@@ -930,5 +930,34 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
    end
 
 
+   def read_notification
+      if !params[:notification_id].blank?
+        notification = Notification.find(params[:notification_id])
+        if notification.update!(read_at: Time.now)
+          render json: {
+            code: 200,
+            success: true,
+            message: 'Notification read successfully.',
+            data: nil
+          }
+        else
+          render json: {
+            code: 400,
+            success: false,
+            message: 'Notification read was unsuccessful.',
+            data: nil
+          }
+        end
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: 'notification_id is required.',
+          data: nil
+        }
+      end
+   end
+
+
 
 end
