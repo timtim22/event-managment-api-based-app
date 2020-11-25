@@ -380,7 +380,8 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                         "action_type": notification.action_type,
                         "created_at": notification.created_at,
                         "is_read": !notification.read_at.nil?,
-                        "location": location
+                        "location": location,
+                         "competition_id": notification.resource.id
                        }
 
                       }
