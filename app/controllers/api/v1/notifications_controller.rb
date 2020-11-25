@@ -6,6 +6,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
 
+  api :POST, '/api/v1/notifications/get-notifications', 'Get notifications list - logged IN user'
 
   def index
     @notifications = []
@@ -443,7 +444,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
     }
   end
 
-
+  api :POST, '/api/v1/ask-location', 'Ask for target user location'
+  param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true
 
   def ask_location
     if !params[:askee_ids].blank?
@@ -523,6 +525,9 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         end
      end
 
+  api :POST, '/api/v1/get-location', 'Get location of the target user'
+  param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true
+
      def get_location
       if !params[:lat].blank? && !params[:lng].blank? && !params[:asker_id].blank?
        location = {}
@@ -593,6 +598,11 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         }
       end
      end
+
+       api :POST, '/api/v1/send-location', 'Send location to list of users'
+        param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true
+        param :lat, :number, :desc => "latitude", :required => true
+        param :lng, :number, :desc => "longitude", :required => true
 
      def send_location
       if !params[:lat].blank? && !params[:lng].blank? && !params[:user_ids].blank?
@@ -689,6 +699,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       end
      end
 
+       api :GET, '/api/v1/notifications/mark-as-read', 'Make notification mark as read'
+
      def mark_as_read
         if request_user.notifications.unread.update_all(read_at: Time.zone.now)
           render json: {
@@ -706,6 +718,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           }
         end
     end
+
+      api :GET, '/api/v1/send_events_reminder', 'Send event reminders to interested participants before ony day'
 
     def send_events_reminder
       interested_in_events = request_user.interested_in_events
@@ -881,6 +895,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         end
     end
 
+  api :POST, '/api/v1/notifications/delete-notification', 'Delete a notification'
+  param :notification_id, :number, :desc => "Notification ID", :required => true
 
 
 

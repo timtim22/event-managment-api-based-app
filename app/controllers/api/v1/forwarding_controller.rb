@@ -127,6 +127,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
 
           @recipient = request_user
 
+
           if @notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " has sent you #{if params[:offer_type] ==  'Pass' then 'a pass ' + @offer.title else 'a Special Offer ' + @offer.title end }.", notifiable: @offer, resource: @offer, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{if params[:offer_type] ==  'Pass' then 'pass_recieved' else 'special_offer_recieved'  end }")
 
            @offer_share = OfferShare.create!(user_id: @sender.id, is_ambassador: @sender.profile.is_ambassador, recipient_id: request_user.id, offer_type:params[:offer_type], offer_id: params[:offer_id])
@@ -194,6 +195,10 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
    end
 
   ################################# Event ##########################################33
+
+  api :POST, '/api/v1/events/forward', 'To forward an event'
+  param :event_id, :number, :desc => "Event ID", :required => true
+  param :user_ids, :number, :desc => "User IDs (1,2,3)", :required => true
 
   def forward_event
     if !params[:event_id].blank? && !params[:user_ids].blank?
@@ -295,6 +300,11 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
     end
    end
 
+  api :POST, '/api/v1/events/share', 'To share an event via link'
+  param :event_id, :number, :desc => "Event ID", :required => true
+  param :event_shared, String, :desc => "True/False", :required => true
+  param :sender_token, String, :desc => "Sender Token", :required => true
+
    def share_event
     if !params[:event_shared].blank? && params[:event_shared] ==  'true'
       if !params[:sender_token].blank? && !params[:event_id].blank?
@@ -310,6 +320,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
           )
 
           @recipient = request_user
+
 
           if @notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " shared an event with you.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "share_event")
 

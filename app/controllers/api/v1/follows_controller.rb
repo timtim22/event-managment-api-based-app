@@ -4,6 +4,9 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
   # Send follow request
+  api :POST, '/api/v1/event/follow', 'To Follow a Person'
+  param :following_id, :number, :desc => "Following ID", :required => true
+
   def follow
     if params[:following_id].blank? == true
       render json: {
@@ -22,6 +25,7 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
         )
+
       if @notification = Notification.create(recipient: @following, actor: request_user, action: get_full_name(request_user) + " followed you", notifiable: fr, resource: fr, url: '#', notification_type: 'web', action_type: 'add_to_wallet')
 
        #publish web channel
@@ -41,6 +45,7 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
         #also notify request_user friends
         if !request_user.friends.blank?
           request_user.friends.each do |friend|
+
           if @notification = Notification.create(recipient: friend, actor: request_user, action: "Your friend " + get_full_name(request_user) + " followed #{get_full_name(@following)}.", notifiable: fr, resource: fr,url: "#", notification_type: 'mobile', action_type: 'add_to_wallet')
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
@@ -103,6 +108,8 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
     end
   end# func
 
+  api :POST, '/api/v1/event/unfollow', 'To unfollow an event'
+  param :following_id, :number, :desc => "Following ID", :required => true
 
   def unfollow
     if params[:following_id].blank? == true
@@ -117,6 +124,7 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
     if @follow && @follow.destroy
       @following = User.find(params[:following_id])
      # create_activity(request_user, "unfollowed #{get_full_name(@following)}", @follow, 'Follow', '', '', 'post','unfollow')
+
       if @notification = Notification.create(recipient: @following, actor: request_user, action: get_full_name(request_user) + " unfollowed you", notifiable: @follow, resource: @follow, url: '#', notification_type: 'web')
        #publish to web channel
        @pubnub = Pubnub.new(
@@ -151,7 +159,7 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
     end
   end
 end
-
+  api :GET, '/api/v1/event/followers', 'To view followers of the evennt - Token is required'
   def followers
     @followers = request_user.followers
     render json: {
@@ -164,6 +172,7 @@ end
     }
   end
 
+  api :POST, '/api/v1/event/followings', 'Get Following List - Token is required'
   def followings
     @followings = []
     request_user.followings.each do |following|
@@ -231,6 +240,7 @@ end
 #       end
 # end # func
 
+  api :GET, '/api/v1/event/follow/requests', 'Get follow requests list - Token is required'
    def requests_list
      follow_requests = request_user.follow_requests
     render json: {
@@ -242,6 +252,9 @@ end
         }
       }
    end
+
+  api :POST, '/api/v1/event/remove-follow-request', 'To remove a follow request'
+  param :request_id, :number, :desc => "Request ID (Request primary key e.g. 1,2,3)", :required => true
 
    def remove_request
      if !params[:request_id].blank?
@@ -272,6 +285,9 @@ end
      end
    end
 
+  api :POST, '/api/v1/user/remove-follower', 'To remove a follower'
+  param :user_id, :number, :desc => "User ID (Follower ID)", :required => true
+
    def remove_follower
     if !params[:user_id].blank?
       if fr = Follow.where(user_id: params[:user_id]).where(following_id: request_user.id).first.destroy
@@ -299,6 +315,8 @@ end
       }
     end
    end
+
+  api :GET, '/api/v1/follows/suggest-businesses', 'View all suggest businesses to follow'
 
    def suggest_businesses
     @businesses_suggestions = []

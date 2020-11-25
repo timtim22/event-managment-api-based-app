@@ -5,11 +5,14 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
   # GET /users
+
+  api :GET, '/api/v1/users', 'View All Users - Token Required'
+
   def index
     all_users = []
     app = User.app_users.page(params[:page]).per(100).map  { |user| all_users.push(get_user_object(user)) }
     business = User.web_users.page(params[:page]).per(20).map { |user| all_users.push(get_business_object(user)) }
-      
+
     render json: {
       code: 200,
       success: true,
@@ -19,6 +22,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     }
   end
 
+  api :GET, '/api/v1/get-users-having-common-fields', 'To update a user profile'
 
   def get_users_having_common_fields
     users = []
@@ -49,7 +53,14 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     render json: @user, status: :ok
   end
 
- 
+  api :POST, '/api/v1/users', 'To SignUp/Register'
+  param :first_name, String, :desc => "First Name"
+  param :last_name, String, :desc => "last Name"
+  param :email, String, :desc => "Email"
+  param :phone_number, :number, :desc => "Phone Number - Required for Mobile App users", :required => true
+  param :password, String, :desc => "Password", :required => true
+  param :password_confirmation, String, :desc => "Password Confirmation", :required => true
+
   # POST /users
   def create
     required_fields = ['first_name', 'last_name','dob', 'device_token', 'gender','is_email_subscribed', 'type']
@@ -62,18 +73,18 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
 
    if errors.blank?
     @user = User.new
-    if params[:avatar].blank? 
+    if params[:avatar].blank?
      @user.remote_avatar_url = get_dummy_avatar
     else
       @user.avatar= params[:avatar]
     end
-   
+
     @user.app_user = true
     @user.phone_number = params[:phone_number]
     @user.email = params[:email]
     @user.verification_code = generate_code
     @user.stripe_state = generate_code
-    if @user.save 
+    if @user.save
       @profile = Profile.new
       @profile.dob = params[:dob]
       @profile.user = @user
@@ -95,17 +106,17 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
       @profile_data["avatar"] = @user.avatar
        #Also save default setting
        setting_name_values = ['all_chat_notifications','event_notifications','special_offers_notifications','passes_notifications','competitions_notifications','location']
-       
-       setting_name_values.each do |name|     
+
+       setting_name_values.each do |name|
          new_setting = Setting.create!(user_id: @user.id, name: name, is_on: true)
        end #each
-     
+
        if params[:is_email_subscribed] ==  'true'
        #send verification email
         email_sent =  send_verification_email(@user)
        else
         email_sent = "No email was sent"
-       end     
+       end
        #applicable only if user is invited
        if !params[:inviter_phone].blank?
          inviter = User.where(phone_number: params[:inviter_phone]).first
@@ -114,22 +125,22 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
           auto_friendship(inviter, invitee)
          end
        end
-        
+
        #create role
        assignment = @user.assignments.create!(role_id: params[:type])
-       
-      render json: { 
+
+      render json: {
             code: 200,
             success: true,
             message: "Registered successfully.",
             data: {
               user: @profile_data,
               token: encode(user_id: @user.id),
-              email_sent: email_sent 
+              email_sent: email_sent
             }
           }
     else
-      render json: { 
+      render json: {
         code: 400,
         success: false,
         message: @user.errors.full_messages,
@@ -161,7 +172,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
   end
 
   def update_avatar
-    @user = current_user()      
+    @user = current_user()
     if @user.update(profile_update_params)
       #create_activity("updated profile picture.", @user, "User")
       render json: {
@@ -176,13 +187,27 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     end
   end
 
+  api :POST, '/api/v1/user/update-profile', 'To update a user profile'
+  param :first_name, String, :desc => "First name of the profile", :required => true
+  param :last_name, String, :desc => "Last name of the profile", :required => true
+  param :email, String, :desc => "Email of the profile", :required => true
+  param :mobile, :number, :desc => "Phone number of the profile", :required => true
+  param :about, String, :desc => "About profile"
+  param :dob, :number, :desc => "Date of Birth of the user"
+  param :gender, String, :desc => "Gender of the user"
+  param :snapchat, :number, :desc => "Add snapchat link"
+  param :facebook, :number, :desc => "Add facebook link"
+  param :twitter, :number, :desc => "Add twitter link"
+  param :youtube, :number, :desc => "Add youtube link"
+  param :instagram, :number, :desc => "Add Instagram link"
+
   def update_profile
     params.permit(:avatar)
     user = request_user
     profile = user.profile
     user.profile.first_name = params[:first_name]
     user.profile.last_name = params[:last_name]
-    user.avatar = params[:avatar] 
+    user.avatar = params[:avatar]
     user.profile.gender = params[:gender]
     profile.about = params[:about]
     profile.add_social_media_links = params[:add_social_media_links]
@@ -201,7 +226,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
   if profile.save && user.save
    # create_activity("updated profile.", profile, "Profile")
    profile_object = {
-    'first_name' => user.profile.first_name, 
+    'first_name' => user.profile.first_name,
     'last_name' => user.profile.last_name,
     'avatar' => user.avatar,
     'lat' => user.profile.lat,
@@ -239,11 +264,13 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
   end
 end
 
+  api :GET, '/api/v1/user/get-profile', 'To get your own profile - Token is required'
+
   def get_profile
     user = request_user
       profile = {
           'id' => user.id,
-          'first_name' => user.profile.first_name, 
+          'first_name' => user.profile.first_name,
           'last_name' => user.profile.last_name,
           'avatar' => user.avatar,
           'lat' => user.profile.lat,
@@ -272,17 +299,20 @@ end
         data: {
           profile: profile,
           user: request_user
-        } 
-      }  
+        }
+      }
 end
+
+  api :POST, '/api/v1/user/get-others-profile', 'To get a mobile user profile'
+  param :user_id, :number, :desc => "User ID", :required => true
 
  def get_others_profile
   if !params[:user_id].blank?
   user = User.find(params[:user_id])
   profile = {}
- 
+
   profile['user_id'] = user.id
-  profile['first_name'] = user.profile.first_name 
+  profile['first_name'] = user.profile.first_name
   profile['last_name'] = user.profile.last_name
   profile['avatar'] = user.avatar
   profile['about'] = user.profile.about
@@ -302,7 +332,7 @@ end
   profile['friends_count'] = user.friends.size
   profile['follows_count'] = user.followings.size
   profile['followers_count'] = user.followers.size
- 
+
   render json: {
     code: 200,
     success: true,
@@ -310,7 +340,7 @@ end
     data: {
       profile: profile,
       user: request_user
-    } 
+    }
   }
 else
   render json: {
@@ -319,10 +349,11 @@ else
     message: 'user_id is required.',
     data: nil
   }
-end  
+end
 end
 
-
+  api :POST, '/api/v1/user-activity-logs', 'To get user get activity logs'
+  param :user_id, :number, :desc => "User ID", :required => true
 
  def activity_logs
    if !params[:user_id].blank?
@@ -365,7 +396,7 @@ end
         resource['location'] = log.resource.location
         resource['start_date'] = log.resource.date
         resource['grabbers_counts'] = log.resource.wallets.size
-        
+
       when 'Competition'
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
@@ -376,7 +407,7 @@ end
         resource['title'] = log.resource.offer.title
         resource['host_name'] = get_full_name(log.resource.user)
         resource['forwarded_to'] =  get_full_name(log.resource.recipient)
-        
+
       else
         "do nothing"
       end #case
@@ -388,7 +419,7 @@ end
         "resource_type" => log.resource_type,
         "resource" => resource,
         "created_at" => log.created_at
-       
+
       }
     end #each
 
@@ -409,14 +440,15 @@ end
     }
    end
  end
-
+  api :POST, '/api/v1/user-attending', 'User Events to attend list'
+  param :user_id, :number, :desc => "User ID", :required => true
 
  def attending
    if !params[:user_id].blank?
-    
+
      user = User.find(params[:user_id])
      attending = user.events_to_attend.page(params[:page]).per(30).map {|event| get_simple_event_object(event) }
-     
+
      render json: {
        code: 200,
        success: true,
@@ -434,6 +466,8 @@ end
   end
  end
 
+  api :POST, '/api/v1/gives_away', 'To get user gives away'
+  param :user_id, :number, :desc => "user ID", :required => true
 
  def gives_away
   if !params[:user_id].blank?
@@ -465,6 +499,8 @@ end
     }
   end
  end
+
+  api :get, '/api/v1/my-activity-logs', 'To get my activity logs'
 
  def my_activity_logs
     user = request_user
@@ -506,7 +542,7 @@ end
        resource['location'] = log.resource.location
        resource['start_date'] = log.resource.date
        resource['grabbers_counts'] = log.resource.wallets.size
-       
+
      when 'Competition'
        resource['title'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
@@ -517,7 +553,7 @@ end
        resource['title'] = log.resource.offer.title
        resource['host_name'] = get_full_name(log.resource.user)
        resource['forwarded_to'] =  get_full_name(log.resource.recipient)
-       
+
      else
        "do nothing"
      end #case
@@ -529,7 +565,7 @@ end
        "resource_type" => log.resource_type,
        "resource" => resource,
        "created_at" => log.created_at
-      
+
      }
    end #each
 
@@ -541,10 +577,10 @@ end
         activity_logs: activity_logs
       }
     }
-  
+
 end
 
-
+  api :GET, '/api/v1/my-attending', 'To get my attending'
 def my_attending
     attending = []
     user = request_user
@@ -583,9 +619,10 @@ def my_attending
         attending: attending
       }
     }
-  
+
 end
 
+  api :GET, '/api/v1/my-gives-away', 'To get my gives away'
 
 def my_gives_away
    user = request_user
@@ -616,7 +653,7 @@ end
       offers = {}
       offers['special_offers'] = user.special_offers
       offers['passes'] = user.passes
-      profile['first_name'] = user.business_profile.profile_name 
+      profile['first_name'] = user.business_profile.profile_name
       profile['last_name'] = ''
       profile['avatar'] = user.avatar
       profile['about'] = user.profile.about
@@ -634,9 +671,12 @@ end
         message: '',
         data: {
           profile: profile
-        } 
+        }
       }
  end
+
+  api :POST, '/api/v1/user/get-others-business-profile', 'To get a business profile'
+  param :user_id, :number, :desc => "User ID", :required => true
 
  def get_others_business_profile
   if !params[:user_id].blank?
@@ -646,7 +686,7 @@ end
   profile['id'] = user.id
   profile['profile_name'] = user.business_profile.profile_name
   profile['first_name'] = user.business_profile.profile_name
-  profile['last_name'] = ''   
+  profile['last_name'] = ''
   profile['avatar'] = user.avatar
   profile['address'] = user.business_profile.address
   profile['about'] = user.business_profile.about
@@ -662,7 +702,7 @@ end
   profile['competitions_count'] = user.competitions.size
   profile['offers_count'] = user.special_offers.size
   profile['news_feeds'] = user.news_feeds
-  profile['ambassador_request_status'] = status 
+  profile['ambassador_request_status'] = status
   profile['is_ambassador'] = if get_request_status(user.id) == 'accepted' then true else false end
   render json: {
     code: 200,
@@ -670,8 +710,8 @@ end
     message: '',
     data: {
       profile: profile,
-      user: user 
-    } 
+      user: user
+    }
   }
 else
   render json: {
@@ -683,8 +723,7 @@ else
 end
 end
 
-
-
+  api :GET, '/api/v1/get-activity-logs', 'To get the activity logs'
 
   def get_activity_logs
     @activity_logs = request_user.activity_logs.order(:created_at => "DESC")
@@ -697,6 +736,9 @@ end
       }
     }
   end
+
+  api :POST, '/api/v1/update-device-token', 'To update a device token'
+  param :device_token, String, :desc => "Device Token", :required => true
 
   def update_device_token
     if !params[:device_token].blank?
@@ -724,6 +766,10 @@ end
     }
   end
   end
+
+  api :POST, '/api/v1/update-current-location', 'To update a current location'
+  param :lat, :number, :desc => "Latitude of the location", :required => true
+  param :lng, :number, :desc => "Longitude of the location", :required => true
 
   def update_current_location
     if !params[:lat].blank? && !params[:lng].blank?
@@ -827,6 +873,7 @@ end
     }
   end
 
+  api :GET, '/api/v1/get-phone-numbers', 'To get phone number list'
 
   def get_phone_numbers
     @phone_numbers = User.all.map {|user| user.phone_number }
@@ -839,6 +886,9 @@ end
       }
     }
   end
+
+  api :POST, '/api/v1/users/update-profile-picture', 'Update Profile Picture'
+  param :avatar, :number, :desc => "Avatar", :required => true
 
   def update_profile_pictures
     if @update = request_user.update!(avatar: params[:avatar])
@@ -880,19 +930,23 @@ private
  def profile_update_params
   params.permit(:avatar)
  end
- 
+
 
  def getRoles
    @roles = Role.all
  end
 
+  api :GET, '/api/v1/auth/send-verification-email', 'Send verification code to verify email'
+  param :email, String, :desc => "Email", :required => true
+
+
  def send_verification_email(user)
-    @code = user.verification_code 
+    @code = user.verification_code
     base_url = request.base_url
     @url = "#{base_url}/api/v1/auth/verify-code?email=#{user.email}&&verification_code=#{@code}"
     # @url = "#{ENV['BASE_URL']}/api/v1/auth/verify-code?email=#{user.email}&&verification_code=#{@code}"
     if UserMailer.with(user: user).verification_email(user,@url).deliver_now#UserMailer.deliver_now
-     true   
+     true
   else
     false
   end

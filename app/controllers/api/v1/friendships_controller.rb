@@ -9,6 +9,9 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
     @request_data = {}
   end
 
+  api :POST, '/api/v1/add-friend', 'To add user as a friend'
+  param :friend_id, :number, :desc => "Friend ID", :required => true
+
   def send_request
     if !params[:friend_id].blank?
      @friend = User.find(params[:friend_id])
@@ -18,7 +21,9 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
     @friend_request.status = "pending"
     if @friend_request.save
       #create_activity("sent friend request to #{get_full_name(@friend)}", @friend_request, 'FriendRequest', '', '', 'post', 'send_friend_request')
+
       if notification = Notification.create(recipient: @friend, actor: @sender, action: get_full_name(@sender) + " sent you a friend request", notifiable: @friend_request, resource: @friend_request, url: '/admin/friend-requests', notification_type: 'mobile', action_type: 'send_request')
+
         @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -37,6 +42,7 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
             "body": notification.action
           },
           data: {
+
             "id": notification.id,
             "friend_name": User.get_full_name(notification.resource.user),
             "friend_id": notification.resource.user.id,
@@ -92,6 +98,9 @@ else
 end
 end
 
+api :POST, '/api/v1/check-request', 'check request status whether sent or not'
+param :friend_id, :number, :desc => "Friend ID", :required => true
+
 def check_request
    sender = request_user
    friend = User.find(params[:friend_id]);
@@ -105,6 +114,8 @@ def check_request
      }
    }
 end
+
+api :GET, '/api/v1/friend-requests', 'To view all friend requests - Token is reqiured'
 
 def friend_requests
   requests = User.friend_requests(request_user)
@@ -133,6 +144,9 @@ def friend_requests
   }
 end
 
+  api :POST, '/api/v1/user/accept-request', 'To accpet a friend request'
+  param :request_id, :number, :desc => "accept ID", :required => true
+
 def accept_request
   if !params[:request_id].blank?
   request = FriendRequest.find(params[:request_id])
@@ -146,6 +160,7 @@ def accept_request
       create_activity(request_user, "become friend", request, 'FriendRequest', '', '', 'post', 'accept_friend_request')
       #clear friend request notifcation on accpet
       @notification =  Notification.where(notifiable_id: request.id).where(notifiable_type: 'FriendRequest').first.destroy
+
 
 
       if notification = Notification.create(recipient: request.user, actor: request_user, action: get_full_name(request_user) + " accepted your friend request", notifiable: request, resource: request, url: '/admin/my-friends', notification_type: 'mobile', action_type: 'accept_request')
@@ -213,6 +228,9 @@ else
 end
 end
 
+  api :POST, '/api/v1/remove-request', 'To remove/delete friend request'
+  param :user_id, :number, :desc => "User ID", :required => true
+
 def remove_request
   friend_request = FriendRequest.where(friend_id: request_user.id).where(user_id: params[:user_id]).first
    #clear friend request notifcation on remove
@@ -237,6 +255,7 @@ def remove_request
   end
 end
 
+  api :GET, '/api/v1/my-friends', 'To view all your friends - Token is required'
 def my_friends
   requests = FriendRequest.where(user_id: request_user.id).where(status: 'accepted')
   friends_array = []
@@ -257,6 +276,9 @@ def my_friends
     }
 }.to_json
 end
+
+  api :POST, '/api/v1/remove-friend', 'To remove a friend'
+  param :friend_id, :number, :desc => "Friend ID", :required => true
 
 def remove_friend
   #remove bi directional friendship
@@ -281,6 +303,8 @@ def remove_friend
     }
   end # main
 end# #func
+
+  api :GET, '/api/v1/friendships/suggest-friends', 'To View all suggest friends'
 
 def suggest_friends
   @friends_suggestions = []
@@ -356,6 +380,7 @@ end
 
  @all_suggessions = []
  @friends_suggestions.uniq.each do  |user|
+
   if not_me?(user) && !is_my_friend?(user) && !is_business?(user)
     @all_suggessions << {
      user:  get_user_object(user),
@@ -375,6 +400,10 @@ end
  }
 
  end #func
+
+   api :POST, '/api/v1/friendships/get-friends-details', 'To get friend details'
+  param :user_id, :number, :desc => "User ID", :required => true
+  param :detail_type, String, :desc => "Friends/Followings", :required => true
 
  def get_friends_details
   if !params[:user_id].blank?
@@ -458,8 +487,6 @@ end
     end
 end
 
-  
 
- 
 
 end

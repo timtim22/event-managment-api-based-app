@@ -7,6 +7,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
 
+  api :GET, '/api/v1/get-wallet', 'Get wallet data (Logged in user)'
+
  def get_wallet
 
   @wallet_data = {}
@@ -129,6 +131,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
   }
  end
 
+  api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
  def get_offers
   @special_offers = []
@@ -170,6 +173,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
     }
  end
 
+  api :GET, '/api/v1/wallet/get-passes', 'Get Wallet Passes'
 
  def get_passes
   @redeemed_passes = []
@@ -296,7 +300,7 @@ else
 }
  end
 
-
+  api :GET, '/api/v1/wallet/get-competitions', 'Get wallet competitions'
 def get_competitions
   @competitions = []
   @wallets = request_user.wallets.where(offer_type: 'Competition').where(is_removed: false).page(params[:page]).per(get_per_page)
@@ -339,6 +343,7 @@ def get_competitions
 
 end
 
+  api :GET, '/api/v1/wallet/get-tickets', 'Get Wallet tickets'
 
 def get_tickets
   @tickets = []
@@ -382,6 +387,9 @@ render json:  {
 
 end
 
+  api :POST, '/api/v1/wallet/remove-follower', 'To remove an item from the wallet'
+  param :offer_id, :number, :desc => "Offer ID - Item ID", :required => true
+  param :offer_type, String, :desc => "competitions/special_offers/tickets/pass", :required => true
 
 def remove_offer
  all_is_well = !params[:offer_id].blank? && !params[:offer_type].blank?
@@ -413,7 +421,9 @@ def remove_offer
  end
 end
 
-
+  api :POST, '/api/v1/add-to-wallet', 'Add offers to your wallet'
+  param :offer_id, :number, :desc => "Offer ID", :required => true
+  param :offer_type, :number, :desc => "Offer Type (SpecialOffer, Pass)", :required => true
 
  def add_to_wallet
   if !params[:offer_id].blank? && !params[:offer_type].blank?
@@ -425,6 +435,7 @@ end
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
        )
+
       if @notification = Notification.create(recipient: @wallet.offer.user, actor: request_user, action: get_full_name(request_user) + " added your offer '#{@wallet.offer.title}' to wallet.", notifiable: @wallet.offer, resource: @wallet, url: "/admin/#{ if @wallet.offer_type == 'Pass' then 'passes' else 'special_offers' end }/#{@wallet.offer.id}", notification_type: 'web', action_type: "add_#{@wallet.offer.class.name}_to_wallet")
         @pubnub.publish(
           channel: [@wallet.offer.user.id.to_s],
@@ -441,6 +452,7 @@ end
         #also notify request_user friends
         if !request_user.friends.blank?
           request_user.friends.each do |friend|
+
             if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has grabbed #{@wallet.offer.class.name} '#{@wallet.offer.title}'.", notifiable: @wallet.offer, resource: @wallet,  url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: "add_#{@wallet.offer.class.name}_to_wallet")
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
@@ -488,7 +500,7 @@ end
                   "created_at": notification.created_at,
                   "is_read": !notification.read_at.nil?
                 }
-              
+
               when "SpecialOffer"
                 data = {
                   "id": notification.id,
@@ -510,7 +522,7 @@ end
               else
                 "do nothing"
               end
-                 
+
               payload = {
                 "pn_gcm":{
                 "notification":{
@@ -563,8 +575,10 @@ end
   end
  end
 
+  api :POST, '/api/v1/view-offer', 'View offer(special_offers, pass'
+  param :offer_id, :number, :desc => "Offer ID", :required => true
+  param :offer_type, :number, :desc => "Offer Type(SpecialOffer, Pass)", :required => true
 
- 
 
  def view_offer
   if !params[:offer_id].blank? && !params[:offer_type].blank?

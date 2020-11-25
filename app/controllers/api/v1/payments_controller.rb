@@ -7,6 +7,12 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   include ActionView::Helpers::DateHelper
   Stripe.api_key = ENV['STRIPE_API_KEY']
 
+  api :POST, '/api/v1/events/purchase-ticket', 'Purchase Ticket'
+  param :ticket_id, :number, :desc => "Ticket ID", :required => true
+  param :ticket_type, String, :desc => "Type of the ticket", :required => true
+  param :status, String, :desc => "successful/failed", :required => true
+  param :stripe_response, String, :desc => "Stripe response", :required => true
+  param :transaction_id, :number, :desc => "Transaction ID", :required => true
 
   def purchase_ticket
     if !params[:ticket_id].blank? && !params[:ticket_type].blank?  && !params[:quantity].blank?
@@ -341,6 +347,10 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   end
   end
 
+  api :POST, '/api/v1/payments/get-secret', 'Get client secret and submit amout to pay'
+  param :total_price, :number, :desc => "Total Price", :required => true
+  param :ticket_id, :number, :desc => "Ticket ID", :required => true
+  param :quantity, :number, :desc => "Quantity of the tickets", :required => true
 
   def get_secret
       if !params[:total_price].blank? && !params[:ticket_id].blank? && !params[:quantity].blank?
@@ -399,7 +409,9 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   end
 
 
-
+  api :POST, '/api/v1/payments/place-refund-request', 'Place a refund requests'
+  param :ticket_id, :number, :desc => "Ticket ID", :required => true
+  param :reason, :number, :desc => "Reason", :required => true
 
   def place_refund_request
     if !params[:ticket_id].blank?

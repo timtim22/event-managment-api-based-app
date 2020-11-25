@@ -1,21 +1,26 @@
 class Api::V1::AuthenticationController < Api::V1::ApiMasterController
   before_action :authorize_request, only: [:update_password]
-  
+
    # POST /auth/login
+
+    api :POST, '/api/v1/auth/login', 'To login and Generate Auhtorization Token'
+    param :id, :number, :desc => "The ID of the user", :required => true
+    param :device_token, String, :desc => "pass any string ", :required => true
+
    def login
     @empty = {}
-   
+
     if params[:id].blank? == true
-      render json: { 
+      render json: {
         code: 400,
         success: false,
         message: "id number is required.",
         data: nil
        }
 
-      elsif params[:device_token].blank? == true 
+      elsif params[:device_token].blank? == true
         render json: {
-          code: 400, 
+          code: 400,
           success: false,
           message: "Device token is required.",
           data: nil
@@ -33,8 +38,8 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
       #create_activity('logged in.', @user, 'User', '', '', 'post')
       token = encode(user_id: @user.id)
       time = Time.now + 24.hours.to_i
-      
-      render json: { 
+
+      render json: {
             code: 200,
             success: true,
             message: "Login is successful.",
@@ -44,7 +49,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
             }
           }
      else
-      render json: { 
+      render json: {
         code: 401,
         success: false,
         message: "Email/password is incorrect.",
@@ -55,12 +60,14 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
 
   end
 
+  api :POST, '/api/v1/get-accounts', 'To get user account list'
+  param :phone_number, :number, :desc => "Phone Number", :required => true
 
 
  def get_accounts
     @phone_number = params[:phone_number]
     if params[:phone_number].blank? == true
-      render json: { 
+      render json: {
         code: 400,
         success: false,
         message: "Phone number is required.",
@@ -96,15 +103,15 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
           "app_user" => account.app_user,
           "email" => account.email
          }
-        end        
+        end
       end #each
-    
+
     end
 
       accounts_data['business'] = business_accounts
       accounts_data['app'] = app_account
 
-    render json: { 
+    render json: {
       code: 200,
       success: true,
       message: "",
@@ -116,7 +123,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
 
   end #func
 
-  
+
 
   def logout
      header = request.headers['Authorization']
@@ -131,7 +138,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
      render json: response.to_json
   end
 
-  # def send_verification_email 
+  # def send_verification_email
   #   @user = User.find_by(email: params[:email])
   #   @code = (SecureRandom.random_number(9e5) + 1e5).to_i
   #   @user.verification_code = @code
@@ -157,6 +164,10 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
   #   end
   # end
 
+  api :POST, '/api/v1/auth/verify_code', 'Code verification code'
+  param :email, String, :desc => "Email", :required => true
+  param :verification_code, String, :desc => "Verification code", :required => true
+
   def verify_code
     @user = User.find_by(email: params[:email])
     if @user
@@ -174,6 +185,10 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
     render ('user_mailer/verifciation_redirect_page')
   end
   end
+
+  api :POST, '/api/v1/auth/update-password', 'To update password'
+  param :email, String, :desc => "Email", :required => true
+  param :password, String, :desc => "Password", :required => true
 
   def update_password
     @user = User.find_by(email: params[:email])
@@ -202,5 +217,5 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
   def login_params
     params.permit(:email, :password)
   end
-   
+
 end

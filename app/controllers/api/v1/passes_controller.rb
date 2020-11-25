@@ -1,5 +1,5 @@
 class Api::V1::PassesController < Api::V1::ApiMasterController
- 
+
   def index
     if !params[:event_id].blank?
       @event = Event.find(params[:event_id])
@@ -7,7 +7,7 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
       passes = Pass.where(event_id: @event.id).page(params[:page]).per(30)
       if !passes.blank?
         passes.each do |pass|
-         if request_user 
+         if request_user
           if !is_removed_pass?(request_user, pass)
             @passes << {
               id: pass.id,
@@ -72,7 +72,7 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
         data: nil
       }
     end
-    
+
   end
 
 
@@ -161,12 +161,15 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
   #   flash.now[:alert_danger] = "No event is selected."
   #   render :new
   # end
-   
+
   # end
 
   # def destroy
   #   @pass = Pass.find(params[:id])
   # end
+  api :POST, '/api/v1/event/redeem-pass', 'To redeem an event'
+  param :event_id, :number, :desc => "Event ID", :required => true
+  param :redeem_code, :number, :desc => "Redeem Code", :required => true
 
   def redeem_it
     if !params[:redeem_code].blank? && !params[:pass_id].blank?
@@ -185,11 +188,11 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
         @forwardings = OfferForwarding.all.each do |forward|
           @shared_offers.push(forward.offer)
         end
-    
+
         @sharings = OfferShare.all.each do |share|
           @shared_offers.push(share.offer)
         end
-    
+
         if @shared_offers.include? @pass
           @share = OfferForwarding.find_by(offer_id: @pass.id)
           if @share.blank?
@@ -198,7 +201,7 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
           @ambassador = @share.user
           if @ambassador.profile.is_ambassador ==  true #if user is an ambassador
           @ambassador.profile.update!(earning:  @ambassador.profile.earning + @pass.ambassador_rate.to_i)
-        
+
           end
         end
 
@@ -207,14 +210,14 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
         success: true,
         message: "Pass redeemed.",
         data: nil
-      }      
+      }
     else
       render json: {
         code: 400,
         success: false,
         message: "Pass was not redeemed.",
         data: nil
-      }   
+      }
     end
     else
       render json: {
@@ -242,6 +245,8 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
   end
   end
 
+  api :POST, '/api/v1/passes/create-view', 'Create a passes view'
+  param :pass_id, :number, :desc => "Pass ID", :required => true
 
   def create_view
     if !params[:pass_id].blank?
@@ -267,14 +272,14 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
          success: false,
          message: 'pass_id is requied field.'
        }
-      
+
     end
   end
 
 
   private
 
-  
+
   #  def pass_params
   #   params.permit(:title,:description, :validity)
   #  end

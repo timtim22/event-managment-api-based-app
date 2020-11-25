@@ -1,6 +1,8 @@
 class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
   before_action :authorize_request, except: ['index','show']
 
+  api :GET, '/api/v1/special_offers', 'Get special offers'
+
   def index
     @special_offers = []
     if request_user
@@ -20,7 +22,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
       creator_name: get_full_name(offer.user),
       creator_image: offer.user.avatar,
       validity: offer.validity.strftime(get_time_format),
-      end_time: offer.time, 
+      end_time: offer.time,
       grabbers_count: offer.wallets.size,
       is_added_to_wallet: is_added_to_wallet?(offer.id),
       grabbers_friends_count: get_grabbers_friends_count(offer),
@@ -47,7 +49,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
         creator_name: get_full_name(offer.user),
         creator_image: offer.user.avatar,
         validity: offer.validity.strftime(get_time_format),
-        end_time: offer.time, 
+        end_time: offer.time,
         grabbers_count: offer.wallets.size,
         is_added_to_wallet: is_added_to_wallet?(offer.id),
         grabbers_friends_count: get_grabbers_friends_count(offer),
@@ -70,6 +72,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
 
 
 
+
   def special_offer_single
    if !params[:special_offer_id].blank? 
     offer = SpecialOffer.find(params[:special_offer_id])
@@ -87,7 +90,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
       creator_name: get_full_name(offer.user),
       creator_image: offer.user.avatar,
       validity: offer.validity.strftime(get_time_format),
-      end_time: offer.time, 
+      end_time: offer.time,
       grabbers_count: offer.wallets.size,
       is_added_to_wallet: is_added_to_wallet?(offer.id),
       grabbers_friends_count: get_grabbers_friends_count(offer),
@@ -117,7 +120,8 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
 
 
 
-
+  api :POST, '/api/v1/get-business-offers', 'Get Business user special offer'
+  param :business_id, :number, :desc => "Business ID", :required => true
 
   def get_business_special_offers
     if !params[:business_id].blank?
@@ -143,7 +147,9 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
     end
   end
 
-
+  api :POST, '/api/v1/redeem-special-offer', 'Redeen a special offer'
+  param :offer_id, :number, :desc => "Offer ID", :required => true
+  param :redeem_code, :number, :desc => "Redeem Code", :required => true
 
   def redeem_it
     if !params[:redeem_code].blank? && !params[:offer_id].blank?
@@ -152,7 +158,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
    if @check.blank?
     if(@special_offer && @special_offer.redeem_code == params[:redeem_code].to_s)
       if  @redemption = Redemption.create!(:user_id =>  request_user.id, offer_id: @special_offer.id, code: params[:redeem_code], offer_type: 'SpecialOffer')
- 
+
         # resource should be parent resource in case of api so that event id should be available in order to show event based interest level.
         #create_activity("redeemed special offer", @redemption, 'Redemption', '', @special_offer.title, 'post', 'redeem_special_offer')
         #ambassador program: also add earning if the pass is shared by an ambassador
@@ -160,11 +166,11 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
         @forwardings = OfferForwarding.all.each do |forward|
           @shared_offers.push(forward.offer)
         end
-    
+
         @sharings = OfferShare.all.each do |share|
           @shared_offers.push(share.offer)
         end
-    
+
         if @shared_offers.include? @special_offer
           @share = OfferForwarding.find_by(offer_id: @special_offer.id)
           if @share.blank?
@@ -181,14 +187,14 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
         success: true,
         message: "Special offer redeemed.",
         data: nil
-      }      
+      }
     else
       render json: {
         code: 400,
         success: false,
         message: "Special offer was not redeemed.",
         data: nil
-      }   
+      }
     end
     else
       render json: {
@@ -216,6 +222,8 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
   end
   end
 
+  api :POST, '/api/v1/special_offers/create-view', 'Create a special offer view'
+  param :offer_id, :number, :desc => "Offer ID", :required => true
 
   def create_view
     if !params[:offer_id].blank?
@@ -241,7 +249,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
          success: false,
          message: 'offer_id is requied field.'
        }
-      
+
     end
   end
 

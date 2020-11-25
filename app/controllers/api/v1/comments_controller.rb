@@ -6,6 +6,11 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
 
+  api :POST, '/api/v1/event/post-comment', 'Post event based comment'
+  param :event_id, :number, :desc => "Event ID", :required => true
+  param :comment, String, :desc => "Comment", :required => true
+  param :is_reply, String, :desc => "True/False - If it is_reply=true, comment_id is required", :required => true
+
   def create
 
    if !params[:event_id].blank? && !params[:is_reply].blank?
@@ -24,6 +29,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
        )
+
      if @notification = Notification.create(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')
         @pubnub.publish(
           channel: [@event.user.id.to_s],
@@ -44,6 +50,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          end #each
         @comment_users.uniq.each do |comment_user|
       if comment_user != request_user
+
 
         if notification = Notification.create(recipient: comment_user, actor: request_user, action: get_full_name(request_user) + " commented on event '#{@event.name}'.", notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')
 
@@ -135,6 +142,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          publish_key: ENV['PUBLISH_KEY'],
          subscribe_key: ENV['SUBSCRIBE_KEY']
         )
+
       if @notification = Notification.create!(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')
          @pubnub.publish(
            channel: [@event.user.id.to_s],
@@ -149,6 +157,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          end
        end ##notification create
         #also notify who commented on the event
+
         if notification = Notification.create!(recipient: @comment.user, actor: request_user, action: "#{User.get_full_name(request_user)}  replied to your comemnt on the event '#{@event.name}'.", notifiable: @reply, resource: @reply, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'reply_comment')
 
           if !event_chat_muted?(@comment.user, @event) && !@comment.user.all_chat_notifications_setting.blank?  && @comment.user.all_chat_notifications_setting.is_on == true && !@comment.user.event_notifications_setting.blank? && @comment.user.event_notifications_setting.is_on == true
@@ -166,6 +175,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
                 "body": notification.action
               },
               data: {
+
                 "id": notification.id,
                 "event_id": notification.resource.comment.event.id,
                 "event_name": notification.resource.comment.event.name,
@@ -192,7 +202,6 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
             end #publish
            end# mute if
          end ##notification create
-
 
        reply_hash = {
         "id" =>  @reply.id,
@@ -247,7 +256,8 @@ else
 end
 end
 
-
+  api :POST, '/api/v1/event/comments', 'Get list of event based comments'
+  param :event_id, :number, :desc => "Event ID", :required => true
 
    def comments
     @event = Event.find(params[:event_id])
@@ -302,6 +312,7 @@ end
   }
    end
 
+  api :POST, '/api/v1/event/get-commented-events', 'Get comment events'
 
    def get_commented_events
      @events = []
@@ -347,7 +358,8 @@ end
      }
    end
 
-
+  api :POST, '/api/v1/event/delete-event-comments', 'Delete Comment Events'
+  param :event_id, :number, :desc => "Event ID", :required => true
 
    def delete_event_comments
      if !params[:event_id].blank?
@@ -378,6 +390,8 @@ end
         end
    end
 
+  api :POST, '/api/v1/event/mark-as-read', 'To mark as read'
+  param :event_id, :number, :desc => "Event ID", :required => true
 
 def mark_as_read
   if !params[:event_id].blank?

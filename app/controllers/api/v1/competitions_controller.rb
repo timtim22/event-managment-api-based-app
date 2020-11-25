@@ -6,6 +6,8 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
     require 'action_view/helpers'
     include ActionView::Helpers::DateHelper
 
+    api :GET, '/api/v1/competitions', 'Shows All competitions - Required a user'
+
     def index
     @competitions = []
     if request_user
@@ -76,10 +78,16 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
     }
   end
 
-
+  api :POST, '/api/v1/competitions', 'To create a competition'
+  param :first_name, String, :desc => "First Name"
+  param :last_name, String, :desc => "last Name"
+  param :email, String, :desc => "Email"
+  param :phone_number, :number, :desc => "Phone Number - Required for Mobile App users", :required => true
+  param :password, String, :desc => "Password", :required => true
+  param :password_confirmation, String, :desc => "Password Confirmation", :required => true
 
   def competition_single
-    if !params[:competition_id].blank? 
+    if !params[:competition_id].blank?
       competition = Competition.find(params[:competition_id])
       @competition = {
         id: competition.id,
@@ -105,7 +113,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
         validity: competition.validity.strftime(get_time_format),
         terms_and_conditions: competition.terms_conditions
       }
-  
+
       render json: {
         code: 200,
         success: true,
@@ -142,6 +150,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
              publish_key: ENV['PUBLISH_KEY'],
              subscribe_key: ENV['SUBSCRIBE_KEY']
             )
+
            if @notification = Notification.create(recipient: @registration.event.user, actor: request_user, action: get_full_name(request_user) + " is interested in your competition '#{@registration.event.title}'.", notifiable: @registration.event, resource: @registration, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile_web', action_type: 'enter_in_competition')
              @pubnub.publish(
                channel: [@registration.event.user.id.to_s],
@@ -159,6 +168,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
              if !request_user.friends.blank?
                request_user.friends.each do |friend|
                if friend.competitions_notifications_setting.is_on == true
+
                  if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has entered in competition '#{@registration.event.title}'.", notifiable: @registration.event, resource: @registration, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile', action_type: 'enter_in_competition')
                  @push_channel = "event" #encrypt later
                  @current_push_token = @pubnub.add_channels_to_push(
@@ -174,6 +184,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                       "body": notification.action
                     },
                     data: {
+
                       "id": notification.id,
                       "friend_name": User.get_full_name(notification.resource.user),
                       "competition_id": notification.resource.event.id,
@@ -223,6 +234,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
          )
+
         if @notification = Notification.create(recipient: @registration.event.user, actor: request_user, action: get_full_name(request_user) + " is interested in your competition '#{@registration.event.title}'.", notifiable: @registration.event, resource: @registration, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile_web', action_type: 'enter_in_competition')
           @pubnub.publish(
             channel: [@registration.event.user.id.to_s],
@@ -240,6 +252,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
           if !request_user.friends.blank?
             request_user.friends.each do |friend|
             if friend.competitions_notifications_setting.is_on == true
+
               if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has entered in competition '#{@registration.event.title}'.", notifiable: @registration.event, resource: @registration, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile', action_type: 'enter_in_competition')
               @push_channel = "event" #encrypt later
               @current_push_token = @pubnub.add_channels_to_push(
@@ -255,6 +268,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                    "body": notification.action
                  },
                  data: {
+
                   "id": notification.id,
                   "friend_name": User.get_full_name(notification.resource.user),
                   "competition_id": notification.resource.event.id,
@@ -307,6 +321,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
 
   end
 
+  api :GET, '/api/v1/competitions/get-winner', 'Get competitions winner and notify all participants'
 
   def get_winner_and_notify
     registrations = Registration.where(event_type: 'Competition')
@@ -323,6 +338,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
               end
               winner = User.find(user_ids.sample) # .sample will pick an id randomly
               participants = User.where(id: [user_ids])
+
               cometition_winner = CompetitionWinner.create!(user_id: winner.id, competition_id: competition.id)
                participants.each do |participant|
                  if participant.id != request_user.id
@@ -494,6 +510,9 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
 
 #   end
 
+  api :POST, '/api/v1/competitions/create-view', 'Create a competitions view'
+  param :competition_id, :number, :desc => "Competition ID", :required => true
+
 def create_view
   if !params[:competition_id].blank?
     competition = Competition.find(params[:competition_id])
@@ -522,6 +541,8 @@ def create_view
   end
 end
 
+  api :POST, '/api/v1/get-business-competitions', 'Get business user competitions'
+  param :business_id, :number, :desc => "Business ID", :required => true
 
   def get_business_competitions
     if !params[:business_id].blank?

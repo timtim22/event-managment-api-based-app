@@ -6,6 +6,8 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
 
+  api :POST, '/api/v1/event/create-interest', 'To create interest'
+  param :event_id, :number, :desc => "Event ID", :required => true
 
  def create_interest
     if !params[:event_id].blank?
@@ -16,6 +18,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
     if @interest_level = @event.interest_levels.create!(user_id: user.id, level: 'interested')
         # resource should be parent resource in case of api so that event id should be available in order to show event based interest level.
       create_activity(request_user, "interested in event '#{@event.name}'", @event, 'Event', admin_event_path(@event), @event.name, 'post', 'interested')
+
       if @notification = Notification.create(recipient: @event.user, actor: request_user, action: get_full_name(request_user) + " is interested in your event '#{@event.name}'.", notifiable: @event, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_interest')
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
@@ -37,6 +40,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
       #also notify request_user friends
      if !request_user.friends.blank?
       request_user.friends.each do |friend|
+
       if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " is interested in event '#{@event.name}'.", notifiable: @interest_level, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_interest')
         @push_channel = "event" #encrypt later
         @current_push_token = @pubnub.add_channels_to_push(
@@ -52,6 +56,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
              "body": notification.action
            },
            data: {
+
             "id": notification.id,
             "business_name": User.get_full_name(notification.resource.event.user),
             "friend_name": User.get_full_name(notification.resource.user),
@@ -112,6 +117,9 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
     end
  end
 
+   api :POST, '/api/v1/event/create-going', 'To create going'
+  param :event_id, :number, :desc => "Event ID", :required => true
+
  def create_going
   if !params[:event_id].blank?
   user = request_user
@@ -142,6 +150,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
       #also notify request_user friends
       if !request_user.friends.blank?
         request_user.friends.each do |friend|
+
         if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " is going to attend event '#{@event.name}'.", notifiable: @interest_level, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_going')
           @push_channel = "event" #encrypt later
           @current_push_token = @pubnub.add_channels_to_push(
@@ -157,6 +166,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
                "body": notification.action
              },
              data: {
+
               "id": notification.id,
               "business_name": User.get_full_name(notification.resource.event.user),
               "friend_name": User.get_full_name(notification.resource.user),

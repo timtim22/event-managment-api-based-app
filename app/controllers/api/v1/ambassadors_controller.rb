@@ -6,12 +6,16 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
 
+  api :POST, '/api/v1/ambassadors/send-request', 'Send Ambassador Request'
+  param :business_id, :number, :desc => "Business ID", :required => true
+
   def send_request
     if !params[:business_id].blank?
     @business = User.find(params[:business_id])
     check = @business.business_ambassador_requests.where(user_id: request_user.id)
     if check.blank?
     if  @ambassador_request = @business.business_ambassador_requests.create!(user_id: request_user.id)
+
 
        approve_ambassador(@ambassador_request.business, @ambassador_request.id)
 
@@ -65,6 +69,8 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
       }
   end
   end
+
+  api :GET, '/api/v1/ambassadors/businesses-list', 'Get list of businesses'
 
   def businesses_list
     @businesses = []
@@ -162,6 +168,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
     }
   end
 
+  api :GET, '/api/v1/ambassadors/my-businesses', 'Get list of businesses whow accepted an ambassador'
   # list of business who approved an ambassador
   def my_businesses
     @businesses = request_user.ambassador_businesses
