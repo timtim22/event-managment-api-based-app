@@ -1,9 +1,6 @@
 Rails.application.routes.draw do
-<<<<<<< HEAD
+
   apipie
-=======
-  apipie
->>>>>>> schema_change
   resources :users
   resources :events
   get '/verify-phone' => "users#verify_phone_page"

@@ -22,11 +22,7 @@ class Admin::FollowsController < Admin::AdminMasterController
         create_activity("sent a follow request to #{@following.first_name ' ' + @following.last_name}", follow_request, "FollowRequest", '','', 'post')
         # fr => follow relationship
         fr = Follow.create!(following_id: params[:following_id], user_id: current_user.id, follow_request_id: follow_request.id)
-<<<<<<< HEAD
-        if @notification = Notification.create(recipient: @following, actor: current_user, action: get_full_name(current_user) + " wants to follow you", notifiable: fr, url: '/admin/follow-requests', notification_type: 'mobile_web')
-=======
-        if @notification = Notification.create(recipient: @following, actor: current_user, action: get_full_name(current_user) + " wants to follow you", notifiable: fr, resource: fr, url: '/admin/follow-requests', notification_type: 'mobile_web')  
->>>>>>> schema_change
+        if @notification = Notification.create(recipient: @following, actor: current_user, action: get_full_name(current_user) + " wants to follow you", notifiable: fr, resource: fr, url: '/admin/follow-requests', notification_type: 'mobile_web')
          @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -145,11 +141,7 @@ end
      fr = Follow.where(user_id: params[:user_id]).where(following_id: current_user.id).first
      if fr.update(:status => true)
       fr.follow_request.destroy
-<<<<<<< HEAD
-      if @notification = Notification.create(recipient: fr.follower, actor: current_user, action: get_full_name(current_user) + " accepted your follow request", notifiable: fr, url: '/admin/follow-requests', notification_type: 'mobile')
-=======
-      if @notification = Notification.create(recipient: fr.follower, actor: current_user, action: get_full_name(current_user) + " accepted your follow request", notifiable: fr, resource: fr, url: '/admin/follow-requests', notification_type: 'mobile')  
->>>>>>> schema_change
+      if @notification = Notification.create(recipient: fr.follower, actor: current_user, action: get_full_name(current_user) + " accepted your follow request", notifiable: fr, resource: fr, url: '/admin/follow-requests', notification_type: 'mobile')
         @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']

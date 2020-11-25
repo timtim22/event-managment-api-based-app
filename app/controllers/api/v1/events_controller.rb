@@ -121,28 +121,11 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
     end
   end
 
-<<<<<<< HEAD
   api :POST, '/api/v1/events', 'Get events by list'
   param :location, String, :desc => "Location of the event", :required => true
   param :price, :number, :desc => "Price of the event", :required => true
   param :pass, String, :desc => "Pass", :required => true
   param :categories, :number, :desc => "categories(1,2)", :required => true
-=======
-def map_event_list
-        @events = []
-          Event.page(params[:page]).each do |event|
-            @events << {
-              id: event.id,
-              lat: event.lat,
-              lng: event.lng,
-              category_ids: !event.category_ids.blank? ? event.category_ids : @empty
-            }
-          end
-            render json: {
-                events: @events
-              }
-end
->>>>>>> schema_change
 
 
   def index
@@ -261,11 +244,8 @@ end
       subscribe_key: ENV['SUBSCRIBE_KEY']
     )
     (User.all - [request_user]).each do |user|
-<<<<<<< HEAD
-      if @notification = Notification.create(recipient: user, actor: request_user, action: get_full_name(request_user) + " posted a new event.", notifiable: @event, url: '/admin/events', notification_type: 'web')
-=======
+
       if @notification = Notification.create(recipient: user, actor: request_user, action: get_full_name(request_user) + " posted a new event.", notifiable: @event, resource: @event, url: '/admin/events', notification_type: 'web')
->>>>>>> schema_change
         @current_push_token = @pubnub.add_channels_to_push(
           push_token: user.profile.device_token,
           type: 'gcm',
@@ -304,13 +284,11 @@ end
 		end
   end
 
-<<<<<<< HEAD
   api :POST, '/api/v1/event/report-event', 'To repot an event'
   param :event_id, :number, :desc => "Event ID", :required => true
   param :reason, String, :desc => "Reason for reporting an event", :required => true
 
-=======
->>>>>>> schema_change
+
   def report_event
    if !params[:event_id].blank? && !params[:reason].blank?
     if request_user.reported_events.create!(event_id: params[:event_id], reason: params[:reason])

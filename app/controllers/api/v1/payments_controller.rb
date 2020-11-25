@@ -409,13 +409,9 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   end
 
 
-<<<<<<< HEAD
   api :POST, '/api/v1/payments/place-refund-request', 'Place a refund requests'
   param :ticket_id, :number, :desc => "Ticket ID", :required => true
   param :reason, :number, :desc => "Reason", :required => true
-=======
-
->>>>>>> schema_change
 
   def place_refund_request
     if !params[:ticket_id].blank?

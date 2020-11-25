@@ -435,11 +435,8 @@ end
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
        )
-<<<<<<< HEAD
-      if @notification = Notification.create(recipient: @wallet.offer.user, actor: request_user, action: get_full_name(request_user) + " added your offer '#{@wallet.offer.title}' to wallet.", notifiable: @wallet.offer, url: "/admin/#{ if @wallet.offer_type == 'Pass' then 'passes' else 'special_offers' end }/#{@wallet.offer.id}", notification_type: 'web', action_type: 'add_to_wallet')
-=======
+
       if @notification = Notification.create(recipient: @wallet.offer.user, actor: request_user, action: get_full_name(request_user) + " added your offer '#{@wallet.offer.title}' to wallet.", notifiable: @wallet.offer, resource: @wallet, url: "/admin/#{ if @wallet.offer_type == 'Pass' then 'passes' else 'special_offers' end }/#{@wallet.offer.id}", notification_type: 'web', action_type: "add_#{@wallet.offer.class.name}_to_wallet")
->>>>>>> schema_change
         @pubnub.publish(
           channel: [@wallet.offer.user.id.to_s],
           message: {
@@ -455,11 +452,8 @@ end
         #also notify request_user friends
         if !request_user.friends.blank?
           request_user.friends.each do |friend|
-<<<<<<< HEAD
-            if @notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has grabbed #{@wallet.offer.class.name.downcase} '#{@wallet.offer.title}'.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
-=======
+
             if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has grabbed #{@wallet.offer.class.name} '#{@wallet.offer.title}'.", notifiable: @wallet.offer, resource: @wallet,  url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: "add_#{@wallet.offer.class.name}_to_wallet")
->>>>>>> schema_change
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
                push_token: friend.profile.device_token,
@@ -467,25 +461,6 @@ end
                add: friend.profile.device_token
                ).value
 
-<<<<<<< HEAD
-             payload = {
-              "pn_gcm":{
-               "notification":{
-                 "title": @wallet.offer.title,
-                 "body": @notification.action
-               },
-               data: {
-                "id": @notification.id,
-                "actor_id": @notification.actor_id,
-                "actor_image": @notification.actor.avatar,
-                "notifiable_id": @notification.notifiable_id,
-                "notifiable_type": @notification.notifiable_type,
-                "action": @notification.action,
-                "action_type": @notification.action_type,
-                "created_at": @notification.created_at,
-                "body": ''
-               }
-=======
 
            case params[:offer_type]
               when "Competition"
@@ -525,7 +500,7 @@ end
                   "created_at": notification.created_at,
                   "is_read": !notification.read_at.nil?
                 }
-              
+
               when "SpecialOffer"
                 data = {
                   "id": notification.id,
@@ -547,7 +522,7 @@ end
               else
                 "do nothing"
               end
-                 
+
               payload = {
                 "pn_gcm":{
                 "notification":{
@@ -556,7 +531,6 @@ end
                 },
                 data: data
                 }
->>>>>>> schema_change
               }
 
              @pubnub.publish(
@@ -601,14 +575,10 @@ end
   end
  end
 
-<<<<<<< HEAD
   api :POST, '/api/v1/view-offer', 'View offer(special_offers, pass'
   param :offer_id, :number, :desc => "Offer ID", :required => true
   param :offer_type, :number, :desc => "Offer Type(SpecialOffer, Pass)", :required => true
-=======
 
- 
->>>>>>> schema_change
 
  def view_offer
   if !params[:offer_id].blank? && !params[:offer_type].blank?

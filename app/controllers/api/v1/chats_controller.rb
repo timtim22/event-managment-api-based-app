@@ -80,10 +80,7 @@ if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipie
    end #publish
   end #all chat and event chat true
 
-<<<<<<< HEAD
-   chat = Message.get_messages(@sender.id,@recipient.id).order(created_at: 'ASC')
 
-=======
    chat = []
    messages = Message.get_messages(@sender.id,@recipient.id).order(created_at: 'ASC')
    if !messages.blank?
@@ -101,8 +98,7 @@ if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipie
       }
     end #each
    end
-  
->>>>>>> schema_change
+
    render json: {
      code: 200,
      success: true,
@@ -247,12 +243,9 @@ def chat_people
 }
 end
 
-<<<<<<< HEAD
   api :POST, '/api/v1/chat/clear-conversation', 'Clear conversation with specific user'
   param :user_id, :number, :desc => "The user ID (perons id you want to clear conversation)", :required => true
-=======
 
->>>>>>> schema_change
 
 def clear_conversation
   if !params[:user_id].blank?
