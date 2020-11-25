@@ -10,23 +10,424 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
   def index
     @notifications = []
-    notifications = request_user.notifications
+    notifications = request_user.notifications.page(params[:page]).per(10).order(id: 'DESC')
     notifications.each do |notification|
       location = {}
       location['lat'] = if !notification.location_share.blank? then notification.location_share.lat else '' end
       location['lng'] = if !notification.location_share.blank? then notification.location_share.lng else '' end
-      @notifications << {
-        "id": notification.id,
-        "actor_id": notification.actor_id,
-        "actor_image": notification.actor.avatar,
-        "notifiable_id": notification.notifiable_id,
-        "notifiable_type": notification.notifiable_type,
-        "action": notification.action,
-        "action_type": notification.action_type,
-        "location": location,
-        "created_at": notification.created_at
-      }
-    end
+
+      case notification.action_type
+      when "create_event"
+        @notifications << {
+          "id": notification.id,
+          "actor_id": notification.actor_id,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "location": location,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?,
+          "business_name": User.get_full_name(notification.resource.user),
+          "event_name": notification.resource.name,
+          "event_id": notification.resource.id,
+          "event_location": notification.resource.location,
+          "event_start_date": notification.resource.start_date
+        }
+
+      when "create_competition"
+          @notifications << {
+            "id": notification.id,
+            "competition_id": notification.resource.id,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "location": location,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?,
+            "competition_name": notification.resource.title,
+            "business_name": User.get_full_name(notification.resource.user),
+            "draw_date": notification.resource.validity.strftime(get_time_format)
+
+          }
+        when "create_offer"
+          @notifications << {
+            "id": notification.id,
+            "special_offer_id": notification.resource.id,
+            "business_name": User.get_full_name(notification.resource.user),
+            "special_offer_title": notification.resource.title,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "location": location,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?
+          }
+
+        # when "update_special_offer"
+        #   @notifications << {
+        #     "special_offers_id": notification.id,
+        #     "business_name": User.get_full_name(notification.resource.user),
+        #     "special_offer_name": notification.resource.title,
+        #     "actor_id": notification.actor_id,
+        #     "actor_image": notification.actor.avatar,
+        #     "notifiable_id": notification.notifiable_id,
+        #     "notifiable_type": notification.notifiable_type,
+        #     "action": notification.action,
+        #     "action_type": notification.action_type,
+        #     "location": location,
+        #     "created_at": notification.created_at,
+        #     "is_read": !notification.read_at.nil?
+
+        #   }
+
+        when "create_pass"
+          @notifications << {
+            "id": notification.id,
+            "pass_id": notification.resource.id,
+            "business_name": User.get_full_name(notification.resource.user),
+            "event_name": notification.resource.event.name,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "location": location,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?
+
+          }
+        when "create_interest"
+          @notifications << {
+            "id": notification.id,
+            "business_name": User.get_full_name(notification.resource.event.user),
+            "friend_name": User.get_full_name(notification.resource.user),
+            "event_name": notification.resource.event.name,
+            "event_id": notification.resource.event.id,
+            "event_start_date": notification.resource.event.start_date,
+            "event_location": notification.resource.event.location,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?,
+            "interest_level": notification.resource.level
+          }
+
+        when "create_going"
+          @notifications << {
+            "id": notification.id,
+            "business_name": User.get_full_name(notification.resource.event.user),
+            "friend_name": User.get_full_name(notification.resource.user),
+            "event_name": notification.resource.event.name,
+            "event_id": notification.resource.event.id,
+            "event_start_date": notification.resource.event.start_date,
+            "event_location": notification.resource.event.location,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?,
+            "interest_level": notification.resource.level
+          }
+
+        when "comment"
+          @notifications << {
+            "id": notification.id,
+            "user_name": User.get_full_name(notification.resource.user),
+            "comment": notification.resource.comment,
+            "event_name": notification.resource.event.name,
+            "user_id": notification.resource.user.id,
+            "event_id": notification.resource.event.id,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?
+          }
+
+        when "reply_comment"
+          @notifications << {
+            "id": notification.id,
+            "event_id": notification.resource.comment.event.id,
+            "event_name": notification.resource.comment.event.name,
+            "replier_id": notification.resource.user.id,
+            "replier_name": User.get_full_name(notification.resource.user),
+            "comment_id": notification.resource.comment.id,
+            "comment": notification.resource.comment.comment,
+            "actor_id": notification.actor_id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?
+          }
+
+      when "add_Competition_to_wallet"
+        @notifications << {
+          "id": notification.id,
+          "friend_name": User.get_full_name(notification.resource.user),
+          "business_name": User.get_full_name(notification.resource.offer.user),
+          "competition_id": notification.resource.offer.id,
+          "competition_name": notification.resource.offer.title,
+          "competition_host": User.get_full_name(notification.resource.offer.user),
+          "competition_draw_date": notification.resource.offer.end_date,
+          "user_id": notification.resource.user.id,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+        }
+
+        when "add_Pass_to_wallet"
+          @notifications << {
+            "id": notification.id,
+            "friend_name": User.get_full_name(notification.resource.user),
+            "event_name": notification.resource.offer.event.name,
+            "event_start_date": notification.resource.offer.event.start_date,
+            "pass_id": notification.resource.offer.id,
+            "event_location": notification.resource.offer.event.location,
+            "user_id": notification.resource.offer.user.id,
+            "actor_image": notification.actor.avatar,
+            "total_grabbers_count": notification.resource.offer.wallets.size,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?
+          }
+
+        when "add_SpecialOffer_to_wallet"
+          @notifications << {
+            "id": notification.id,
+            "friend_name": User.get_full_name(notification.resource.user),
+            "special_offer_id": notification.resource.offer.id,
+            "special_offer_title": notification.resource.offer.title,
+            "business_name": User.get_full_name(notification.resource.offer.user),
+            "total_grabbers_count": notification.resource.offer.wallets.size,
+            "user_id": notification.resource.user.id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?
+          }
+
+
+      when "send_request"
+        @notifications << {
+          "id": notification.id,
+          "friend_name": User.get_full_name(notification.resource.user),
+          "friend_id": notification.resource.user.id,
+          "request_id": notification.resource.id,
+          "mutual_friends_count": get_mutual_friends(request_user, notification.resource.user).size,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+        }
+
+      when "accept_request"
+        @notifications << {
+          "id": notification.id,
+          "friend_name": User.get_full_name(notification.resource.friend),
+          "friend_id": notification.resource.friend.id,
+          "mutual_friends_count": get_mutual_friends(request_user, notification.resource.friend).size,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+        }
+
+      when "enter_in_competition"
+        @notifications << {
+          "id": notification.id,
+          "friend_name": User.get_full_name(notification.resource.user),
+          "competition_id": notification.resource.event.id,
+          "competition_name": notification.resource.event.title,
+          "business_name": User.get_full_name(notification.resource.event.user),
+          "draw_date": notification.resource.event.end_date,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+        }
+
+      when "ask_location"
+        @notifications << {
+          "id": notification.id,
+          "friend_name": User.get_full_name(notification.actor),
+          "friend_id": notification.actor.id,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+        }
+
+      when "send_location"
+        @notifications << {
+          "id": notification.id,
+          "friend_name": User.get_full_name(notification.actor),
+          "friend_id": notification.actor.id,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?,
+          "location": location
+        }
+
+      when "get_winner_and_notify"
+          @notifications << {
+            "id": notification.id,
+            "business_name": User.get_full_name(notification.resource.user),
+            "competition_name": notification.resource.title,
+            "total_competition_entries": notification.resource.registrations.size,
+            "winner_name": User.get_full_name(notification.notifiable.user),
+            "winner_avatar": notification.notifiable.user.avatar,
+            "winner_id": notification.notifiable.user.id,
+            "actor_image": notification.resource.user.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?,
+            "location": location
+          }
+
+        when "become_ambassador"
+          @notifications << {
+            "id": notification.id,
+            "business_name": User.get_full_name(notification.resource.business),
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?,
+            "location": location
+          }
+
+        when "friend_become_ambassador"
+          @notifications << {
+          "id": notification.id,
+          "friend_name": User.get_full_name(notification.resource.user),
+          "friend_id": notification.resource.user.id,
+          "business_name": User.get_full_name(notification.resource.business),
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?,
+          "location": location
+
+          }
+
+        when "free_event_reminder"
+          @notifications << {
+          "id": notification.id,
+          "event_name": notification.resource.name,
+          "event_id": notification.resource.id,
+          "event_location": notification.resource.location,
+          "event_start_date": notification.resource.start_date,
+          "event_start_time": notification.resource.start_time,
+          "event_end_time": notification.resource.end_time,
+          "event_type": notification.resource.event_type,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+          }
+
+        when "buy_event_reminder"
+          @notifications << {
+          "id": notification.id,
+          "event_name": notification.resource.name,
+          "event_id": notification.resource.id,
+          "event_location": notification.resource.location,
+          "event_start_date": notification.resource.start_date,
+          "event_start_time": notification.resource.start_time,
+          "event_end_time": notification.resource.end_time,
+          "event_type": notification.resource.event_type,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+          }
+
+        when "pay_at_door_event_reminder"
+          @notifications << {
+          "id": notification.id,
+          "event_name": notification.resource.name,
+          "event_id": notification.resource.id,
+          "event_location": notification.resource.location,
+          "event_start_date": notification.resource.start_date,
+          "event_start_time": notification.resource.start_time,
+          "event_end_time": notification.resource.end_time,
+          "event_type": notification.resource.event_type,
+          "actor_image": notification.actor.avatar,
+          "notifiable_id": notification.notifiable_id,
+          "notifiable_type": notification.notifiable_type,
+          "action": notification.action,
+          "action_type": notification.action_type,
+          "created_at": notification.created_at,
+          "is_read": !notification.read_at.nil?
+          }
+      else
+         "do nothing"
+      end #switch
+
+    end #end
+
     render json: {
       code: 200,
       success: true,
@@ -52,8 +453,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       askee_ids_array.each do |id|
 
       @askee = User.find(id)
-      if @notification = Notification.create!(recipient: @askee, actor: request_user, action: get_full_name(request_user) + " is asking for your current location.", notifiable: @askee, url: "/admin/users/#{@askee.id}", notification_type: 'mobile',action_type: 'ask_location')
-        @location_request = LocationRequest.create!(user_id: request_user.id, askee_id: id, notification_id: @notification.id)
+      if notification = Notification.create!(recipient: @askee, actor: request_user, action: get_full_name(request_user) + " is asking for your current location.", notifiable: @askee, url: "/admin/users/#{@askee.id}", resource: @askee, notification_type: 'mobile',action_type: 'ask_location')
+        @location_request = LocationRequest.create!(user_id: request_user.id, askee_id: id, notification_id: notification.id)
         @current_push_token = @pubnub.add_channels_to_push(
           push_token: @askee.profile.device_token,
           type: 'gcm',
@@ -65,18 +466,19 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "pn_gcm":{
               "notification":{
                 "title": get_full_name(request_user),
-                "body": @notification.action
+                "body": notification.action
               },
               data: {
-                "id": @notification.id,
-                "actor_id": @notification.actor_id,
-                "actor_image": @notification.actor.avatar,
-                "notifiable_id": @notification.notifiable_id,
-                "notifiable_type": @notification.notification_type,
-                "action_type": @notification.action_type,
-                "action": @notification.action,
-                "created_at": @notification.created_at,
-                "body": ''
+                "id": notification.id,
+                "friend_name": User.get_full_name(notification.actor),
+                "friend_id": notification.actor.id,
+                "actor_image": notification.actor.avatar,
+                "notifiable_id": notification.notifiable_id,
+                "notifiable_type": notification.notifiable_type,
+                "action": notification.action,
+                "action_type": notification.action_type,
+                "created_at": notification.created_at,
+                "is_read": !notification.read_at.nil?
               }
             }
           }
@@ -131,7 +533,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
        )
-      if @notification = Notification.create(recipient: @asker, actor: request_user, action: get_full_name(request_user) + " has sent you #{if request_user.gender ==  'male' then 'his' else 'her' end } current location.", notifiable: @askee, url: "/admin/users/#{@asker.id}", notification_type: 'mobile', action_type: 'get_location')
+      if @notification = Notification.create(recipient: @asker, actor: request_user, action: get_full_name(request_user) + " has sent you #{if request_user.gender ==  'male' then 'his' else 'her' end } current location.", notifiable: @askee, resource: @askee,url: "/admin/users/#{@asker.id}", notification_type: 'mobile', action_type: 'get_location')
 
         @current_push_token = @pubnub.add_channels_to_push(
           push_token: @asker.profile.device_token,
@@ -213,9 +615,9 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
          ids_array.each do |id|
 
           @recipient = User.find(id)
-         if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{if request_user.profile.gender ==  'male' then 'his' else 'her' end } current location.", notifiable: @recipient, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "send_location")
+         if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{if request_user.profile.gender ==  'male' then 'his' else 'her' end } current location.", notifiable: @recipient, resource: @recipient, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "send_location")
 
-          @location_share = LocationShare.create!(user_id: request_user.id, recipient_id: id, lat:params[:lat], lng: params[:lng], notification_id: @notification.id)
+          @location_share = LocationShare.create!(user_id: request_user.id, recipient_id: id, lat:params[:lat], lng: params[:lng], notification_id: notification.id)
 
            @current_push_token = @pubnub.add_channels_to_push(
              push_token: @recipient.profile.device_token,
@@ -227,19 +629,20 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "pn_gcm":{
               "notification":{
                 "title": get_full_name(request_user),
-                "body": @notification.action
+                "body": notification.action
               },
               data: {
-                "id": @notification.id,
-                "actor_id": @notification.actor_id,
-                "actor_image": @notification.actor.avatar,
-                "notifiable_id": @notification.notifiable_id,
-                "notifiable_type": @notification.notifiable_type,
-                "action_type": @notification.action_type,
-                "location": location,
-                "action": @notification.action,
-                "created_at": @notification.created_at,
-                "body": ''
+                "id": notification.id,
+                "friend_name": User.get_full_name(notification.actor),
+                "friend_id": notification.actor.id,
+                "actor_image": notification.actor.avatar,
+                "notifiable_id": notification.notifiable_id,
+                "notifiable_type": notification.notifiable_type,
+                "action": notification.action,
+                "action_type": notification.action_type,
+                "created_at": notification.created_at,
+                "is_read": !notification.read_at.nil?,
+                "location": location
               }
             }
           }
@@ -322,14 +725,112 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         subscribe_key: ENV['SUBSCRIBE_KEY']
         )
        interested_in_events.each do |event|
+        start_date = event.start_date
+        start_date_yesterday = (start_date - 1.day).to_date
+        now = Time.now.to_date
+        if now  ==  start_date_yesterday
+         check = request_user.reminders.where(event_id: event.id).where(level: 'interested')
+         if check.blank?
+          if @reminder = request_user.reminders.create!(event_id: event.id, level: 'interested')
+            if notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are interested in event '#{event.name}' which is happening tomorrow. ", notifiable: event, resource: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "#{event.price_type}_event_reminder")
+
+               @current_push_token = @pubnub.add_channels_to_push(
+                 push_token: request_user.profile.device_token,
+                 type: 'gcm',
+                 add: request_user.profile.device_token
+                 ).value
+
+                 case event.price_type
+                  when "free"
+                    data = {
+                      "id": notification.id,
+                      "event_name": notification.resource.name,
+                      "event_id": notification.resource.id,
+                      "event_location": notification.resource.location,
+                      "event_start_date": notification.resource.start_date,
+                      "event_start_time": notification.resource.start_time,
+                      "event_end_time": notification.resource.end_time,
+                      "event_type": notification.resource.event_type,
+                      "actor_image": notification.actor.avatar,
+                      "notifiable_id": notification.notifiable_id,
+                      "notifiable_type": notification.notifiable_type,
+                      "action": notification.action,
+                      "action_type": notification.action_type,
+                      "created_at": notification.created_at,
+                      "is_read": !notification.read_at.nil?
+                    }
+                  when  "buy"
+                     data ={
+                      "id": notification.id,
+                      "event_name": notification.resource.name,
+                      "event_id": notification.resource.id,
+                      "event_location": notification.resource.location,
+                      "event_start_date": notification.resource.start_date,
+                      "event_start_time": notification.resource.start_time,
+                      "event_end_time": notification.resource.end_time,
+                      "event_type": notification.resource.event_type,
+                      "actor_image": notification.actor.avatar,
+                      "notifiable_id": notification.notifiable_id,
+                      "notifiable_type": notification.notifiable_type,
+                      "action": notification.action,
+                      "action_type": notification.action_type,
+                      "created_at": notification.created_at,
+                      "is_read": !notification.read_at.nil?
+                     }
+                  when  "pay_at_door"
+                    data = {
+                      "id": notification.id,
+                      "event_name": notification.resource.name,
+                      "event_id": notification.resource.id,
+                      "event_location": notification.resource.location,
+                      "event_start_date": notification.resource.start_date,
+                      "event_start_time": notification.resource.start_time,
+                      "event_end_time": notification.resource.end_time,
+                      "event_type": notification.resource.event_type,
+                      "actor_image": notification.actor.avatar,
+                      "notifiable_id": notification.notifiable_id,
+                      "notifiable_type": notification.notifiable_type,
+                      "action": notification.action,
+                      "action_type": notification.action_type,
+                      "created_at": notification.created_at,
+                      "is_read": !notification.read_at.nil?
+                    }
+                  else
+                    "do nothing"
+                  end
+
+                payload = {
+                "pn_gcm":{
+                  "notification":{
+                    "title": "Reminder about '#{event.name}'",
+                    "body": notification.action
+                  },
+                  data: data
+                }
+              }
+
+                @pubnub.publish(
+                  channel: [request_user.profile.device_token],
+                  message: payload
+                   ) do |envelope|
+                     puts envelope.status
+                 end
+                 @reminder_sent = true;
+               end ##notification create
+           end #reminder
+         end #cheak
+        end #time equal
+      end # each
+
+      request_user.events_to_attend.each do |event|
         end_date = event.end_date
         end_date_yesterday = (end_date - 1.day).to_date
         now = Time.now.to_date
         if now  ==  end_date_yesterday
-         check = request_user.reminders.where(event_id: event.id).where(level: 'interested')
+         check = request_user.reminders.where(event_id: event.id).where(level: 'going')
          if check.blank?
-          if @reminder = request_user.reminders.create!(event_id: event.id, level: 'interested')
-            if @notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are interested in event '#{event.name}' which is happening tomorrow. ", notifiable: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "event_reminder")
+          if @reminder = request_user.reminders.create!(event_id: event.id, level: 'going')
+            if @notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are attening an event '#{event.name}' which is happening tomorrow. ", notifiable: event, resource: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "event_reminder")
 
                @current_push_token = @pubnub.add_channels_to_push(
                  push_token: request_user.profile.device_token,
@@ -359,57 +860,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
               }
 
                 @pubnub.publish(
-                  channel: [request_user.device_token],
-                  message: payload
-                   ) do |envelope|
-                     puts envelope.status
-                 end
-                 @reminder_sent = true;
-               end ##notification create
-           end #reminder
-         end #cheak
-        end #time equal
-      end # each
-
-      request_user.events_to_attend.each do |event|
-        end_date = event.end_date
-        end_date_yesterday = (end_date - 1.day).to_date
-        now = Time.now.to_date
-        if now  ==  end_date_yesterday
-         check = request_user.reminders.where(event_id: event.id).where(level: 'going')
-         if check.blank?
-          if @reminder = request_user.reminders.create!(event_id: event.id, level: 'going')
-            if @notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are attening an event '#{event.name}' which is happening tomorrow. ", notifiable: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "event_reminder")
-
-               @current_push_token = @pubnub.add_channels_to_push(
-                 push_token: request_user.device_token,
-                 type: 'gcm',
-                 add: request_user.device_token
-                 ).value
-
-                payload = {
-                "pn_gcm":{
-                  "notification":{
-                    "title": "Reminder about '#{event.name}'",
-                    "body": @notification.action
-                  },
-                  data: {
-                    "id": @notification.id,
-                    "actor_id": @notification.actor_id,
-                    "actor_image": @notification.actor.avatar,
-                    "notifiable_id": @notification.notifiable_id,
-                    "notifiable_type": @notification.notifiable_type,
-                    "action_type": @notification.action_type,
-                    "location": location,
-                    "action": @notification.action,
-                    "created_at": @notification.created_at,
-                    "body": ''
-                  }
-                }
-              }
-
-                @pubnub.publish(
-                  channel: [request_user.device_token],
+                  channel: [request_user.profile.device_token],
                   message: payload
                    ) do |envelope|
                      puts envelope.status
@@ -441,6 +892,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
 
   api :POST, '/api/v1/notifications/delete-notification', 'Delete a notification'
   param :notification_id, :number, :desc => "Notification ID", :required => true
+
+
 
     def delete_notification
      if !params[:notification_id].blank?

@@ -29,7 +29,11 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
        )
+<<<<<<< HEAD
      if @notification = Notification.create(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')
+=======
+     if @notification = Notification.create(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')
+>>>>>>> schema_change
         @pubnub.publish(
           channel: [@event.user.id.to_s],
           message: {
@@ -50,7 +54,11 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
         @comment_users.uniq.each do |comment_user|
       if comment_user != request_user
 
+<<<<<<< HEAD
         if @notification = Notification.create(recipient: comment_user, actor: request_user, action: get_full_name(request_user) + " commented on event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')
+=======
+        if notification = Notification.create(recipient: comment_user, actor: request_user, action: get_full_name(request_user) + " commented on event '#{@event.name}'.", notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')
+>>>>>>> schema_change
 
          if !event_chat_muted?(comment_user, @event) && !comment_user.all_chat_notifications_setting.blank?  && comment_user.all_chat_notifications_setting.is_on == true && !comment_user.event_notifications_setting.blank? && comment_user.event_notifications_setting.is_on == true
 
@@ -66,9 +74,10 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
             "pn_gcm":{
              "notification":{
                "title": @event.name,
-               "body": @notification.action
+               "body": notification.action
              },
              data: {
+<<<<<<< HEAD
               "id": @comment.id,
               "comment_id": @comment.id,
               "reply_id": '',
@@ -83,6 +92,22 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
               "body": @comment.comment,
               "last_comment": @comment,
               "is_host" => is_host?(@comment.user, @event)
+=======
+              "id": notification.id,
+              "user_name": User.get_full_name(notification.resource.user),
+              "comment": notification.resource.comment,
+              "event_name": notification.resource.event.name,
+              "user_id": notification.resource.user.id,
+              "event_id": notification.resource.event.id,
+              "actor_id": notification.actor_id,
+              "actor_image": notification.actor.avatar,
+              "notifiable_id": notification.notifiable_id,
+              "notifiable_type": notification.notifiable_type,
+              "action": notification.action,
+              "action_type": notification.action_type,
+              "created_at": notification.created_at,
+              "is_read": !notification.read_at.nil?
+>>>>>>> schema_change
              }
             }
            }
@@ -140,7 +165,11 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          publish_key: ENV['PUBLISH_KEY'],
          subscribe_key: ENV['SUBSCRIBE_KEY']
         )
+<<<<<<< HEAD
       if @notification = Notification.create!(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')
+=======
+      if @notification = Notification.create!(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')
+>>>>>>> schema_change
          @pubnub.publish(
            channel: [@event.user.id.to_s],
            message: {
@@ -154,6 +183,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          end
        end ##notification create
         #also notify who commented on the event
+<<<<<<< HEAD
          @comment_users = []
           @event.comments.each do |comment|
            @comment_users.push(comment.user)
@@ -164,20 +194,26 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          if @notification = Notification.create(recipient: comment_user, actor: request_user, action: get_full_name(request_user) + " replied to a comment on event '#{@event.name}'.", notifiable: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')
 
           if !event_chat_muted?(comment_user, @event) && !comment_user.all_chat_notifications_setting.blank?  && comment_user.all_chat_notifications_setting.is_on == true && !comment_user.event_notifications_setting.blank? && comment_user.event_notifications_setting.is_on == true
+=======
+        if notification = Notification.create!(recipient: @comment.user, actor: request_user, action: "#{User.get_full_name(request_user)}  replied to your comemnt on the event '#{@event.name}'.", notifiable: @reply, resource: @reply, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'reply_comment')
+
+          if !event_chat_muted?(@comment.user, @event) && !@comment.user.all_chat_notifications_setting.blank?  && @comment.user.all_chat_notifications_setting.is_on == true && !@comment.user.event_notifications_setting.blank? && @comment.user.event_notifications_setting.is_on == true
+>>>>>>> schema_change
 
            @current_push_token = @pubnub.add_channels_to_push(
-              push_token: comment_user.profile.device_token,
+              push_token: @comment.user.profile.device_token,
               type: 'gcm',
-              add: comment_user.profile.device_token
+              add: @comment.user.profile.device_token
               ).value
 
             payload = {
              "pn_gcm":{
               "notification":{
                 "title": @event.name,
-                "body": @notification.action
+                "body": notification.action
               },
               data: {
+<<<<<<< HEAD
                "id": @notification.id,
                "sender_name": get_full_name(request_user),
                "comment_id": @comment.id,
@@ -192,11 +228,28 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
                "body": @reply.msg,
                "last_comment": @reply.msg,
                "is_host" => is_host?(@reply.user,  @event)
+=======
+                "id": notification.id,
+                "event_id": notification.resource.comment.event.id,
+                "event_name": notification.resource.comment.event.name,
+                "replier_id": notification.resource.user.id,
+                "replier_name": User.get_full_name(notification.resource.user),
+                "comment_id": notification.resource.comment.id,
+                "comment": notification.resource.comment.comment,
+                "actor_id": notification.actor_id,
+                "actor_image": notification.actor.avatar,
+                "notifiable_id": notification.notifiable_id,
+                "notifiable_type": notification.notifiable_type,
+                "action": notification.action,
+                "action_type": notification.action_type,
+                "created_at": notification.created_at,
+                "is_read": !notification.read_at.nil?
+>>>>>>> schema_change
               }
              }
             }
             @pubnub.publish(
-             channel: comment_user.profile.device_token,
+             channel: @comment.user.profile.device_token,
              message: payload
              ) do |envelope|
                  puts envelope.status
@@ -204,8 +257,11 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
            end# mute if
          end ##notification create
 
+<<<<<<< HEAD
        end #not request_user
        end #each
+=======
+>>>>>>> schema_change
 
        reply_hash = {
         "id" =>  @reply.id,
@@ -316,7 +372,10 @@ end
   }
    end
 
+<<<<<<< HEAD
   api :POST, '/api/v1/event/get-commented-events', 'Get comment events'
+=======
+>>>>>>> schema_change
 
    def get_commented_events
      @events = []

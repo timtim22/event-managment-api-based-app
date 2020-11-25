@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
+<<<<<<< HEAD
   apipie
+=======
+  apipie
+>>>>>>> schema_change
   resources :users
   resources :events
   get '/verify-phone' => "users#verify_phone_page"
@@ -107,6 +111,7 @@ Rails.application.routes.draw do
        get '/get-business-competitions' => 'business_dashboard#competitions'
        get '/get-phone-numbers' => 'users#get_phone_numbers'
        post '/events/show' => 'events#show_event'
+       get '/events/map-event-list' => 'events#map_event_list'
        get '/events/search' => 'search#events_live_search'
        post '/events/passes' => 'passes#index'
        get 'wallet/get-offers' => 'wallets#get_offers'
@@ -128,6 +133,9 @@ Rails.application.routes.draw do
        get 'my-attending' => 'users#my_attending'
        get 'my-activity-logs' => 'users#my_activity_logs'
        post 'special_offers/show' => "special_offers#show"
+       post "special_offers/special-offer-single" => "special_offers#special_offer_single"
+       post "passes/pass-single" => "passes#pass_single"
+       post "competitions/competition-single" => "competitions#competition_single"
 
 
       # get '/*a', to: 'application#not_found'
@@ -157,7 +165,7 @@ Rails.application.routes.draw do
 
      get '/ticketmaster/import-events' => "ticketmaster#select_date"
      post '/ticketmaster/import-events' => "ticketmaster#import_events"
-     get '/get-notificaitons' => "notifications#index"
+     get '/get-notificatons' => "notifications#index"
      get '/get-notifications-count' => "notifications#get_notifications_count"
      get '/mark-as-read' => "notifications#mark_as_read"
      get '/clear-notifications' => "notifications#clear_notifications"
@@ -208,6 +216,7 @@ Rails.application.routes.draw do
 
         resources :users
         resources :news_feeds
+        resources :invoices
 
         resources :events do
           resources :comments
@@ -231,6 +240,10 @@ Rails.application.routes.draw do
         post '/get-user' => 'users#get_user'
         get '/get-categories' => 'events#get_categories'
         post '/cancel-event' => 'events#cancel_event'
+        post '/delete-event' => 'events#delete_event'
+        post '/payments/create-intant' => 'payments#create_intant'
+        post '/payments/confirm-payment' => 'payments#confirm_payment'
+        post '/payments/get-invoice' => 'payments#get_invoice'
 
       end
     end

@@ -190,10 +190,16 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
 
 
  def get_dashboard_event_object(event)
+    qr = []
+     if !event.passes.blank?
+       event.passes.map {|p| qr.push(p.redeem_code) }
+     end
   e = {
     "id" => event.id,
+    "name" => event.name,
     "image" => event.image,
-    "status"  => event.status
+    "status"  => event.status,
+    "qr" => qr
   }
  end
 

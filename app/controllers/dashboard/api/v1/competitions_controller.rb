@@ -1,5 +1,6 @@
 class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMasterController
     before_action :authorize_request, except:  ['index']
+
     require 'json'
     require 'pubnub'
     require 'action_view'
@@ -18,7 +19,6 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
      }
 
      winners = []
-
      competition.competition_winners.each do |winner|
        winners << {
          "id" => winner.user.id,
@@ -61,6 +61,8 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
     }
   end
 
+  api :GET, '/dashboard/api/v1/competitions/:id', 'Shows a competition'
+  param :id, :number, desc: "id of the competition"
   def show
    comp = Competition.find(params[:id])
 
@@ -83,7 +85,6 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
        'end_time' => comp.end_time,
        'location' => comp.location,
        'validity' => comp.validity,
-       'validity_time' => comp.validity_time,
        'validity_time' => comp.validity_time,
        'price' => comp.price,
        'terms_conditions' => comp.terms_conditions,

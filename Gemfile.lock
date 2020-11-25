@@ -248,8 +248,6 @@ GEM
     nokogiri (1.10.9-x86-mingw32)
       mini_portile2 (~> 2.4.0)
     pg (1.2.3)
-    pg (1.2.3-x64-mingw32)
-    pg (1.2.3-x86-mingw32)
     popper_js (1.16.0)
     pry (0.13.0)
       coderay (~> 1.1)

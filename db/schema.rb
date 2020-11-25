@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_29_045858) do
+ActiveRecord::Schema.define(version: 2020_11_21_175336) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -276,6 +276,18 @@ ActiveRecord::Schema.define(version: 2020_10_29_045858) do
     t.index ["user_id"], name: "index_interest_levels_on_user_id"
   end
 
+  create_table "invoices", force: :cascade do |t|
+    t.integer "user_id"
+    t.decimal "amount", precision: 8, scale: 2, default: "0.0"
+    t.decimal "total_amount", precision: 8, scale: 2, default: "0.0"
+    t.string "tax_invoice_number"
+    t.integer "total_tickets"
+    t.decimal "vat_amount", precision: 8, scale: 2, default: "0.0"
+    t.integer "event_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "location_requests", force: :cascade do |t|
     t.integer "user_id"
     t.integer "askee_id"
@@ -331,6 +343,8 @@ ActiveRecord::Schema.define(version: 2020_10_29_045858) do
     t.string "url"
     t.string "notification_type"
     t.string "action_type"
+    t.integer "resource_id"
+    t.string "resource_type"
     t.index ["actor_id"], name: "index_notifications_on_actor_id"
     t.index ["notifiable_id", "notifiable_type"], name: "index_notifications_on_notifiable_id_and_notifiable_type"
     t.index ["recipient_id"], name: "index_notifications_on_recipient_id"

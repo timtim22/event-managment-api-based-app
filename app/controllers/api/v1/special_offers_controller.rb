@@ -72,10 +72,15 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
 
 
 
+<<<<<<< HEAD
 
 
   def show
    if !params[:offer_id].blank?
+=======
+  def special_offer_single
+   if !params[:special_offer_id].blank? 
+>>>>>>> schema_change
     offer = SpecialOffer.find(params[:offer_id])
     @special_offer = {
       id: offer.id,
@@ -113,7 +118,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
     render json: {
       code: 400,
       success: false,
-      message: 'offer_id is required field.',
+      message: 'special_offer_id is required field.',
       data: nil
     }
   end

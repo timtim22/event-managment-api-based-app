@@ -3,7 +3,6 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
 
   def get_dashboard
 
-
    if !params[:business_id].blank? && !params[:resource].blank? && !params[:current_time_slot_dates].blank? && !params[:before_current_time_slot_dates].blank?
 
     @business = User.find(params[:business_id])
@@ -29,7 +28,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
           "time_slot_total_views" => get_time_slot_total_views(params[:current_time_slot_dates], event),
           "time_slot_increment_decrement_in_views" => get_time_slot_increment_decrement_in_views(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
           "time_slot_views_date_wise" => get_time_slot_views_date_wise(params[:current_time_slot_dates],event),
-          "time_slot_total_sold_tickets" => get_time_slot_total_sold_tickets(params[:curent_time], event),
+          "time_slot_total_sold_tickets" => get_time_slot_total_sold_tickets(params[:current_time_slot_dates], event),
           "time_slot_increment_decrement_in_sold_tickets" => time_slot_increment_decrement_in_sold_tickets(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
           "time_slot_sold_tickets_date_wise" => get_time_slot_sold_tickets_date_wise(params[:current_time_slot_dates] ,event),
           "time_slot_total_interested_people" => get_time_slot_total_interested_people(params[:current_time_slot_dates], event),
@@ -55,7 +54,6 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
           "lng" => event.lng,
           "event_type" => event.event_type,
           "image" => event.image,
-          "eventbrite_image" => event.eventbrite_image,
           "price_type" => event.price_type,
           "price" => event.price,
           "additional_media" => event.event_attachments,

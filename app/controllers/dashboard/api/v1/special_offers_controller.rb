@@ -1,4 +1,4 @@
-class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMasterController 
+class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMasterController
   before_action :authorize_request
 
   def index
@@ -20,7 +20,7 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
         validity: offer.validity,
         description: offer.description,
         ambassador_rate: offer.ambassador_rate,
-        terms_conditions: offer.terms_conditions 
+        terms_conditions: offer.terms_conditions
       }
     end
     render json: {
@@ -75,8 +75,8 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
     @special_offer.redeem_code = generate_code
     @special_offer.terms_conditions = params[:terms_conditions]
     @special_offer.location = params[:location]
-    
-    
+
+
     if @special_offer.save
      # create_activity(request_user, "created special offer", @special_offer, "SpecialOffer", admin_special_offer_path(@special_offer),@special_offer.title, 'post', 'created_special_offer')
       if !request_user.followers.blank?
@@ -86,8 +86,8 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
           uuid: @username
           )
       request_user.followers.each do |follower|
-   if follower.special_offers_notifications_setting.is_on == true 
-      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event') 
+   if follower.special_offers_notifications_setting.is_on == true
+      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event')
         @channel = "event" #encrypt later
         @current_push_token = @pubnub.add_channels_to_push(
          push_token: follower.profile.device_token,
@@ -95,7 +95,7 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
          add: follower.profile.device_token
          ).value
 
-         payload = { 
+         payload = {
           "pn_gcm":{
            "notification":{
              "title": get_full_name(request_user),
@@ -110,11 +110,11 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
             "action": @notification.action,
             "action_type": @notification.action_type,
             "created_at": @notification.created_at,
-            "body": '' 
+            "body": ''
            }
           }
          }
-        
+
        @pubnub.publish(
          channel: follower.profile.device_token,
          message: payload
@@ -131,7 +131,7 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
         message: 'Special offer created successfully.',
         data: nil
       }
-     
+
     else
       render json: {
         code: 400,
@@ -140,7 +140,7 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
         data: nil
 
       }
-    end 
+    end
 end
 
 def edit
@@ -159,12 +159,12 @@ def update
     @special_offer.image = params[:image]
     @special_offer.is_redeemed = false
     @special_offer.terms_conditions = params[:terms_conditions]
-    if !params[:location].blank? 
+    if !params[:location].blank?
       @special_offer.location = params[:location][:name]
-      @special_offer.lat = params[:location][:geometry][:lat] 
+      @special_offer.lat = params[:location][:geometry][:lat]
       @special_offer.lng = params[:location][:geometry][:lng]
     end
-    
+
     if @special_offer.save
       # create_activity(request_user, "updated special offer", @special_offer, "SpecialOffer", admin_special_offer_path(@special_offer),@special_offer.title, 'put', 'updated_special_offer')
       if !request_user.followers.blank?
@@ -174,16 +174,16 @@ def update
           uuid: @username
           )
       request_user.followers.each do |follower|
-  if follower.special_offers_notifications_setting.is_on == true 
-      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event') 
-       
+  if follower.special_offers_notifications_setting.is_on == true
+      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event')
+
         @current_push_token = @pubnub.add_channels_to_push(
         push_token: follower.profile.device_token,
         type: 'gcm',
         add: follower.profile.device_token
         ).value
 
-        payload = { 
+        payload = {
           "pn_gcm":{
           "notification":{
             "title": get_full_name(request_user),
@@ -198,11 +198,11 @@ def update
             "action": @notification.action,
             "action_type": @notification.action_type,
             "created_at": @notification.created_at,
-            "body": '' 
+            "body": ''
           }
           }
         }
-        
+
       @pubnub.publish(
         channel: follower.profile.device_token,
         message: payload
@@ -221,7 +221,7 @@ def update
           special_offer: @special_offer
         }
       }
-    
+
     else
       render json: {
         code: 400,

@@ -1,5 +1,5 @@
 class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterController
- 
+
   # def index
   #   @passes = current_user.passes.order(created_at: "ASC")
   # end
@@ -46,7 +46,7 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
   #   flash.now[:alert_danger] = "No event is selected."
   #   render :new
   # end
-   
+
   # end
 
   # def destroy
@@ -70,11 +70,11 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
         @forwardings = OfferForwarding.all.each do |forward|
           @shared_offers.push(forward.offer)
         end
-    
+
         @sharings = OfferShare.all.each do |share|
           @shared_offers.push(share.offer)
         end
-    
+
         if @shared_offers.include? @pass
           @share = OfferForwarding.find_by(offer_id: @pass.id)
           if @share.blank?
@@ -92,14 +92,14 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
         success: true,
         message: "Pass redeemed.",
         data: nil
-      }      
+      }
     else
       render json: {
         code: 400,
         success: false,
         message: "Pass was not redeemed.",
         data: nil
-      }   
+      }
     end
     else
       render json: {
@@ -143,15 +143,15 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
           subscribe_key: ENV['SUBSCRIBE_KEY']
          )
              #also notify request_user friends
-              if @notification = Notification.create(recipient: user, actor: request_user, action: get_full_name(request_user) + " has sent you a VIP pass to join their event.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet') 
-           
+              if @notification = Notification.create(recipient: user, actor: request_user, action: get_full_name(request_user) + " has sent you a VIP pass to join their event.", notifiable: @wallet.offer, resource: @wallet, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_pass_to_wallet')
+
               @current_push_token = @pubnub.add_channels_to_push(
                  push_token: user.profile.device_token,
                  type: 'gcm',
                  add: user.profile.device_token
                  ).value
-      
-               payload = { 
+
+               payload = {
                 "pn_gcm":{
                  "notification":{
                    "title": @wallet.offer.title,
@@ -166,7 +166,7 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
                   "action": @notification.action,
                   "action_type": @notification.action_type,
                   "created_at": @notification.created_at,
-                  "body": ''   
+                  "body": ''
                  }
                 }
                }
@@ -177,7 +177,7 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
                     puts envelope.status
                end
             end ##notification create
-       
+
        # create_activity("added to wallet '#{@wallet.offer.title}'", @wallet, 'Wallet', '', @wallet.offer.title, 'post')
         render json: {
           code: 200,
@@ -270,7 +270,7 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
 
   private
 
-  
+
   #  def pass_params
   #   params.permit(:title,:description, :validity)
   #  end

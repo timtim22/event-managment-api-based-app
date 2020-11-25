@@ -2,10 +2,10 @@ class Event < ApplicationRecord
 validates :name, presence: true
 validates :image, presence: true
 validates :start_date, presence: true
-validates :end_date, presence: true 
+validates :end_date, presence: true
 validates :start_time, presence: true
-validates :end_time, presence: true 
-validates :description, presence: true 
+validates :end_time, presence: true
+validates :description, presence: true
 validates :location, presence: true
 validate  :has_one_category_at_least
 validates :terms_conditions, presence: true
@@ -13,6 +13,7 @@ validates :image, file_size: { less_than: 3.megabytes }
 
 belongs_to :user, optional: true
 has_many :comments, dependent: :destroy
+has_many :notifications, dependent: :destroy, as: :resource
 has_many :users, through: :comments
 has_many :categorizations, dependent: :destroy
 has_many :categories, through: :categorizations

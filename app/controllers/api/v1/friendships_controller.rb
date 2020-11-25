@@ -9,9 +9,12 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
     @request_data = {}
   end
 
+<<<<<<< HEAD
   api :POST, '/api/v1/add-friend', 'To add user as a friend'
   param :friend_id, :number, :desc => "Friend ID", :required => true
 
+=======
+>>>>>>> schema_change
   def send_request
     if !params[:friend_id].blank?
      @friend = User.find(params[:friend_id])
@@ -21,7 +24,11 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
     @friend_request.status = "pending"
     if @friend_request.save
       #create_activity("sent friend request to #{get_full_name(@friend)}", @friend_request, 'FriendRequest', '', '', 'post', 'send_friend_request')
+<<<<<<< HEAD
       if @notification = Notification.create(recipient: @friend, actor: @sender, action: get_full_name(@sender) + " sent you a friend request", notifiable: @friend_request, url: '/admin/friend-requests', notification_type: 'mobile', action_type: 'send_request')
+=======
+      if notification = Notification.create(recipient: @friend, actor: @sender, action: get_full_name(@sender) + " sent you a friend request", notifiable: @friend_request, resource: @friend_request, url: '/admin/friend-requests', notification_type: 'mobile', action_type: 'send_request')
+>>>>>>> schema_change
         @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -37,9 +44,10 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
         "pn_gcm":{
           "notification": {
             "title": get_full_name(@friend),
-            "body": @notification.action
+            "body": notification.action
           },
           data: {
+<<<<<<< HEAD
             "id": @notification.id,
             "actor_id": @notification.actor_id,
             "actor_image": @notification.actor.avatar,
@@ -49,6 +57,20 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
             "action_type": @notification.action_type,
             "created_at": @notification.created_at,
             "body": ''
+=======
+            "id": notification.id,
+            "friend_name": User.get_full_name(notification.resource.user),
+            "friend_id": notification.resource.user.id,
+            "request_id": notification.resource.id,
+            "mutual_friends_count": get_mutual_friends(request_user, notification.resource.user).size,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?
+>>>>>>> schema_change
            }
         }
       }
@@ -156,7 +178,11 @@ def accept_request
       @notification =  Notification.where(notifiable_id: request.id).where(notifiable_type: 'FriendRequest').first.destroy
 
 
+<<<<<<< HEAD
       if @notification = Notification.create(recipient: request.user, actor: request_user, action: get_full_name(request_user) + " accepted your friend request", notifiable: request, url: '/admin/my-friends', notification_type: 'mobile', action_type: 'accept_request')
+=======
+      if notification = Notification.create(recipient: request.user, actor: request_user, action: get_full_name(request_user) + " accepted your friend request", notifiable: request, resource: request, url: '/admin/my-friends', notification_type: 'mobile', action_type: 'accept_request')
+>>>>>>> schema_change
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -171,9 +197,10 @@ def accept_request
             "pn_gcm":{
               "notification":{
                 "title": get_full_name(request_user),
-                "body": @notification.action
+                "body": notification.action
               },
               data: {
+<<<<<<< HEAD
                 "id": @notification.id,
                 "actor_id": @notification.actor_id,
                 "actor_image": @notification.actor.avatar,
@@ -183,6 +210,19 @@ def accept_request
                 "action_type": @notification.action_type,
                 "created_at": @notification.created_at,
                 "body": ''
+=======
+                "id": notification.id,
+                "friend_name": User.get_full_name(notification.resource.friend),
+                "friend_id": notification.resource.friend.id,
+                "mutual_friends_count": get_mutual_friends(request_user, notification.resource.friend).size,
+                "actor_image": notification.actor.avatar,
+                "notifiable_id": notification.notifiable_id,
+                "notifiable_type": notification.notifiable_type,
+                "action": notification.action,
+                "action_type": notification.action_type,
+                "created_at": notification.created_at,
+                "is_read": !notification.read_at.nil?
+>>>>>>> schema_change
               }
             }
           }
@@ -371,7 +411,11 @@ end
 
  @all_suggessions = []
  @friends_suggestions.uniq.each do  |user|
+<<<<<<< HEAD
   if not_me?(user) && !is_my_friend?(user) && !is_business?(user) && !request_status(request_user, user)
+=======
+  if not_me?(user) && !is_my_friend?(user) && !is_business?(user)
+>>>>>>> schema_change
     @all_suggessions << {
      user:  get_user_object(user),
      mutual_friends_count: get_mutual_friends(request_user, user).size,
@@ -477,6 +521,7 @@ end
     end
 end
 
+<<<<<<< HEAD
   private
 
   def get_mutual_friends(request_user, user)
@@ -484,5 +529,10 @@ end
     request_user_friends = request_user.friends
     mutual = user_friends & request_user_friends
   end
+=======
+  
+
+ 
+>>>>>>> schema_change
 
 end
