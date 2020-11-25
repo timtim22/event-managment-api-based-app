@@ -129,6 +129,9 @@ Rails.application.routes.draw do
        get 'my-attending' => 'users#my_attending'
        get 'my-activity-logs' => 'users#my_activity_logs'
        post 'special_offers/show' => "special_offers#show"
+       post "special_offers/special-offer-single" => "special_offers#special_offer_single"
+       post "passes/pass-single" => "passes#pass_single"
+       post "competitions/competition-single" => "competitions#competition_single"
 
 
       # get '/*a', to: 'application#not_found'

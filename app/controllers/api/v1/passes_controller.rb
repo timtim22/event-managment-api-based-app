@@ -75,6 +75,50 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
     
   end
 
+
+  def pass_single
+    if !params[:pass_id].blank? 
+     pass = Pass.find(params[:pass_id])
+     @pass = {
+        id: pass.id,
+        title: pass.title,
+        description: pass.description,
+        host_name:@event.user.business_profile.profile_name,
+        host_image:@event.user.avatar,
+        event_name:@event.name,
+        event_image:@event.image,
+        event_location:@event.location,
+        event_start_time:@event.start_time,
+        event_end_time:@event.end_time,
+        event_date:@event.start_date,
+        is_added_to_wallet: is_added_to_wallet?(pass.id),
+        validity: pass.validity.strftime(get_time_format),
+        terms_and_conditions: pass.terms_conditions,
+        grabbers_count: pass.wallets.size,
+        description: pass.description,
+        issued_by: get_full_name(pass.user),
+        redeem_count: get_redeem_count(pass),
+        quantity: pass.quantity
+     }
+ 
+     render json: {
+       code: 200,
+       success: true,
+       message: '',
+       data: {
+         pass: @pass
+       }
+     }
+   else
+     render json: {
+       code: 400,
+       success: false,
+       message: 'pass_id is required field.',
+       data: nil
+     }
+   end
+   end
+
   # def new
   #   @pass = Pass.new
   # end

@@ -712,7 +712,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
          check = request_user.reminders.where(event_id: event.id).where(level: 'interested')
          if check.blank?
           if @reminder = request_user.reminders.create!(event_id: event.id, level: 'interested')
-            if @notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are interested in event '#{event.name}' which is happening tomorrow. ", notifiable: event, resource: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "#{event.price_type}_event_reminder")
+            if notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are interested in event '#{event.name}' which is happening tomorrow. ", notifiable: event, resource: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "#{event.price_type}_event_reminder")
 
                @current_push_token = @pubnub.add_channels_to_push(
                  push_token: request_user.profile.device_token,
@@ -777,7 +777,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                 "pn_gcm":{
                   "notification":{
                     "title": "Reminder about '#{event.name}'",
-                    "body": @notification.action
+                    "body": notification.action
                   },
                   data: data
                 }
