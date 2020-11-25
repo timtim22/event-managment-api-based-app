@@ -6,6 +6,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
   include ActionView::Helpers::DateHelper
   # GET /users
 
+  api :GET, '/api/v1/users', 'View All Users - Token Required'
 
   def index
     all_users = []
@@ -21,6 +22,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     }
   end
 
+  api :GET, '/api/v1/get-users-having-common-fields', 'To update a user profile'
 
   def get_users_having_common_fields
     users = []
@@ -51,7 +53,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     render json: @user, status: :ok
   end
 
-  api :GET, '/api/v1/users', 'To SignUp/Register'
+  api :POST, '/api/v1/users', 'To SignUp/Register'
   param :first_name, String, :desc => "First Name"
   param :last_name, String, :desc => "last Name"
   param :email, String, :desc => "Email"
@@ -185,6 +187,20 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     end
   end
 
+  api :POST, '/api/v1/user/update-profile', 'To update a user profile'
+  param :first_name, String, :desc => "First name of the profile", :required => true
+  param :last_name, String, :desc => "Last name of the profile", :required => true
+  param :email, String, :desc => "Email of the profile", :required => true
+  param :mobile, :number, :desc => "Phone number of the profile", :required => true
+  param :about, String, :desc => "About profile"
+  param :dob, :number, :desc => "Date of Birth of the user"
+  param :gender, String, :desc => "Gender of the user"
+  param :snapchat, :number, :desc => "Add snapchat link"
+  param :facebook, :number, :desc => "Add facebook link"
+  param :twitter, :number, :desc => "Add twitter link"
+  param :youtube, :number, :desc => "Add youtube link"
+  param :instagram, :number, :desc => "Add Instagram link"
+
   def update_profile
     params.permit(:avatar)
     user = request_user
@@ -248,6 +264,8 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
   end
 end
 
+  api :GET, '/api/v1/user/get-profile', 'To get your own profile - Token is required'
+
   def get_profile
     user = request_user
       profile = {
@@ -284,6 +302,9 @@ end
         }
       }
 end
+
+  api :POST, '/api/v1/user/get-others-profile', 'To get a mobile user profile'
+  param :user_id, :number, :desc => "User ID", :required => true
 
  def get_others_profile
   if !params[:user_id].blank?
@@ -331,7 +352,8 @@ else
 end
 end
 
-
+  api :POST, '/api/v1/user-activity-logs', 'To get user get activity logs'
+  param :user_id, :number, :desc => "User ID", :required => true
 
  def activity_logs
    if !params[:user_id].blank?
@@ -418,7 +440,8 @@ end
     }
    end
  end
-
+  api :POST, '/api/v1/user-attending', 'User Events to attend list'
+  param :user_id, :number, :desc => "User ID", :required => true
 
  def attending
    if !params[:user_id].blank?
@@ -443,6 +466,8 @@ end
   end
  end
 
+  api :POST, '/api/v1/gives_away', 'To get user gives away'
+  param :user_id, :number, :desc => "user ID", :required => true
 
  def gives_away
   if !params[:user_id].blank?
@@ -474,6 +499,8 @@ end
     }
   end
  end
+
+  api :get, '/api/v1/my-activity-logs', 'To get my activity logs'
 
  def my_activity_logs
     user = request_user
@@ -553,7 +580,7 @@ end
 
 end
 
-
+  api :GET, '/api/v1/my-attending', 'To get my attending'
 def my_attending
     attending = []
     user = request_user
@@ -595,6 +622,7 @@ def my_attending
 
 end
 
+  api :GET, '/api/v1/my-gives-away', 'To get my gives away'
 
 def my_gives_away
    user = request_user
@@ -647,6 +675,9 @@ end
       }
  end
 
+  api :POST, '/api/v1/user/get-others-business-profile', 'To get a business profile'
+  param :user_id, :number, :desc => "User ID", :required => true
+
  def get_others_business_profile
   if !params[:user_id].blank?
   user = User.find(params[:user_id])
@@ -692,8 +723,7 @@ else
 end
 end
 
-
-
+  api :GET, '/api/v1/get-activity-logs', 'To get the activity logs'
 
   def get_activity_logs
     @activity_logs = request_user.activity_logs.order(:created_at => "DESC")
@@ -706,6 +736,9 @@ end
       }
     }
   end
+
+  api :POST, '/api/v1/update-device-token', 'To update a device token'
+  param :device_token, String, :desc => "Device Token", :required => true
 
   def update_device_token
     if !params[:device_token].blank?
@@ -733,6 +766,10 @@ end
     }
   end
   end
+
+  api :POST, '/api/v1/update-current-location', 'To update a current location'
+  param :lat, :number, :desc => "Latitude of the location", :required => true
+  param :lng, :number, :desc => "Longitude of the location", :required => true
 
   def update_current_location
     if !params[:lat].blank? && !params[:lng].blank?
@@ -836,6 +873,7 @@ end
     }
   end
 
+  api :GET, '/api/v1/get-phone-numbers', 'To get phone number list'
 
   def get_phone_numbers
     @phone_numbers = User.all.map {|user| user.phone_number }
@@ -894,6 +932,10 @@ private
  def getRoles
    @roles = Role.all
  end
+
+  api :GET, '/api/v1/auth/send-verification-email', 'Send verification code to verify email'
+  param :email, String, :desc => "Email", :required => true
+
 
  def send_verification_email(user)
     @code = user.verification_code

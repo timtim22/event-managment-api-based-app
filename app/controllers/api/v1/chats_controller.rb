@@ -2,11 +2,14 @@ class Api::V1::ChatsController < Api::V1::ApiMasterController
   before_action :authorize_request, except:  ['chat_people']
   require 'pubnub'
   require 'json'
- 
-  
+
+  api :POST, '/api/v1/chat/send-message', 'To send a message'
+  param :recipient_id, :number, :desc => "Recipient ID", :required => true
+  param :message, String, :desc => "Message", :required => true
+
 def send_message
 
- if !params[:recipient_id].blank? && !params[:message].blank? 
+ if !params[:recipient_id].blank? && !params[:message].blank?
  @recipient = User.find(params[:recipient_id])
   if !blocked_user?(request_user, @recipient)
  if !params[:recipient_id].blank?
@@ -16,7 +19,7 @@ def send_message
     )
 
   @sender  = request_user
- 
+
   @username = @sender.profile.first_name + " " + @sender.profile.last_name
   @has_mutual_channel = ChatChannel.check_for_mutual_channel(@sender,@recipient)
   if !@has_mutual_channel.blank?
@@ -34,7 +37,7 @@ def send_message
   @chat_channel.save
   @channel = @chat_channel.name
   end
-  
+
  @message = @sender.messages.new(recipient_id: @recipient.id, message: params[:message], from: get_full_name(@sender), user_avatar: @sender.avatar)
 
 if @message.save
@@ -45,7 +48,7 @@ if @message.save
    add: @recipient.profile.device_token
    ).value
 
-payload = { 
+payload = {
   "pn_gcm":{
    "notification":{
      "title": @username,
@@ -62,11 +65,11 @@ payload = {
     "action_type": 'chat',
     "created_at": @message.created_at,
     "body": params[:message] ,
-    "last_message": @message   
+    "last_message": @message
    }
   }
  }
- 
+
 
 if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipient, request_user)
   @pubnub.publish(
@@ -78,7 +81,7 @@ if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipie
   end #all chat and event chat true
 
    chat = Message.get_messages(@sender.id,@recipient.id).order(created_at: 'ASC')
-  
+
    render json: {
      code: 200,
      success: true,
@@ -124,6 +127,8 @@ else
 end
 end
 
+  api :POST, '/api/v1/chat/chat-history', 'Get chat history for specific user'
+  param :sender_id, :number, :desc => "Sender ID", :required => true
 
 def chat_history
     if params[:sender_id].blank?
@@ -149,7 +154,7 @@ def chat_history
         "sender_id" => history.user.id
       }
    end #each
-   render json:{ 
+   render json:{
      code: 200,
      success: true,
      message: '',
@@ -178,23 +183,25 @@ end
 def unsubscribe
 @pubnub.unsubscribe(
    channel: params[:channel]
-) 
+)
 redirect_to root_url
 end
 
 def subscribe
   @pubnub.subscribe(
-  channels: params[:channel]  
+  channels: params[:channel]
 )
 
 render json: true
 end
 
+  api :GET, '/api/v1/chat/chat-people', 'Get People who chatted'
+
 def chat_people
 
   @chat_people = []
   @users = []
- 
+
   request_user.incoming_messages.map {|msg| @users.push(msg.user) }
   request_user.messages.map {|msg| @users.push(msg.recipient) }
 
@@ -218,6 +225,9 @@ def chat_people
   }
 }
 end
+
+  api :POST, '/api/v1/chat/clear-conversation', 'Clear conversation with specific user'
+  param :user_id, :number, :desc => "The user ID (perons id you want to clear conversation)", :required => true
 
 def clear_conversation
   if !params[:user_id].blank?
@@ -266,13 +276,14 @@ def clear_chat #specific chat
   end
 end
 
-
+  api :POST, '/api/v1/chat/mark-as-read', 'Mark chats as read'
+  param :sender_id, :number, :desc => "Sender ID", :required => true
 
 def mark_as_read
   if !params[:sender_id].blank?
      success = false
      incoming_messages = request_user.incoming_messages.where(user_id: params[:sender_id]).unread
-     if !incoming_messages.blank? 
+     if !incoming_messages.blank?
      incoming_messages.each do |msg|
       if msg.update!(read_at: Time.zone.now)
         success = true

@@ -1,10 +1,10 @@
 class Api::V1::SettingsController < Api::V1::ApiMasterController
   before_action :authorize_request
- 
+
   def update_global_setting
    if !params[:is_on].blank? && !params[:name].blank?
     name_values = ['all_chat_notifications','event_notifications','special_offers_notifications','passes_notifications','competitions_notifications','location']
-   if name_values.include? params[:name] 
+   if name_values.include? params[:name]
       @setting = Setting.where(user_id: request_user.id).where(name: params[:name]).first
     if @setting.blank? # create new setting if doesn't exit.
       if new_setting = Setting.create!(user_id: request_user.id, name: params[:name], is_on: params[:is_on])
@@ -57,7 +57,9 @@ class Api::V1::SettingsController < Api::V1::ApiMasterController
    end
   end
 
-
+  api :POST, '/api/v1/user/update-user-setting', 'To update a user profile settings'
+  param :mute_chat, String, :desc => "Mute Chat - one is mandatory", :required => true
+  param :mute_notifications, String, :desc => "Mute Notifications - one is mandatory", :required => true
 
   def update_user_setting
      #specific setting
@@ -66,16 +68,16 @@ class Api::V1::SettingsController < Api::V1::ApiMasterController
        if settings.include? params[:setting_name]
          #if user doesn't have any setting then create it first (new user)
          setting = request_user.user_settings.where(name: params[:setting_name]).where(resource_id: params[:resource_id]).where(resource_type: params[:resource_type]).first
-        
-         if setting.blank? 
+
+         if setting.blank?
             if setting = request_user.user_settings.create!(name: params[:setting_name], resource_id: params[:resource_id], resource_type: params[:resource_type], is_on: params[:is_on], blocked_at: Time.zone.now)
 
             #in order to acheive bi directionsl blocking
             if(params[:setting_name] == 'block' && params[:resource_type] == 'User')
                blockee = User.find(params[:resource_id])
                setting_reverse = blockee.user_settings.create!(name: params[:setting_name], resource_id: request_user.id, resource_type: params[:resource_type], is_on: params[:is_on])
-             end 
-            
+             end
+
               render json:  {
                 code: 200,
                 success: true,

@@ -78,7 +78,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
     }
   end
 
-  api :GET, '/api/v1/competitions', 'To SignUp/Register'
+  api :POST, '/api/v1/competitions', 'To create a competition'
   param :first_name, String, :desc => "First Name"
   param :last_name, String, :desc => "last Name"
   param :email, String, :desc => "Email"
