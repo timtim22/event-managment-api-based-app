@@ -259,6 +259,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
 
   end
 
+  api :GET, '/api/v1/competitions/get-winner', 'Get competitions winner and notify all participants'
 
   def get_winner_and_notify
     registrations = Registration.where(event_type: 'Competition')
@@ -422,6 +423,9 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
 
 #   end
 
+  api :POST, '/api/v1/competitions/create-view', 'Create a competitions view'
+  param :competition_id, :number, :desc => "Competition ID", :required => true
+
 def create_view
   if !params[:competition_id].blank?
     competition = Competition.find(params[:competition_id])
@@ -450,6 +454,8 @@ def create_view
   end
 end
 
+  api :POST, '/api/v1/get-business-competitions', 'Get business user competitions'
+  param :business_id, :number, :desc => "Business ID", :required => true
 
   def get_business_competitions
     if !params[:business_id].blank?

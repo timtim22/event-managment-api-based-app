@@ -7,6 +7,8 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
 
+  api :GET, '/api/v1/get-wallet', 'Get wallet data (Logged in user)'
+
  def get_wallet
 
   @wallet_data = {}
@@ -129,6 +131,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
   }
  end
 
+  api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
  def get_offers
   @special_offers = []
@@ -170,6 +173,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
     }
  end
 
+  api :GET, '/api/v1/wallet/get-passes', 'Get Wallet Passes'
 
  def get_passes
   @redeemed_passes = []
@@ -296,7 +300,7 @@ else
 }
  end
 
-
+  api :GET, '/api/v1/wallet/get-competitions', 'Get wallet competitions'
 def get_competitions
   @competitions = []
   @wallets = request_user.wallets.where(offer_type: 'Competition').where(is_removed: false).page(params[:page]).per(get_per_page)
@@ -339,6 +343,7 @@ def get_competitions
 
 end
 
+  api :GET, '/api/v1/wallet/get-tickets', 'Get Wallet tickets'
 
 def get_tickets
   @tickets = []
@@ -416,7 +421,9 @@ def remove_offer
  end
 end
 
-
+  api :POST, '/api/v1/add-to-wallet', 'Add offers to your wallet'
+  param :offer_id, :number, :desc => "Offer ID", :required => true
+  param :offer_type, :number, :desc => "Offer Type (SpecialOffer, Pass)", :required => true
 
  def add_to_wallet
   if !params[:offer_id].blank? && !params[:offer_type].blank?
@@ -512,6 +519,10 @@ end
     }
   end
  end
+
+  api :POST, '/api/v1/view-offer', 'View offer(special_offers, pass'
+  param :offer_id, :number, :desc => "Offer ID", :required => true
+  param :offer_type, :number, :desc => "Offer Type(SpecialOffer, Pass)", :required => true
 
  def view_offer
   if !params[:offer_id].blank? && !params[:offer_type].blank?

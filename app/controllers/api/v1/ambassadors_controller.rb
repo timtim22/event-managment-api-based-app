@@ -6,24 +6,27 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
 
+  api :POST, '/api/v1/ambassadors/send-request', 'Send Ambassador Request'
+  param :business_id, :number, :desc => "Business ID", :required => true
+
   def send_request
     if !params[:business_id].blank?
     @business = User.find(params[:business_id])
     check = @business.business_ambassador_requests.where(user_id: request_user.id)
     if check.blank?
     if  @ambassador_request = @business.business_ambassador_requests.create!(user_id: request_user.id)
-     
-       approve_ambassador(request_user, @ambassador_request.id)
-     
 
-      if @notification = Notification.create(recipient: @business, actor: request_user, action: get_full_name(request_user) + " sent you ambassador request", notifiable: @ambassador_request, url: '/admin/ambassadors', notification_type: 'web', action_type: 'send_request')  
+       approve_ambassador(request_user, @ambassador_request.id)
+
+
+      if @notification = Notification.create(recipient: @business, actor: request_user, action: get_full_name(request_user) + " sent you ambassador request", notifiable: @ambassador_request, url: '/admin/ambassadors', notification_type: 'web', action_type: 'send_request')
         @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
         )
           @pubnub.publish(
           channel: [@business.id],
-          message: { 
+          message: {
             action: @notification.action,
             avatar: request_user.avatar,
             time: time_ago_in_words(@notification.created_at),
@@ -63,8 +66,10 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
         message: "business_id is required.",
         data: nil
       }
-  end   
   end
+  end
+
+  api :GET, '/api/v1/ambassadors/businesses-list', 'Get list of businesses'
 
   def businesses_list
     @businesses = []
@@ -73,7 +78,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
     @offers = []
     User.businesses_list.each do |business|
    if !business.passes.blank?
-      business.passes.not_expired.order(created_at: 'DESC').each do |pass| 
+      business.passes.not_expired.order(created_at: 'DESC').each do |pass|
         @passes << {
           id: pass.id,
           type: 'pass',
@@ -97,13 +102,13 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           created_at: pass.created_at,
           terms_and_conditions: pass.terms_conditions,
           redeem_count: get_redeem_count(pass),
-          issued_by: get_full_name(business), 
+          issued_by: get_full_name(business),
           business: get_business_object(business)
-         
+
         }
         end
       end #not empty
-        
+
       if !business.special_offers.blank?
         business.special_offers.not_expired.order(created_at: 'DESC').each do |offer|
         @special_offers << {
@@ -132,7 +137,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           issued_by: get_full_name(offer.user),
           redeem_count: get_redeem_count(offer),
           quantity: offer.quantity
-         
+
         }
         end
       end #not blank
@@ -159,16 +164,17 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
       data:  {
         offers: @offers
       }
-    } 
+    }
   end
 
+  api :GET, '/api/v1/ambassadors/my-businesses', 'Get list of businesses whow accepted an ambassador'
   # list of business who approved an ambassador
   def my_businesses
     @businesses = request_user.ambassador_businesses
     @offers = []
     @businesses.each do |business|
       if !business.passes.blank?
-      business.passes.not_expired.order(created_at: 'DESC').each do |pass| 
+      business.passes.not_expired.order(created_at: 'DESC').each do |pass|
         @offers << {
           id: pass.id,
           type: 'pass',
@@ -195,7 +201,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           terms_and_conditions: pass.terms_conditions,
           redeem_count: get_redeem_count(pass),
           business: get_business_object(business),
-         
+
         }
         end #each
       end #not empty
@@ -217,7 +223,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           creator_name: offer.user.business_profile.profile_name,
           creator_image: offer.user.avatar,
           validity: offer.validity.strftime(get_time_format),
-          end_time: offer.validity, 
+          end_time: offer.validity,
           grabbers_count: offer.wallets.size,
           ambassador_stats: ambassador_stats(offer, request_user),
           is_added_to_wallet: is_added_to_wallet?(offer.id),
@@ -229,12 +235,12 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           terms_and_conditions: offer.terms_conditions,
           issued_by: get_full_name(offer.user),
           redeem_count: get_redeem_count(offer),
-          quantity: offer.quantity 
+          quantity: offer.quantity
         }
         end #each
       end #not empty
     end #parant each
- 
+
     render json: {
       code: 200,
       success: true,
@@ -256,8 +262,8 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
     end
   end
 
-  
 
- 
+
+
 
 end

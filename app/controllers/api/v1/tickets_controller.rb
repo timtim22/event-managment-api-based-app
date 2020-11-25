@@ -1,5 +1,9 @@
 class Api::V1::TicketsController < Api::V1::ApiMasterController
 
+  api :POST, '/api/v1/events/redeem-ticket', 'Redeem Ticket'
+  param :event_id, :number, :desc => "Event ID", :required => true
+  param :redeem_code, :number, :desc => "Redeem ID", :required => true
+
   def redeem_it
     if !params[:redeem_code].blank? && !params[:event_id].blank?
      @ticket = Ticket.find_by(event_id: params[:event_id])
@@ -14,14 +18,14 @@ class Api::V1::TicketsController < Api::V1::ApiMasterController
         success: true,
         message: "Ticket redeemed.",
         data: nil
-      }      
+      }
     else
       render json: {
         code: 400,
         success: false,
         message: "Ticket was not redeemed.",
         data: nil
-      }   
+      }
     end
     else
       render json: {
@@ -49,6 +53,8 @@ class Api::V1::TicketsController < Api::V1::ApiMasterController
   end
   end
 
+  api :POST, '/api/v1/event/get-tickets', 'Get event Tickets'
+  param :event_id, :number, :desc => "Event ID", :required => true
 
   def get_tickets
     if !params[:event_id].blank?
@@ -92,7 +98,7 @@ class Api::V1::TicketsController < Api::V1::ApiMasterController
 
 
   private
-   
+
   def sold_out?(ticket)
     ticket.quantity.to_i == 0
   end

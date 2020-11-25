@@ -1,6 +1,12 @@
 class Api::V1::SettingsController < Api::V1::ApiMasterController
   before_action :authorize_request
 
+  api :POST, '/api/v1/user/update-user-setting', 'To update a user profile settings'
+  param :is_on, String, :desc => "True/False", :required => true
+  param :name, String, :desc => "name(setting name e.g. location_setting  => { name : location},
+    Notifications_setting => {name: all_chat_notifications, name: event_notifications, name: special_offers_notifications,
+      name: passes_notifications, name: competitions_notifications} )", :required => true
+
   def update_global_setting
    if !params[:is_on].blank? && !params[:name].blank?
     name_values = ['all_chat_notifications','event_notifications','special_offers_notifications','passes_notifications','competitions_notifications','location']

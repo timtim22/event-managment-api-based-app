@@ -7,9 +7,15 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   include ActionView::Helpers::DateHelper
   Stripe.api_key = ENV['STRIPE_API_KEY']
 
+  api :POST, '/api/v1/events/purchase-ticket', 'Purchase Ticket'
+  param :ticket_id, :number, :desc => "Ticket ID", :required => true
+  param :ticket_type, String, :desc => "Type of the ticket", :required => true
+  param :status, String, :desc => "successful/failed", :required => true
+  param :stripe_response, String, :desc => "Stripe response", :required => true
+  param :transaction_id, :number, :desc => "Transaction ID", :required => true
 
   def purchase_ticket
-    if !params[:ticket_id].blank? && !params[:ticket_type].blank?  && !params[:quantity].blank? 
+    if !params[:ticket_id].blank? && !params[:ticket_type].blank?  && !params[:quantity].blank?
         @ticket = Ticket.find(params[:ticket_id])
         if @ticket.quantity <  params[:quantity].to_i
           render json: {
@@ -25,36 +31,36 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
         if !params[:status].blank? && !params[:stripe_response].blank? && !params[:transaction_id].blank?
 
           transaction = Transaction.find(params[:transaction_id]).update!(status: params[:status], stripe_response: params[:stripe_response])
-    
+
 
           if(params[:status] == 'successful') #while tikcet_type ==  'buy' 'can_purchase' is already inmpleted  to 'get_secret' api which is the first step of stripe payment, so doesn't need here
             request_user.going_interest_levels.create!(event: @event)
-          
+
               @check = TicketPurchase.where(ticket_id: params[:ticket_id]).where(user_id: request_user.id)
           if @check.blank?
             if @purchase = request_user.ticket_purchases.create!(ticket_id: params[:ticket_id], quantity: params[:quantity])
-              #update total quantity   
+              #update total quantity
               @ticket.quantity = @ticket.quantity - params[:quantity].to_i
               @ticket.save
 
               # create_activity(request_user, "attedning event", @event, 'Event', admin_event_path(@event), @event.name, 'post', 'going')
 
             if @wallet  = request_user.wallets.create!(offer_id: params[:ticket_id], offer_type: 'Ticket')
-        
+
               @pubnub = Pubnub.new(
                 publish_key: ENV['PUBLISH_KEY'],
                 subscribe_key: ENV['SUBSCRIBE_KEY']
               )
-            
-              if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet') 
-        
+
+              if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
+
                 @current_push_token = @pubnub.add_channels_to_push(
                   push_token: request_user.profile.device_token,
                   type: 'gcm',
                   add: request_user.profile.device_token
                   ).value
-        
-                payload = { 
+
+                payload = {
                   "pn_gcm":{
                   "notification":{
                     "title": @notification.action
@@ -68,7 +74,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
                     "action": @notification.action,
                     "action_type": @notification.action_type,
                     "created_at": @notification.created_at,
-                    "body": ''   
+                    "body": ''
                    }
                   }
                 }
@@ -80,14 +86,14 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
                 end
               end ##notification create
             end #if wallet create
-  
+
         render json: {
           code: 200,
           success: true,
           message: "Ticket successfully purchased.",
           data: nil
         }
-  
+
      else
       render json: {
         code: 400,
@@ -108,22 +114,22 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
 
          @wallet = request_user.wallets.where(offer_id: @purchase.id).where(offer_type: 'Ticket').first
 
-      if @wallet 
-  
+      if @wallet
+
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
         )
-      
-        if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet') 
-  
+
+        if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
+
           @current_push_token = @pubnub.add_channels_to_push(
             push_token: request_user.profile.device_token,
             type: 'gcm',
             add: request_user.profile.device_token
             ).value
-  
-          payload = { 
+
+          payload = {
             "pn_gcm":{
             "notification":{
               "title": @notification.action
@@ -137,7 +143,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
               "action": @notification.action,
               "action_type": @notification.action_type,
               "created_at": @notification.created_at,
-              "body": ''   
+              "body": ''
              }
             }
           }
@@ -166,7 +172,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
       }
       end
     end #blank
-   
+
     else
       render json: {
         code: 400,
@@ -175,7 +181,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
         data: nil
       }
     end
-         
+
         else
           render json: {
             code: 400,
@@ -187,30 +193,30 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
        else #buy
         # her will go old logic
         @ticket = Ticket.find(params[:ticket_id])
-        if can_purchase?(@ticket, params[:quantity]) 
+        if can_purchase?(@ticket, params[:quantity])
           @check = TicketPurchase.where(ticket_id: params[:ticket_id]).where(user_id: request_user.id)
         if @check.blank?
         if @purchase = request_user.ticket_purchases.create!(ticket_id: params[:ticket_id], quantity: params[:quantity])
           #update total quantity
           @ticket.quantity = @ticket.quantity - params[:quantity].to_i
           @ticket.save
-    
+
          if @wallet  = request_user.wallets.create!(offer_id: params[:ticket_id], offer_type: 'Ticket')
-    
+
           @pubnub = Pubnub.new(
             publish_key: ENV['PUBLISH_KEY'],
             subscribe_key: ENV['SUBSCRIBE_KEY']
            )
-         
-          if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet') 
-    
+
+          if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
+
             @current_push_token = @pubnub.add_channels_to_push(
                push_token: request_user.profile.device_token,
                type: 'gcm',
                add: request_user.profile.device_token
                ).value
-    
-             payload = { 
+
+             payload = {
               "pn_gcm":{
                "notification":{
                  "title": @notification.action
@@ -224,7 +230,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
                 "action": @notification.action,
                 "action_type": @notification.action_type,
                 "created_at": @notification.created_at,
-                "body": ''   
+                "body": ''
                }
               }
              }
@@ -236,14 +242,14 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
              end
           end ##notification create
         end #if wallet create
-    
+
           render json: {
             code: 200,
             success: true,
             message: "Ticket successfully purchased.",
             data: nil
           }
-    
+
        else
         render json: {
           code: 400,
@@ -261,23 +267,23 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
         @ticket.save
 
         @wallet = request_user.wallets.where(offer_id: @purchase.id).where(offer_type: 'Ticket').first
-  
+
       if @wallet
-  
+
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
         )
-      
-        if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet') 
-  
+
+        if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
+
           @current_push_token = @pubnub.add_channels_to_push(
             push_token: request_user.profile.device_token,
             type: 'gcm',
             add: request_user.profile.device_token
             ).value
-  
-          payload = { 
+
+          payload = {
             "pn_gcm":{
             "notification":{
               "title": @notification.action
@@ -291,7 +297,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
               "action": @notification.action,
               "action_type": @notification.action_type,
               "created_at": @notification.created_at,
-              "body": ''   
+              "body": ''
             }
             }
           }
@@ -341,16 +347,20 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   end
   end
 
+  api :POST, '/api/v1/payments/get-secret', 'Get client secret and submit amout to pay'
+  param :total_price, :number, :desc => "Total Price", :required => true
+  param :ticket_id, :number, :desc => "Ticket ID", :required => true
+  param :quantity, :number, :desc => "Quantity of the tickets", :required => true
 
   def get_secret
       if !params[:total_price].blank? && !params[:ticket_id].blank? && !params[:quantity].blank?
          application_fee_percent = 5; #later to change it to dynamic value
      @ticket = Ticket.find(params[:ticket_id])
-     if can_purchase?(@ticket, params[:quantity]) 
+     if can_purchase?(@ticket, params[:quantity])
          @payable = params[:total_price]
-        
+
          application_fee = calculate_application_fee(@payable.to_i,application_fee_percent).ceil
-      if @ticket.user.connected_account_id != '' 
+      if @ticket.user.connected_account_id != ''
         intent = Stripe::PaymentIntent.create({
           amount: @payable.to_i * 100,
           currency: 'EUR', #later changeable, will come from admin dashboard
@@ -399,7 +409,9 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   end
 
 
-  
+  api :POST, '/api/v1/payments/place-refund-request', 'Place a refund requests'
+  param :ticket_id, :number, :desc => "Ticket ID", :required => true
+  param :reason, :number, :desc => "Reason", :required => true
 
   def place_refund_request
     if !params[:ticket_id].blank?
@@ -466,17 +478,17 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
 
   def calculate_application_fee(amount, application_fee_percent)
    application_fee = application_fee_percent.to_f  / 100.0 * amount.to_f
-  end 
-  
+  end
+
   #check if a user can purchase a ticket
   def can_purchase?(ticket, purchase_quantity)
     purchased_ticket = request_user.ticket_purchases.where(ticket_id: ticket.id).first
     if purchased_ticket.blank? #buying first time?
-    if purchase_quantity.to_i > 0 && purchase_quantity.to_i <= @ticket.per_head  
+    if purchase_quantity.to_i > 0 && purchase_quantity.to_i <= @ticket.per_head
       true
     else
       false
-    end 
+    end
   else
    #check if user has finished purchase quota
    if purchased_ticket.quantity + purchase_quantity.to_i <= ticket.per_head
@@ -487,7 +499,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   end #blank
   end
 
-  
 
-  
+
+
 end

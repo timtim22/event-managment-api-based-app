@@ -1,10 +1,11 @@
 class Api::V1::EventsController < Api::V1::ApiMasterController
   before_action :authorize_request, except:  ['events_list_by_date','index','show_event']
 
-
+  api :POST, '/api/v1/events/show', 'To view a specific event'
+  param :event_id, String, :desc => "Event ID", :required => true
 
   def show_event
-    
+
     if !params[:event_id].blank?
       e = Event.find(params[:event_id])
       @passes = []
@@ -36,7 +37,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
           }
         end# remove if
       } #map
-      else 
+      else
         e.passes.not_expired.map { |pass|
           @passes << {
           id: pass.id,
@@ -120,12 +121,17 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
     end
   end
 
+  api :POST, '/api/v1/events', 'Get events by list'
+  param :location, String, :desc => "Location of the event", :required => true
+  param :price, :number, :desc => "Price of the event", :required => true
+  param :pass, String, :desc => "Pass", :required => true
+  param :categories, :number, :desc => "categories(1,2)", :required => true
 
- 
+
   def index
        cats_id = []
       if !params[:price].blank?
-          case 
+          case
           when params[:price].to_i == 0
             operator = "="
           when params[:price].to_i == 60
@@ -139,20 +145,20 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
           end
         end
         if !params[:categories].blank?
-        
-          cats_ids = params[:categories].split(",").map {|s| s.to_i } 
+
+          cats_ids = params[:categories].split(",").map {|s| s.to_i }
         end
 
         if !params[:location].blank?
-        
+
           location = trim_space(params[:location])
         else
           location = nil
         end
-        
+
         #all events 1
         @events = Event.all
-     
+
         #location based events 2
         @events = Event.ransack(location_cont: location).result(distinct: true) if !params[:location].blank?
 
@@ -161,8 +167,8 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 
          #categories 3
          @events = Event.where(first_cat_id: cats_ids) if !params[:categories].blank?
-         
-         #has passes  4 
+
+         #has passes  4
          @events = Event.where(pass: 'true') if !params[:pass].blank?
 
          #location && price 5
@@ -210,7 +216,8 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 
     end #func
 
-
+  api :POST, '/api/v1/events-by-date', 'Get events by date'
+  param :date, :number, :desc => "Date", :required => true
 
 	def events_list_by_date
 		@events = Event.events_by_date(params[:date])
@@ -237,20 +244,20 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       subscribe_key: ENV['SUBSCRIBE_KEY']
     )
     (User.all - [request_user]).each do |user|
-      if @notification = Notification.create(recipient: user, actor: request_user, action: get_full_name(request_user) + " posted a new event.", notifiable: @event, url: '/admin/events', notification_type: 'web')  
+      if @notification = Notification.create(recipient: user, actor: request_user, action: get_full_name(request_user) + " posted a new event.", notifiable: @event, url: '/admin/events', notification_type: 'web')
         @current_push_token = @pubnub.add_channels_to_push(
           push_token: user.profile.device_token,
           type: 'gcm',
           add: user.profile.device_token
           ).value
 
-        payload = { 
+        payload = {
         "pn_gcm":{
           "notification":{
             "title": @notification.action,
           },
           "type": @notification.notifiable_type,
-          "event_id": @event.id 
+          "event_id": @event.id
         }
       }
 
@@ -267,7 +274,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 				status: true,
 				message: "Event successfully created."
 			}
-			
+
 		else
 		    render json: {
 		    	status: false,
@@ -275,7 +282,11 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 		    }
 		end
   end
-  
+
+  api :POST, '/api/v1/event/report-event', 'To repot an event'
+  param :event_id, :number, :desc => "Event ID", :required => true
+  param :reason, String, :desc => "Reason for reporting an event", :required => true
+
   def report_event
    if !params[:event_id].blank? && !params[:reason].blank?
     if request_user.reported_events.create!(event_id: params[:event_id], reason: params[:reason])
@@ -291,7 +302,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       success: false,
       message: "Event couldn't be reported."
     }
-  end   
+  end
    else
     render json: {
       code: 400,
@@ -302,6 +313,9 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
    end
 
   end
+
+  api :POST, '/api/v1/event/create-view', 'To create view'
+  param :event_id, :number, :desc => "Event ID", :required => true
 
   def create_view
     if !params[:event_id].blank?
@@ -331,6 +345,8 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
     end
   end
 
+  api :POST, '/api/v1/get-business-events', 'Get a business user events'
+  param :business_id, :number, :desc => "Business ID", :required => true
 
   def get_business_events
     if !params[:business_id].blank?
@@ -344,7 +360,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
             events: events
           }
         }
-    
+
     else
       render json: {
         code: 400,
@@ -355,12 +371,12 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
     end
   end
 
-  
 
-  private 
+
+  private
 
   # calculates interest level demographics interested + going
- 
+
 	def event_params
 		params.permit(:name,:date,:start_time, :end_time, :external_link, :host, :description,:location,:image, :feature_media_link, :additinal_media, :allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18)
   end

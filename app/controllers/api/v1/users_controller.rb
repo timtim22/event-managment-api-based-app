@@ -887,6 +887,9 @@ end
     }
   end
 
+  api :POST, '/api/v1/users/update-profile-picture', 'Update Profile Picture'
+  param :avatar, :number, :desc => "Avatar", :required => true
+
   def update_profile_pictures
     if @update = request_user.update!(avatar: params[:avatar])
       render json: {
