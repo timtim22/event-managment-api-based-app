@@ -219,7 +219,7 @@ class Admin::EventsController < Admin::AdminMasterController
       end
    else###############################
     dates = generate_date_range(params[:start_date], params[:end_date])
-    dates._each_with_index do |date, index|
+    dates.each_with_index do |date, index|
       @event = current_user.events.new
       @event.name = params[:name]
       @event.start_date = date.to_date
