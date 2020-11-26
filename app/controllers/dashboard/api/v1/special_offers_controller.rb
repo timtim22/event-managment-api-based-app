@@ -1,6 +1,12 @@
 class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMasterController
   before_action :authorize_request
 
+    resource_description do
+      api_versions "dashboard"
+    end
+
+  api :GET, 'dashboard/api/v1/special_offers', 'Get all special offers'
+
   def index
     @special_offers = request_user.special_offers.page(params[:page]).per(20).order(id: 'DESC')
     @offers = []
@@ -33,6 +39,8 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
     }
   end
 
+  api :GET, 'dashboard/api/v1/get-past-offers', 'Get all expired special offers'
+
   def get_past_offers
     @special_offers = []
     SpecialOffer.page(params[:page]).per(20).expired.order(created_at: "DESC").each do |offer|
@@ -63,6 +71,17 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
       }
     }
   end
+
+  api :POST, 'dashboard/api/v1/special_offers', 'Create special offer'
+  param :title, String, :desc => "Title of the special offer", :required => true
+  param :description, String, :desc => "Description of the special offer", :required => true
+  param :date, :number, :desc => "Date of the special offer", :required => true
+  param :validity, :number, :desc => "Validity", :required => true
+  param :ambassador_rate, :number, :desc => "Ambassador rate of the special offer", :required => true
+  param :image, :number, :desc => "Image of the special offer", :required => true
+  param :redeem_code, :number, :desc => "Redeem Code", :required => true
+  param :terms_conditions, :number, :desc => "Terms and condition of the special offer", :required => true
+ # param :id, :number, :desc => "Title of the competition", :required => true
 
   def create
     @special_offer = SpecialOffer.new
@@ -147,6 +166,17 @@ def edit
 
 end
 
+  api :POST, 'dashboard/api/v1/special_offers', 'Update special offer'
+  param :id, :number, :desc => "ID of the special offer", :required => true
+  param :title, String, :desc => "Title of the special offer", :required => true
+  param :description, String, :desc => "Description of the special offer", :required => true
+  param :date, :number, :desc => "Date of the special offer", :required => true
+  param :validity, :number, :desc => "Validity", :required => true
+  param :ambassador_rate, :number, :desc => "Ambassador rate of the special offer", :required => true
+  param :image, :number, :desc => "Image of the special offer", :required => true
+  param :redeem_code, :number, :desc => "Redeem Code", :required => true
+  param :terms_conditions, :number, :desc => "Terms and condition of the special offer", :required => true
+ # param :id, :number, :desc => "Title of the competition", :required => true
 
 def update
   if !params[:id].blank?
@@ -242,6 +272,8 @@ def update
   end
 end
 
+  api :DELETE, 'dashboard/api/v1/special_offers', 'Delete special offer'
+  param :id, :number, :desc => "ID of the special offer", :required => true
 
  def destroy
   special_offer = SpecialOffer.find(params[:id])

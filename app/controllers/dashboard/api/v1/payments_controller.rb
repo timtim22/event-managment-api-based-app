@@ -7,9 +7,16 @@ class Dashboard::Api::V1::PaymentsController < Dashboard::Api::V1::ApiMasterCont
   include ActionView::Helpers::DateHelper
   Stripe.api_key = ENV['STRIPE_API_KEY']
 
+    resource_description do
+      api_versions "dashboard"
+    end
+
+  api :DELETE, 'dashboard/api/v1/payments/create-intant', 'Create payment intent'
+  param :price, :number, :desc => "Price", :required => true
+
 
     def create_intant
-      if !params[:price].blank? 
+      if !params[:price].blank?
          application_fee = 0; #later to change it to dynamic value
          @payable = params[:price]
         intent = Stripe::PaymentIntent.create({
@@ -43,10 +50,15 @@ class Dashboard::Api::V1::PaymentsController < Dashboard::Api::V1::ApiMasterCont
   end
  end
 
+  api :POST, 'dashboard/api/v1/payments/confirm-payment', 'Confirm Payment'
+  param :status, ['successful', 'failed'], :desc => "Price", :required => true
+  param :stripe_response, String, :desc => "Stripe Respose", :required => true
+  param :transaction_id, :number, :desc => "Transaction ID", :required => true
+  param :total_tickets, :number, :desc => "Total Tickets", :required => true
+  param :vat_amount, :number, :desc => "vat Amount", :required => true
 
- 
  def confirm_payment
-  if !params[:status].blank? && !params[:stripe_response].blank? && !params[:transaction_id].blank? && !params[:total_tickets].blank? && !params[:vat_amount].blank? 
+  if !params[:status].blank? && !params[:stripe_response].blank? && !params[:transaction_id].blank? && !params[:total_tickets].blank? && !params[:vat_amount].blank?
     transaction = Transaction.find(params[:transaction_id])
     if transaction.update!(status: params[:status], stripe_response: params[:stripe_response]) && request_user.invoices.create!(amount: transaction.amount, tax_invoice_number: "243546454", total_amount: transaction.amount, total_tickets: params[:total_tickets], vat_amount: params[:vat_amount])
     render json: {
@@ -81,17 +93,17 @@ class Dashboard::Api::V1::PaymentsController < Dashboard::Api::V1::ApiMasterCont
 
   def calculate_application_fee(amount, application_fee_percent)
    application_fee = application_fee_percent.to_f  / 100.0 * amount.to_f
-  end 
-  
+  end
+
   #check if a user can purchase a ticket
   def can_purchase?(ticket, purchase_quantity)
     purchased_ticket = request_user.ticket_purchases.where(ticket_id: ticket.id).first
     if purchased_ticket.blank? #buying first time?
-    if purchase_quantity.to_i > 0 && purchase_quantity.to_i <= @ticket.per_head  
+    if purchase_quantity.to_i > 0 && purchase_quantity.to_i <= @ticket.per_head
       true
     else
       false
-    end 
+    end
   else
    #check if user has finished purchase quota
    if purchased_ticket.quantity + purchase_quantity.to_i <= ticket.per_head
@@ -101,5 +113,5 @@ class Dashboard::Api::V1::PaymentsController < Dashboard::Api::V1::ApiMasterCont
    end
   end #blank
   end
-  
+
 end

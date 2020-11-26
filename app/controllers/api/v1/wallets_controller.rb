@@ -389,7 +389,7 @@ end
 
   api :POST, '/api/v1/wallet/remove-follower', 'To remove an item from the wallet'
   param :offer_id, :number, :desc => "Offer ID - Item ID", :required => true
-  param :offer_type, String, :desc => "competitions/special_offers/tickets/pass", :required => true
+ # param :offer_type, String, :desc => "competitions/special_offers/tickets/pass", :required => true
 
 def remove_offer
  all_is_well = !params[:offer_id].blank? && !params[:offer_type].blank?
@@ -423,7 +423,7 @@ end
 
   api :POST, '/api/v1/add-to-wallet', 'Add offers to your wallet'
   param :offer_id, :number, :desc => "Offer ID", :required => true
-  param :offer_type, :number, :desc => "Offer Type (SpecialOffer, Pass)", :required => true
+  param :offer_type, ['pass', 'special offer'], :desc => "Offer Type (SpecialOffer, Pass)", :required => true
 
  def add_to_wallet
   if !params[:offer_id].blank? && !params[:offer_type].blank?
