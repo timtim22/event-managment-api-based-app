@@ -164,8 +164,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "created_at": notification.created_at,
             "is_read": !notification.read_at.nil?,
             "last_comment": notification.resource.comment,
-            "comment_id": notification.resource.comment.id,
-            "is_host": is_business?(notification.resource.comment.user)
+            "comment_id": notification.resource.id,
+            "is_host": is_business?(notification.resource.user)
           }
 
         when "reply_comment"

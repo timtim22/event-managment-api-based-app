@@ -25,7 +25,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
      if @comment.save
       # resource should be parent resource in case of api so that event id should be available in order to show event based comment.
       # Notify the event owner as well
-      comments_hash = {
+      comment_hash = {
         "id" =>  @comment.id,
         "comment" => @comment.comment,
         "user_id" => @comment.user_id,
@@ -100,7 +100,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
               "is_read": !notification.read_at.nil?,
               "last_comment": comment_hash,
               "comment_id": @comment.id,
-              "is_host": is_business?(@reply.user)
+              "is_host": is_business?(@comment.user)
              }
             }
            }
@@ -123,7 +123,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          success: true,
          message: "Comment created successfully",
          data: {
-           comment: comments_hash
+           comment: comment_hash
          }
        }
     else
