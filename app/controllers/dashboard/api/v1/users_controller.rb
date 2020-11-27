@@ -47,7 +47,7 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
   #param :phone_number, String
   param :email, String, :desc => "Email"
   param :web_user, ['True', 'False']
-  param :password, String, :desc => "Password"
+  #param :password, String, :desc => "Password"
 
 
   def create
@@ -133,7 +133,7 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
   #param :phone_number, String
   param :email, String, :desc => "Email"
   param :web_user, ['True', 'False']
-  param :password, String, :desc => "Password"
+  #param :password, String, :desc => "Password"
 
   def update
    if !params[:id].blank?

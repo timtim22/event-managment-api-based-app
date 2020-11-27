@@ -4,7 +4,7 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
   # Send follow request
-  api :POST, '/api/v1/event/follow', 'To Follow a Person'
+  api :POST, '/api/v1/event/follow', 'To Follow a business'
   param :following_id, :number, :desc => "Following ID", :required => true
 
   def follow
@@ -87,7 +87,14 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
        code: 200,
        success:true,
        message: "followed successfully.",
-       data: nil
+       data: {
+
+          business_id: @following.id,
+          business_name: get_full_name(@following),
+          avatar: @following.avatar,
+          total_followers_count: @following.followers.count
+
+       }
        }
       else
         render json: {

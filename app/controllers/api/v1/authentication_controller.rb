@@ -188,7 +188,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
 
   api :POST, '/api/v1/auth/update-password', 'To update password'
   param :email, String, :desc => "Email", :required => true
-  param :password, String, :desc => "Password", :required => true
+  #param :password, String, :desc => "Password", :required => true
 
   def update_password
     @user = User.find_by(email: params[:email])
