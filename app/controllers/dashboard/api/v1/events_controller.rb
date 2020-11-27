@@ -368,7 +368,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
           @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00)
        when 'paid'
           resource[:fields].each do |f|
-           @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: 'buy')
+           @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
           end #each
            @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00)
         when 'pay_at_door'
@@ -598,9 +598,9 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
        when 'paid'
           resource[:fields].each do |f|
             if f.include? "id"
-              @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
+              @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
             else
-              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], f[:terms_conditions], user: request_user, ticket_type: 'buy')
+              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'buy')
             end
           end #each
 
