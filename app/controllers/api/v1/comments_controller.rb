@@ -195,7 +195,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
                 "replier_id": notification.resource.user.id,
                 "replier_name": User.get_full_name(notification.resource.user),
                 "comment_id": notification.resource.comment.id,
-                "comment": notification.resource.comment.comment,
+                "comment": notification.resource.msg,
                 "actor_id": notification.actor_id,
                 "actor_image": notification.actor.avatar,
                 "notifiable_id": notification.notifiable_id,
@@ -267,6 +267,10 @@ end
   api :POST, '/api/v1/event/comments', 'Get list of event based comments'
   param :event_id, :number, :desc => "Event ID", :required => true
 
+
+
+
+
    def comments
     @event = Event.find(params[:event_id])
      @comments = []
@@ -319,6 +323,7 @@ end
      }
   }
    end
+
 
   api :POST, '/api/v1/event/get-commented-events', 'Get comment events'
 
