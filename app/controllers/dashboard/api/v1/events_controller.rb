@@ -486,7 +486,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       params[:admission_resources].each do |resource|
         case resource[:name]
         when "free"
-          required_fields = ['id', 'title', 'quantity', 'per_head']
+          required_fields = ['title', 'quantity', 'per_head']
           resource[:fields].each do |f|
             required_fields.each do |field|
               if f[field.to_sym].blank?
@@ -496,7 +496,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
            end #each
 
         when 'paid'
-          required_fields = ['id', 'title', 'quantity', 'per_head','price']
+          required_fields = ['title', 'quantity', 'per_head','price']
           resource[:fields].each do |f|
             required_fields.each do |field|
               if f[field.to_sym].blank?
@@ -506,7 +506,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
           end #each
 
           when 'pay_at_door'
-           required_fields = ['id', 'start_price', 'end_price']
+           required_fields = [ 'start_price', 'end_price']
            resource[:fields].each do |f|
             required_fields.each do |field|
               if f[field.to_sym].blank?
@@ -516,7 +516,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
            end #each
 
           when 'pass'
-            required_fields = ['id','title', 'description', 'valid_from','valid_to','quantity','ambassador_rate']
+            required_fields = ['title', 'description', 'valid_from','valid_to','quantity','ambassador_rate']
             resource[:fields].each do |f|
               required_fields.each do |field|
                 if f[field.to_sym].blank?
@@ -533,7 +533,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     end #admission resource validation
 
      if !params[:sponsors].blank?
-      required_fields = ['id','sponsor_image', 'external_url']
+      required_fields = ['sponsor_image', 'external_url']
       params[:sponsors].each do |sponsor|
         required_fields.each do |field|
           if sponsor[field.to_sym].blank?
@@ -544,7 +544,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
      end #blank
 
      if !params[:event_attachments].blank?
-      required_fields = ['id','media']
+      required_fields = ['media']
       params[:event_attachments].each do |attachment|
         required_fields.each do |field|
           if attachment[field.to_sym].blank?
@@ -586,7 +586,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       case resource[:name]
       when "free"
           resource[:fields].each do |f|
-            if f[:update] == "true"
+           if f.include? id
               @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], user: request_user, ticket_type: 'free', price: 0)
             else
               @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], user: request_user, ticket_type: 'free', price: 0)
@@ -596,7 +596,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
        when 'paid'
           resource[:fields].each do |f|
-            if f[:update] == "true"
+            if f.include? id
               @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: 'buy')
             else
               @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: 'buy')
@@ -606,7 +606,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
         when 'pay_at_door'
           resource[:fields].each do |f|
-            if f[:update] == "true"
+            if f.include? id
               @ticket = @event.tickets.find(f[:id]).update!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
             else
               @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
@@ -616,7 +616,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
         when 'pass'
           resource[:fields].each do |f|
-            if f[:update] == "true"
+            if f.include? id
               @pass = @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
               @event.update!(pass: 'true')
           else
