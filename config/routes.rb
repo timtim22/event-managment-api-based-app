@@ -133,6 +133,7 @@ Rails.application.routes.draw do
        post "special-offers/special-offer-single" => "special_offers#special_offer_single"
        post "passes/pass-single" => "passes#pass_single"
        post "competitions/competition-single" => "competitions#competition_single"
+       post "notifications/read" => "notifications#read_notification"
 
 
       # get '/*a', to: 'application#not_found'

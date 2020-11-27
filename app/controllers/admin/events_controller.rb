@@ -219,7 +219,7 @@ class Admin::EventsController < Admin::AdminMasterController
       end
    else###############################
     dates = generate_date_range(params[:start_date], params[:end_date])
-    dates.each do |date|
+    dates.each_with_index do |date, index|
       @event = current_user.events.new
       @event.name = params[:name]
       @event.start_date = date.to_date
@@ -337,6 +337,7 @@ class Admin::EventsController < Admin::AdminMasterController
      end #if
       # notifiy all users about new event creation
 
+    if index == 0 # loop only once
        if !current_user.followers.blank?
         current_user.followers.each do |follower|
       if follower.all_chat_notifications_setting.is_on == true && follower.event_notifications_setting.is_on == true
@@ -385,7 +386,7 @@ class Admin::EventsController < Admin::AdminMasterController
       end #all chat and event chat true
       end #each
       end # not blank
-
+    end # if index is zero
 
      else
        @errors.push(@event.errors.full_messages)
