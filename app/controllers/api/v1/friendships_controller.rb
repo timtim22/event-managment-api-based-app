@@ -207,7 +207,16 @@ def accept_request
        code: 200,
        success: true,
        message: "Friend request accepted.",
-       data:nil
+       data: {
+        friend_id: request.friend_id,
+        friend_name: get_full_name(request.friend),
+        friend_name: request.friend.profile.first_name,
+        last_name: request.friend.profile.last_name,
+        avatar: request.friend.avatar,
+        mutual_friends_count: get_mutual_friends(request_user, request).count,
+        is_ambassador: request.friend.profile.is_ambassador
+
+       }
      }
     else
       render json: {
