@@ -208,10 +208,11 @@ def accept_request
        success: true,
        message: "Friend request accepted.",
        data: {
-        friend_id: request.friend_id,
-        friend_name: request.friend.profile.first_name,
-        last_name: request.friend.profile.last_name,
-        avatar: request.friend.avatar,
+        friend_id: request.user.id,
+        first_name: request.user.profile.first_name,
+        last_name: request.user.profile.last_name,
+        avatar_name: request.user.avatar,
+        mutual_friends_count: get_mutual_friends(request.user, request.friend).size,
         is_ambassador: request.friend.profile.is_ambassador
 
        }
