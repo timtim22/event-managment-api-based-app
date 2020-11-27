@@ -267,6 +267,10 @@ end
   api :POST, '/api/v1/event/comments', 'Get list of event based comments'
   param :event_id, :number, :desc => "Event ID", :required => true
 
+
+
+
+
    def comments
     @event = Event.find(params[:event_id])
      @comments = []
@@ -319,6 +323,7 @@ end
      }
   }
    end
+
 
   api :POST, '/api/v1/event/get-commented-events', 'Get comment events'
 
