@@ -63,9 +63,9 @@ class Api::V1::SettingsController < Api::V1::ApiMasterController
    end
   end
 
-  api :POST, '/api/v1/user/update-user-setting', 'To update a user profile settings'
-  param :mute_chat, String, :desc => "Mute Chat - one is mandatory", :required => true
-  param :mute_notifications, String, :desc => "Mute Notifications - one is mandatory", :required => true
+  #api :POST, '/api/v1/user/update-user-setting', 'To update a user profile settings'
+#  param :mute_chat, String, :desc => "Mute Chat - one is mandatory", :required => true
+ # param :mute_notifications, String, :desc => "Mute Notifications - one is mandatory", :required => true
 
   def update_user_setting
      #specific setting

@@ -586,7 +586,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       case resource[:name]
       when "free"
           resource[:fields].each do |f|
-           if f.include? id
+           if f.include? "id"
               @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], user: request_user, ticket_type: 'free', price: 0)
             else
               @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], user: request_user, ticket_type: 'free', price: 0)
@@ -596,7 +596,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
        when 'paid'
           resource[:fields].each do |f|
-            if f.include? id
+            if f.include? "id"
               @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: 'buy')
             else
               @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: 'buy')
@@ -606,7 +606,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
         when 'pay_at_door'
           resource[:fields].each do |f|
-            if f.include? id
+            if f.include? "id"
               @ticket = @event.tickets.find(f[:id]).update!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
             else
               @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
@@ -616,7 +616,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
         when 'pass'
           resource[:fields].each do |f|
-            if f.include? id
+            if f.include? "id"
               @pass = @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
               @event.update!(pass: 'true')
           else
