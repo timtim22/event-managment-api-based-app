@@ -618,11 +618,10 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
           resource[:fields].each do |f|
             if f.include? "id"
               @pass = @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
-              @event.update!(pass: 'true')
           else
                 @pass = @event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
-              @event.update!(pass: 'true')
             end
+            @event.update!(pass: 'true')
           end #each
 
 

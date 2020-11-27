@@ -12,7 +12,7 @@ class Dashboard::Api::V1::PaymentsController < Dashboard::Api::V1::ApiMasterCont
     end
 
   api :DELETE, 'dashboard/api/v1/payments/create-intant', 'Create payment intent'
-  param :price, :number, :desc => "Price", :required => true
+  #param :price, :number, :desc => "Price", :required => true
 
 
     def create_intant
@@ -50,12 +50,12 @@ class Dashboard::Api::V1::PaymentsController < Dashboard::Api::V1::ApiMasterCont
   end
  end
 
-  api :POST, 'dashboard/api/v1/payments/confirm-payment', 'Confirm Payment'
-  param :status, ['successful', 'failed'], :desc => "Price", :required => true
-  param :stripe_response, String, :desc => "Stripe Respose", :required => true
-  param :transaction_id, :number, :desc => "Transaction ID", :required => true
-  param :total_tickets, :number, :desc => "Total Tickets", :required => true
-  param :vat_amount, :number, :desc => "vat Amount", :required => true
+  # api :POST, 'dashboard/api/v1/payments/confirm-payment', 'Confirm Payment'
+  # param :status, ['successful', 'failed'], :desc => "Price", :required => true
+  # param :stripe_response, String, :desc => "Stripe Respose", :required => true
+  # param :transaction_id, :number, :desc => "Transaction ID", :required => true
+  # param :total_tickets, :number, :desc => "Total Tickets", :required => true
+  # param :vat_amount, :number, :desc => "vat Amount", :required => true
 
  def confirm_payment
   if !params[:status].blank? && !params[:stripe_response].blank? && !params[:transaction_id].blank? && !params[:total_tickets].blank? && !params[:vat_amount].blank?
