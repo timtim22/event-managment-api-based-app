@@ -246,7 +246,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
   # end
 
   def create
-
+    render params
+    return
     success = false
     @error_messages = []
 
@@ -597,9 +598,9 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
        when 'paid'
           resource[:fields].each do |f|
             if f.include? "id"
-              @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: 'buy')
+              @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
             else
-              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: 'buy')
+              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], f[:terms_conditions], user: request_user, ticket_type: 'buy')
             end
           end #each
 
@@ -693,7 +694,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     end
 
   api :POST, 'dashboard/api/v1/events', 'To create an event'
-  param :id, :number, :desc => "ID of the event", :required => true
+  param :event_id, :number, :desc => "ID of the event", :required => true
 
     def cancel_event
 
@@ -726,7 +727,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     end
 
   api :POST, 'dashboard/api/v1/delete-event', 'To delete the event'
-  param :id, :number, :desc => "ID of the event", :required => true
+  param :event_id, :number, :desc => "ID of the event", :required => true
 
     def delete_event
       if !params[:event_id].blank?
