@@ -7,6 +7,12 @@ class Dashboard::Api::V1::InvoicesController < Dashboard::Api::V1::ApiMasterCont
   include ActionView::Helpers::DateHelper
   Stripe.api_key = ENV['STRIPE_API_KEY']
 
+    resource_description do
+      api_versions "dashboard"
+    end
+
+  api :GET, 'dashboard/api/v1/invoices', 'Get all invoices'
+
    def index
     @invoices = request_user.invoices.order(id: 'DESC')
     render json: {
@@ -16,9 +22,11 @@ class Dashboard::Api::V1::InvoicesController < Dashboard::Api::V1::ApiMasterCont
       data: {
         invoices: @invoices
       }
-    }    
+    }
    end
 
+  api :GET, 'dashboard/api/v1/invoices', 'Get specific invoice'
+  param :id, :number, :desc => "Invoice ID", :required => true
 
 
    def show
@@ -32,7 +40,7 @@ class Dashboard::Api::V1::InvoicesController < Dashboard::Api::V1::ApiMasterCont
           "business_name" => User.get_full_name(@invoice.user),
           "business_contact" =>  @invoice.user.phone_number
         }
-     
+
        render json: {
          code: 200,
          success: true,
@@ -41,7 +49,7 @@ class Dashboard::Api::V1::InvoicesController < Dashboard::Api::V1::ApiMasterCont
            invoice: invoice
          }
        }
-   
+
   end
 
 

@@ -7,6 +7,12 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
     require 'action_view/helpers'
     include ActionView::Helpers::DateHelper
 
+    resource_description do
+      api_versions "dashboard"
+    end
+
+  api :GET, '/dashboard/api/v1/get-past-competitions', 'Get past/expired competitions'
+
     def get_past_competitions
     @competitions = []
     Competition.page(params[:page]).per(20).expired.order(created_at: 'DESC').each do |competition|
@@ -48,6 +54,9 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
       }
     }
   end
+
+  api :POST, 'dashboard/api/v1/competitions', 'Get competitions by list'
+  param :location, String, :desc => "Location of the event", :required => true
 
   def index
     @competitions = request_user.competitions.page(params[:page]).per(20).order(created_at: "DESC")
@@ -102,6 +111,20 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
      }
 
   end
+
+  api :POST, '/dashboard/api/v1/competitions', 'To create event'
+  param :title, String, :desc => "Title of the competition", :required => true
+  param :description, String, :desc => "Description of the competition", :required => true
+  param :start_date, :number, :desc => "Start Date of the competition", :required => true
+  param :end_date, :number, :desc => "End Date of the competition", :required => true
+  param :start_time, :number, :desc => "Start time of the competition", :required => true
+  param :end_time, :number, :desc => "End time of the competition", :required => true
+  param :validity, :number, :desc => "Validity", :required => true
+  param :validity_time, :number, :desc => "Validity Time", :required => true
+  param :image, String, :desc => "Image of the competition", :required => true
+  param :price, :number, :desc => "Price of the competition", :required => true
+  param :terms_conditions, String, :desc => "Terms and Condition of the competition", :required => true
+  param :location, String, :desc => "Location of the competition", :required => true
 
 
   def create
@@ -183,6 +206,20 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
     end
   end
 
+  api :POST, '/api/v1/competitions', 'To create event'
+  param :id, String, :desc => "ID of the competition", :required => true
+  param :title, String, :desc => "Title of the competition", :required => true
+  param :description, String, :desc => "Description of the competition", :required => true
+  param :start_date, :number, :desc => "Start Date of the competition", :required => true
+  param :end_date, :number, :desc => "End Date of the competition", :required => true
+  param :start_time, :number, :desc => "Start time of the competition", :required => true
+  param :end_time, :number, :desc => "End time of the competition", :required => true
+  param :validity, :number, :desc => "Validity", :required => true
+  param :validity_time, :number, :desc => "Validity Time", :required => true
+  param :image, String, :desc => "Image of the competition", :required => true
+  param :price, :number, :desc => "Price of the competition", :required => true
+  param :terms_conditions, String, :desc => "Terms and Condition of the competition", :required => true
+  param :location, String, :desc => "Location of the competition", :required => true
 
   def update
     if !params[:id].blank?
@@ -279,6 +316,8 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
   end
 end
 
+  api :DELETE, 'dashboard/api/v1/competitions', 'To Delete a competition'
+  param :id, :number, :desc => "ID of the competition", :required => true
 
   def destroy
     @competition = Competition.find(params[:id])

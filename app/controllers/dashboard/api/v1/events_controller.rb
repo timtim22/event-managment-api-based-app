@@ -5,6 +5,11 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
 
+    resource_description do
+      api_versions "dashboard"
+    end
+
+  api :GET, 'dashboard/api/v1/events', 'Get all events'
 
   def index
 
@@ -19,6 +24,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     }
   end
 
+  api :POST, 'dashboard/api/v1/events', 'To view a specific competition'
+  param :id, :number, :desc => "Title of the competition", :required => true
 
   def show
    e = Event.find(params[:id])
@@ -158,6 +165,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
   end
 
+  api :GET, 'dashboard/api/v1/events', 'To view a past/expired events'
 
   def get_past_events
     @events = []
@@ -206,6 +214,36 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
   }
   end
 
+  # api :POST, 'dashboard/api/v1/events', 'To create an event'
+  # param :name, String, :desc => "Name of the event", :required => true
+  # param :description, String, :desc => "Description of the event", :required => true
+  # param :image, String, :desc => "Image of the event", :required => true
+  # param :start_date, :number, :desc => "Start date of the event", :required => true
+  # param :end_date, :number, :desc => "Event of the event", :required => true
+  # param :start_time, :number, :desc => "Start Time of the event", :required => true
+  # param :end_time, :number, :desc => "End Time of the event", :required => true
+  # param :over_18, String, :desc => "Title of the competition", :required => true
+  # param :terms_conditions, String, :desc => "Title of the competition", :required => true
+  # param :allow_chat, :number, :desc => "Title of the competition", :required => true
+  # param :event_forwarding, :number, :desc => "Title of the competition", :required => true
+  # #param :location, :number, :desc => "Title of the competition", :required => true
+  #  param :free, Hash, :desc => "One of the admission resource is required", :required => true  do
+  #   param :title, String, 'Title of the free Ticket'
+  #   param :quantity, :number, 'Quantity of the free tickets'
+  #   param :per_head, :number, 'Per Head'
+  # end
+
+  #  param :paid, Hash, :desc => "One of the admission resource is required", :required => true  do
+  #   param :title, String, 'Title of the free Ticket'
+  #   param :quantity, :number, 'Quantity of the free tickets'
+  #   param :per_head, :number, 'Per Head'
+  #   param :price, :number, 'Price of the paid ticket'
+  # end
+
+  # param :pay_at_door, Hash, :desc => "One of the admission resource is required", :required => true  do
+  #   param :start_price, :number, 'Start Price of the pay at door ticket'
+  #   param :end_price, :number, 'End Price of the pay at door ticket'
+  # end
 
   def create
 
@@ -398,6 +436,37 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     end
   end
 
+  # api :POST, 'dashboard/api/v1/events', 'To create an event'
+  # param :id, :number, :desc => "ID of the event", :required => true
+  # param :name, String, :desc => "Name of the event", :required => true
+  # param :description, String, :desc => "Description of the event", :required => true
+  # param :image, String, :desc => "Image of the event", :required => true
+  # param :start_date, :number, :desc => "Start date of the event", :required => true
+  # param :end_date, :number, :desc => "Event of the event", :required => true
+  # param :start_time, :number, :desc => "Start Time of the event", :required => true
+  # param :end_time, :number, :desc => "End Time of the event", :required => true
+  # param :over_18, String, :desc => "Title of the competition", :required => true
+  # param :terms_conditions, String, :desc => "Title of the competition", :required => true
+  # param :allow_chat, :number, :desc => "Title of the competition", :required => true
+  # param :event_forwarding, :number, :desc => "Title of the competition", :required => true
+  # #param :location, :number, :desc => "Title of the competition", :required => true
+  #  param :free, Hash, :desc => "One of the admission resource is required", :required => true  do
+  #   param :title, String, 'Title of the free Ticket'
+  #   param :quantity, :number, 'Quantity of the free tickets'
+  #   param :per_head, :number, 'Per Head'
+  # end
+
+  #  param :paid, Hash, :desc => "One of the admission resource is required", :required => true  do
+  #   param :title, String, 'Title of the free Ticket'
+  #   param :quantity, :number, 'Quantity of the free tickets'
+  #   param :per_head, :number, 'Per Head'
+  #   param :price, :number, 'Price of the paid ticket'
+  # end
+
+  # param :pay_at_door, Hash, :desc => "One of the admission resource is required", :required => true  do
+  #   param :start_price, :number, 'Start Price of the pay at door ticket'
+  #   param :end_price, :number, 'End Price of the pay at door ticket'
+  # end
 
 
   def update
@@ -517,24 +586,45 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       case resource[:name]
       when "free"
           resource[:fields].each do |f|
-           @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], user: request_user, ticket_type: 'free', price: 0)
+            if f[:update] == "true"
+              @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], user: request_user, ticket_type: 'free', price: 0)
+            else
+              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], user: request_user, ticket_type: 'free', price: 0)
+            end
           end #each
+
 
        when 'paid'
           resource[:fields].each do |f|
-           @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: 'buy')
+            if f[:update] == "true"
+              @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: 'buy')
+            else
+              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: 'buy')
+            end
           end #each
+
 
         when 'pay_at_door'
           resource[:fields].each do |f|
-           @ticket = @event.tickets.find(f[:id]).update!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
+            if f[:update] == "true"
+              @ticket = @event.tickets.find(f[:id]).update!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
+            else
+              @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
+            end
           end #each
+
 
         when 'pass'
           resource[:fields].each do |f|
-          @pass = @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
-          @event.update!(pass: 'true')
+            if f[:update] == "true"
+              @pass = @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+              @event.update!(pass: 'true')
+          else
+                @pass = @event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+              @event.update!(pass: 'true')
+            end
           end #each
+
 
         else
           @error_messages.push('invalid resource type is submitted.')
@@ -603,7 +693,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       }
     end
 
-
+  api :POST, 'dashboard/api/v1/events', 'To create an event'
+  param :id, :number, :desc => "ID of the event", :required => true
 
     def cancel_event
 
@@ -635,6 +726,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     end
     end
 
+  api :POST, 'dashboard/api/v1/delete-event', 'To delete the event'
+  param :id, :number, :desc => "ID of the event", :required => true
 
     def delete_event
       if !params[:event_id].blank?
