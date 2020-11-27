@@ -517,7 +517,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
            end #each
 
           when 'pass'
-            required_fields = ['title', 'description', 'valid_from','valid_to','quantity','ambassador_rate']
+            required_fields = ['title', 'valid_from','valid_to','quantity','ambassador_rate']
             resource[:fields].each do |f|
               required_fields.each do |field|
                 if f[field.to_sym].blank?
