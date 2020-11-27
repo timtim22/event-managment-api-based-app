@@ -25,6 +25,19 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
      if @comment.save
       # resource should be parent resource in case of api so that event id should be available in order to show event based comment.
       # Notify the event owner as well
+      comments_hash = {
+        "id" =>  @comment.id,
+        "comment" => @comment.comment,
+        "user_id" => @comment.user_id,
+        "event_id" => @comment.event_id,
+        "created_at": @comment.created_at,
+        "updated_at" => @comment.updated_at,
+        "from" => get_full_name(@comment.user),
+        "user_avatar" => @comment.user.avatar,
+        "read_at": @comment.read_at,
+        "reader_id" => @comment.reader_id,
+        "is_host" => is_host?(@comment.user, @event)
+       }
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -84,7 +97,10 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
               "action": notification.action,
               "action_type": notification.action_type,
               "created_at": notification.created_at,
-              "is_read": !notification.read_at.nil?
+              "is_read": !notification.read_at.nil?,
+              "last_comment": comment_hash,
+              "comment_id": @comment.id,
+              "is_host": is_business?(@reply.user)
              }
             }
            }
@@ -100,19 +116,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
       end #not request_user
       end #each
 
-       comments_hash = {
-        "id" =>  @comment.id,
-        "comment" => @comment.comment,
-        "user_id" => @comment.user_id,
-        "event_id" => @comment.event_id,
-        "created_at": @comment.created_at,
-        "updated_at" => @comment.updated_at,
-        "from" => get_full_name(@comment.user),
-        "user_avatar" => @comment.user.avatar,
-        "read_at": @comment.read_at,
-        "reader_id" => @comment.reader_id,
-        "is_host" => is_host?(@comment.user, @event)
-       }
+       
 
        render json: {
          code: 200,
@@ -134,6 +138,15 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          @comment = Comment.find(params[:comment_id])
 
       if @reply = @comment.replies.create!(user: request_user, msg: params[:comment])
+        reply_hash = {
+          "id" =>  @reply.id,
+          "comment" => @reply.msg,
+          "user_id" => @reply.user_id,
+          "from" => get_full_name(@reply.user),
+          "avatar" => @reply.user.avatar,
+          "created_at": @reply.created_at,
+          "is_host" => is_host?(@reply.user,  @event)
+         }
        # resource should be parent resource in case of api so that event id should be available in order to show event based comment.
        action_arg = "commented on event '#{@event.name}'";
       # create_activity(action_arg, @event, 'Event', admin_event_path(@event), @event.name, 'post')
@@ -190,7 +203,10 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
                 "action": notification.action,
                 "action_type": notification.action_type,
                 "created_at": notification.created_at,
-                "is_read": !notification.read_at.nil?
+                "is_read": !notification.read_at.nil?,
+                "last_comment": reply_hash,
+                "reply_id": @reply.id,
+                "is_host": is_business?(@reply.user)
               }
              }
             }
@@ -203,15 +219,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
            end# mute if
          end ##notification create
 
-       reply_hash = {
-        "id" =>  @reply.id,
-        "comment" => @reply.msg,
-        "user_id" => @reply.user_id,
-        "from" => get_full_name(@reply.user),
-        "avatar" => @reply.user.avatar,
-        "created_at": @reply.created_at,
-        "is_host" => is_host?(@reply.user,  @event)
-       }
+     
 
         render json: {
           code: 200,

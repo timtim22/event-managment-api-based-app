@@ -162,7 +162,10 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "action": notification.action,
             "action_type": notification.action_type,
             "created_at": notification.created_at,
-            "is_read": !notification.read_at.nil?
+            "is_read": !notification.read_at.nil?,
+            "last_comment": notification.resource.comment,
+            "comment_id": notification.resource.comment.id,
+            "is_host": is_business?(notification.resource.comment.user)
           }
 
         when "reply_comment"
@@ -181,7 +184,10 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "action": notification.action,
             "action_type": notification.action_type,
             "created_at": notification.created_at,
-            "is_read": !notification.read_at.nil?
+            "is_read": !notification.read_at.nil?,
+            "last_comment": notification.resource,
+            "reply_id": notification.resource.id,
+            "is_host": is_business?(notification.resource.user)
           }
 
       when "add_Competition_to_wallet"
