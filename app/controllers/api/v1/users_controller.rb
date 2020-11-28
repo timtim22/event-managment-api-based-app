@@ -373,7 +373,7 @@ end
       when 'FriendRequest'
       resource["friend_name"] = get_full_name(log.resource.user)
       resource['friends_count'] = log.resource.user.friends.size
-      resource['mutual_friends_count'] = request_user.friends.size
+      resource['mutual_friends_count'] = get_mutual_friends(request_user, resource.user).size
 
       when 'Follow'
       resource['name'] = get_full_name(log.resource.following)
@@ -519,7 +519,7 @@ end
      when 'FriendRequest'
      resource["friend_name"] = get_full_name(log.resource.user)
      resource['friends_count'] = log.resource.user.friends.size
-     resource['mutual_friends_count'] = request_user.friends.size
+     resource['mutual_friends_count'] = get_mutual_friends(request_user,resource.user).size
 
      when 'Follow'
      resource['name'] = get_full_name(log.resource.following)

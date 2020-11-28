@@ -130,7 +130,7 @@ def friend_requests
       "status" => request.status,
       "user_id" => request.user_id,
       "friend_id" => request.friend_id,
-      'mutual_friends_count' =>  sender.friends.size,
+      'mutual_friends_count' =>  get_mutual_friends(request_user, request.user).size,
       'is_ambassador' => sender.profile.is_ambassador
     }
   end
@@ -381,7 +381,7 @@ end
  @all_suggessions = []
  @friends_suggestions.uniq.each do  |user|
 
-  if not_me?(user) && !is_my_friend?(user) && !is_business?(user)
+  if not_me?(user) && !is_my_friend?(user) && !is_business?(user) && !friend_request_sent?(request_user, user)
     @all_suggessions << {
      user:  get_user_object(user),
      mutual_friends_count: get_mutual_friends(request_user, user).size,

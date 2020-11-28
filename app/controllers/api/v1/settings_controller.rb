@@ -67,6 +67,9 @@ class Api::V1::SettingsController < Api::V1::ApiMasterController
   param :mute_chat, String, :desc => "Mute Chat - one is mandatory", :required => true
   param :mute_notifications, String, :desc => "Mute Notifications - one is mandatory", :required => true
 
+
+
+
   def update_user_setting
      #specific setting
      settings = ['mute_chat','mute_notifications','block', 'remove_offers','remove_competitions','remove_passes']
@@ -80,6 +83,7 @@ class Api::V1::SettingsController < Api::V1::ApiMasterController
 
             #in order to acheive bi directionsl blocking
             if(params[:setting_name] == 'block' && params[:resource_type] == 'User')
+              
                blockee = User.find(params[:resource_id])
                setting_reverse = blockee.user_settings.create!(name: params[:setting_name], resource_id: request_user.id, resource_type: params[:resource_type], is_on: params[:is_on])
              end
@@ -99,6 +103,7 @@ class Api::V1::SettingsController < Api::V1::ApiMasterController
               }
             end
          else
+             blockee = User.find(params[:resource_id])
              if setting.update!(is_on: params[:is_on], blocked_at: Time.zone.now)
               if(params[:setting_name] == 'block' && params[:resource_type] == 'User')
               setting_reverse = UserSetting.where(user_id: blockee.id).where(resource_id: request_user.id).where(resource_type:  params[:resource_type]).where(name: params[:setting_name]).first
