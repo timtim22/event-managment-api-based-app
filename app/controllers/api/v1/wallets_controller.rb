@@ -275,7 +275,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
       end #if
       end #each
-    end
+    
 
       @final_sorted = custom_sort(@unredeemed_offers, @redeemed_offers)
 
@@ -305,7 +305,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
 @sorted_passes.uniq.each do |pass|
  if is_redeemed(pass.id, 'Pass', request_user.id)
-       if !is_expired?(offer)
+     
           @redeemed_passes << {
             id: pass.id,
 
@@ -432,7 +432,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
           }
          end #if
          end #each
-       end
+       
 
          @final_sorted = custom_sort(@unredeemed_passes, @redeemed_passes)
 
@@ -446,6 +446,10 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
           }
         }
 end
+
+
+
+
 
   api :GET, '/api/v1/wallet/get-competitions', 'Get wallet competitions'
 
