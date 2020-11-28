@@ -180,6 +180,8 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
     @redeemed_offers = []
     @unredeemed_offers = []
     @sorted_offers = []
+    @expired_offers = []
+   
     offer_ids = request_user.wallets.where(offer_type: 'SpecialOffer').where(is_removed: false).page(params[:page]).per(get_per_page).map {|w| w.offer.id }
 
     sort_by_date_offers = SpecialOffer.where(id: offer_ids).sort_by_date.page(params[:page]).per(get_per_page).map {|offer| @sorted_offers.push(offer) }
@@ -188,8 +190,9 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
     @sorted_offers.uniq.each do |offer|
       if is_redeemed(offer.id, 'SpecialOffer', request_user.id)
+     if !is_expired?(offer)
        @redeemed_offers << {
-
+    
         id: offer.id,
         title: offer.title,
         description: offer.description,
@@ -215,7 +218,33 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
         quantity: offer.quantity
 
        }
-     else
+     
+      elsif  is_expired?(offer)
+        @expired_offers << {
+        id: offer.id,
+        title: offer.title,
+        description: offer.description,
+        sub_title: offer.sub_title,
+        location: offer.location,
+        date: offer.date,
+        time: offer.time,
+        lat: offer.lat,
+        lng: offer.lng,
+        image: offer.image.url,
+        creator_name: get_full_name(offer.user),
+        creator_image: offer.user.avatar,
+        validity: offer.validity.strftime(get_time_format),
+        is_expired: is_expired?(offer),
+        grabbers_count: offer.wallets.size,
+        is_redeemed: is_redeemed(offer.id, 'SpecialOffer', request_user.id),
+        redeem_time: redeem_time(offer.id, 'SpecialOffer', request_user.id),
+        grabbers_friends_count: offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+        terms_and_conditions: offer.terms_conditions,
+        issued_by: get_full_name(offer.user),
+        redeem_count: get_redeem_count(offer),
+        quantity: offer.quantity
+      }
+      else
        @unredeemed_offers << {
         id: offer.id,
         title: offer.title,
@@ -243,10 +272,13 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
 
        }
+     
       end #if
       end #each
 
       @final_sorted = custom_sort(@unredeemed_offers, @redeemed_offers)
+      
+      @expired_offers.map {|e_offer| @final_sorted << e_offer }
 
       render json:  {
        code: 200,
