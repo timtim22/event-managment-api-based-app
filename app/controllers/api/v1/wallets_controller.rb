@@ -190,10 +190,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
     @sorted_offers.uniq.each do |offer|
       if is_redeemed(offer.id, 'SpecialOffer', request_user.id)
-<<<<<<< HEAD
-=======
-   
->>>>>>> ee45d2d21f46d59c945237fb1e25b8ed8aff3710
+
        @redeemed_offers << {
 
         id: offer.id,
@@ -308,7 +305,6 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
 @sorted_passes.uniq.each do |pass|
  if is_redeemed(pass.id, 'Pass', request_user.id)
-       if !is_expired?(offer)
           @redeemed_passes << {
             id: pass.id,
 
