@@ -190,7 +190,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
     @sorted_offers.uniq.each do |offer|
       if is_redeemed(offer.id, 'SpecialOffer', request_user.id)
-     if !is_expired?(offer)
+   
        @redeemed_offers << {
     
         id: offer.id,
@@ -285,7 +285,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
        success: true,
        message: '',
        data: {
-         special_offer: @final_sorted }
+         special_offers: @final_sorted }
      }
 
  end
