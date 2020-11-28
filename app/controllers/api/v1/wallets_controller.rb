@@ -131,7 +131,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
   }
  end
 
- 
+
 
 #  def get_offers
 #   @special_offers = []
@@ -183,12 +183,13 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
     offer_ids = request_user.wallets.where(offer_type: 'SpecialOffer').where(is_removed: false).page(params[:page]).per(get_per_page).map {|w| w.offer.id }
 
     sort_by_date_offers = SpecialOffer.where(id: offer_ids).sort_by_date.page(params[:page]).per(get_per_page).map {|offer| @sorted_offers.push(offer) }
- 
+
     sort_by_redemption_offers = request_user.redemptions.sort_by_date.where(offer_type: 'SpecialOffer').page(params[:page]).per(get_per_page).map {|redemption| @sorted_offers.push(redemption.offer) }
 
     @sorted_offers.uniq.each do |offer|
       if is_redeemed(offer.id, 'SpecialOffer', request_user.id)
        @redeemed_offers << {
+
         id: offer.id,
         title: offer.title,
         description: offer.description,
@@ -212,6 +213,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
         issued_by: get_full_name(offer.user),
         redeem_count: get_redeem_count(offer),
         quantity: offer.quantity
+
        }
      else
        @unredeemed_offers << {
@@ -238,21 +240,20 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
         issued_by: get_full_name(offer.user),
         redeem_count: get_redeem_count(offer),
         quantity: offer.quantity
-     
+
+
        }
       end #if
       end #each
-     
+
       @final_sorted = custom_sort(@unredeemed_offers, @redeemed_offers)
-     
+
       render json:  {
        code: 200,
        success: true,
        message: '',
        data: {
-         passes: @final_sorted,
-         user: request_user
-       }
+         special_offer: @final_sorted }
      }
 
  end
