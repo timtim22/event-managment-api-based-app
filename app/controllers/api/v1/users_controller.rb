@@ -187,19 +187,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     end
   end
 
-  api :POST, '/api/v1/user/update-profile', 'To update a user profile'
-  param :first_name, String, :desc => "First name of the profile", :required => true
-  param :last_name, String, :desc => "Last name of the profile", :required => true
-  param :email, String, :desc => "Email of the profile", :required => true
-  param :mobile, :number, :desc => "Phone number of the profile", :required => true
-  param :about, String, :desc => "About profile"
-  param :dob, :number, :desc => "Date of Birth of the user"
-  param :gender, String, :desc => "Gender of the user"
-  param :snapchat, :number, :desc => "Add snapchat link"
-  param :facebook, :number, :desc => "Add facebook link"
-  param :twitter, :number, :desc => "Add twitter link"
-  param :youtube, :number, :desc => "Add youtube link"
-  param :instagram, :number, :desc => "Add Instagram link"
+
 
   def update_profile
     params.permit(:avatar)
