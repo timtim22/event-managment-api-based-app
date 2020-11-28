@@ -16,7 +16,6 @@ class Admin::CommentsController < Admin::AdminMasterController
         subscribe_key: ENV['SUBSCRIBE_KEY']
         )
 
-          @channel = "event" #encrypt later
           users_array = []
           Comment.all.each do |comment|
           if comment.user != current_user

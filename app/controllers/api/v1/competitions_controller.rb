@@ -78,14 +78,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
     }
   end
 
-  # api :POST, '/api/v1/competitions', 'To create a competition'
-  # param :first_name, String, :desc => "First Name"
-  # param :last_name, String, :desc => "last Name"
-  # param :email, String, :desc => "Email"
-  # #param :phone_number, :number, :desc => "Phone Number - Required for Mobile App users", :required => true
-  # param :password, String, :desc => "Password", :required => true
-  # param :password_confirmation, String, :desc => "Password Confirmation", :required => true
-
+ 
   def competition_single
     if !params[:competition_id].blank?
       competition = Competition.find(params[:competition_id])

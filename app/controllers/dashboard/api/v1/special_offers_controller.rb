@@ -107,7 +107,6 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
       request_user.followers.each do |follower|
    if follower.special_offers_notifications_setting.is_on == true
       if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event')
-        @channel = "event" #encrypt later
         @current_push_token = @pubnub.add_channels_to_push(
          push_token: follower.profile.device_token,
          type: 'gcm',

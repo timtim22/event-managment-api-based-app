@@ -553,7 +553,6 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           add: @asker.profile.device_token
           ).value
 
-          @channel = "event"
            payload = {
             "pn_gcm":{
               "notification":{
@@ -622,7 +621,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
           )
-         @channel = "event"
+        
          if ids_array.kind_of?(Array)
          ids_array.each do |id|
 

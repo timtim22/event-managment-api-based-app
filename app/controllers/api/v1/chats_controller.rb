@@ -82,7 +82,7 @@ if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipie
 
 
    chat = []
-   messages = Message.get_messages(@sender.id,@recipient.id).order(created_at: 'ASC')
+   messages = Message.get_messages(@sender.id,@recipient.id).order(id: 'ASC')
    if !messages.blank?
     messages.each do |msg|
       chat << {
@@ -157,7 +157,7 @@ def chat_history
    @chat_history = []
    @recipient = request_user
    @sender = User::find(params[:sender_id])
-   Message.chat_history(@sender,@recipient).each do |history|
+   Message.chat_history(@sender,@recipient).order(id: 'ASC').each do |history|
       @chat_history << {
         "id" => history.id,
         "recipient_id" => history.recipient_id,

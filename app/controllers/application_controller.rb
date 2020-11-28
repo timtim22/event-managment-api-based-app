@@ -259,7 +259,7 @@ class ApplicationController < ActionController::Base
       "role" => 5,
       "is_my_following" => false,
       "is_my_friend" => is_my_friend?(user),
-      "mutual_friends_count" => user.friends.size
+      "mutual_friends_count" => get_mutual_friends(request_user, user).size
     }
 
   end
@@ -1058,6 +1058,11 @@ end
 
 def get_mime_type(filename)
   mime_type = Rack::Mime.mime_type(File.extname(filename))
+end
+
+
+def friend_request_sent?(request_user, user)
+  request_status(request_user, user)['status']
 end
 
   helper_method :SetJsVariables

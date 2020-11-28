@@ -131,13 +131,64 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
   }
  end
 
-  api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
+ 
+
+#  def get_offers
+#   @special_offers = []
+#   @wallets = request_user.wallets.where(offer_type: 'SpecialOffer').where(is_removed: false).page(params[:page]).per(get_per_page)
+#   @wallets.each do |wallet|
+#         @special_offers << {
+#         id: wallet.offer.id,
+#         title: wallet.offer.title,
+#         description: wallet.offer.description,
+#         sub_title:wallet.offer.sub_title,
+#         location: wallet.offer.location,
+#         date: wallet.offer.date,
+#         time: wallet.offer.time,
+#         lat: wallet.offer.lat,
+#         lng: wallet.offer.lng,
+#         image: wallet.offer.image.url,
+#         creator_name: get_full_name(wallet.offer.user),
+#         creator_image: wallet.offer.user.avatar,
+#         validity: wallet.offer.validity.strftime(get_time_format),
+#         is_expired: is_expired?(wallet.offer),
+#         grabbers_count: wallet.offer.wallets.size,
+#         is_redeemed: is_redeemed(wallet.offer.id, 'SpecialOffer', request_user.id),
+#         redeem_time: redeem_time(wallet.offer.id, 'SpecialOffer', request_user.id),
+#         grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+#         terms_and_conditions: wallet.offer.terms_conditions,
+#         issued_by: get_full_name(wallet.offer.user),
+#         redeem_count: get_redeem_count(wallet.offer),
+#         quantity: wallet.offer.quantity
+#       }
+#     end#foreach
+
+#     render json:  {
+#        code: 200,
+#        success: true,
+#        message: '',
+#        data: {
+#          special_offers: @special_offers
+#        }
+#     }
+#  end
+
+
+api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
  def get_offers
-  @special_offers = []
-  @wallets = request_user.wallets.where(offer_type: 'SpecialOffer').where(is_removed: false).page(params[:page]).per(get_per_page)
-  @wallets.each do |wallet|
-        @special_offers << {
+    @redeemed_offers = []
+    @unredeemed_offers = []
+    @sorted_offers = []
+    offer_ids = request_user.wallets.where(offer_type: 'SpecialOffer').where(is_removed: false).page(params[:page]).per(get_per_page).map {|w| w.offer.id }
+
+    sort_by_date_offers = SpecialOffer.where(id: offer_ids).sort_by_date.page(params[:page]).per(get_per_page).map {|offer| @sorted_offers.push(offer) }
+ 
+    sort_by_redemption_offers = request_user.redemptions.sort_by_date.where(offer_type: 'SpecialOffer').page(params[:page]).per(get_per_page).map {|redemption| @sorted_offers.push(redemption.offer) }
+
+    @sorted_offers.uniq.each do |offer|
+      if is_redeemed(offer.id, 'SpecialOffer', request_user.id)
+       @redeemed_offers << {
         id: wallet.offer.id,
         title: wallet.offer.title,
         description: wallet.offer.description,
@@ -148,6 +199,7 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         lat: wallet.offer.lat,
         lng: wallet.offer.lng,
         image: wallet.offer.image.url,
+        is_redeemed: true,
         creator_name: get_full_name(wallet.offer.user),
         creator_image: wallet.offer.user.avatar,
         validity: wallet.offer.validity.strftime(get_time_format),
@@ -160,17 +212,49 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
         issued_by: get_full_name(wallet.offer.user),
         redeem_count: get_redeem_count(wallet.offer),
         quantity: wallet.offer.quantity
-      }
-    end#foreach
-
-    render json:  {
+       }
+     else
+       @unredeemed_offers << {
+        id: wallet.offer.id,
+        title: wallet.offer.title,
+        description: wallet.offer.description,
+        sub_title:wallet.offer.sub_title,
+        location: wallet.offer.location,
+        date: wallet.offer.date,
+        time: wallet.offer.time,
+        lat: wallet.offer.lat,
+        lng: wallet.offer.lng,
+        image: wallet.offer.image.url,
+        is_redeemed: false,
+        creator_name: get_full_name(wallet.offer.user),
+        creator_image: wallet.offer.user.avatar,
+        validity: wallet.offer.validity.strftime(get_time_format),
+        is_expired: is_expired?(wallet.offer),
+        grabbers_count: wallet.offer.wallets.size,
+        is_redeemed: is_redeemed(wallet.offer.id, 'SpecialOffer', request_user.id),
+        redeem_time: redeem_time(wallet.offer.id, 'SpecialOffer', request_user.id),
+        grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+        terms_and_conditions: wallet.offer.terms_conditions,
+        issued_by: get_full_name(wallet.offer.user),
+        redeem_count: get_redeem_count(wallet.offer),
+        quantity: wallet.offer.quantity
+     
+       }
+      end #if
+      end #each
+     
+      @final_sorted = custom_sort(@unredeemed_offers, @redeemed_offers)
+     
+      render json:  {
        code: 200,
        success: true,
        message: '',
        data: {
-         special_offers: @special_offers
+         passes: @final_sorted,
+         user: request_user
        }
-    }
+     }
+
  end
 
   api :GET, '/api/v1/wallet/get-passes', 'Get Wallet Passes'

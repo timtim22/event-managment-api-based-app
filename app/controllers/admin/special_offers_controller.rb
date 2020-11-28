@@ -120,7 +120,6 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
         current_user.followers.each do |follower|
     if follower.special_offers_notifications_setting.is_on == true
       if notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'update_special_offer')
-        @channel = "event" #encrypt later
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY'],
