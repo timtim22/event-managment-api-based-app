@@ -452,7 +452,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
   end
 
   api :POST, '/api/v1/ask-location', 'Ask for target user location'
-  param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true
+  #param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true
 
   def ask_location
     if !params[:askee_ids].blank?
@@ -533,7 +533,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
      end
 
   api :POST, '/api/v1/get-location', 'Get location of the target user'
-  param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true
+  #param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true
 
      def get_location
       if !params[:lat].blank? && !params[:lng].blank? && !params[:asker_id].blank?
@@ -607,9 +607,9 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
      end
 
        api :POST, '/api/v1/send-location', 'Send location to list of users'
-        param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true
-        param :lat, :number, :desc => "latitude", :required => true
-        param :lng, :number, :desc => "longitude", :required => true
+        #param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true
+        #param :lat, :number, :desc => "latitude", :required => true
+        #param :lng, :number, :desc => "longitude", :required => true
 
      def send_location
       if !params[:lat].blank? && !params[:lng].blank? && !params[:user_ids].blank?
