@@ -190,7 +190,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
     @sorted_offers.uniq.each do |offer|
       if is_redeemed(offer.id, 'SpecialOffer', request_user.id)
-   
+
        @redeemed_offers << {
 
         id: offer.id,
@@ -272,7 +272,6 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
 
        }
-
       end #if
       end #each
     
@@ -297,6 +296,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
   @redeemed_passes = []
   @unredeemed_passes = []
   @sorted_passes = []
+  @expired_passes = []
    pass_ids = request_user.wallets.where(offer_type: 'Pass').where(is_removed: false).page(params[:page]).per(get_per_page).map {|w| w.offer.id }
 
    sort_by_date_passes = Pass.where(id: pass_ids).sort_by_date.page(params[:page]).per(get_per_page).map {|pass| @sorted_passes.push(pass) }
@@ -356,7 +356,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
           }
 
         elsif  is_expired?(pass)
-            @expired_offers << {
+            @expired_passes << {
             id: pass.id,
             title: pass.title,
             description: pass.description,
@@ -436,15 +436,16 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
          @final_sorted = custom_sort(@unredeemed_passes, @redeemed_passes)
 
-         render json:  {
-          code: 200,
-          success: true,
-          message: '',
-          data: {
-            passes: @final_sorted,
-            user: request_user
-          }
-        }
+         @expired_passes.map {|e_pass| @final_sorted << e_pass }
+
+            render json:  {
+             code: 200,
+             success: true,
+             message: '',
+             data: {
+               special_offer: @final_sorted }
+           }
+
 end
 
 
