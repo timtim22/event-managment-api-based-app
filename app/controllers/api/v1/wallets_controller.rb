@@ -385,34 +385,39 @@ else
  end
 
   api :GET, '/api/v1/wallet/get-competitions', 'Get wallet competitions'
+
 def get_competitions
   @competitions = []
-  @wallets = request_user.wallets.where(offer_type: 'Competition').where(is_removed: false).page(params[:page]).per(get_per_page)
-  @wallets.each do |wallet|
+  @sorted_competitions = []
+  competition_ids = request_user.wallets.where(offer_type: 'Competition').where(is_removed: false).page(params[:page]).per(get_per_page).map {|w| w.offer.id }
+
+  sort_by_date_competitions = Competition.where(id: competition_ids).sort_by_date.page(params[:page]).per(get_per_page).map {|competition| @sorted_competitions.push(competition) }
+
+  @sorted_competitions.uniq.each do |competition|
     @competitions << {
-      id: wallet.offer.id,
-      title: wallet.offer.title,
-      description: wallet.offer.description,
-      location: wallet.offer.location,
-      start_date: wallet.offer.start_date,
-      end_date: wallet.offer.end_date,
-      start_time: wallet.offer.start_time,
-      end_time: wallet.offer.end_time,
-      price: wallet.offer.price,
-      lat: wallet.offer.lat,
-      lng: wallet.offer.lng,
-      image: wallet.offer.image.url,
-      is_entered: is_entered_competition?(wallet.offer.id),
-      participants_stats: get_participants_stats(wallet.offer),
-      creator_name: wallet.offer.user.business_profile.profile_name,
-      is_expired: is_expired?(wallet.offer),
-      creator_image: wallet.offer.user.avatar,
-      creator_id: wallet.offer.user.id,
-      total_entries_count: get_entry_count(request_user, wallet.offer),
-      issued_by: get_full_name(wallet.offer.user),
-      is_followed: is_followed(wallet.offer.user),
-      validity: wallet.offer.validity.strftime(get_time_format),
-      terms_and_conditions: wallet.offer.terms_conditions
+      id: competition.id,
+      title: competition.title,
+      description: competition.description,
+      location: competition.location,
+      start_date: competition.start_date,
+      end_date: competition.end_date,
+      start_time: competition.start_time,
+      end_time: competition.end_time,
+      price: competition.price,
+      lat: competition.lat,
+      lng: competition.lng,
+      image: competition.image.url,
+      is_entered: is_entered_competition?(competition.id),
+      participants_stats: get_participants_stats(competition),
+      creator_name: competition.user.business_profile.profile_name,
+      is_expired: is_expired?(competition),
+      creator_image: competition.user.avatar,
+      creator_id: competition.user.id,
+      total_entries_count: get_entry_count(request_user, competition),
+      issued_by: get_full_name(competition.user),
+      is_followed: is_followed(competition.user),
+      validity: competition.validity.strftime(get_time_format),
+      terms_and_conditions: competition.terms_conditions
      }
   end#each
 
