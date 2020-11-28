@@ -57,9 +57,9 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
   param :first_name, String, :desc => "First Name"
   param :last_name, String, :desc => "last Name"
   param :email, String, :desc => "Email"
-  param :phone_number, :number, :desc => "Phone Number - Required for Mobile App users", :required => true
-  param :password, String, :desc => "Password", :required => true
-  param :password_confirmation, String, :desc => "Password Confirmation", :required => true
+  #param :phone_number, :number, :desc => "Phone Number - Required for Mobile App users", :required => true
+  #param :password, String, :desc => "Password", :required => true
+  #param :password_confirmation, String, :desc => "Password Confirmation", :required => true
 
   # POST /users
   def create

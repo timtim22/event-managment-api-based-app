@@ -348,7 +348,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   end
 
   api :POST, '/api/v1/payments/get-secret', 'Get client secret and submit amout to pay'
-  param :total_price, :number, :desc => "Total Price", :required => true
+ # param :total_price, :number, :desc => "Total Price", :required => true
   param :ticket_id, :number, :desc => "Ticket ID", :required => true
   param :quantity, :number, :desc => "Quantity of the tickets", :required => true
 

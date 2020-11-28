@@ -246,7 +246,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
   # end
 
   def create
-
+    render params
+    return
     success = false
     @error_messages = []
 
@@ -292,7 +293,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
            end #each
 
           when 'pass'
-            required_fields = ['title', 'description', 'valid_from','valid_to','quantity','ambassador_rate']
+            required_fields = ['title', 'valid_from','valid_to','quantity','ambassador_rate']
             resource[:fields].each do |f|
               required_fields.each do |field|
                 if f[field.to_sym].blank?
@@ -362,12 +363,12 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       case resource[:name]
       when "free"
           resource[:fields].each do |f|
-           @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], user: request_user, ticket_type: 'free', price: 0)
+           @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'free', price: 0)
           end #each
           @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00)
        when 'paid'
           resource[:fields].each do |f|
-           @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: 'buy')
+           @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
           end #each
            @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00)
         when 'pay_at_door'
@@ -378,7 +379,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
         when 'pass'
           resource[:fields].each do |f|
-          @pass =@event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+          @pass =@event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], terms_conditions: f[:terms_conditions], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
           @event.update!(pass: 'true')
           end #each
 
@@ -516,7 +517,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
            end #each
 
           when 'pass'
-            required_fields = ['title', 'description', 'valid_from','valid_to','quantity','ambassador_rate']
+            required_fields = ['title', 'valid_from','valid_to','quantity','ambassador_rate']
             resource[:fields].each do |f|
               required_fields.each do |field|
                 if f[field.to_sym].blank?
@@ -586,27 +587,27 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       case resource[:name]
       when "free"
           resource[:fields].each do |f|
-           if f.include? id
-              @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], user: request_user, ticket_type: 'free', price: 0)
+           if f.include? "id"
+              @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions],  user: request_user, ticket_type: 'free', price: 0)
             else
-              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], user: request_user, ticket_type: 'free', price: 0)
+              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions],  user: request_user, ticket_type: 'free', price: 0)
             end
           end #each
 
 
        when 'paid'
           resource[:fields].each do |f|
-            if f.include? id
-              @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: 'buy')
+            if f.include? "id"
+              @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
             else
-              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: 'buy')
+              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'buy')
             end
           end #each
 
 
         when 'pay_at_door'
           resource[:fields].each do |f|
-            if f.include? id
+            if f.include? "id"
               @ticket = @event.tickets.find(f[:id]).update!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
             else
               @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
@@ -616,13 +617,12 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
         when 'pass'
           resource[:fields].each do |f|
-            if f.include? id
-              @pass = @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
-              @event.update!(pass: 'true')
+            if f.include? "id"
+              @pass = @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], terms_conditions: f[:terms_conditions],  ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
           else
-                @pass = @event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
-              @event.update!(pass: 'true')
+                @pass = @event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], terms_conditions: f[:terms_conditions],  ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
             end
+            @event.update!(pass: 'true')
           end #each
 
 
@@ -694,7 +694,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     end
 
   api :POST, 'dashboard/api/v1/events', 'To create an event'
-  param :id, :number, :desc => "ID of the event", :required => true
+  param :event_id, :number, :desc => "ID of the event", :required => true
 
     def cancel_event
 
@@ -727,7 +727,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     end
 
   api :POST, 'dashboard/api/v1/delete-event', 'To delete the event'
-  param :id, :number, :desc => "ID of the event", :required => true
+  param :event_id, :number, :desc => "ID of the event", :required => true
 
     def delete_event
       if !params[:event_id].blank?
