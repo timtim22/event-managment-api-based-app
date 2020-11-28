@@ -181,7 +181,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
     @unredeemed_offers = []
     @sorted_offers = []
     @expired_offers = []
-   
+
     offer_ids = request_user.wallets.where(offer_type: 'SpecialOffer').where(is_removed: false).page(params[:page]).per(get_per_page).map {|w| w.offer.id }
 
     sort_by_date_offers = SpecialOffer.where(id: offer_ids).sort_by_date.page(params[:page]).per(get_per_page).map {|offer| @sorted_offers.push(offer) }
@@ -192,7 +192,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
       if is_redeemed(offer.id, 'SpecialOffer', request_user.id)
      if !is_expired?(offer)
        @redeemed_offers << {
-    
+
         id: offer.id,
         title: offer.title,
         description: offer.description,
@@ -218,7 +218,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
         quantity: offer.quantity
 
        }
-     
+
       elsif  is_expired?(offer)
         @expired_offers << {
         id: offer.id,
@@ -272,12 +272,13 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
 
        }
-     
+
       end #if
       end #each
+    end
 
       @final_sorted = custom_sort(@unredeemed_offers, @redeemed_offers)
-      
+
       @expired_offers.map {|e_offer| @final_sorted << e_offer }
 
       render json:  {
@@ -304,118 +305,147 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
 @sorted_passes.uniq.each do |pass|
  if is_redeemed(pass.id, 'Pass', request_user.id)
-  @redeemed_passes << {
-    id: pass.id,
+       if !is_expired?(offer)
+          @redeemed_passes << {
+            id: pass.id,
 
-    title: pass.title,
+            title: pass.title,
 
-    description: pass.description,
+            description: pass.description,
 
-    host_name: get_full_name(pass.event.user),
+            host_name: get_full_name(pass.event.user),
 
-    host_image: pass.event.user.avatar,
+            host_image: pass.event.user.avatar,
 
-    event_name: pass.event.name,
+            event_name: pass.event.name,
 
-    event_id: pass.event.id,
+            event_id: pass.event.id,
 
-    event_image: pass.event.image,
+            event_image: pass.event.image,
 
-    event_location: pass.event.location,
+            event_location: pass.event.location,
 
-    event_start_time: pass.event.start_time,
+            event_start_time: pass.event.start_time,
 
-    event_end_time: pass.event.end_time,
+            event_end_time: pass.event.end_time,
 
-    event_date: pass.event.start_date,
+            event_date: pass.event.start_date,
 
-    distributed_by: distributed_by(pass),
+            distributed_by: distributed_by(pass),
 
-    validity: pass.valid_to.strftime(get_time_format),
+            validity: pass.valid_to.strftime(get_time_format),
 
-    is_expired: is_expired?(pass),
+            is_expired: is_expired?(pass),
 
-    grabbers_count: pass.wallets.size,
+            grabbers_count: pass.wallets.size,
 
-    is_redeemed: true,
+            is_redeemed: true,
 
-    redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
+            redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
 
-    grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+            grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
 
-    terms_and_conditions: pass.terms_conditions,
+            terms_and_conditions: pass.terms_conditions,
 
-    redeem_count: get_redeem_count(pass),
+            redeem_count: get_redeem_count(pass),
 
-    quantity: pass.quantity,
+            quantity: pass.quantity,
 
-    issued_by: get_full_name(pass.user)
+            issued_by: get_full_name(pass.user)
 
-  }
-else
-  @unredeemed_passes << {
-    id: pass.id,
+          }
 
-    title: pass.title,
+        elsif  is_expired?(pass)
+            @expired_offers << {
+            id: pass.id,
+            title: pass.title,
+            description: pass.description,
+            host_name: get_full_name(pass.event.user),
+            host_image: pass.event.user.avatar,
+            event_name: pass.event.name,
+            event_id: pass.event.id,
+            event_image: pass.event.image,
+            event_location: pass.event.location,
+            event_start_time: pass.event.start_time,
+            event_end_time: pass.event.end_time,
+            event_start_date: pass.event.start_date,
+            distributed_by: distributed_by(pass),
+            validity: pass.valid_to.strftime(get_time_format),
+            is_expired: is_expired?(pass),
+            grabbers_count: pass.wallets.size,
+            is_redeemed: false,
+            redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
+            grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+            terms_and_conditions: pass.terms_conditions,
+            redeem_count: get_redeem_count(pass),
+            quantity: pass.quantity,
+            issued_by: get_full_name(pass.user)
+          }
+        else
+          @unredeemed_passes << {
+            id: pass.id,
 
-    description: pass.description,
+            title: pass.title,
 
-    host_name: get_full_name(pass.event.user),
+            description: pass.description,
 
-    host_image: pass.event.user.avatar,
+            host_name: get_full_name(pass.event.user),
 
-    event_name: pass.event.name,
+            host_image: pass.event.user.avatar,
 
-    event_id: pass.event.id,
+            event_name: pass.event.name,
 
-    event_image: pass.event.image,
+            event_id: pass.event.id,
 
-    event_location: pass.event.location,
+            event_image: pass.event.image,
 
-    event_start_time: pass.event.start_time,
+            event_location: pass.event.location,
 
-    event_end_time: pass.event.end_time,
+            event_start_time: pass.event.start_time,
 
-    event_date: pass.event.start_date,
+            event_end_time: pass.event.end_time,
 
-    distributed_by: distributed_by(pass),
+            event_date: pass.event.start_date,
 
-    validity: pass.valid_to.strftime(get_time_format),
+            distributed_by: distributed_by(pass),
 
-    is_expired: is_expired?(pass),
+            validity: pass.valid_to.strftime(get_time_format),
 
-    grabbers_count: pass.wallets.size,
+            is_expired: is_expired?(pass),
 
-    is_redeemed: false,
+            grabbers_count: pass.wallets.size,
 
-    redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
+            is_redeemed: false,
 
-    grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+            redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
 
-    terms_and_conditions: pass.terms_conditions,
+            grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
 
-    redeem_count: get_redeem_count(pass),
+            terms_and_conditions: pass.terms_conditions,
 
-    quantity: pass.quantity,
+            redeem_count: get_redeem_count(pass),
 
-    issued_by: get_full_name(pass.user)
+            quantity: pass.quantity,
 
-  }
- end #if
- end #each
+            issued_by: get_full_name(pass.user)
 
- @final_sorted = custom_sort(@unredeemed_passes, @redeemed_passes)
+          }
+         end #if
+         end #each
+       end
 
- render json:  {
-  code: 200,
-  success: true,
-  message: '',
-  data: {
-    passes: @final_sorted,
-    user: request_user
-  }
-}
- end
+         @final_sorted = custom_sort(@unredeemed_passes, @redeemed_passes)
+
+         render json:  {
+          code: 200,
+          success: true,
+          message: '',
+          data: {
+            passes: @final_sorted,
+            user: request_user
+          }
+        }
+end
 
   api :GET, '/api/v1/wallet/get-competitions', 'Get wallet competitions'
 
