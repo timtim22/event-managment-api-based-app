@@ -61,7 +61,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
   end
 
   api :POST, '/api/v1/get-accounts', 'To get user account list'
-  #param :phone_number, :number, :desc => "Phone Number", :required => true
+  param :phone_number, String, :desc => "Phone Number", :required => true
 
 
  def get_accounts

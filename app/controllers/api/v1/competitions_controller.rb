@@ -78,7 +78,10 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
     }
   end
 
- 
+      api :POST, '/api/v1/competitions/competition-single', 'Get a single competition'
+      param :competition, :number, :desc => "ID of the competition", :required => true
+
+
   def competition_single
     if !params[:competition_id].blank?
       competition = Competition.find(params[:competition_id])

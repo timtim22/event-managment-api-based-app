@@ -121,11 +121,11 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
     end
   end
 
-  # api :POST, '/api/v1/events', 'Get events by list'
-  # param :location, String, :desc => "Location of the event", :required => true
-  # param :price, :number, :desc => "Price of the event", :required => true
-  # param :pass, String, :desc => "Pass", :required => true
-  # param :categories, :number, :desc => "categories(1,2)", :required => true
+  api :POST, '/api/v1/events', 'Get events by list'
+  #param :location, String, :desc => "Location of the event", :required => true
+  param :price, :decimal, :desc => "Price of the event", :required => true
+  param :pass, String, :desc => "Pass", :required => true
+  param :categories, :number, :desc => "categories(1,2)", :required => true
 
 
   def index
@@ -217,7 +217,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
     end #func
 
   api :POST, '/api/v1/events-by-date', 'Get events by date'
-  param :date, :number, :desc => "Date", :required => true
+  param :date, String, :desc => "Date", :required => true
 
 	def events_list_by_date
 		@events = Event.events_by_date(params[:date])

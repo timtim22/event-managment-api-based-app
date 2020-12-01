@@ -36,22 +36,21 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
 
 
   api :POST, 'dashboard/api/v1/users', 'Create new user'
-  param :type, :number, :desc => "Role ID (1,2,3)", :required => true
-  param :profile, String, :desc => "Profile Name", :required => true
-  param :contact_name, String, :desc => "Contact Name", :required => true
-  param :address, String, :desc => "Address", :required => true
-  param :vat_number, :number, :desc => "Vat number", :required => true
-  param :website, String, :desc => "website", :required => true
-  param :is_charity, ['True', 'False'], :desc => "User ID", :required => true
-  param :avatar, String, :desc => "Avatar"
-  #param :phone_number, String
-  param :email, String, :desc => "Email"
-  param :web_user, ['True', 'False']
-  #param :password, String, :desc => "Password"
-
+  # param :type, :number, :desc => "Role ID (1,2,3)", :required => true
+  # param :profile_name, String, :desc => "Profile Name", :required => true
+  # param :contact_name, String, :desc => "Contact Name", :required => true
+  # param :address, String, :desc => "Address", :required => true
+  # param :vat_number, :number, :desc => "Vat number", :required => true
+  # param :website, String, :desc => "website", :required => true
+  # param :is_charity, ['True', 'False'], :desc => "User ID", :required => true
+  # param :avatar, String, :desc => "Avatar"
+  # param :phone_number, String
+  # param :email, String, :desc => "Email"
+  # param :web_user, ['True', 'False']
+  # param :password, String, :desc => "Password"
 
   def create
-    required_fields = ['type', 'profile_name', 'contact_name','address', 'vat_number','website','is_charity']
+    required_fields = ['profile_name', 'contact_name','address', 'display_name', 'phone_number', 'email', 'password','website','is_charity', 'about']
     errors = []
     required_fields.each do |field|
       if params[field.to_sym].blank?
@@ -60,8 +59,8 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
     end
 
    if errors.blank?
+    registered  = false
     @user = User.new
-
     if params[:avatar].blank?
      @user.remote_avatar_url = get_dummy_avatar
     else
@@ -80,37 +79,89 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
         charity_number = ''
       end
 
-    if @user.save &&  BusinessProfile.create!(profile_name: params[:profile_name], contact_name: params[:contact_name], user: @user, address: params[:address], website: params[:website], about: params[:about], vat_number: params[:vat_number], charity_number: charity_number, is_charity: params[:is_charity])
+      user_and_profile_errors = []
 
 
-       #Also save default setting
+      if @user.save
        setting_name_values = ['all_chat_notifications','event_notifications','special_offers_notifications','passes_notifications','competitions_notifications','location']
 
        setting_name_values.each do |name|
-         new_setting = Setting.create!(user_id: @user.id, name: name, is_on: true)
+         new_setting = Setting.create!(user: @user, name: name, is_on: true)
        end #each
 
         #create role
         assignment = @user.assignments.create!(role_id: params[:type])
+      else
+        @user.errors.full_messages.map { |m| user_and_profile_errors.push(m) }
+
+      end
+
+      @business = BusinessProfile.new
+
+        @business.user = @user
+
+        @business.profile_name = params[:profile_name]
+        @business.contact_name = params[:contact_name]
+        @business.display_name = params[:display_name]
+        @business.address = params[:address]
+        @business.website = params[:website]
+        @business.about = params[:about]
+        @business.vat_number = params[:vat_number]
+        @business.youtube = params[:youtube]
+        @business.instagram = params[:instagram]
+        @business.twitter = params[:twitter]
+        @business.linkedin = params[:linkedin]
+        @business.facebook = params[:facebook]
+
+
+       if @business.save
+        "do nothing"
+      else
+          @business.errors.full_messages.map { |m| user_and_profile_errors.push(m) }
+      end
+       #Also save default setting
+
+
+    if user_and_profile_errors.blank?
+      profile = {
+        "user_id" => @user.id,
+        "email_addrress" =>  @user.email,
+        "avatar" => @user.avatar,
+        "mobile_number" =>  @user.phone_number,
+        "password" => @user.password,
+        "business_name" => @business.profile_name,
+        "contact_name" =>  @business.contact_name,
+        "display_name" =>  @business.display_name,
+        "address" => @business.address,
+        "website" => @business.website,
+        "About" =>  @business.about,
+        "youtube" =>  @business.youtube,
+        "instagram" =>  @business.instagram,
+        "twitter" =>  @business.twitter,
+        "linkedin" =>  @business.linkedin,
+        "facebook" => @business.facebook
+
+      }
 
       render json: {
-            code: 200,
-            success: true,
-            message: "Registered successfully.",
-            data: {
-              user: get_business_object(@user),
-              token: encode(user_id: @user.id),
-            }
-          }
-    else
-      render json: {
+        code: 200,
+        success: true,
+        message: "Registered successfully",
+        data: {
+          profile: profile
+        }
+      }
+      else
+        render json: {
         code: 400,
         success: false,
-        message: @user.errors.full_messages,
+        message: user_and_profile_errors,
         data: nil
       }
     end
+
   else
+
     render json: {
       code: 400,
       success:false,
@@ -121,18 +172,18 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
   end
 
   api :POST, 'dashboard/api/v1/users', 'Create new user'
-  param :id, :number, :desc => "ID of the user", :required => true
-  param :type, :number, :desc => "Role ID (1,2,3)", :required => true
-  param :profile, String, :desc => "Profile Name", :required => true
-  param :contact_name, String, :desc => "Contact Name", :required => true
-  param :address, String, :desc => "Address", :required => true
-  param :vat_number, :number, :desc => "Vat number", :required => true
-  param :website, String, :desc => "website", :required => true
-  param :is_charity, ['True', 'False'], :desc => "User ID", :required => true
-  param :avatar, String, :desc => "Avatar"
-  #param :phone_number, String
-  param :email, String, :desc => "Email"
-  param :web_user, ['True', 'False']
+  # param :id, :number, :desc => "ID of the user", :required => true
+  # param :type, :number, :desc => "Role ID (1,2,3)", :required => true
+  # param :profile, String, :desc => "Profile Name", :required => true
+  # param :contact_name, String, :desc => "Contact Name", :required => true
+  # param :address, String, :desc => "Address", :required => true
+  # param :vat_number, :number, :desc => "Vat number", :required => true
+  # param :website, String, :desc => "website", :required => true
+  # param :is_charity, ['True', 'False'], :desc => "User ID", :required => true
+  # param :avatar, String, :desc => "Avatar"
+  # param :phone_number, String
+  # param :email, String, :desc => "Email"
+  # param :web_user, ['True', 'False']
   #param :password, String, :desc => "Password"
 
   def update

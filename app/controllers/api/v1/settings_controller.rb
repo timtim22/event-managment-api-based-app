@@ -1,11 +1,9 @@
 class Api::V1::SettingsController < Api::V1::ApiMasterController
   before_action :authorize_request
 
-  api :POST, '/api/v1/user/update-user-setting', 'To update a user profile settings'
-  param :is_on, String, :desc => "True/False", :required => true
-  param :name, String, :desc => "name(setting name e.g. location_setting  => { name : location},
-    Notifications_setting => {name: all_chat_notifications, name: event_notifications, name: special_offers_notifications,
-      name: passes_notifications, name: competitions_notifications} )", :required => true
+  api :POST, '/api/v1/user/settings/update', 'To update a user profile global settings'
+  param :is_on, ['true', 'false'], :desc => "True/False", :required => true
+  param :name, String, :desc => "Name", :required => true
 
   def update_global_setting
    if !params[:is_on].blank? && !params[:name].blank?
@@ -63,11 +61,11 @@ class Api::V1::SettingsController < Api::V1::ApiMasterController
    end
   end
 
-  #api :POST, '/api/v1/user/update-user-setting', 'To update a user profile settings'
-#  param :mute_chat, String, :desc => "Mute Chat - one is mandatory", :required => true
- # param :mute_notifications, String, :desc => "Mute Notifications - one is mandatory", :required => true
-
-
+ api :POST, '/api/v1/user/update-user-setting', 'To update a user profile settings'
+ param :setting_name, String, :desc => "Setting Name", :required => true
+ param :resource_id, :number, :desc => "Resource ID", :required => true
+ param :resource_type, String, :desc => "Resource Type", :required => true
+ param :is_on, ['true', 'false'], :desc => "Its either True and False", :required => true
 
 
   def update_user_setting
@@ -83,7 +81,7 @@ class Api::V1::SettingsController < Api::V1::ApiMasterController
 
             #in order to acheive bi directionsl blocking
             if(params[:setting_name] == 'block' && params[:resource_type] == 'User')
-              
+
                blockee = User.find(params[:resource_id])
                setting_reverse = blockee.user_settings.create!(name: params[:setting_name], resource_id: request_user.id, resource_type: params[:resource_type], is_on: params[:is_on])
              end

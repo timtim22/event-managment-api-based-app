@@ -75,9 +75,12 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
 
   end
 
+    api :POST, '/api/v1/passes/pass-single', 'Get a single pass'
+    param :pass_id, :number, :desc => "ID of the event", :required => true
+
 
   def pass_single
-    if !params[:pass_id].blank? 
+    if !params[:pass_id].blank?
      pass = Pass.find(params[:pass_id])
      @pass = {
         id: pass.id,
@@ -100,7 +103,7 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
         redeem_count: get_redeem_count(pass),
         quantity: pass.quantity
      }
- 
+
      render json: {
        code: 200,
        success: true,

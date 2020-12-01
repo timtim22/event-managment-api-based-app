@@ -2,10 +2,10 @@ class Admin::UsersController < Admin::AdminMasterController
     before_action :getRoles, :only => [:new, :create, :edit]
     def index
         @users = User.order(id: 'DESC')
-    end 
-    
+    end
+
     def new
-        @user = User.new 
+        @user = User.new
     end
 
     def edit
@@ -14,9 +14,9 @@ class Admin::UsersController < Admin::AdminMasterController
 
     def create
         @user = User.new()
-       
+
         if @user.save
-           
+
           profile = BusinessProfile.create!(name: params[:profile_name], contact_name: params[:contact_name], address: params[:address], about: params[:about], website: params[:website], vat_number: params[:vat_number], charity_number: params[:charity_number])
 
           @role = Assignment.new
@@ -33,7 +33,7 @@ class Admin::UsersController < Admin::AdminMasterController
     def update
       @user = User.find(params[:id])
       if @user.update(user_params) &&  @user.assignments.first.update!(role_id: params[:type])
-    
+
        flash[:notice] = "User Updated successfully."
        redirect_to admin_users_path
       else
@@ -61,7 +61,7 @@ class Admin::UsersController < Admin::AdminMasterController
       @user = current_user()
        old_password = params[:old_password]
        new_password = params[:new_password]
-     if(!@user.authenticate(old_password)) 
+     if(!@user.authenticate(old_password))
         render json: {
           'success':false,
            message: "Your old password is incorrect."
@@ -83,9 +83,9 @@ class Admin::UsersController < Admin::AdminMasterController
      end
     end
 
-    
+
     def update_avatar
-      @user = current_user()      
+      @user = current_user()
       if @user.update(profile_update_params)
        # create_activity("updated avatar", @user, "User", admin_users_path(@user), '', 'patch')
         flash[:notice] = "Profile updated successfully."
@@ -100,8 +100,8 @@ class Admin::UsersController < Admin::AdminMasterController
         user = current_user()
         profile = user.business_profile
         profile.profile_name = params[:profile_name]
-        profile.contact_name = params[:contact_name]  
-        profile.about = params[:about] 
+        profile.contact_name = params[:contact_name]
+        profile.about = params[:about]
         profile.vat_number = params[:vat_number]
         profile.charity_number = params[:charity_number]
         profile.website = params[:website]
@@ -131,7 +131,7 @@ class Admin::UsersController < Admin::AdminMasterController
      end
 
      def send_email_page
-       
+
      end
 
      def send_reset_email
@@ -149,7 +149,7 @@ class Admin::UsersController < Admin::AdminMasterController
             success: true,
             message: "Email successfully sent. Please check your inbox to follow the instructions.",
             data: nil
-          } 
+          }
         else
           render json: {
             code:400,
@@ -175,7 +175,7 @@ class Admin::UsersController < Admin::AdminMasterController
           }
         end
        end
-    
+
        def reset_password_page
         @email = params[:email]
         @token = params[:token]
@@ -214,7 +214,7 @@ class Admin::UsersController < Admin::AdminMasterController
               code: 400,
               success: false,
               message: "Password confirmation failed.",
-             
+
               data: nil
             }
 
@@ -228,9 +228,9 @@ class Admin::UsersController < Admin::AdminMasterController
             data: nil
           }
         end
-      
+
       end
-    
+
 
 
      ####################################### Privae ########################################3

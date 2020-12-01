@@ -75,13 +75,12 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
   api :POST, 'dashboard/api/v1/special_offers', 'Create special offer'
   param :title, String, :desc => "Title of the special offer", :required => true
   param :description, String, :desc => "Description of the special offer", :required => true
-  param :date, :number, :desc => "Date of the special offer", :required => true
-  param :validity, :number, :desc => "Validity", :required => true
-  param :ambassador_rate, :number, :desc => "Ambassador rate of the special offer", :required => true
-  param :image, :number, :desc => "Image of the special offer", :required => true
+  param :date, String, :desc => "Date of the special offer", :required => true
+  param :validity, String, :desc => "Validity", :required => true
+  param :ambassador_rate, :decimal, :desc => "Ambassador rate of the special offer", :required => true
+  param :image, String, :desc => "Image of the special offer", :required => true
   param :redeem_code, :number, :desc => "Redeem Code", :required => true
-  param :terms_conditions, :number, :desc => "Terms and condition of the special offer", :required => true
- # param :id, :number, :desc => "Title of the competition", :required => true
+  param :terms_conditions, String, :desc => "Terms and condition of the special offer", :required => true
 
   def create
     @special_offer = SpecialOffer.new
