@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_21_175336) do
+ActiveRecord::Schema.define(version: 2020_12_01_111643) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 2020_11_21_175336) do
     t.string "lng", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "display_name"
     t.index ["user_id"], name: "index_business_profiles_on_user_id"
   end
 
@@ -215,6 +216,7 @@ ActiveRecord::Schema.define(version: 2020_11_21_175336) do
     t.datetime "updated_at", null: false
     t.text "terms_conditions", default: ""
     t.boolean "price_range", default: false
+    t.boolean "has_passes", default: false
     t.string "pass", default: "false"
     t.integer "first_cat_id"
     t.string "video"
@@ -273,6 +275,18 @@ ActiveRecord::Schema.define(version: 2020_11_21_175336) do
     t.index ["event_id", "user_id"], name: "index_interest_levels_on_event_id_and_user_id"
     t.index ["event_id"], name: "index_interest_levels_on_event_id"
     t.index ["user_id"], name: "index_interest_levels_on_user_id"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.integer "user_id"
+    t.decimal "amount", precision: 8, scale: 2, default: "0.0"
+    t.decimal "total_amount", precision: 8, scale: 2, default: "0.0"
+    t.string "tax_invoice_number"
+    t.integer "total_tickets"
+    t.decimal "vat_amount", precision: 8, scale: 2, default: "0.0"
+    t.integer "event_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "location_requests", force: :cascade do |t|
@@ -622,6 +636,10 @@ ActiveRecord::Schema.define(version: 2020_11_21_175336) do
     t.datetime "updated_at", null: false
     t.index ["resource_id", "resource_type"], name: "index_views_on_resource_id_and_resource_type"
     t.index ["user_id"], name: "index_views_on_user_id"
+    t.index [nil, "user_id"], name: "index_views_on_competition_id_and_user_id"
+    t.index [nil, "user_id"], name: "index_views_on_event_id_and_user_id"
+    t.index [nil, "user_id"], name: "index_views_on_pass_id_and_user_id"
+    t.index [nil, "user_id"], name: "index_views_on_special_offer_id_and_user_id"
   end
 
   create_table "vip_pass_shares", force: :cascade do |t|
@@ -643,6 +661,8 @@ ActiveRecord::Schema.define(version: 2020_11_21_175336) do
     t.boolean "is_redeemed", default: false
     t.index ["offer_id", "offer_type"], name: "index_wallets_on_offer_id_and_offer_type"
     t.index ["user_id"], name: "index_wallets_on_user_id"
+    t.index [nil, "user_id"], name: "index_wallets_on_pass_id_and_user_id"
+    t.index [nil, "user_id"], name: "index_wallets_on_special_offer_id_and_user_id"
   end
 
 end

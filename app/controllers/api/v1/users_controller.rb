@@ -756,8 +756,8 @@ end
   end
 
   api :POST, '/api/v1/update-current-location', 'To update a current location'
-  param :lat, :number, :desc => "Latitude of the location", :required => true
-  param :lng, :number, :desc => "Longitude of the location", :required => true
+  param :lat, :decimal, :desc => "Latitude of the location", :required => true
+  param :lng, :decimal, :desc => "Longitude of the location", :required => true
 
   def update_current_location
     if !params[:lat].blank? && !params[:lng].blank?
@@ -876,7 +876,7 @@ end
   end
 
   api :POST, '/api/v1/users/update-profile-picture', 'Update Profile Picture'
-  param :avatar, :number, :desc => "Avatar", :required => true
+  param :avatar, String, :desc => "Avatar", :required => true
 
   def update_profile_pictures
     if @update = request_user.update!(avatar: params[:avatar])
