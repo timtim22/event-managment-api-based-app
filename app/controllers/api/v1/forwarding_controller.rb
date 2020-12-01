@@ -29,7 +29,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
        if @check.blank?
        @recipient = User.find(id)
         term = ''
-        case offer_type
+        case params[:offer_type]
         when "Pass"
           term = 'a pass '
         when "SpecialOffer"
@@ -38,7 +38,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
           term = 'a Competition '
         end
 
-       if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{term + offer.title}", notifiable: @offer,resource: @offer, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{if params[:offer_type] ==  'Pass' then 'pass_recieved' else 'special_offer_recieved'  end }")
+       if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{term + @offer.title}", notifiable: @offer,resource: @offer, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{if params[:offer_type] ==  'Pass' then 'pass_recieved' else 'special_offer_recieved'  end }")
 
         @offer_forward = OfferForwarding.create!(user_id: request_user.id, is_ambassador: request_user.profile.is_ambassador, recipient_id: id, offer_type:params[:offer_type], offer_id: params[:offer_id])
 
