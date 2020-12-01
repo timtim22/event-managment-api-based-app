@@ -13,6 +13,8 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
           @offer = Pass.find(params[:offer_id])
         elsif params[:offer_type] == 'SpecialOffer'
           @offer = SpecialOffer.find(params[:offer_id])
+        elsif params[:offer_type] == 'Competition'
+          @offer = Competition.find(params[:offer_id])
         end
 
        success = false
@@ -20,13 +22,23 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
         )
-       @channel = "event"
+     
        if ids_array.kind_of?(Array)
        ids_array.each do |id|
        @check = OfferForwarding.where(offer_id: @offer.id).where(recipient_id: id).where(user_id: request_user.id).where(offer_type: params[:offer_type]).first
        if @check.blank?
        @recipient = User.find(id)
-       if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{if params[:offer_type] ==  'Pass' then 'a pass ' + @offer.title else 'a Special Offer ' + @offer.title end }.", notifiable: @offer,resource: @offer, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{if params[:offer_type] ==  'Pass' then 'pass_recieved' else 'special_offer_recieved'  end }")
+        term = ''
+        case offer_type
+        when "Pass"
+          term = 'a pass '
+        when "SpecialOffer"
+          term = 'a Special Offer '
+        when "Competition"
+          term = 'a Competition '
+        end
+
+       if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{term + offer.title}", notifiable: @offer,resource: @offer, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{if params[:offer_type] ==  'Pass' then 'pass_recieved' else 'special_offer_recieved'  end }")
 
         @offer_forward = OfferForwarding.create!(user_id: request_user.id, is_ambassador: request_user.profile.is_ambassador, recipient_id: id, offer_type:params[:offer_type], offer_id: params[:offer_id])
 
