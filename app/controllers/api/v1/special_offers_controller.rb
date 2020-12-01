@@ -71,10 +71,11 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
   end
 
 
-
+  api :POST, '/api/v1/special-offers/special-offer-single', 'Get a single special offer'
+  param :special_offer_id, :number, :desc => "ID of the special offer", :required => true
 
   def special_offer_single
-   if !params[:special_offer_id].blank? 
+   if !params[:special_offer_id].blank?
     offer = SpecialOffer.find(params[:special_offer_id])
     @special_offer = {
       id: offer.id,
