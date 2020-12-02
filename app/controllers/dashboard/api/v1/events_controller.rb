@@ -233,17 +233,17 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     param :per_head, :number, 'Per Head'
   end
 
-   param :paid, Hash, :desc => "One of the admission resource is required", :required => true  do
-    param :title, String, 'Title of the free Ticket'
-    param :quantity, :number, 'Quantity of the free tickets'
-    param :per_head, :number, 'Per Head'
-    param :price, :decimal, 'Price of the paid ticket'
-  end
+  #  param :paid, Hash, :desc => "One of the admission resource is required", :required => true  do
+  #   param :title, String, 'Title of the free Ticket'
+  #   param :quantity, :number, 'Quantity of the free tickets'
+  #   param :per_head, :number, 'Per Head'
+  #   param :price, :decimal, 'Price of the paid ticket'
+  # end
 
-  param :pay_at_door, Hash, :desc => "One of the admission resource is required", :required => true  do
-    param :start_price, :decimal, 'Start Price of the pay at door ticket'
-    param :end_price, :decimal, 'End Price of the pay at door ticket'
-  end
+  # param :pay_at_door, Hash, :desc => "One of the admission resource is required", :required => true  do
+  #   param :start_price, :decimal, 'Start Price of the pay at door ticket'
+  #   param :end_price, :decimal, 'End Price of the pay at door ticket'
+  # end
 
   def create
     render params
@@ -457,17 +457,17 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     param :per_head, :number, 'Per Head'
   end
 
-   param :paid, Hash, :desc => "One of the admission resource is required", :required => true  do
-    param :title, String, 'Title of the free Ticket'
-    param :quantity, :number, 'Quantity of the free tickets'
-    param :per_head, :number, 'Per Head'
-    param :price, :decimal, 'Price of the paid ticket'
-  end
+  #  param :paid, Hash, :desc => "One of the admission resource is required", :required => true  do
+  #   param :title, String, 'Title of the free Ticket'
+  #   param :quantity, :number, 'Quantity of the free tickets'
+  #   param :per_head, :number, 'Per Head'
+  #   param :price, :decimal, 'Price of the paid ticket'
+  # end
 
-  param :pay_at_door, Hash, :desc => "One of the admission resource is required", :required => true  do
-    param :start_price, :decimal, 'Start Price of the pay at door ticket'
-    param :end_price, :decimal, 'End Price of the pay at door ticket'
-  end
+  # param :pay_at_door, Hash, :desc => "One of the admission resource is required", :required => true  do
+  #   param :start_price, :decimal, 'Start Price of the pay at door ticket'
+  #   param :end_price, :decimal, 'End Price of the pay at door ticket'
+  # end
 
 
   def update

@@ -122,10 +122,10 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   end
 
   api :POST, '/api/v1/events', 'Get events by list'
-  #param :location, String, :desc => "Location of the event", :required => true
-  param :price, :decimal, :desc => "Price of the event", :required => true
-  param :pass, String, :desc => "Pass", :required => true
-  param :categories, :number, :desc => "categories(1,2)", :required => true
+  # #param :location, String, :desc => "Location of the event", :required => true
+  # #param :price, :decimal, :desc => "Price of the event", :required => true
+  # param :pass, String, :desc => "Pass", :required => true
+  # param :categories, :number, :desc => "categories(1,2)", :required => true
 
 
   def index

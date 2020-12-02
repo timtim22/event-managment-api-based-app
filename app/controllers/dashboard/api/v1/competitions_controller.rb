@@ -113,17 +113,17 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
   end
 
   api :POST, '/dashboard/api/v1/competitions', 'To create competition'
-  param :title, String, :desc => "Title of the competition", :required => true
-  param :description, String, :desc => "Description of the competition", :required => true
-  param :start_date, String, :desc => "Start Date of the competition", :required => true
-  param :end_date, String, :desc => "End Date of the competition", :required => true
-  param :start_time, String, :desc => "Start time of the competition", :required => true
-  param :end_time, String, :desc => "End time of the competition", :required => true
-  param :validity, String, :desc => "Validity", :required => true
-  param :validity_time, String, :desc => "Validity Time", :required => true
-  param :image, String, :desc => "Image of the competition", :required => true
-  param :price, :decimal, :desc => "Price of the competition", :required => true
-  param :terms_conditions, String, :desc => "Terms and Condition of the competition", :required => true
+  # param :title, String, :desc => "Title of the competition", :required => true
+  # param :description, String, :desc => "Description of the competition", :required => true
+  # param :start_date, String, :desc => "Start Date of the competition", :required => true
+  # param :end_date, String, :desc => "End Date of the competition", :required => true
+  # param :start_time, String, :desc => "Start time of the competition", :required => true
+  # param :end_time, String, :desc => "End time of the competition", :required => true
+  # param :validity, String, :desc => "Validity", :required => true
+  # param :validity_time, String, :desc => "Validity Time", :required => true
+  # param :image, String, :desc => "Image of the competition", :required => true
+  # param :price, :decimal, :desc => "Price of the competition", :required => true
+  # param :terms_conditions, String, :desc => "Terms and Condition of the competition", :required => true
  # param :location, String, :desc => "Location of the competition", :required => true
 
 
@@ -207,18 +207,18 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
   end
 
   api :POST, '/dashboard/api/v1/competitions', 'To update competition'
-  param :id, String, :desc => "ID of the competition", :required => true
-  param :title, String, :desc => "Title of the competition", :required => true
-  param :description, String, :desc => "Description of the competition", :required => true
-  param :start_date, String, :desc => "Start Date of the competition", :required => true
-  param :end_date, String, :desc => "End Date of the competition", :required => true
-  param :start_time, String, :desc => "Start time of the competition", :required => true
-  param :end_time, String, :desc => "End time of the competition", :required => true
-  param :validity, String, :desc => "Validity", :required => true
-  param :validity_time, String, :desc => "Validity Time", :required => true
-  param :image, String, :desc => "Image of the competition", :required => true
-  param :price, :decimal, :desc => "Price of the competition", :required => true
-  param :terms_conditions, String, :desc => "Terms and Condition of the competition", :required => true
+  # param :id, String, :desc => "ID of the competition", :required => true
+  # param :title, String, :desc => "Title of the competition", :required => true
+  # param :description, String, :desc => "Description of the competition", :required => true
+  # param :start_date, String, :desc => "Start Date of the competition", :required => true
+  # param :end_date, String, :desc => "End Date of the competition", :required => true
+  # param :start_time, String, :desc => "Start time of the competition", :required => true
+  # param :end_time, String, :desc => "End time of the competition", :required => true
+  # param :validity, String, :desc => "Validity", :required => true
+  # param :validity_time, String, :desc => "Validity Time", :required => true
+  # param :image, String, :desc => "Image of the competition", :required => true
+  # param :price, :decimal, :desc => "Price of the competition", :required => true
+  # param :terms_conditions, String, :desc => "Terms and Condition of the competition", :required => true
   #param :location, String, :desc => "Location of the competition", :required => true
 
   def update
