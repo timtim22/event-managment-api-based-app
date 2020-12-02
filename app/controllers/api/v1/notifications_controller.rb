@@ -51,7 +51,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "is_read": !notification.read_at.nil?,
             "competition_name": notification.resource.title,
             "business_name": User.get_full_name(notification.resource.user),
-            "draw_date": notification.resource.validity.strftime(get_time_format)
+            "draw_date": notification.resource.validity.strftime(get_time_format),
+            "is_added_to_wallet": added_to_wallet?(notification.resource)
 
           }
         when "create_offer"
@@ -68,7 +69,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "action_type": notification.action_type,
             "location": location,
             "created_at": notification.created_at,
-            "is_read": !notification.read_at.nil?
+            "is_read": !notification.read_at.nil?,
+            "is_added_to_wallet": added_to_wallet?(notification.resource)
           }
 
         # when "update_special_offer"
@@ -104,7 +106,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "action_type": notification.action_type,
             "location": location,
             "created_at": notification.created_at,
-            "is_read": !notification.read_at.nil?
+            "is_read": !notification.read_at.nil?,
+          "is_added_to_wallet": added_to_wallet?(notification.resource)
 
           }
         when "create_interest"
@@ -295,7 +298,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "action": notification.action,
           "action_type": notification.action_type,
           "created_at": notification.created_at,
-          "is_read": !notification.read_at.nil?
+          "is_read": !notification.read_at.nil?,
+          "is_added_to_wallet": added_to_wallet?(notification.resource)
         }
 
       when "ask_location"
@@ -621,7 +625,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
           )
-        
+
          if ids_array.kind_of?(Array)
          ids_array.each do |id|
 
