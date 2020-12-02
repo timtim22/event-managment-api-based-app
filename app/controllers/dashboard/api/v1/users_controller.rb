@@ -187,117 +187,125 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
   #param :password, String, :desc => "Password"
 
   def update
-   if !params[:id].blank?
+   required_fields = ['profile_name', 'contact_name','address', 'display_name', 'phone_number', 'email', 'password','website','is_charity', 'about']
+    errors = []
+    required_fields.each do |field|
+      if params[field.to_sym].blank?
+        errors.push(field + ' is required.')
+      end
+    end
+
+   if errors.blank?
+    registered  = false
     @user = User.find(params[:id])
     if params[:avatar].blank?
      @user.remote_avatar_url = get_dummy_avatar
     else
-      @user.avatar= params[:avatar]
+      @user.avatar = params[:avatar]
     end
+      @user.phone_number = params[:phone_number]
+      @user.email = params[:email]
+      @user.web_user = true
+      @user.password = params[:password]
+      @user.verification_code = generate_code
+      @user.stripe_state = generate_code
 
-    @user.phone_number = params[:phone_number]
+      if !params[:charity_number].blank?
+        charity_number = params[:charity_number]
+      else
+        charity_number = ''
+      end
 
-    if  profile = @user.business_profile.update!(profile_name: params[:profile_name], contact_name: params[:contact_name], user: @user, address: params[:address], website: params[:website], about: params[:about], vat_number: params[:vat_number], charity_number: params[:charity_number], is_charity: params[:is_charity]) &&   @user.save
+      user_and_profile_errors = []
 
 
-
-       #Also save default setting
+      if @user.save
        setting_name_values = ['all_chat_notifications','event_notifications','special_offers_notifications','passes_notifications','competitions_notifications','location']
 
        setting_name_values.each do |name|
-         new_setting = Setting.create!(user_id: @user.id, name: name, is_on: true)
+         new_setting = Setting.create!(user: @user, name: name, is_on: true)
        end #each
 
+        #create role
+        assignment = @user.assignments.create!(role_id: params[:type])
+      else
+        @user.errors.full_messages.map { |m| user_and_profile_errors.push(m) }
+
+      end
+
+      @business = BusinessProfile.find(params[:id])
+
+        @business.user = @user
+
+        @business.profile_name = params[:profile_name]
+        @business.contact_name = params[:contact_name]
+        @business.display_name = params[:display_name]
+        @business.address = params[:address]
+        @business.website = params[:website]
+        @business.about = params[:about]
+        @business.vat_number = params[:vat_number]
+        @business.youtube = params[:youtube]
+        @business.instagram = params[:instagram]
+        @business.twitter = params[:twitter]
+        @business.linkedin = params[:linkedin]
+        @business.facebook = params[:facebook]
 
 
+       if @business.save
+        "do nothing"
+      else
+          @business.errors.full_messages.map { |m| user_and_profile_errors.push(m) }
+      end
+       #Also save default setting
+
+
+    if user_and_profile_errors.blank?
+      profile = {
+        "user_id" => @user.id,
+        "email_addrress" =>  @user.email,
+        "avatar" => @user.avatar,
+        "mobile_number" =>  @user.phone_number,
+        "password" => @user.password,
+        "business_name" => @business.profile_name,
+        "contact_name" =>  @business.contact_name,
+        "display_name" =>  @business.display_name,
+        "address" => @business.address,
+        "website" => @business.website,
+        "About" =>  @business.about,
+        "youtube" =>  @business.youtube,
+        "instagram" =>  @business.instagram,
+        "twitter" =>  @business.twitter,
+        "linkedin" =>  @business.linkedin,
+        "facebook" => @business.facebook
+
+      }
+
       render json: {
-            code: 200,
-            success: true,
-            message: "Profile updated successfully.",
-            data: {
-              user: get_business_object(@user)
-            }
-          }
-    else
-      render json: {
+        code: 200,
+        success: true,
+        message: "User successfully updated",
+        data: {
+          profile: profile
+        }
+      }
+      else
+        render json: {
         code: 400,
         success: false,
-        message: @user.errors.full_messages,
+        message: user_and_profile_errors,
         data: nil
       }
     end
 
   else
-    render json:  {
+
+    render json: {
       code: 400,
-      success: false,
-      message: 'id is required.',
+      success:false,
+      message: user_and_profile_errors,
       data: nil
     }
   end
-  end
-
-  api :GET, 'dashboard/api/v1/get-app-users', 'Get all app users'
-
-  def get_app_users
-
-  @users = User.app_users.map {|user| get_user_object(user) }
-
-    render json: {
-      code: 200,
-      success: true,
-      data: {
-        users: @users
-      }
-    }
-  end
-
-  api :POST, 'dashboard/api/v1/get-user', 'Get specific user'
-  param :id, :number, :desc => "ID of the user", :required => true
-
-  def get_user
-    if !params[:user_id].blank?
-       user = User.find(params[:user_id])
-     if user.web_user ==  true
-       business = {}
-        business['id'] = user.id,
-        business['profile_name'] = user.business_profile.profile_name,
-        business['avatar'] = user.avatar,
-        business['email'] = user.email,
-        business['contact_name'] = user.business_profile.contact_name,
-        business['address'] = user.business_profile.address,
-        business['vat_number'] = user.business_profile.vat_number,
-        business['charity_number'] = user.business_profile.charity_number,
-        business['website']  = user.business_profile.website,
-        business['about'] = user.business_profile.about,
-        business['phone_number'] = user.phone_number,
-        business['roles'] = user.roles
-
-      render json: {
-        code: 200,
-        success: true,
-        message: '',
-        data: {
-          profile: business
-        }
-      }
-    else
-      render json: {
-        code: 400,
-        success: false,
-        message: 'This user is not a business user',
-        data: nil
-      }
-    end
-
-    else
-      render json: {
-       code: 400,
-       success: false,
-       message: 'user_id is required field.',
-       data: nil
-      }
-    end
   end
 
 end #class
