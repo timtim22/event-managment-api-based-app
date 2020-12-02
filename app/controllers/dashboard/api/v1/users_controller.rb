@@ -31,7 +31,38 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
 
   # GET /users/{username}
   def show
-    render json: @user, status: :ok
+    @user = User.find(params[:id])
+    @business = BusinessProfile.find(params[:id])
+
+    profile = {
+        "user_id" => @user.id,
+        "email_addrress" =>  @user.email,
+        "avatar" => @user.avatar,
+        "mobile_number" =>  @user.phone_number,
+        "password" => @user.password,
+        "business_name" => @business.profile_name,
+        "contact_name" =>  @business.contact_name,
+        "display_name" =>  @business.display_name,
+        "address" => @business.address,
+        "website" => @business.website,
+        "About" =>  @business.about,
+        "youtube" =>  @business.youtube,
+        "instagram" =>  @business.instagram,
+        "twitter" =>  @business.twitter,
+        "linkedin" =>  @business.linkedin,
+        "facebook" => @business.facebook
+
+    }
+
+    render json: {
+     code: 200,
+     success: true,
+     message: '',
+     data: {
+       event: profile
+     }
+   }
+    # render json: @user, status: :ok
   end
 
 

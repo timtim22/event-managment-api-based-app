@@ -214,6 +214,7 @@ Rails.application.routes.draw do
 
         resources :users
         patch 'dashboard/api/v1/users/:id', to: 'user#update'
+        patch 'dashboard/api/v1/users/:id', to: 'user#show'
 
         resources :news_feeds
         resources :invoices

@@ -12,7 +12,7 @@ class Dashboard::Api::V1::PaymentsController < Dashboard::Api::V1::ApiMasterCont
     end
 
   api :POST, 'dashboard/api/v1/payments/create-intant', 'Create payment intent'
-  param :price, :decimal, :desc => "Price", :required => true
+  # param :price, :decimal, :desc => "Price", :required => true
 
 
     def create_intant
