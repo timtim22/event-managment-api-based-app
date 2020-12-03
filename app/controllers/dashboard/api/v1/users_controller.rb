@@ -169,7 +169,8 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
         "instagram" =>  @business.instagram,
         "twitter" =>  @business.twitter,
         "linkedin" =>  @business.linkedin,
-        "facebook" => @business.facebook
+        "facebook" => @business.facebook,
+        "token" =>   encode(user_id: @user.id)
 
       }
 
