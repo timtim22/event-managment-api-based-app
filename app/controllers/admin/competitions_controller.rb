@@ -71,7 +71,8 @@ class Admin::CompetitionsController < Admin::AdminMasterController
             "is_read": !notification.read_at.nil?,
             "competition_name": notification.resource.title,
             "business_name": User.get_full_name(notification.resource.user),
-            "draw_date": notification.resource.validity.strftime(get_time_format)
+            "draw_date": notification.resource.validity.strftime(get_time_format),
+            "is_added_to_wallet": added_to_wallet?(notification.resource)
            }
           }
          }

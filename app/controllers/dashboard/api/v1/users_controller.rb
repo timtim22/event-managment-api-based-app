@@ -160,6 +160,14 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
 
     if user_and_profile_errors.blank?
 
+      social_links = {
+        "youtube" =>  @business.youtube,
+        "instagram" =>  @business.instagram,
+        "twitter" =>  @business.twitter,
+        "linkedin" =>  @business.linkedin,
+        "facebook" => @business.facebook
+      }
+
       profile = {
         "user_id" => @user.id,
         "email" =>  @user.email,
@@ -172,13 +180,8 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
         "address" => @business.address,
         "website" => @business.website,
         "about" =>  @business.about,
-        "youtube" =>  @business.youtube,
-        "instagram" =>  @business.instagram,
-        "twitter" =>  @business.twitter,
-        "linkedin" =>  @business.linkedin,
-        "facebook" => @business.facebook,
+        "social_links" => social_links,
         "token" =>   encode(user_id: @user.id)
-
       }
 
       render json: {

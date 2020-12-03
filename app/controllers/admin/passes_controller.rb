@@ -92,7 +92,7 @@ class Admin::PassesController < Admin::AdminMasterController
           current_user.followers.each do |follower|
       if follower.passes_notifications_setting.is_on == true
         if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new pass '#{@pass.title}'.", notifiable: @pass, resource: @pass, url: "/admin/passes/#{@pass.id}", notification_type: 'mobile', action_type: 'create_pass')
-        
+
           @current_push_token = @pubnub.add_channels_to_push(
            push_token: follower.profile.device_token,
            type: 'gcm',
@@ -114,7 +114,8 @@ class Admin::PassesController < Admin::AdminMasterController
               "action": @notification.action,
               "action_type": @notification.action_type,
               "created_at": @notification.created_at,
-              "body": ''
+              "body": '',
+              "is_added_to_wallet": added_to_wallet?(notification.resource)
              }
             }
            }
