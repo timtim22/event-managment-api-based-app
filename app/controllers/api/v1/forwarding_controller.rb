@@ -38,9 +38,11 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
           term = 'a Competition '
         end
 
-       if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{term + @offer.title}", notifiable: @offer,resource: @offer, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{if params[:offer_type] ==  'Pass' then 'pass_recieved' else 'special_offer_recieved'  end }")
 
         @offer_forward = OfferForwarding.create!(user_id: request_user.id, is_ambassador: request_user.profile.is_ambassador, recipient_id: id, offer_type:params[:offer_type], offer_id: params[:offer_id])
+
+       if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{term + @offer.title}", notifiable: @offer,resource: @offer_forward, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{@offer.class.name.to_underscore_case}_forwarded")
+
 
        # create_activity(request_user, "forwarded '#{if params[:offer_type] == 'SpecialOffer' then 'special offer' else 'pass' end} '", @offer_forward, 'OfferForwarding', '', '', 'post', "forwarded_#{params[:offer_type]}")
 
@@ -229,9 +231,11 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
        @check = EventForwarding.where(event_id: @event.id).where(recipient_id: id).where(user_id: request_user.id).first
        if @check.blank?
        @recipient = User.find(id)
-       if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has forwarded you and event.", notifiable: @event, resource: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "forward_event")
+       @event_forward = EventForwarding.create!(user_id: request_user.id, recipient_id: id, event_id: params[:event_id])
 
-        @event_forward = EventForwarding.create!(user_id: request_user.id, recipient_id: id, event_id: params[:event_id])
+       if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has forwarded you and event.", notifiable: @event, resource: @event, resource: @event_forward, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "event_forwarded")
+
+      
 
         #create_activity(request_user, "forwarded event", @event_forward, 'EventForwarding', '', '', 'post','forward_event')
 

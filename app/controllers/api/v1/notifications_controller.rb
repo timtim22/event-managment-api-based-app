@@ -438,6 +438,59 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "created_at": notification.created_at,
           "is_read": !notification.read_at.nil?
           }
+
+        when "pass_forwarded"
+          @notifications << {
+            "id": notification.id,
+            "pass_id": notification.resource.offer.id,
+            "event_name": notification.resource.offer.event.name,
+            "friend_name": User.get_full_name(notification.resource.user),
+            "friend_id": notification.resource.user.id,
+            "actor_image": notification.actor.avatar,
+            "notifiable_id": notification.notifiable_id,
+            "notifiable_type": notification.notifiable_type,
+            "action": notification.action,
+            "action_type": notification.action_type,
+            "created_at": notification.created_at,
+            "is_read": !notification.read_at.nil?
+            }
+
+          when "special_offfer_forwarded"
+            @notifications << {
+              "id": notification.id,
+              "special_offer_id": notification.resource.offer.id,
+              "special_offer_title": notification.resource.offer.title,
+              "friend_name": User.get_full_name(notification.resource.user),
+              "action": notification.action,
+              "action_type": notification.action_type,
+              "created_at": notification.created_at,
+              "is_read": !notification.read_at.nil?
+              }
+
+            when "competition_forwarded"
+              @notifications << {
+                "id": notification.id,
+                "competition_id": notification.resource.offer.id, 
+                "competition_name": notification.resource.offer.title, 
+                "friend_name": User.get_full_name(notification.resource.user),
+                "action": notification.action,
+                "action_type": notification.action_type,
+                "created_at": notification.created_at,
+                "is_read": !notification.read_at.nil?
+                }
+              
+              when "event_forwarded"
+                @notifications << {
+                  "id": notification.id,
+                  "event_id": notification.resource.event.id,
+                  "friend_name": User.get_full_name(notification.resource.user),
+                  "friend_id": notification.resource.user.id,
+                  "event_name": notification.resource.event.name,
+                  "action": notification.action,
+                  "action_type": notification.action_type,
+                  "created_at": notification.created_at,
+                  "is_read": !notification.read_at.nil?
+                  }
       else
          "do nothing"
       end #switch
