@@ -38,7 +38,7 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
       "facebook" => @user.business_profile.facebook,
       "instagram" => @user.business_profile.instagram,
       "twitter" => @user.business_profile.twitter,
-      "linkedin" => @user.business_profile.linkedin,
+      "linkedin" => @user.business_profile.linkedin
     }
 
     profile = {
