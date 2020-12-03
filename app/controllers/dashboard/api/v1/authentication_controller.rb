@@ -31,21 +31,23 @@ class Dashboard::Api::V1::AuthenticationController < Dashboard::Api::V1::ApiMast
           }
 
 
-      user_data = {}
-      user_data['id'] =  @user.id,
-      user_data['avatar'] = @user.avatar,
-      user_data['email'] = @user.email,
-      user_data['address'] = @user.business_profile.address,
-      user_data['vat_number'] = @user.business_profile.vat_number,
-      user_data['charity_number']  = @user.business_profile.charity_number,
-      user_data['website'] =  @user.business_profile.website,
-      user_data['about'] =  @user.business_profile.about,
-      user_data['phone_number']  = @user.phone_number,
-      user_data['profile_name']  = @user.business_profile.profile_name,
-      user_data['contact_name']  = @user.business_profile.contact_name,
-      user_data['display_name']  = @user.business_profile.display_name,
-      user_data['social_links']  = social_links,
-      user_data['phone_number']  = @user.phone_number
+          profile = {
+              "user_id" => @user.id,
+              "email" =>  @user.email,
+              "avatar" => @user.avatar,
+              "phone_number" =>  @user.phone_number,
+              "password" => @user.password,
+              "followers_count" => @user.followers.size,
+              "profile_name" => @user.business_profile.profile_name,
+              "contact_name" =>  @user.business_profile.contact_name,
+              "display_name" =>  @user.business_profile.display_name,
+              "address" => @user.business_profile.address,
+              "website" => @user.business_profile.website,
+              "about" =>  @user.business_profile.about,
+              "vat_number" =>  @user.business_profile.vat_number,
+              "social_links" => social_links
+
+          }
       # create_activity creates login issue regarding jwt auth token requirements
       #create_activity('logged in.', @user, 'User', '', '', 'post')
       token = encode(user_id: @user.id)
@@ -55,7 +57,7 @@ class Dashboard::Api::V1::AuthenticationController < Dashboard::Api::V1::ApiMast
             message: "Login is successful.",
             data: {
               token: token,
-              user: user_data
+              user: profile
             }
           }
      else
