@@ -292,7 +292,7 @@ end
 end
 
   api :POST, '/api/v1/user/get-others-profile', 'To get a mobile user profile'
-  param :user_id, :number, :desc => "User ID", :required => true
+  #param :user_id, :number, :desc => "User ID", :required => true
 
  def get_others_profile
   if !params[:user_id].blank?
@@ -341,7 +341,7 @@ end
 end
 
   api :POST, '/api/v1/user-activity-logs', 'To get user get activity logs'
-  param :user_id, :number, :desc => "User ID", :required => true
+  #param :user_id, :number, :desc => "User ID", :required => true
 
  def activity_logs
    if !params[:user_id].blank?
@@ -429,7 +429,7 @@ end
    end
  end
   api :POST, '/api/v1/user-attending', 'User Events to attend list'
-  param :user_id, :number, :desc => "User ID", :required => true
+  #param :user_id, :number, :desc => "User ID", :required => true
 
  def attending
    if !params[:user_id].blank?
@@ -455,7 +455,7 @@ end
  end
 
   api :POST, '/api/v1/gives_away', 'To get user gives away'
-  param :user_id, :number, :desc => "user ID", :required => true
+  #param :user_id, :number, :desc => "user ID", :required => true
 
  def gives_away
   if !params[:user_id].blank?
@@ -664,7 +664,7 @@ end
  end
 
   api :POST, '/api/v1/user/get-others-business-profile', 'To get a business profile'
-  param :user_id, :number, :desc => "User ID", :required => true
+  #param :user_id, :number, :desc => "User ID", :required => true
 
  def get_others_business_profile
   if !params[:user_id].blank?

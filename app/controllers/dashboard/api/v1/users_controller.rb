@@ -33,23 +33,29 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
   def show
     @user = User.find(params[:id])
 
+    social_links = {
+      "youtube" => @user.business_profile.youtube,
+      "facebook" => @user.business_profile.facebook,
+      "instagram" => @user.business_profile.instagram,
+      "twitter" => @user.business_profile.twitter,
+      "linkedin" => @user.business_profile.linkedin
+    }
+
     profile = {
         "user_id" => @user.id,
-        "email_addrress" =>  @user.email,
+        "email" =>  @user.email,
         "avatar" => @user.avatar,
-        "mobile_number" =>  @user.phone_number,
+        "phone_number" =>  @user.phone_number,
         "password" => @user.password,
-        "business_name" => @user.business_profile.profile_name,
+        "followers_count" => @user.followers.size,
+        "profile_name" => @user.business_profile.profile_name,
         "contact_name" =>  @user.business_profile.contact_name,
         "display_name" =>  @user.business_profile.display_name,
         "address" => @user.business_profile.address,
         "website" => @user.business_profile.website,
-        "About" =>  @user.business_profile.about,
-        "youtube" =>  @user.business_profile.youtube,
-        "instagram" =>  @user.business_profile.instagram,
-        "twitter" =>  @user.business_profile.twitter,
-        "linkedin" =>  @user.business_profile.linkedin,
-        "facebook" => @user.business_profile.facebook
+        "about" =>  @user.business_profile.about,
+        "vat_number" =>  @user.business_profile.vat_number,
+        "social_links" => social_links
 
     }
 
@@ -153,18 +159,19 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
 
 
     if user_and_profile_errors.blank?
+
       profile = {
         "user_id" => @user.id,
-        "email_addrress" =>  @user.email,
+        "email" =>  @user.email,
         "avatar" => @user.avatar,
-        "mobile_number" =>  @user.phone_number,
+        "phone_number" =>  @user.phone_number,
         "password" => @user.password,
-        "business_name" => @business.profile_name,
+        "profile_name" => @business.profile_name,
         "contact_name" =>  @business.contact_name,
         "display_name" =>  @business.display_name,
         "address" => @business.address,
         "website" => @business.website,
-        "About" =>  @business.about,
+        "about" =>  @business.about,
         "youtube" =>  @business.youtube,
         "instagram" =>  @business.instagram,
         "twitter" =>  @business.twitter,
@@ -293,16 +300,16 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
     if user_and_profile_errors.blank?
       profile = {
         "user_id" => @user.id,
-        "email_addrress" =>  @user.email,
+        "email" =>  @user.email,
         "avatar" => @user.avatar,
-        "mobile_number" =>  @user.phone_number,
+        "phone_number" =>  @user.phone_number,
         "password" => @user.password,
-        "business_name" => @business.profile_name,
+        "profile_name" => @business.profile_name,
         "contact_name" =>  @business.contact_name,
         "display_name" =>  @business.display_name,
         "address" => @business.address,
         "website" => @business.website,
-        "About" =>  @business.about,
+        "about" =>  @business.about,
         "youtube" =>  @business.youtube,
         "instagram" =>  @business.instagram,
         "twitter" =>  @business.twitter,
