@@ -69,7 +69,8 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
               "action_type": notification.action_type,
               "location": location,
               "created_at": notification.created_at,
-              "is_read": !notification.read_at.nil?
+              "is_read": !notification.read_at.nil?,
+            "is_added_to_wallet": added_to_wallet?(notification.resource)
              }
             }
            }
