@@ -180,9 +180,8 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
         "address" => @business.address,
         "website" => @business.website,
         "about" =>  @business.about,
-        "social_links" => social_links
-
-
+        "social_links" => social_links,
+        "token" =>   encode(user_id: @user.id)
       }
 
       render json: {
