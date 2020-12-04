@@ -453,7 +453,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "action": notification.action,
             "action_type": notification.action_type,
             "created_at": notification.created_at,
-            "is_read": !notification.read_at.nil?
+            "is_read": !notification.read_at.nil?,
+            "event_start_date": notification.resource.offer.event.start_date
             }
 
           when "special_offer_forwarded"
@@ -475,8 +476,8 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             when "competition_forwarded"
               @notifications << {
                 "id": notification.id,
-                "competition_id": notification.resource.offer.id, 
-                "competition_name": notification.resource.offer.title, 
+                "competition_id": notification.resource.offer.id,
+                "competition_name": notification.resource.offer.title,
                 "friend_name": User.get_full_name(notification.resource.user),
                 "business_name": User.get_full_name(notification.resource.offer.user),
                 "actor_image": notification.actor.avatar,
@@ -487,7 +488,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                 "created_at": notification.created_at,
                 "is_read": !notification.read_at.nil?
                 }
-              
+
               when "event_forwarded"
                 @notifications << {
                   "id": notification.id,
