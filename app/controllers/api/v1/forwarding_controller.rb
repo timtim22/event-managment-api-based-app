@@ -41,7 +41,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
 
         @offer_forward = OfferForwarding.create!(user_id: request_user.id, is_ambassador: request_user.profile.is_ambassador, recipient_id: id, offer_type:params[:offer_type], offer_id: params[:offer_id])
 
-       if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{term + @offer.title}", notifiable: @offer,resource: @offer_forward, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{@offer.class.name.to_underscore_case}_forwarded")
+       if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{term + @offer.title}", notifiable: @offer,resource: @offer_forward, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{to_underscore_case(@offer.class.name)}_forwarded")
 
 
        # create_activity(request_user, "forwarded '#{if params[:offer_type] == 'SpecialOffer' then 'special offer' else 'pass' end} '", @offer_forward, 'OfferForwarding', '', '', 'post', "forwarded_#{params[:offer_type]}")
@@ -52,24 +52,60 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
            add: @recipient.profile.device_token
            ).value
 
+            data = {}
+            case params[:offer_type]
+            when "Pass"
+              data = {
+                "id": notification.id,
+                "pass_id": notification.resource.offer.id,
+                "event_name": notification.resource.offer.event.name,
+                "friend_name": User.get_full_name(notification.resource.user),
+                "friend_id": notification.resource.user.id,
+                "actor_image": notification.actor.avatar,
+                "notifiable_id": notification.notifiable_id,
+                "notifiable_type": notification.notifiable_type,
+                "action": notification.action,
+                "action_type": notification.action_type,
+                "created_at": notification.created_at,
+                "is_read": !notification.read_at.nil?
+              }
+            when "SpecialOffer"
+              data = {
+                "id": notification.id,
+                "special_offer_id": notification.resource.offer.id,
+                "special_offer_title": notification.resource.offer.title,
+                "friend_name": User.get_full_name(notification.resource.user),
+                "actor_image": notification.actor.avatar,
+                "notifiable_id": notification.notifiable_id,
+                "notifiable_type": notification.notifiable_type,
+                "action": notification.action,
+                "action_type": notification.action_type,
+                "created_at": notification.created_at,
+                "is_read": !notification.read_at.nil?
+              }
+            when "Competition"
+              data = {
+                "id": notification.id,
+                "competition_id": notification.resource.offer.id, 
+                "competition_name": notification.resource.offer.title, 
+                "friend_name": User.get_full_name(notification.resource.user),
+                "actor_image": notification.actor.avatar,
+                "notifiable_id": notification.notifiable_id,
+                "notifiable_type": notification.notifiable_type,
+                "action": notification.action,
+                "action_type": notification.action_type,
+                "created_at": notification.created_at,
+                "is_read": !notification.read_at.nil?
+              }
+            end
+
           payload = {
           "pn_gcm":{
             "notification":{
               "title": get_full_name(request_user),
-              "body": @notification.action
+              "body": notification.action
             },
-            data: {
-              "id": @notification.id,
-              "actor_id": @notification.actor_id,
-              "actor_image": @notification.actor.avatar,
-              "notifiable_id": @notification.notifiable_id,
-              "notifiable_type": @notification.notifiable_type,
-              "offer": @offer,
-              "action": @notification.action,
-              "action_type": @notification.action_type,
-              "created_at": @notification.created_at,
-              "body": ''
-            }
+            data: data
           }
         }
 
@@ -233,7 +269,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
        @recipient = User.find(id)
        @event_forward = EventForwarding.create!(user_id: request_user.id, recipient_id: id, event_id: params[:event_id])
 
-       if @notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has forwarded you and event.", notifiable: @event, resource: @event, resource: @event_forward, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "event_forwarded")
+       if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has forwarded you and event.", notifiable: @event, resource: @event, resource: @event_forward, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "event_forwarded")
 
       
 
@@ -249,19 +285,21 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
           "pn_gcm":{
             "notification":{
               "title": get_full_name(request_user),
-              "body": @notification.action
+              "body": notification.action
             },
             data: {
-              "id": @notification.id,
-              "actor_id": @notification.actor_id,
-              "actor_image": @notification.actor.avatar,
-              "notifiable_id": @notification.notifiable_id,
-              "notifiable_type": @notification.notifiable_type,
-              "offer": @offer,
-              "action": @notification.action,
-              "action_type": @notification.action_type,
-              "created_at": @notification.created_at,
-              "body": ''
+              "id": notification.id,
+              "event_id": notification.resource.event.id,
+              "friend_name": User.get_full_name(notification.resource.user),
+              "friend_id": notification.resource.user.id,
+              "event_name": notification.resource.event.name,
+              "actor_image": notification.actor.avatar,
+              "notifiable_id": notification.notifiable_id,
+              "notifiable_type": notification.notifiable_type,
+              "action": notification.action,
+              "action_type": notification.action_type,
+              "created_at": notification.created_at,
+              "is_read": !notification.read_at.nil?
             }
           }
         }
