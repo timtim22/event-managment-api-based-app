@@ -10,7 +10,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   api :POST, '/api/v1/events/purchase-ticket', 'Purchase Ticket'
   param :ticket_id, :number, :desc => "Ticket ID", :required => true
   param :ticket_type, String, :desc => "Type of the ticket", :required => true
-  param :status, ['True', 'False'], :desc => "successful/failed", :required => true
+  #param :status, ['True', 'False'], :desc => "successful/failed", :required => true
   param :stripe_response, String, :desc => "Stripe response", :required => true
   param :transaction_id, :number, :desc => "Transaction ID", :required => true
 
