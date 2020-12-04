@@ -1048,6 +1048,14 @@ end
     string.gsub(/,(?![ ])/, ', ')
   end
 
+  def to_underscore_case(string)
+      string.gsub(/::/, '/').
+      gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
+      gsub(/([a-z\d])([A-Z])/,'\1_\2').
+      tr("-", "_").
+      downcase
+  end
+
 
 def all_passes_added_to_wallet?(request_user,passes)
     passes_ids = passes.map {|pass| pass.id }
