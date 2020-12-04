@@ -160,7 +160,7 @@ def accept_request
       create_activity(request_user, "become friend", request, 'FriendRequest', '', '', 'post', 'accept_friend_request')
       #clear friend request notifcation on accpet
       @notification =  Notification.where(notifiable_id: request.id).where(notifiable_type: 'FriendRequest').first
-      if !@notifcation.blank?
+      if !@notification.blank?
        @notification.destroy
       end
 
