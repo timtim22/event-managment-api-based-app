@@ -269,9 +269,7 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
 
       end
 
-      @business = BusinessProfile.find(params[:id])
-
-        @business.user = @user
+      @business = @user.business_profile
 
         @business.profile_name = params[:profile_name]
         @business.contact_name = params[:contact_name]
