@@ -122,6 +122,15 @@ class Api::V1::ApiMasterController < ApplicationController
       end
     end
 
+    def is_competition_over?(competition)
+      if competition.end_date > DateTime.now
+        false
+      else
+        true
+      end
+    end
+
+
     def getInterestedUsers(event)
       @interested_followers = []
       @interested_others = []
