@@ -455,7 +455,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "is_read": !notification.read_at.nil?
             }
 
-          when "special_offfer_forwarded"
+          when "special_offer_forwarded"
             @notifications << {
               "id": notification.id,
               "special_offer_id": notification.resource.offer.id,
