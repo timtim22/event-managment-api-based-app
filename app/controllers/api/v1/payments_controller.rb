@@ -52,7 +52,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
                 subscribe_key: ENV['SUBSCRIBE_KEY']
               )
 
-              if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
+              if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, resource: @purchase, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
 
                 @current_push_token = @pubnub.add_channels_to_push(
                   push_token: request_user.profile.device_token,
