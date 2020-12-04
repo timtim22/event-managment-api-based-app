@@ -51,7 +51,7 @@ class Dashboard::Api::V1::PaymentsController < Dashboard::Api::V1::ApiMasterCont
  end
 
   api :POST, 'dashboard/api/v1/payments/confirm-payment', 'Confirm Payment'
-  param :status, ['successful', 'failed'], :desc => "status", :required => true
+  #param :status, ['successful', 'failed'], :desc => "status", :required => true
   param :stripe_response, String, :desc => "Stripe Respose", :required => true
   param :transaction_id, :number, :desc => "Transaction ID", :required => true
   param :total_tickets, :number, :desc => "Total Tickets", :required => true
