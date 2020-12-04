@@ -33,13 +33,6 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
   def show
     @user = User.find(params[:id])
 
-    social_links = {
-      "youtube" => @user.business_profile.youtube,
-      "facebook" => @user.business_profile.facebook,
-      "instagram" => @user.business_profile.instagram,
-      "twitter" => @user.business_profile.twitter,
-      "linkedin" => @user.business_profile.linkedin
-    }
 
     profile = {
         "user_id" => @user.id,
@@ -55,7 +48,11 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
         "website" => @user.business_profile.website,
         "about" =>  @user.business_profile.about,
         "vat_number" =>  @user.business_profile.vat_number,
-        "social_links" => social_links
+        "youtube" => @user.business_profile.youtube,
+        "facebook" => @user.business_profile.facebook,
+        "instagram" => @user.business_profile.instagram,
+        "twitter" => @user.business_profile.twitter,
+        "linkedin" => @user.business_profile.linkedin
 
     }
 
@@ -160,13 +157,6 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
 
     if user_and_profile_errors.blank?
 
-      social_links = {
-        "youtube" =>  @business.youtube,
-        "instagram" =>  @business.instagram,
-        "twitter" =>  @business.twitter,
-        "linkedin" =>  @business.linkedin,
-        "facebook" => @business.facebook
-      }
 
       profile = {
         "user_id" => @user.id,
@@ -180,7 +170,12 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
         "address" => @business.address,
         "website" => @business.website,
         "about" =>  @business.about,
-        "social_links" => social_links,
+        "vat_number" =>  @business.vat_number,
+        "youtube" =>  @business.youtube,
+        "instagram" =>  @business.instagram,
+        "twitter" =>  @business.twitter,
+        "linkedin" =>  @business.linkedin,
+        "facebook" => @business.facebook,
         "token" =>   encode(user_id: @user.id)
       }
 
@@ -313,6 +308,7 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
         "address" => @business.address,
         "website" => @business.website,
         "about" =>  @business.about,
+        "vat_number" =>  @business.vat_number,
         "youtube" =>  @business.youtube,
         "instagram" =>  @business.instagram,
         "twitter" =>  @business.twitter,

@@ -22,13 +22,7 @@ class Dashboard::Api::V1::AuthenticationController < Dashboard::Api::V1::ApiMast
     else
       @user = User.authenticate(params[:email], params[:password])
     if @user
-          social_links = {
-            "youtube" => @user.business_profile.youtube,
-            "facebook" => @user.business_profile.facebook,
-            "instagram" => @user.business_profile.instagram,
-            "twitter" => @user.business_profile.twitter,
-            "linkedin" => @user.business_profile.linkedin
-          }
+
 
 
           profile = {
@@ -45,8 +39,11 @@ class Dashboard::Api::V1::AuthenticationController < Dashboard::Api::V1::ApiMast
               "website" => @user.business_profile.website,
               "about" =>  @user.business_profile.about,
               "vat_number" =>  @user.business_profile.vat_number,
-              "social_links" => social_links
-
+              "youtube" => @user.business_profile.youtube,
+              "facebook" => @user.business_profile.facebook,
+              "instagram" => @user.business_profile.instagram,
+              "twitter" => @user.business_profile.twitter,
+              "linkedin" => @user.business_profile.linkedin
           }
       # create_activity creates login issue regarding jwt auth token requirements
       #create_activity('logged in.', @user, 'User', '', '', 'post')
