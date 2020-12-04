@@ -17,6 +17,8 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
           @offer = Competition.find(params[:offer_id])
         end
 
+        @already_shared = []
+
        success = false
        @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
@@ -26,8 +28,8 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
        if ids_array.kind_of?(Array)
        ids_array.each do |id|
        @check = OfferForwarding.where(offer_id: @offer.id).where(recipient_id: id).where(user_id: request_user.id).where(offer_type: params[:offer_type]).first
-       if @check.blank?
        @recipient = User.find(id)
+       if @check.blank?
         term = ''
         case params[:offer_type]
         when "Pass"
@@ -123,11 +125,11 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
            success = false
          end ##notification create
         else
-          success = false
+          @already_shared.push(@recipient)
         end
       end#each
 
-      if success
+    if @already_shared.size != ids_array.size
         render json: {
              code: 200,
              success: true,
@@ -258,7 +260,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
       ids_array = params[:user_ids].split(',').map {|s| s.to_i } # convert into array
 
           @event = Event.find(params[:event_id])
-
+          @already_shared = []
        success = false
        @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
@@ -268,8 +270,9 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
        if ids_array.kind_of?(Array)
        ids_array.each do |id|
        @check = EventForwarding.where(event_id: @event.id).where(recipient_id: id).where(user_id: request_user.id).first
+        @recipient = User.find(id)
        if @check.blank?
-       @recipient = User.find(id)
+     
        @event_forward = EventForwarding.create!(user_id: request_user.id, recipient_id: id, event_id: params[:event_id])
 
        if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has forwarded you and event.", notifiable: @event, resource: @event, resource: @event_forward, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "event_forwarded")
@@ -320,11 +323,11 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
            success = false
          end ##notification create
         else
-          success = false
+          @already_shared.push(@recipient)
         end
       end#each
 
-      if success
+      if @already_shared.size != ids_array.size
         render json: {
              code: 200,
              success: true,

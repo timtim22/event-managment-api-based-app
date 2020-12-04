@@ -418,7 +418,7 @@ def get_competitions
   sort_by_date_competitions = Competition.where(id: competition_ids).sort_by_date.page(params[:page]).per(get_per_page).map {|competition| @sorted_competitions.push(competition) }
 
   @sorted_competitions.uniq.each do |competition|
-   is_expired: is_expired?(competition)
+   if is_expired?(competition)
     @expired_competitions << {
       id: competition.id,
       title: competition.title,
