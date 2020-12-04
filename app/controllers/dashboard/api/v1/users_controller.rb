@@ -223,7 +223,7 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
   #param :password, String, :desc => "Password"
 
   def update
-   required_fields = ['profile_name', 'contact_name','address', 'display_name', 'phone_number', 'email', 'password','website','is_charity', 'about']
+   required_fields = ['profile_name', 'contact_name','address', 'display_name']
     errors = []
     required_fields.each do |field|
       if params[field.to_sym].blank?
@@ -337,7 +337,7 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
     render json: {
       code: 400,
       success:false,
-      message: user_and_profile_errors,
+      message: errors,
       data: nil
     }
   end
