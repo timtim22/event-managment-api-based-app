@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_01_111643) do
+ActiveRecord::Schema.define(version: 2020_12_07_075947) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -62,7 +62,6 @@ ActiveRecord::Schema.define(version: 2020_12_01_111643) do
     t.integer "user_id"
     t.string "profile_name", default: ""
     t.string "contact_name", default: ""
-    t.string "address", default: ""
     t.string "website", default: ""
     t.text "about", default: ""
     t.string "vat_number", default: ""
@@ -81,6 +80,7 @@ ActiveRecord::Schema.define(version: 2020_12_01_111643) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "display_name"
+    t.json "address"
     t.index ["user_id"], name: "index_business_profiles_on_user_id"
   end
 
