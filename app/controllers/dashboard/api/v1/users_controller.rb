@@ -3,6 +3,7 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
   before_action :checkout_logout, except: :create
   require 'action_view'
   require 'action_view/helpers'
+  require 'json'
   include ActionView::Helpers::DateHelper
 
 
