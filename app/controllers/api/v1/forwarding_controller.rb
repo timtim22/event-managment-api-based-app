@@ -172,8 +172,14 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
           @offer = Pass.find(params[:offer_id])
         elsif params[:offer_type] == 'SpecialOffer'
           @offer = SpecialOffer.find(params[:offer_id])
+        elsif params[:offer_type] == 'Competition'
+          @offer = Competition.find(params[:offer_id])
         end
+
+        @already_shared = []
+       
         @check = OfferShare.where(offer_id: @offer.id).where(recipient_id: request_user.id).where(user_id: @sender.id).first
+       
         if @check.blank?
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
@@ -182,8 +188,17 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
 
           @recipient = request_user
 
+          term = ''
+          case params[:offer_type]
+          when "Pass"
+            term = 'a pass '
+          when "SpecialOffer"
+            term = 'a Special Offer '
+          when "Competition"
+            term = 'a Competition '
+          end
 
-          if @notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " has sent you #{if params[:offer_type] ==  'Pass' then 'a pass ' + @offer.title else 'a Special Offer ' + @offer.title end }.", notifiable: @offer, resource: @offer, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{if params[:offer_type] ==  'Pass' then 'pass_recieved' else 'special_offer_recieved'  end }")
+          if @notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " has shared with you #{term + @offer.title}", notifiable: @offer, resource: @offer, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{to_underscore_case(@offer.class.name)}_shared")
 
            @offer_share = OfferShare.create!(user_id: @sender.id, is_ambassador: @sender.profile.is_ambassador, recipient_id: request_user.id, offer_type:params[:offer_type], offer_id: params[:offer_id])
 
@@ -193,24 +208,65 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
               add: @recipient.profile.device_token
               ).value
 
+
+              data = {}
+              case params[:offer_type]
+              when "Pass"
+                data = {
+                  "id": notification.id,
+                  "pass_id": notification.resource.offer.id,
+                  "event_name": notification.resource.offer.event.name,
+                  "friend_name": User.get_full_name(notification.resource.user),
+                  "friend_id": notification.resource.user.id,
+                  "business_name": User.get_full_name(notification.resource.offer.user),
+                  "actor_image": notification.actor.avatar,
+                  "notifiable_id": notification.notifiable_id,
+                  "notifiable_type": notification.notifiable_type,
+                  "action": notification.action,
+                  "action_type": notification.action_type,
+                  "created_at": notification.created_at,
+                  "is_read": !notification.read_at.nil?
+                }
+              when "SpecialOffer"
+                data = {
+                  "id": notification.id,
+                  "special_offer_id": notification.resource.offer.id,
+                  "special_offer_title": notification.resource.offer.title,
+                  "friend_name": User.get_full_name(notification.resource.user),
+                  "business_name": User.get_full_name(notification.resource.offer.user),
+                  "actor_image": notification.actor.avatar,
+                  "notifiable_id": notification.notifiable_id,
+                  "notifiable_type": notification.notifiable_type,
+                  "action": notification.action,
+                  "action_type": notification.action_type,
+                  "created_at": notification.created_at,
+                  "is_read": !notification.read_at.nil?
+                }
+              when "Competition"
+                data = {
+                  "id": notification.id,
+                  "competition_id": notification.resource.offer.id, 
+                  "competition_name": notification.resource.offer.title, 
+                  "friend_name": User.get_full_name(notification.resource.user),
+                  "actor_image": notification.actor.avatar,
+                  "business_name": User.get_full_name(notification.resource.offer.user),
+                  "notifiable_id": notification.notifiable_id,
+                  "notifiable_type": notification.notifiable_type,
+                  "action": notification.action,
+                  "action_type": notification.action_type,
+                  "created_at": notification.created_at,
+                  "is_read": !notification.read_at.nil?
+                }
+              end
+  
+
              payload = {
              "pn_gcm":{
                "notification":{
                  "title": get_full_name(request_user),
                  "body": @notification.action
                },
-               data: {
-                 "id": @notification.id,
-                 "actor_id": @notification.actor_id,
-                 "actor_image": @notification.actor.avatar,
-                 "notifiable_id": @notification.notifiable_id,
-                 "notifiable_type": @notification.notifiable_type,
-                 "offer": @offer,
-                 "action": @notification.action,
-                 "action_type": @notification.action_type,
-                 "created_at": @notification.created_at,
-                 "body": ''
-               }
+               data: data
              }
            }
 
