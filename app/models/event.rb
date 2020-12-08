@@ -51,6 +51,7 @@ scope :expired, -> { where(['end_date < ?', DateTime.now]) }
 scope :not_expired, -> { where(['end_date > ?', DateTime.now]) }
 scope :sort_by_date, -> { order(start_date: 'ASC') }
 
+
 def has_one_category_at_least
   if categories.empty?
     errors.add(:categories, "should be chosen at least one.")

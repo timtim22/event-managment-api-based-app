@@ -76,6 +76,7 @@ class User < ApplicationRecord
   has_many :event_shares, dependent: :destroy
   has_many :event_forwardings, dependent: :destroy
   has_many :views, dependent: :destroy
+  has_many :business_views, foreign_key: "business_id", class_name: 'View', dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :user_settings, dependent: :destroy
   has_one :business_profile, dependent: :destroy

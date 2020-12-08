@@ -157,7 +157,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         end
 
         #all events 1
-        @events = Event.all
+        @events = Event.not_expired
 
         #location based events 2
         @events = Event.ransack(location_cont: location).result(distinct: true) if !params[:location].blank?
