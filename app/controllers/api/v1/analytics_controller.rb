@@ -27,7 +27,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
           "time_slot_attendees_date_wise" => get_time_slot_attendees_date_wise(params[:current_time_slot_dates], event),
           "time_slot_total_views" => get_time_slot_total_views(params[:current_time_slot_dates], event),
           "time_slot_increment_decrement_in_views" => get_time_slot_increment_decrement_in_views(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
-          "time_slot_views_date_wise" => get_time_slot_views_date_wise(params[:current_time_slot_dates],event),
+          "time_slot_event_views_date_wise" => get_time_slot_event_views_date_wise(params[:current_time_slot_dates],event),
           "time_slot_total_sold_tickets" => get_time_slot_total_sold_tickets(params[:current_time_slot_dates], event),
           "time_slot_increment_decrement_in_sold_tickets" => time_slot_increment_decrement_in_sold_tickets(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
           "time_slot_sold_tickets_date_wise" => get_time_slot_sold_tickets_date_wise(params[:current_time_slot_dates] ,event),
@@ -335,7 +335,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
 
 
 
- def get_time_slot_views_date_wise(time_slot_dates,event)
+ def get_time_slot_event_views_date_wise(time_slot_dates,event)
    dates_array = time_slot_dates.split(',').map {|s| s.to_s }
    @time_slot_dates_stats = {}
    dates_array.each do |date|

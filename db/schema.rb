@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_07_075947) do
+ActiveRecord::Schema.define(version: 2020_12_08_131822) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -634,6 +634,7 @@ ActiveRecord::Schema.define(version: 2020_12_07_075947) do
     t.string "resource_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "business_id"
     t.index ["resource_id", "resource_type"], name: "index_views_on_resource_id_and_resource_type"
     t.index ["user_id"], name: "index_views_on_user_id"
     t.index [nil, "user_id"], name: "index_views_on_competition_id_and_user_id"
