@@ -10,7 +10,7 @@ class Dashboard::Api::V1::DashboardController < Dashboard::Api::V1::ApiMasterCon
       @business = User.find(params[:business_id])
 
       stats = []
-
+      @business.events.each do |event|
       stats << {
         "total_events" => get_time_slot_total_events(params[:current_time_slot_dates], @business),
         "total_passes" => get_time_slot_total_passes(params[:current_time_slot_dates], @business),
@@ -24,19 +24,19 @@ class Dashboard::Api::V1::DashboardController < Dashboard::Api::V1::ApiMasterCon
         "total_followers" => get_time_slot_total_followers(params[:current_time_slot_dates], @business),
         "total_followers_date_wise" => get_time_slot_followers_date_wise(params[:current_time_slot_dates], @business),
         "total_shares" => get_time_slot_total_shares(params[:current_time_slot_dates], @business),
-        "total_shares_date_wise" => get_time_slot_shares_date_wise(params[:current_time_slot_dates], @business)
-
+        "total_shares_date_wise" => get_time_slot_shares_date_wise(params[:current_time_slot_dates], @business),
+        "total_going" => get_time_slot_total_going(params[:current_time_slot_dates], event),
+        "total_going_date_wise" => get_time_slot_going_date_wise(params[:current_time_slot_dates], event),
+        "total_maybe" => get_time_slot_total_maybe(params[:current_time_slot_dates], event),
+        "total_maybe_date_wise" => get_time_slot_maybe_date_wise(params[:current_time_slot_dates], event)
       }
 
+    end
 
-      @business.events.each do |event|
-        stats << {
-          "total_going" => get_time_slot_total_going(params[:current_time_slot_dates], event),
-          "total_going_date_wise" => get_time_slot_going_date_wise(params[:current_time_slot_dates], event),
-          "total_maybe" => get_time_slot_total_maybe(params[:current_time_slot_dates], event),
-          "total_maybe_date_wise" => get_time_slot_maybe_date_wise(params[:current_time_slot_dates], event)
-        }
-      end
+      #   stats << {
+
+      #   }
+      # end
 
     render json: {
       code: 200,

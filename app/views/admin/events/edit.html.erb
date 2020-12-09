@@ -5,7 +5,7 @@
  <div class="main-panel" style="height:100%">
   <div class="col-12 grid-margin stretch-card">
     <div class="card">
-    
+
     <div class="card-body">
         <h4 class="card-title">Update Event</h4>
          <%= render "shared/form_errors", object: @event %>
@@ -21,12 +21,12 @@
         <br>
         <input type="file" id="image" name="image">
      </div>
-         
+
         <div class="form-group">
           <label for="name">Event Name</label>
           <input type="text" class="form-control" id="name" name="name" placeholder="Title" value="<%= @event.name %>">
         </div>
-        
+
         <div class="form-group">
           <label for="start_date">Start date</label>
           <input type="text" class="form-control date" id="start_date" name="start_date" placeholder="Start date" data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true" value="<%= @event.start_date %>">
@@ -88,7 +88,7 @@
         <input type="checkbox" class="edit_event_checkbox allow_chat" <%= BoolTocheckBox(@event.allow_chat) %> value="<%= BoolToNumber(@event.allow_chat) %>" >
         <input type="hidden" name='allow_chat' id="allow_chat"  value="<%= @event.allow_chat %>">
     </div>
-         
+
        <div class="form-group">
         <h4>Admission Process </h4><br>
         <button type="button" class="free_ticket">Free Ticket <i class="fa fa-plus" aria-hidden="true"></i></button>
@@ -98,11 +98,11 @@
         <div class="input_section">
         <br>
            <% if !@event.tickets.blank? %>
-              
+
               <% @event.tickets.each do |ticket| %>
                   <% if ticket.ticket_type == 'free' %>
                   <div class="free_inputs_section" >
-                  <h5 style="font-weight:bold;max-width: 12%;">Free Ticket &nbsp;&nbsp;<a  class="remove_admission_process" data-resource_id="<%= ticket.id %>" data-resource="ticket" id="free_inputs_section" data-toggle="tooltip" title="Remove"> 
+                  <h5 style="font-weight:bold;max-width: 12%;">Free Ticket &nbsp;&nbsp;<a  class="remove_admission_process" data-resource_id="<%= ticket.id %>" data-resource="ticket" id="free_inputs_section" data-toggle="tooltip" title="Remove">
                   <i class="fa fa-trash"></i>
                   </a></h5>
                    <input type="hidden" id="free_ticket_exist" >
@@ -113,29 +113,30 @@
                    <input type="text" name="free_ticket[title]" required="" style="margin-right: 30px;" class="" value="<%= ticket.title %>">
                    <label style="margin-right: 30px;" class="free_ticket_input">Quantity</label>
                    <input type="number" name="free_ticket[quantity]" required="" style="margin-right: 30px;" class="free_ticket_input input" value="<%= ticket.quantity %>">
-                     <label style="margin-right: 30px;" >Max Per Order</label> 
+                     <label style="margin-right: 30px;" >Max Per Order</label>
                     <input type="number" name="free_ticket[per_head]" required="" style="margin-right: 30px;" value="<%= ticket.per_head %>">
-                    
+
                     </div>
-                 
+
                     </div>
                   <% elsif ticket.ticket_type == 'buy' %>
                   <input type="hidden" id="paid_ticket_exist" >
                     <input type="hidden" name="update_paid_ticket[ids][]" value="<%= ticket.id %>" >
                   <div class="paid_ticket_<%= ticket.id %>_section" >
-                  <h5 style="font-weight:bold;">Paid Ticket  &nbsp;&nbsp;  <a  class="remove_admission_process" data-resource_id="<%= ticket.id %>" data-resource="ticket" id="paid_ticket_<%= ticket.id %>_section" data-toggle="tooltip" title="Remove"> 
+                  <h5 style="font-weight:bold;">Paid Ticket  &nbsp;&nbsp;  <a  class="remove_admission_process" data-resource_id="<%= ticket.id %>" data-resource="ticket" id="paid_ticket_<%= ticket.id %>_section" data-toggle="tooltip" title="Remove">
                   <i class="fa fa-trash"></i>
                   </a></h5>
                   <hr>
                   <div class="paid_input_section" style="max-width: 90%;">
-                  
+
                   <br><div class="form-group paid_ticket_input">
                      <label style="margin-right: 30px;">Ticket Name </label><br>
                        <input type="text" name="update_paid_ticket[title][]" required="" class="input" style="margin-right: 30px;" value="<%= ticket.title %>">
                        </div>
                        <div class="form-group paid_ticket_input">
                          <label style="margin-right: 30px;">Quantity</label><br>
-                           <input type="number" name="update_paid_ticket[quantity][]" required="" class="input" style="margin-right: 30px;" value="<%= ticket.quantity %>"></div>
+                           <input type="number" name="update_paid_ticket[quantity][]" required="" class="input" style="margin-right: 30px;" value="<%= ticket.quantity %>">
+                       </div>
                              <div class="form-group paid_ticket_input">
                                <label style="margin-right: 30px;">Price</label><br>
                                 <input type="number" name="update_paid_ticket[price][]" step="0.01" required="" class="input" style="margin-right: 30px;" value="<%= ticket.price %>">
@@ -144,14 +145,18 @@
                                  <label style="margin-right: 30px;">Max Per Order</label><br>
                                   <input type="number" name="update_paid_ticket[per_head][]" required="" class="input" style="margin-right: 30px;" value="<%= ticket.per_head %>">
                                 </div>
+                                <div class="form-group pass_input">
+                                 <label style="margin-right: 30px;">Terms and conditions</label><br>
+                                 <textarea name="update_paid_ticket[terms_conditions][]" required="" class="input" style="margin-right: 30px;"><%= ticket.terms_conditions %> </textarea>
                               </div>
-                             
+                              </div>
+
                               </div><br>
                               <hr>
                   <% elsif ticket.ticket_type == 'pay_at_door' %>
                    <input type="hidden" id="pay_at_door_exist" >
                   <div class="pay_at_door_inputs" >
-                  <h5 style="font-weight:bold;">Pay at door &nbsp; &nbsp;  <a  class="remove_admission_process" data-resource_id="<%= ticket.id %>" data-resource="ticket" id="pay_at_door_inputs" data-toggle="tooltip" title="Remove"> 
+                  <h5 style="font-weight:bold;">Pay at door &nbsp; &nbsp;  <a  class="remove_admission_process" data-resource_id="<%= ticket.id %>" data-resource="ticket" id="pay_at_door_inputs" data-toggle="tooltip" title="Remove">
                   <i class="fa fa-trash"></i>
                   </a></h5>
                   <input type="hidden" name="pay_at_door[id]" value="<%= ticket.id %>" >
@@ -161,7 +166,7 @@
                      <input type="number" name="pay_at_door[start_price]" step="0.01" required="" class="input" style="margin-right: 30px;" value="<%= ticket.start_price %>">
                       <label style="margin-right: 30px;">End Price</label>
                         <input type="number" name="pay_at_door[end_price]" step="0.01" required="" class="input" style="margin-right: 30px;" value="<%= ticket.end_price %>">
-                       
+
                     </div>
                     </div><br>
                     <hr>
@@ -170,12 +175,12 @@
                 <% end %>
            <% end %>
            <% if !@event.passes.blank? %>
-           
+
            <% @event.passes.each do |pass| %>
-            
+
             <div class="passes_wrapper">
             <div class="passes_<%= pass.id %>_inputs" style="max-width: 90%;">
-            <h5 style="font-weight:bold;">Pass &nbsp;&nbsp;<a  class="remove_admission_process" data-resource_id="<%= pass.id %>" data-resource="pass" id="passes_<%= pass.id %>_inputs" data-toggle="tooltip" title="Remove"> 
+            <h5 style="font-weight:bold;">Pass &nbsp;&nbsp;<a  class="remove_admission_process" data-resource_id="<%= pass.id %>" data-resource="pass" id="passes_<%= pass.id %>_inputs" data-toggle="tooltip" title="Remove">
             <i class="fa fa-trash"></i>
             </a></h5><hr>
             <input type="hidden" name="update_pass[ids][]" value="<%= pass.id %>">
@@ -191,7 +196,7 @@
                        <label style="margin-right: 30px;">Terms and conditions</label><br>
                        <textarea name="update_pass[terms_conditions][]" required="" class="input" style="margin-right: 30px;"><%= pass.terms_conditions %> </textarea>
                     </div>
-                    <div class="form-group pass_input"> 
+                    <div class="form-group pass_input">
                      <label style="margin-right: 30px;">Quantity</label><br>
                       <input type="number" name="update_pass[quantity][]" required="" class="input" style="margin-right: 30px;" value="<%= pass.quantity %>">
                       </div>
@@ -199,7 +204,7 @@
                       <label style="margin-right: 30px;">Reward Per Redeem</label><br>
                       <input type="number" name="update_pass[ambassador_rate][]" required="" class="input" style="margin-right: 30px;" value="<%= pass.ambassador_rate %>">
                       </div>
-                      <div class="form-group pass_input"> 
+                      <div class="form-group pass_input">
                       <label style="margin-right: 30px;">Valid from</label><br><input type="text" name="update_pass[valid_from][]" required="" value="2020-12-12" class="input date" style="margin-right: 30px;" value="<%= pass.valid_from %>">
                       </div>
                       <div class="form-group pass_input"> <label style="margin-right: 30px;">Valid to</label><br>
@@ -207,15 +212,15 @@
                       </div>
                     </div>
                     </div>
-                  
+
                   <% end %>
                   <br>
            <% end %>
         </div>
        </div><!-- form group -->
-           
+
         <hr>
-           
+
 
            <hr>
         <% if !@event.sponsors.blank? %>
@@ -224,7 +229,7 @@
            <hr>
              <div class="sponsor_input_section"></div>
             <hr>
-         
+
             <ol>
             <% @event.sponsors.each do |sponsor| %>
               <li>
@@ -247,7 +252,7 @@
        <ol>
        <% @event.event_attachments.each do |attachment| %>
          <li>
-          
+
           <img src="<%= attachment.media.url %>" style="width: 165px; height:auto;"><br><br>
           <input type="file" name="update_attachments[<%= attachment.id %>][media][]" multiple id="additional_media">
           </li>
@@ -256,8 +261,8 @@
        </ol>
       </div><!--additional media wrapper-->
       <% end %>
-         
-      
+
+
 
         <div class="form-group" style="display:none;">
           <label for="password_confirmation">Host</label>
