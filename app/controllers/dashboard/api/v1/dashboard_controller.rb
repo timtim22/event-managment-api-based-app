@@ -9,32 +9,34 @@ class Dashboard::Api::V1::DashboardController < Dashboard::Api::V1::ApiMasterCon
 
       @business = User.find(params[:business_id])
 
-      e = []
+      stats = []
+
+      stats << {
+        "total_events" => get_time_slot_total_events(params[:current_time_slot_dates], @business),
+        "total_passes" => get_time_slot_total_passes(params[:current_time_slot_dates], @business),
+        "total_special_offers" => get_time_slot_total_special_offers(params[:current_time_slot_dates], @business),
+        "total_competitions" => get_time_slot_total_competitions(params[:current_time_slot_dates], @business),
+        "total_ambassadors" => get_time_slot_total_ambassadors(params[:current_time_slot_dates], @business),
+        "total_views" => get_time_slot_total_views(params[:current_time_slot_dates], @business),
+        "total_views_date_wise" => get_time_slot_views_date_wise(params[:current_time_slot_dates], @business),
+        "total_comments" => get_time_slot_total_comments(params[:current_time_slot_dates], @business),
+        "total_comments_date_wise" => get_time_slot_comments_date_wise(params[:current_time_slot_dates], @business),
+        "total_followers" => get_time_slot_total_followers(params[:current_time_slot_dates], @business),
+        "total_followers_date_wise" => get_time_slot_followers_date_wise(params[:current_time_slot_dates], @business),
+        "total_shares" => get_time_slot_total_shares(params[:current_time_slot_dates], @business),
+        "total_shares_date_wise" => get_time_slot_shares_date_wise(params[:current_time_slot_dates], @business)
+
+      }
+
+
       @business.events.each do |event|
-      e << {
-        # "time_slot_total_event_views" => get_time_slot_total_event_views(params[:current_time_slot_dates], event)
-        "time_slot_event_views_date_wise" => get_time_slot_event_views_date_wise(params[:current_time_slot_dates],event)
-        # "time_slot_total_event_comments" => get_time_slot_total_event_comments(params[:current_time_slot_dates], event),
-        # "time_slot_total_shared_events" => get_time_slot_total_shared_events(params[:current_time_slot_dates], event),
-        # "time_slot_total_attendees" => get_time_slot_total_attendees(params[:current_time_slot_dates], event),
-        # "time_slot_total_interested_people" => get_time_slot_total_interested_people(params[:current_time_slot_dates], event)
-      }
-    end
-
-    o = []
-    @business.special_offers.each do |offer|
-      o << {
-        # "time_slot_offer_views" => get_time_slot_offer_views(params[:current_time_slot_dates], offer),
-        "time_slot_views_date_wise" => get_time_slot_views_date_wise(params[:current_time_slot_dates], offer)
-
-      }
-    end
-
-    stats = []
-    stats << {
-      event_date_wise: e,
-      offer_date_wise: o
-    }
+        stats << {
+          "total_going" => get_time_slot_total_going(params[:current_time_slot_dates], event),
+          "total_going_date_wise" => get_time_slot_going_date_wise(params[:current_time_slot_dates], event),
+          "total_maybe" => get_time_slot_total_maybe(params[:current_time_slot_dates], event),
+          "total_maybe_date_wise" => get_time_slot_maybe_date_wise(params[:current_time_slot_dates], event)
+        }
+      end
 
     render json: {
       code: 200,
@@ -48,7 +50,7 @@ class Dashboard::Api::V1::DashboardController < Dashboard::Api::V1::ApiMasterCon
       render json: {
         code: 400,
         success: false,
-        message: 'business_id, current_time_slot_dates and before_current_time_slot_dates.',
+        message: 'business_id and current_time_slot_dates are required.',
         data: nil
       }
     end #if
@@ -57,12 +59,77 @@ end
    # end
    private
 
-   def get_time_slot_total_event_views(current_time_slot_dates, event)
+  def get_time_slot_total_events(current_time_slot_dates, business)
     @total_views = []
     current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
     current_dates_array.each do |date|
       p_date = Date.parse(date)
-      @views = event.views.where(created_at: p_date.midnight..p_date.end_of_day)
+      @views = business.events.where(created_at: p_date.midnight..p_date.end_of_day)
+      if !@views.blank?
+        @total_views.push(@views.size)
+      end
+      end #each
+      get_sum_of_array_elements(@total_views)
+  end
+
+  def get_time_slot_total_passes(current_time_slot_dates, business)
+    @total_views = []
+    current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
+    current_dates_array.each do |date|
+      p_date = Date.parse(date)
+      @views = business.passes.where(created_at: p_date.midnight..p_date.end_of_day)
+      if !@views.blank?
+        @total_views.push(@views.size)
+      end
+      end #each
+      get_sum_of_array_elements(@total_views)
+  end
+
+  def get_time_slot_total_special_offers(current_time_slot_dates, business)
+    @total_views = []
+    current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
+    current_dates_array.each do |date|
+      p_date = Date.parse(date)
+      @views = business.special_offers.where(created_at: p_date.midnight..p_date.end_of_day)
+      if !@views.blank?
+        @total_views.push(@views.size)
+      end
+      end #each
+      get_sum_of_array_elements(@total_views)
+  end
+
+  def get_time_slot_total_competitions(current_time_slot_dates, business)
+    @total_views = []
+    current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
+    current_dates_array.each do |date|
+      p_date = Date.parse(date)
+      @views = business.competitions.where(created_at: p_date.midnight..p_date.end_of_day)
+      if !@views.blank?
+        @total_views.push(@views.size)
+      end
+      end #each
+      get_sum_of_array_elements(@total_views)
+  end
+
+  def get_time_slot_total_ambassadors(current_time_slot_dates, business)
+    @total_views = []
+    current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
+    current_dates_array.each do |date|
+      p_date = Date.parse(date)
+      @views = business.ambassadors.where(created_at: p_date.midnight..p_date.end_of_day)
+      if !@views.blank?
+        @total_views.push(@views.size)
+      end
+      end #each
+      get_sum_of_array_elements(@total_views)
+  end
+
+   def get_time_slot_total_views(current_time_slot_dates, business)
+    @total_views = []
+    current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
+    current_dates_array.each do |date|
+      p_date = Date.parse(date)
+      @views = business.business_views.where(created_at: p_date.midnight..p_date.end_of_day)
       if !@views.blank?
         @total_views.push(@views.size)
       end
@@ -70,126 +137,143 @@ end
       get_sum_of_array_elements(@total_views)
    end
 
-   def get_time_slot_offer_views(current_time_slot_dates, offer)
-    @total_views = []
-    current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
-    current_dates_array.each do |date|
-      p_date = Date.parse(date)
-      @views = offer.views.where(created_at: p_date.midnight..p_date.end_of_day)
-      if !@views.blank?
-        @total_views.push(@views.size)
-      end
-      end #each
-      @time_slot_views = get_sum_of_array_elements(@total_views)
-   end
 
-
-  def get_time_slot_offer_views(current_time_slot_dates, offer)
-    @total_views = []
-    current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
-    current_dates_array.each do |date|
-      p_date = Date.parse(date)
-      @views = offer.views.where(created_at: p_date.midnight..p_date.end_of_day)
-      if !@views.blank?
-        @total_views.push(@views.size)
-      end
-      end #each
-      @time_slot_views = get_sum_of_array_elements(@total_views)
-   end
-
-
-  def get_time_slot_views_date_wise(time_slot_dates, offer)
-   dates_array = time_slot_dates.split(',').map {|s| s.to_s }
-   @time_slot_dates_stats = {}
-   dates_array.each do |date|
-    p_date = Date.parse(date)
-      @time_slot_dates_stats[date.to_date] = offer.views.where(created_at: p_date.midnight..p_date.end_of_day).size
-   end# each
-
-   @time_slot_dates_stats
- end
-
-   def get_time_slot_competition_views(current_time_slot_dates, competition)
-    @total_views = []
-    current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
-    current_dates_array.each do |date|
-      p_date = Date.parse(date)
-      @views = competition.views.where(created_at: p_date.midnight..p_date.end_of_day)
-      if !@views.blank?
-        @total_views.push(@views.size)
-      end
-      end #each
-      @time_slot_views = get_sum_of_array_elements(@total_views)
-   end
-
-
-
-
-
-    def get_time_slot_event_views_date_wise(time_slot_dates,event)
+   def get_time_slot_views_date_wise(time_slot_dates, business)
      dates_array = time_slot_dates.split(',').map {|s| s.to_s }
      @time_slot_dates_stats = {}
      dates_array.each do |date|
       p_date = Date.parse(date)
-      @time_slot_dates_stats[date.to_date] = event.views.where(created_at: p_date.midnight..p_date.end_of_day).size
+      @time_slot_dates_stats[date.to_date] = business.business_views.where(created_at: p_date.midnight..p_date.end_of_day).size
 
      end# each
 
      @time_slot_dates_stats
    end
 
-  def get_time_slot_total_event_comments(current_time_slot_dates, event)
-    @total_comments = []
+   def get_time_slot_total_comments(current_time_slot_dates, business)
+    @total_views = []
     current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
     current_dates_array.each do |date|
       p_date = Date.parse(date)
-      @comments = event.comments.where(created_at: p_date.midnight..p_date.end_of_day)
-      if !@comments.blank?
-        @total_comments.push(@comments.size)
+      @views = business.comments.where(created_at: p_date.midnight..p_date.end_of_day)
+      if !@views.blank?
+        @total_views.push(@views.size)
       end
       end #each
-      get_sum_of_array_elements(@total_comments)
-  end
-
-      def get_time_slot_total_shared_events(current_time_slot_dates, event)
-        @total_shared_events = []
-        current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
-        current_dates_array.each do |date|
-          p_date = Date.parse(date)
-          @shares = event.event_shares.where(created_at: p_date.midnight..p_date.end_of_day)
-          if !@shares.blank?
-            @total_shared_events.push(@shares.size)
-          end
-          end #each
-          get_sum_of_array_elements(@total_shared_events)
-      end
-
-
-   def get_time_slot_total_attendees(current_time_slot_dates, event)
-      @total_registrations = []
-       dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
-      dates_array.each do |date|
-      p_date = Date.parse(date)
-      @attendees = event.going_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day)
-      if !@attendees.blank?
-        @total_registrations.push(@attendees.size)
-      end
-     end
-       get_sum_of_array_elements(@total_registrations)
+      get_sum_of_array_elements(@total_views)
    end
 
-  def get_time_slot_total_interested_people(current_time_slot_dates, event)
-    @interested_people = []
+   def get_time_slot_comments_date_wise(time_slot_dates, business)
+     dates_array = time_slot_dates.split(',').map {|s| s.to_s }
+     @time_slot_dates_stats = {}
+     dates_array.each do |date|
+      p_date = Date.parse(date)
+      @time_slot_dates_stats[date.to_date] = business.comments.where(created_at: p_date.midnight..p_date.end_of_day).size
+
+     end# each
+
+     @time_slot_dates_stats
+   end
+
+   def get_time_slot_total_followers(current_time_slot_dates, business)
+    @total_views = []
     current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
     current_dates_array.each do |date|
       p_date = Date.parse(date)
-      @interested = event.interested_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day)
-      if !@interested.blank?
-        @interested_people.push(@interested.size)
+      @views = business.followers.where(created_at: p_date.midnight..p_date.end_of_day)
+      if !@views.blank?
+        @total_views.push(@views.size)
       end
       end #each
-      get_sum_of_array_elements(@interested_people)
-  end
+      get_sum_of_array_elements(@total_views)
+   end
+
+   def get_time_slot_followers_date_wise(time_slot_dates, business)
+     dates_array = time_slot_dates.split(',').map {|s| s.to_s }
+     @time_slot_dates_stats = {}
+     dates_array.each do |date|
+      p_date = Date.parse(date)
+      @time_slot_dates_stats[date.to_date] = business.followers.where(created_at: p_date.midnight..p_date.end_of_day).size
+
+     end# each
+
+     @time_slot_dates_stats
+   end
+
+   def get_time_slot_total_going(current_time_slot_dates, event)
+    @total_views = []
+    current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
+    current_dates_array.each do |date|
+      p_date = Date.parse(date)
+      @views = event.going_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day)
+      if !@views.blank?
+        @total_views.push(@views.size)
+      end
+      end #each
+      get_sum_of_array_elements(@total_views)
+   end
+
+   def get_time_slot_going_date_wise(time_slot_dates, event)
+     dates_array = time_slot_dates.split(',').map {|s| s.to_s }
+     @time_slot_dates_stats = {}
+     dates_array.each do |date|
+      p_date = Date.parse(date)
+      @time_slot_dates_stats[date.to_date] = event.going_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day).size
+
+     end# each
+
+     @time_slot_dates_stats
+   end
+
+   def get_time_slot_total_maybe(current_time_slot_dates, event)
+    @total_views = []
+    current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
+    current_dates_array.each do |date|
+      p_date = Date.parse(date)
+      @views = event.interest_levels.where(created_at: p_date.midnight..p_date.end_of_day)
+      if !@views.blank?
+        @total_views.push(@views.size)
+      end
+      end #each
+      get_sum_of_array_elements(@total_views)
+   end
+
+   def get_time_slot_maybe_date_wise(time_slot_dates, event)
+     dates_array = time_slot_dates.split(',').map {|s| s.to_s }
+     @time_slot_dates_stats = {}
+     dates_array.each do |date|
+      p_date = Date.parse(date)
+      @time_slot_dates_stats[date.to_date] = event.interest_levels.where(created_at: p_date.midnight..p_date.end_of_day).size
+
+     end# each
+
+     @time_slot_dates_stats
+   end
+
+   def get_time_slot_total_shares(current_time_slot_dates, business)
+    @total_views = []
+    current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
+    current_dates_array.each do |date|
+      p_date = Date.parse(date)
+      @views = business.business_shares.where(created_at: p_date.midnight..p_date.end_of_day)
+      if !@views.blank?
+        @total_views.push(@views.size)
+      end
+      end #each
+      get_sum_of_array_elements(@total_views)
+   end
+
+   def get_time_slot_shares_date_wise(time_slot_dates, business)
+     dates_array = time_slot_dates.split(',').map {|s| s.to_s }
+     @time_slot_dates_stats = {}
+     dates_array.each do |date|
+      p_date = Date.parse(date)
+      @time_slot_dates_stats[date.to_date] = business.business_shares.where(created_at: p_date.midnight..p_date.end_of_day).size
+
+     end# each
+
+     @time_slot_dates_stats
+   end
 
    def business
     business = request_user
