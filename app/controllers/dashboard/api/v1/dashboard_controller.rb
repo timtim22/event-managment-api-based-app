@@ -25,6 +25,7 @@ class Dashboard::Api::V1::DashboardController < Dashboard::Api::V1::ApiMasterCon
         "total_followers_date_wise" => get_time_slot_followers_date_wise(params[:current_time_slot_dates], @business),
         "total_shares" => get_time_slot_total_shares(params[:current_time_slot_dates], @business),
         "total_shares_date_wise" => get_time_slot_shares_date_wise(params[:current_time_slot_dates], @business),
+        #loop only applies here
         "total_going" => get_time_slot_total_going(params[:current_time_slot_dates], event),
         "total_going_date_wise" => get_time_slot_going_date_wise(params[:current_time_slot_dates], event),
         "total_maybe" => get_time_slot_total_maybe(params[:current_time_slot_dates], event),
@@ -32,11 +33,6 @@ class Dashboard::Api::V1::DashboardController < Dashboard::Api::V1::ApiMasterCon
       }
 
     end
-
-      #   stats << {
-
-      #   }
-      # end
 
     render json: {
       code: 200,
