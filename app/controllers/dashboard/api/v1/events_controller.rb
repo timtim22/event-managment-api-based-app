@@ -436,24 +436,24 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
   end
 
   api :POST, 'dashboard/api/v1/events', 'To update an event'
-  param :id, :number, :desc => "ID of the event", :required => true
-  param :name, String, :desc => "Name of the event", :required => true
-  param :description, String, :desc => "Description of the event", :required => true
-  param :image, String, :desc => "Image of the event", :required => true
-  param :start_date, String, :desc => "Start date of the event", :required => true
-  param :end_date, String, :desc => "Event of the event", :required => true
-  param :start_time, String, :desc => "Start Time of the event", :required => true
-  param :end_time, String, :desc => "End Time of the event", :required => true
-  param :over_18, String, :desc => "Title of the competition", :required => true
-  param :terms_conditions, String, :desc => "Title of the competition", :required => true
-  param :allow_chat, ['true', 'false'], :desc => "Title of the competition", :required => true
-  param :event_forwarding, ['true', 'false'], :desc => "Title of the competition", :required => true
-  #param :location, String, :desc => "Title of the competition", :required => true
-   param :free, Hash, :desc => "One of the admission resource is required", :required => true  do
-    param :title, String, 'Title of the free Ticket'
-    param :quantity, :number, 'Quantity of the free tickets'
-    param :per_head, :number, 'Per Head'
-  end
+  # param :id, :number, :desc => "ID of the event", :required => true
+  # param :name, String, :desc => "Name of the event", :required => true
+  # param :description, String, :desc => "Description of the event", :required => true
+  # param :image, String, :desc => "Image of the event", :required => true
+  # param :start_date, String, :desc => "Start date of the event", :required => true
+  # param :end_date, String, :desc => "Event of the event", :required => true
+  # param :start_time, String, :desc => "Start Time of the event", :required => true
+  # param :end_time, String, :desc => "End Time of the event", :required => true
+  # param :over_18, String, :desc => "Title of the competition", :required => true
+  # param :terms_conditions, String, :desc => "Title of the competition", :required => true
+  # param :allow_chat, ['true', 'false'], :desc => "Title of the competition", :required => true
+  # param :event_forwarding, ['true', 'false'], :desc => "Title of the competition", :required => true
+  # #param :location, String, :desc => "Title of the competition", :required => true
+  #  param :free, Hash, :desc => "One of the admission resource is required", :required => true  do
+  #   param :title, String, 'Title of the free Ticket'
+  #   param :quantity, :number, 'Quantity of the free tickets'
+  #   param :per_head, :number, 'Per Head'
+  # end
 
   #  param :paid, Hash, :desc => "One of the admission resource is required", :required => true  do
   #   param :title, String, 'Title of the free Ticket'

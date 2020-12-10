@@ -12,6 +12,14 @@ class Dashboard::Api::V1::DashboardController < Dashboard::Api::V1::ApiMasterCon
       stats = []
       @business.events.each do |event|
       stats << {
+        "total_going" => get_time_slot_total_going(params[:current_time_slot_dates], event),
+        "total_going_date_wise" => get_time_slot_going_date_wise(params[:current_time_slot_dates], event),
+        "total_maybe" => get_time_slot_total_maybe(params[:current_time_slot_dates], event),
+        "total_maybe_date_wise" => get_time_slot_maybe_date_wise(params[:current_time_slot_dates], event)
+      }
+    end
+
+    stats << {
         "total_events" => get_time_slot_total_events(params[:current_time_slot_dates], @business),
         "total_passes" => get_time_slot_total_passes(params[:current_time_slot_dates], @business),
         "total_special_offers" => get_time_slot_total_special_offers(params[:current_time_slot_dates], @business),
@@ -24,20 +32,12 @@ class Dashboard::Api::V1::DashboardController < Dashboard::Api::V1::ApiMasterCon
         "total_followers" => get_time_slot_total_followers(params[:current_time_slot_dates], @business),
         "total_followers_date_wise" => get_time_slot_followers_date_wise(params[:current_time_slot_dates], @business),
         "total_shares" => get_time_slot_total_shares(params[:current_time_slot_dates], @business),
-        "total_shares_date_wise" => get_time_slot_shares_date_wise(params[:current_time_slot_dates], @business),
-        #loop only applies here
-        "total_going" => get_time_slot_total_going(params[:current_time_slot_dates], event),
-        "total_going_date_wise" => get_time_slot_going_date_wise(params[:current_time_slot_dates], event),
-        "total_maybe" => get_time_slot_total_maybe(params[:current_time_slot_dates], event),
-        "total_maybe_date_wise" => get_time_slot_maybe_date_wise(params[:current_time_slot_dates], event)
-      }
-
-    end
-
+        "total_shares_date_wise" => get_time_slot_shares_date_wise(params[:current_time_slot_dates], @business)
+    }
     render json: {
       code: 200,
       success: true,
-      message: '',
+      message: 'Dashboard Stats',
       data: {
         stats: stats
       }
@@ -226,7 +226,7 @@ end
     current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
     current_dates_array.each do |date|
       p_date = Date.parse(date)
-      @views = event.interest_levels.where(created_at: p_date.midnight..p_date.end_of_day)
+      @views = event.interested_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day)
       if !@views.blank?
         @total_views.push(@views.size)
       end
@@ -239,7 +239,7 @@ end
      @time_slot_dates_stats = {}
      dates_array.each do |date|
       p_date = Date.parse(date)
-      @time_slot_dates_stats[date.to_date] = event.interest_levels.where(created_at: p_date.midnight..p_date.end_of_day).size
+      @time_slot_dates_stats[date.to_date] = event.interested_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day).size
 
      end# each
 

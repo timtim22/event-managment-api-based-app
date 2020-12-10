@@ -874,7 +874,7 @@ end
        prices = event.tickets.map {|ticket| ticket.price }
        price =  '€' + event.start_price + ' - ' + '€' + event.end_price
     elsif !event.tickets.where(ticket_type: 'buy').blank? && event.tickets.size == 1
-       price = '€ ' + event.price
+       price = '€' + event.price
     elsif !event.tickets.where(ticket_type: 'pay_at_door').blank?
        price = '€' + event.tickets.first.start_price.to_s +  ' - €' + event.tickets.first.end_price.to_s
     else
