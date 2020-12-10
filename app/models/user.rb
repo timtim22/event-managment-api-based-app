@@ -1,6 +1,6 @@
 class User < ApplicationRecord
-  has_secure_password(validations: false) 
-  
+  has_secure_password(validations: false)
+
   has_many :messages, dependent: :destroy
   has_many :incoming_messages, foreign_key: :recipient_id, class_name: 'Message', dependent: :destroy
   has_many :assignments, dependent: :destroy
@@ -11,13 +11,13 @@ class User < ApplicationRecord
   has_one :profile, dependent: :destroy
   has_many :friend_requests, dependent: :destroy
   has_many :redemptions, dependent: :destroy
-  
+
   has_many :accepted_friend_requests, -> {where(status: 'accepted') }, foreign_key: :friend_id, class_name: 'FriendRequest',dependent: :destroy
   has_many :friends, through: :accepted_friend_requests, source: :user
   has_many :chat_channels, dependent: :destroy
   has_many :notifications, foreign_key: :recipient_id, dependent: :destroy
   has_many :outgoing_notifications, foreign_key: :actor_id, class_name: 'Notification', dependent: :destroy
-  has_many :followers_relationships, -> { where(status: true ) }, foreign_key: :following_id, class_name: 'Follow', dependent: :destroy 
+  has_many :followers_relationships, -> { where(status: true ) }, foreign_key: :following_id, class_name: 'Follow', dependent: :destroy
   has_many :followers, through: :followers_relationships, source: :follower
   has_many :following_relationships, -> { where(status: true ) }, foreign_key: :user_id, class_name: "Follow", dependent: :destroy
   has_many :followings, through: :following_relationships, source: :following
@@ -34,7 +34,7 @@ class User < ApplicationRecord
   has_many :activity_logs, dependent: :destroy
   has_many :registrations, dependent: :destroy
   has_many :competitions, dependent: :destroy
-  has_many :competitions_to_attend, through: :registrations, source: :event, :source_type => "Competition" 
+  has_many :competitions_to_attend, through: :registrations, source: :event, :source_type => "Competition"
   has_many :going_interest_levels, -> { where(level: 'going') }, foreign_key: :user_id, class_name: 'InterestLevel', dependent: :destroy
   has_many :events_to_attend, through: :going_interest_levels, source: :event
   has_many :reminders, dependent: :destroy
@@ -71,12 +71,13 @@ class User < ApplicationRecord
   has_many :remove_passes, -> { where(name: 'remove_passes', resource_type: 'Pass') }, class_name: 'UserSetting', source_type: :pass, dependent: :destroy
   has_many :news_feeds, dependent: :destroy
   has_many :invoices, dependent: :destroy
-  
+
   has_many :password_resets, dependent: :destroy
   has_many :event_shares, dependent: :destroy
   has_many :event_forwardings, dependent: :destroy
   has_many :views, dependent: :destroy
   has_many :business_views, foreign_key: "business_id", class_name: 'View', dependent: :destroy
+  has_many :business_shares, foreign_key: "business_id", class_name: 'OfferShare', dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :user_settings, dependent: :destroy
   has_one :business_profile, dependent: :destroy
@@ -96,7 +97,7 @@ class User < ApplicationRecord
                        :length => {:within => 8..40},
                        :format => {message: 'should contain at least one lower character and a special character.', with: /\A(?=.*[a-z])(?=.*[[:^alnum:]]) /x},
                        :unless => :app_user?
-                      
+
 
 
   mount_uploader :avatar, ImageUploader
@@ -105,10 +106,10 @@ class User < ApplicationRecord
 
   scope :app_users, -> { where(app_user: true)  }
   scope :web_users, -> { where(web_user: true) }
-  
+
   #validate :password_for_web
 
-  def self.authenticate(email,password) 
+  def self.authenticate(email,password)
       user = User.find_by(email: email)
       user && user.authenticate(password)
   end
@@ -116,7 +117,7 @@ class User < ApplicationRecord
   def self.friend_requests(user)
     requests = FriendRequest.where(friend_id: user.id).where(status: 'pending').order(:created_at => "DESC")
   end
-  
+
   def self.get_full_name(user)
     if user.app_user == true
      name = user.profile.first_name + " " + user.profile.last_name
@@ -136,5 +137,5 @@ class User < ApplicationRecord
       errors.add(:contact, " is required field.")
     end
   end
-  
+
 end

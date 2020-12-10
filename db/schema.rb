@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_08_131822) do
+ActiveRecord::Schema.define(version: 2020_12_09_052301) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -372,6 +372,7 @@ ActiveRecord::Schema.define(version: 2020_12_08_131822) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_ambassador", default: false
+    t.integer "business_id"
     t.index ["offer_id", "offer_type"], name: "index_offer_shares_on_offer_id_and_offer_type"
     t.index ["user_id"], name: "index_offer_shares_on_user_id"
   end
