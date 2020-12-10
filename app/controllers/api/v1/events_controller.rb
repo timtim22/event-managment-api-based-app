@@ -398,7 +398,8 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       "lat" => event.lat,
       "lng" => event.lng,
       "price_type" => event.price_type,
-      "price" => get_price(event),
+      "max_price" => get_max_price(event),
+      "has_passes" => has_passes?(event),
       "categories" => event.categories
     }
  end
