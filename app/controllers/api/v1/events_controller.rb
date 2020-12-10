@@ -398,7 +398,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       "lat" => event.lat,
       "lng" => event.lng,
       "price_type" => event.price_type,
-      "price" => event.get_price(event),
+      "price" => get_price(event),
       "categories" => event.categories
     }
  end
