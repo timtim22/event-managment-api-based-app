@@ -375,16 +375,26 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 
 
   def get_map_events
-    @events = Event.not_expired
-    events  = @events.map {|event| get_map_event_object(event) }
-    render json: {
-      code: 200,
-      success: true,
-      message: "",
-      data: {
-        events: events
+    if !params[:date].blank?
+      date = Date.parse(params[:date])
+      @events = Event.where(start_date:  date.midnight..date.end_of_day)
+      events  = @events.map {|event| get_map_event_object(event) }
+      render json: {
+        code: 200,
+        success: true,
+        message: "",
+        data: {
+          events: events
+        }
       }
-    }    
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "date is required field.",
+        data: nil
+      }
+  end    
   end
 
 

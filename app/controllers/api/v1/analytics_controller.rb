@@ -1,6 +1,131 @@
 class Api::V1::AnalyticsController < Api::V1::ApiMasterController
   before_action :authorize_request
 
+
+
+  def event_stats
+    if !params[:event_id].blank?
+      event = Event.find(params[:event_id])
+       
+        #if ticketed event
+        if event.ticket_type == 'buy'
+           #Scenario 1 before live 
+           if event.start_date > DateTime.now && event.end_date > DateTime
+              stats = {
+                "time_slot_total_attendees" => get_time_slot_total_attendees(params[:current_time_slot_dates], event),
+                "time_slot_increment_decrement_in_attendees" => get_time_slot_increment_decrement_in_attendees(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
+                "time_slot_attendees_date_wise" => get_time_slot_attendees_date_wise(params[:current_time_slot_dates], event),
+                "time_slot_total_views" => get_time_slot_total_views(params[:current_time_slot_dates], event),
+                "time_slot_increment_decrement_in_views" => get_time_slot_increment_decrement_in_views(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
+                "time_slot_event_views_date_wise" => get_time_slot_event_views_date_wise(params[:current_time_slot_dates],event),
+                "time_slot_total_sold_tickets" => get_time_slot_total_sold_tickets(params[:current_time_slot_dates], event),
+                "time_slot_increment_decrement_in_sold_tickets" => time_slot_increment_decrement_in_sold_tickets(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
+                "time_slot_sold_tickets_date_wise" => get_time_slot_sold_tickets_date_wise(params[:current_time_slot_dates] ,event),
+                "time_slot_total_interested_people" => get_time_slot_total_interested_people(params[:current_time_slot_dates], event),
+                "time_slot_interested_increment_decrement" => get_time_slot_interested_increment_decrement(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
+                "time_slot_total_shared_events" => get_time_slot_total_shared_events(params[:current_time_slot_dates], event),
+                "time_slot_increment_decrement_in_shared_events" => get_time_slot_increment_decrement_in_shared_events(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
+                "time_slot_shares_date_wise" => get_time_slot_shares_date_wise(params[:current_time_slot_dates],event),
+                "time_slot_total_event_comments" => get_time_slot_total_event_comments(params[:current_time_slot_dates], event),
+                "time_slot_increment_decrement_in_event_comments" => get_time_slot_increment_decrement_in_event_comments(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
+                "time_slot_comments_date_wise" => get_time_slot_comments_date_wise(params[:current_time_slot_dates],event)
+              }
+        
+              event = {
+                "event_id" => event.id,
+                "name" => event.name,
+                "start_date" => event.start_date,
+                "end_date" => event.end_date,
+                "start_time" => event.start_time,
+                "end_time" => event.end_time,
+                "location" => event.location,
+                "lat" => event.lat,
+                "lng" => event.lng,
+                "event_type" => event.event_type,
+                "image" => event.image,
+                "price_type" => event.price_type,
+                "price" => event.price,
+                "additional_media" => event.event_attachments,
+                "created_at" => event.created_at,
+                "updated_at" => event.updated_at,
+                "stats" => stats
+                }
+           else 
+     
+           end
+      
+      #non ticketed event  
+      else
+
+      end
+      
+
+
+     render json: {
+       code: 200,
+       success: true,
+       message: '',
+       data: {
+         event: event
+       }
+     }
+    else
+      render json: {
+        code: 400,
+        success: true,
+        message: '',
+        data: nil
+      }
+    end
+  end
+
+
+
+
+
+  def specia_offer_stats
+    if !params[:special_offer_id].blank?
+    special_offer = SoecialOffer.find(params[:special_offer_id])
+      stats = {
+        "id" => special_offer.id,
+        "total_redemptions" => special_offer.
+        "time_slot_total_redemptions" => get_time_slot_total_redemptions(special_offer, params[:current_time
+        ]),
+        "time_slot_total_views" => get_time_slot_total_impresssions(special_offer, params[:current_time_slot]),
+        "time_slot_views_date_wise" => get_time_slot_views_date_wise(params[:current_time_slot_dates], offer),
+        "time_slot_redemptions_date_wise" => get_time_slot_redemptions_date_wise(params[:current_time_slot_dates], special_offer),
+        "time_slot_total_offer_shares" => get_time_slot_total_offer_shares(params[:current_time_slot_dates], special_offer),
+        "time_slot_offer_shares_date_wise" => get_time_slot_offer_shares_date_wise(params[:current_time_slot_dates], special_offer)
+
+      }
+    else
+      render json: {
+        code:400,
+        success: false,
+        message: 'special_offer_id is required.',
+        data: nil
+      }
+    end
+  end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   def get_dashboard
 
    if !params[:business_id].blank? && !params[:resource].blank? && !params[:current_time_slot_dates].blank? && !params[:before_current_time_slot_dates].blank?
@@ -1047,6 +1172,35 @@ end
 
 def get_sum_of_array_elements(array)
   array.inject(0){|sum,x| sum + x }
+end
+
+##################################### New stats functions ##########################33
+
+def get_time_slot_total_redemptions(special_offer, time_slot)
+   dates_array = time_slot.split(',').map {|s| s.to_s }
+   @redemptions = []
+   dates_array.each do |date|
+      p_date = Date.parse(date)
+      redemption = special_offer.redemptions.where(created_at: p_date.midnight..p_date.end_of_day)
+      if !redemption.blank?
+        @redemptions.push(redemption)
+   end #if !blank?
+   end #each
+   @redemptions.size
+end
+
+
+def get_time_slot_total_impresssions(special_offer, time_slot)
+  dates_array = time_slot.split(',').map {|s| s.to_s }
+  @views = []
+  dates_array.each do |date|
+     p_date = Date.parse(date)
+     view = special_offer.views.where(created_at: p_date.midnight..p_date.end_of_day)
+     if !view.blank?
+       @views.push(view)
+  end #if !blank?
+  end #each
+  @views.size
 end
 
 end

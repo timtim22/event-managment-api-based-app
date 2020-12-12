@@ -134,7 +134,7 @@ Rails.application.routes.draw do
        post "passes/pass-single" => "passes#pass_single"
        post "competitions/competition-single" => "competitions#competition_single"
        post "notifications/read" => "notifications#read_notification"
-       get  "events/get-map-events" =>  "events#get_map_events"
+       post  "events/get-map-events" =>  "events#get_map_events"
 
 
       # get '/*a', to: 'application#not_found'

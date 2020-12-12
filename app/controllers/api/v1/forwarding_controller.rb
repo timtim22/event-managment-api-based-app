@@ -198,9 +198,11 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
             term = 'a Competition '
           end
 
-          if @notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " has shared with you #{term + @offer.title}", notifiable: @offer, resource: @offer, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{to_underscore_case(@offer.class.name)}_shared")
+          @offer_share = OfferShare.create!(user_id: @sender.id, is_ambassador: @sender.profile.is_ambassador, recipient_id: request_user.id, offer_type:params[:offer_type], offer_id: params[:offer_id], business: @offer.user)
 
-           @offer_share = OfferShare.create!(user_id: @sender.id, is_ambassador: @sender.profile.is_ambassador, recipient_id: request_user.id, offer_type:params[:offer_type], offer_id: params[:offer_id])
+          if notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " has shared with you #{term + @offer.title}", notifiable: @offer, resource: @offer_share, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{to_underscore_case(@offer.class.name)}_shared")
+
+         
 
             @current_push_token = @pubnub.add_channels_to_push(
               push_token: @recipient.profile.device_token,
@@ -264,14 +266,14 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
              "pn_gcm":{
                "notification":{
                  "title": get_full_name(request_user),
-                 "body": @notification.action
+                 "body": notification.action
                },
                data: data
              }
            }
 
              @pubnub.publish(
-               channel: [@recipient.device_token],
+               channel: [@recipient.profile.device_token],
                message: payload
                 ) do |envelope|
                   puts envelope.status
@@ -301,8 +303,8 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
          data: nil
        }
       end
-
     end
+  
    end
 
   ################################# Event ##########################################33

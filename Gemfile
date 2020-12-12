@@ -74,6 +74,8 @@ group :production do
   gem 'pg'
 end
 
+gem 'rspec-console'
+
 gem 'lograge'
 
 group :test do
