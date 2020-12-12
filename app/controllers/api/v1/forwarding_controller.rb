@@ -200,85 +200,85 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
 
           @offer_share = OfferShare.create!(user_id: @sender.id, is_ambassador: @sender.profile.is_ambassador, recipient_id: request_user.id, offer_type:params[:offer_type], offer_id: params[:offer_id], business: @offer.user)
 
-          if notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " has shared with you #{term + @offer.title}", notifiable: @offer, resource: @offer_share, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{to_underscore_case(@offer.class.name)}_shared")
+          # if notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " has shared with you #{term + @offer.title}", notifiable: @offer, resource: @offer_share, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{to_underscore_case(@offer.class.name)}_shared")
 
          
 
-            @current_push_token = @pubnub.add_channels_to_push(
-              push_token: @recipient.profile.device_token,
-              type: 'gcm',
-              add: @recipient.profile.device_token
-              ).value
+          #   @current_push_token = @pubnub.add_channels_to_push(
+          #     push_token: @recipient.profile.device_token,
+          #     type: 'gcm',
+          #     add: @recipient.profile.device_token
+          #     ).value
 
 
-              data = {}
-              case params[:offer_type]
-              when "Pass"
-                data = {
-                  "id": notification.id,
-                  "pass_id": notification.resource.offer.id,
-                  "event_name": notification.resource.offer.event.name,
-                  "friend_name": User.get_full_name(notification.resource.user),
-                  "friend_id": notification.resource.user.id,
-                  "business_name": User.get_full_name(notification.resource.offer.user),
-                  "actor_image": notification.actor.avatar,
-                  "notifiable_id": notification.notifiable_id,
-                  "notifiable_type": notification.notifiable_type,
-                  "action": notification.action,
-                  "action_type": notification.action_type,
-                  "created_at": notification.created_at,
-                  "is_read": !notification.read_at.nil?
-                }
-              when "SpecialOffer"
-                data = {
-                  "id": notification.id,
-                  "special_offer_id": notification.resource.offer.id,
-                  "special_offer_title": notification.resource.offer.title,
-                  "friend_name": User.get_full_name(notification.resource.user),
-                  "business_name": User.get_full_name(notification.resource.offer.user),
-                  "actor_image": notification.actor.avatar,
-                  "notifiable_id": notification.notifiable_id,
-                  "notifiable_type": notification.notifiable_type,
-                  "action": notification.action,
-                  "action_type": notification.action_type,
-                  "created_at": notification.created_at,
-                  "is_read": !notification.read_at.nil?
-                }
-              when "Competition"
-                data = {
-                  "id": notification.id,
-                  "competition_id": notification.resource.offer.id, 
-                  "competition_name": notification.resource.offer.title, 
-                  "friend_name": User.get_full_name(notification.resource.user),
-                  "actor_image": notification.actor.avatar,
-                  "business_name": User.get_full_name(notification.resource.offer.user),
-                  "notifiable_id": notification.notifiable_id,
-                  "notifiable_type": notification.notifiable_type,
-                  "action": notification.action,
-                  "action_type": notification.action_type,
-                  "created_at": notification.created_at,
-                  "is_read": !notification.read_at.nil?
-                }
-              end
+          #     data = {}
+          #     case params[:offer_type]
+          #     when "Pass"
+          #       data = {
+          #         "id": notification.id,
+          #         "pass_id": notification.resource.offer.id,
+          #         "event_name": notification.resource.offer.event.name,
+          #         "friend_name": User.get_full_name(notification.resource.user),
+          #         "friend_id": notification.resource.user.id,
+          #         "business_name": User.get_full_name(notification.resource.offer.user),
+          #         "actor_image": notification.actor.avatar,
+          #         "notifiable_id": notification.notifiable_id,
+          #         "notifiable_type": notification.notifiable_type,
+          #         "action": notification.action,
+          #         "action_type": notification.action_type,
+          #         "created_at": notification.created_at,
+          #         "is_read": !notification.read_at.nil?
+          #       }
+          #     when "SpecialOffer"
+          #       data = {
+          #         "id": notification.id,
+          #         "special_offer_id": notification.resource.offer.id,
+          #         "special_offer_title": notification.resource.offer.title,
+          #         "friend_name": User.get_full_name(notification.resource.user),
+          #         "business_name": User.get_full_name(notification.resource.offer.user),
+          #         "actor_image": notification.actor.avatar,
+          #         "notifiable_id": notification.notifiable_id,
+          #         "notifiable_type": notification.notifiable_type,
+          #         "action": notification.action,
+          #         "action_type": notification.action_type,
+          #         "created_at": notification.created_at,
+          #         "is_read": !notification.read_at.nil?
+          #       }
+          #     when "Competition"
+          #       data = {
+          #         "id": notification.id,
+          #         "competition_id": notification.resource.offer.id, 
+          #         "competition_name": notification.resource.offer.title, 
+          #         "friend_name": User.get_full_name(notification.resource.user),
+          #         "actor_image": notification.actor.avatar,
+          #         "business_name": User.get_full_name(notification.resource.offer.user),
+          #         "notifiable_id": notification.notifiable_id,
+          #         "notifiable_type": notification.notifiable_type,
+          #         "action": notification.action,
+          #         "action_type": notification.action_type,
+          #         "created_at": notification.created_at,
+          #         "is_read": !notification.read_at.nil?
+          #       }
+          #     end
   
 
-             payload = {
-             "pn_gcm":{
-               "notification":{
-                 "title": get_full_name(request_user),
-                 "body": notification.action
-               },
-               data: data
-             }
-           }
+          #    payload = {
+          #    "pn_gcm":{
+          #      "notification":{
+          #        "title": get_full_name(request_user),
+          #        "body": notification.action
+          #      },
+          #      data: data
+          #    }
+          #  }
 
-             @pubnub.publish(
-               channel: [@recipient.profile.device_token],
-               message: payload
-                ) do |envelope|
-                  puts envelope.status
-                end
-            end ##notification create
+          #    @pubnub.publish(
+          #      channel: [@recipient.profile.device_token],
+          #      message: payload
+          #       ) do |envelope|
+          #         puts envelope.status
+          #       end
+          #   end ##notification create
 
             render json: {
               code: 200,
@@ -333,53 +333,53 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
      
        @event_forward = EventForwarding.create!(user_id: request_user.id, recipient_id: id, event_id: params[:event_id])
 
-      #  if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has forwarded you and event.", notifiable: @event, resource: @event, resource: @event_forward, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "event_forwarded")
+       if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has forwarded you and event.", notifiable: @event, resource: @event, resource: @event_forward, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "event_forwarded")
 
       
 
-      #   #create_activity(request_user, "forwarded event", @event_forward, 'EventForwarding', '', '', 'post','forward_event')
+        #create_activity(request_user, "forwarded event", @event_forward, 'EventForwarding', '', '', 'post','forward_event')
 
-      #    @current_push_token = @pubnub.add_channels_to_push(
-      #      push_token: @recipient.profile.device_token,
-      #      type: 'gcm',
-      #      add: @recipient.profile.device_token
-      #      ).value
+         @current_push_token = @pubnub.add_channels_to_push(
+           push_token: @recipient.profile.device_token,
+           type: 'gcm',
+           add: @recipient.profile.device_token
+           ).value
 
-      #     payload = {
-      #     "pn_gcm":{
-      #       "notification":{
-      #         "title": get_full_name(request_user),
-      #         "body": notification.action
-      #       },
-      #       data: {
-      #         "id": notification.id,
-      #         "event_id": notification.resource.event.id,
-      #         "friend_name": User.get_full_name(notification.resource.user),
-      #         "friend_id": notification.resource.user.id,
-      #         "event_name": notification.resource.event.name,
-      #         "event_start_date": notification.resource.event.start_date,
-      #         "event_location": notification.resource.event.location,
-      #         "actor_image": notification.actor.avatar,
-      #         "notifiable_id": notification.notifiable_id,
-      #         "notifiable_type": notification.notifiable_type,
-      #         "action": notification.action,
-      #         "action_type": notification.action_type,
-      #         "created_at": notification.created_at,
-      #         "is_read": !notification.read_at.nil?
-      #       }
-      #     }
-      #   }
+          payload = {
+          "pn_gcm":{
+            "notification":{
+              "title": get_full_name(request_user),
+              "body": notification.action
+            },
+            data: {
+              "id": notification.id,
+              "event_id": notification.resource.event.id,
+              "friend_name": User.get_full_name(notification.resource.user),
+              "friend_id": notification.resource.user.id,
+              "event_name": notification.resource.event.name,
+              "event_start_date": notification.resource.event.start_date,
+              "event_location": notification.resource.event.location,
+              "actor_image": notification.actor.avatar,
+              "notifiable_id": notification.notifiable_id,
+              "notifiable_type": notification.notifiable_type,
+              "action": notification.action,
+              "action_type": notification.action_type,
+              "created_at": notification.created_at,
+              "is_read": !notification.read_at.nil?
+            }
+          }
+        }
 
-      #     @pubnub.publish(
-      #       channel: [@recipient.profile.device_token],
-      #       message: payload
-      #        ) do |envelope|
-      #          puts envelope.status
-      #      end
-      #      success = true
-      #      else
-      #      success = false
-      #    end ##notification create
+          @pubnub.publish(
+            channel: [@recipient.profile.device_token],
+            message: payload
+             ) do |envelope|
+               puts envelope.status
+           end
+           success = true
+           else
+           success = false
+         end ##notification create
         else
           @already_shared.push(@recipient)
         end
