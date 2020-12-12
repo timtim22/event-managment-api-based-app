@@ -83,30 +83,28 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
 
 
 
-  def specia_offer_stats
-    if !params[:special_offer_id].blank?
-    special_offer = SoecialOffer.find(params[:special_offer_id])
-      stats = {
-        "id" => special_offer.id,
-        "total_redemptions" => special_offer.
-        "time_slot_total_redemptions" => get_time_slot_total_redemptions(special_offer, params[:current_time
-        ]),
-        "time_slot_total_views" => get_time_slot_total_impresssions(special_offer, params[:current_time_slot]),
-        "time_slot_views_date_wise" => get_time_slot_views_date_wise(params[:current_time_slot_dates], offer),
-        "time_slot_redemptions_date_wise" => get_time_slot_redemptions_date_wise(params[:current_time_slot_dates], special_offer),
-        "time_slot_total_offer_shares" => get_time_slot_total_offer_shares(params[:current_time_slot_dates], special_offer),
-        "time_slot_offer_shares_date_wise" => get_time_slot_offer_shares_date_wise(params[:current_time_slot_dates], special_offer)
-
-      }
-    else
-      render json: {
-        code:400,
-        success: false,
-        message: 'special_offer_id is required.',
-        data: nil
-      }
-    end
-  end
+  # def specia_offer_stats
+  #   if !params[:special_offer_id].blank?
+  #   special_offer = SoecialOffer.find(params[:special_offer_id])
+  #     stats = {
+  #       "id" => special_offer.id,
+  #       "total_redemptions" => special_offer.
+  #       "time_slot_total_redemptions" => get_time_slot_total_redemptions(special_offer, params[:current_time]),
+  #       "time_slot_total_views" => get_time_slot_total_impresssions(special_offer, params[:current_time_slot]),
+  #       "time_slot_views_date_wise" => get_time_slot_views_date_wise(params[:current_time_slot_dates], offer),
+  #       "time_slot_redemptions_date_wise" => get_time_slot_redemptions_date_wise(params[:current_time_slot_dates], special_offer),
+  #       "time_slot_total_offer_shares" => get_time_slot_total_offer_shares(params[:current_time_slot_dates], special_offer),
+  #       "time_slot_offer_shares_date_wise" => get_time_slot_offer_shares_date_wise(params[:current_time_slot_dates], special_offer)
+  #     }
+  #   else
+  #     render json: {
+  #       code:400,
+  #       success: false,
+  #       message: 'special_offer_id is required.',
+  #       data: nil
+  #     }
+  #   end
+  # end
 
 
 

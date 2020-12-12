@@ -333,53 +333,53 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
      
        @event_forward = EventForwarding.create!(user_id: request_user.id, recipient_id: id, event_id: params[:event_id])
 
-       if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has forwarded you and event.", notifiable: @event, resource: @event, resource: @event_forward, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "event_forwarded")
+      #  if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has forwarded you and event.", notifiable: @event, resource: @event, resource: @event_forward, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "event_forwarded")
 
       
 
-        #create_activity(request_user, "forwarded event", @event_forward, 'EventForwarding', '', '', 'post','forward_event')
+      #   #create_activity(request_user, "forwarded event", @event_forward, 'EventForwarding', '', '', 'post','forward_event')
 
-         @current_push_token = @pubnub.add_channels_to_push(
-           push_token: @recipient.profile.device_token,
-           type: 'gcm',
-           add: @recipient.profile.device_token
-           ).value
+      #    @current_push_token = @pubnub.add_channels_to_push(
+      #      push_token: @recipient.profile.device_token,
+      #      type: 'gcm',
+      #      add: @recipient.profile.device_token
+      #      ).value
 
-          payload = {
-          "pn_gcm":{
-            "notification":{
-              "title": get_full_name(request_user),
-              "body": notification.action
-            },
-            data: {
-              "id": notification.id,
-              "event_id": notification.resource.event.id,
-              "friend_name": User.get_full_name(notification.resource.user),
-              "friend_id": notification.resource.user.id,
-              "event_name": notification.resource.event.name,
-              "event_start_date": notification.resource.event.start_date,
-              "event_location": notification.resource.event.location,
-              "actor_image": notification.actor.avatar,
-              "notifiable_id": notification.notifiable_id,
-              "notifiable_type": notification.notifiable_type,
-              "action": notification.action,
-              "action_type": notification.action_type,
-              "created_at": notification.created_at,
-              "is_read": !notification.read_at.nil?
-            }
-          }
-        }
+      #     payload = {
+      #     "pn_gcm":{
+      #       "notification":{
+      #         "title": get_full_name(request_user),
+      #         "body": notification.action
+      #       },
+      #       data: {
+      #         "id": notification.id,
+      #         "event_id": notification.resource.event.id,
+      #         "friend_name": User.get_full_name(notification.resource.user),
+      #         "friend_id": notification.resource.user.id,
+      #         "event_name": notification.resource.event.name,
+      #         "event_start_date": notification.resource.event.start_date,
+      #         "event_location": notification.resource.event.location,
+      #         "actor_image": notification.actor.avatar,
+      #         "notifiable_id": notification.notifiable_id,
+      #         "notifiable_type": notification.notifiable_type,
+      #         "action": notification.action,
+      #         "action_type": notification.action_type,
+      #         "created_at": notification.created_at,
+      #         "is_read": !notification.read_at.nil?
+      #       }
+      #     }
+      #   }
 
-          @pubnub.publish(
-            channel: [@recipient.profile.device_token],
-            message: payload
-             ) do |envelope|
-               puts envelope.status
-           end
-           success = true
-           else
-           success = false
-         end ##notification create
+      #     @pubnub.publish(
+      #       channel: [@recipient.profile.device_token],
+      #       message: payload
+      #        ) do |envelope|
+      #          puts envelope.status
+      #      end
+      #      success = true
+      #      else
+      #      success = false
+      #    end ##notification create
         else
           @already_shared.push(@recipient)
         end
@@ -420,10 +420,10 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
     end
    end
 
-  api :POST, '/api/v1/events/share', 'To share an event via link'
-  param :event_id, :number, :desc => "Event ID", :required => true
-  param :event_shared, String, :desc => "True/False", :required => true
-  param :sender_token, String, :desc => "Sender Token", :required => true
+  # api :POST, '/api/v1/events/share', 'To share an event via link'
+  # param :event_id, :number, :desc => "Event ID", :required => true
+  # param :event_shared, String, :desc => "True/False", :required => true
+  # param :sender_token, String, :desc => "Sender Token", :required => true
 
    def share_event
     if !params[:event_shared].blank? && params[:event_shared] ==  'true'
@@ -440,46 +440,46 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
           )
 
           @recipient = request_user
+          @event_share = EventShare.create!(user_id: @sender.id, recipient_id: request_user.id, event_id: params[:event_id])
 
+          # if @notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " shared an event with you.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "share_event")
 
-          if @notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " shared an event with you.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "share_event")
+         
 
-           @event_share = EventShare.create!(user_id: @sender.id, recipient_id: request_user.id, event_id: params[:event_id])
+          #   @current_push_token = @pubnub.add_channels_to_push(
+          #     push_token: @recipient.profile.device_token,
+          #     type: 'gcm',
+          #     add: @recipient.profile.device_token
+          #     ).value
 
-            @current_push_token = @pubnub.add_channels_to_push(
-              push_token: @recipient.device_token,
-              type: 'gcm',
-              add: @recipient.device_token
-              ).value
+          #    payload = {
+          #    "pn_gcm":{
+          #      "notification":{
+          #        "title": get_full_name(request_user),
+          #        "body": @notification.action
+          #      },
+          #      data: {
+          #        "id": @notification.id,
+          #        "actor_id": @notification.actor_id,
+          #        "actor_image": @notification.actor.avatar,
+          #        "notifiable_id": @notification.notifiable_id,
+          #        "notifiable_type": @notification.notifiable_type,
+          #        "action_type": @notification.action_type,
+          #        "offer": @offer,
+          #        "action": @notification.action,
+          #        "created_at": @notification.created_at,
+          #        "body": ''
+          #      }
+          #    }
+          #  }
 
-             payload = {
-             "pn_gcm":{
-               "notification":{
-                 "title": get_full_name(request_user),
-                 "body": @notification.action
-               },
-               data: {
-                 "id": @notification.id,
-                 "actor_id": @notification.actor_id,
-                 "actor_image": @notification.actor.avatar,
-                 "notifiable_id": @notification.notifiable_id,
-                 "notifiable_type": @notification.notifiable_type,
-                 "action_type": @notification.action_type,
-                 "offer": @offer,
-                 "action": @notification.action,
-                 "created_at": @notification.created_at,
-                 "body": ''
-               }
-             }
-           }
-
-             @pubnub.publish(
-               channel: [@recipient.profile.device_token],
-               message: payload
-                ) do |envelope|
-                  puts envelope.status
-                end
-            end ##notification create
+          #    @pubnub.publish(
+          #      channel: [@recipient.profile.device_token],
+          #      message: payload
+          #       ) do |envelope|
+          #         puts envelope.status
+          #       end
+          #   end ##notification create
 
             render json: {
               code: 200,

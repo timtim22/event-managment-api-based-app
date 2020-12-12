@@ -27,6 +27,15 @@ class ApplicationController < ActionController::Base
       status
   end
 
+  def request_user
+    header = request.headers['Authorization']
+    token = header.split(' ').last if header
+    if token
+     @decoded = decode(token)
+     @current_user = User.find(@decoded[:user_id])
+    end
+  end
+
 
 
 

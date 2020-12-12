@@ -507,55 +507,55 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                   "is_read": !notification.read_at.nil?
                   }
 
-                when "pass_shared"
-                  @notifications << {
-                    "id": notification.id,
-                    "pass_id": notification.resource.offer.id,
-                    "event_name": notification.resource.offer.event.name,
-                    "friend_name": User.get_full_name(notification.resource.user),
-                    "business_name": User.get_full_name(notification.resource.offer.user),
-                    "friend_id": notification.resource.user.id,
-                    "actor_image": notification.actor.avatar,
-                    "notifiable_id": notification.notifiable_id,
-                    "notifiable_type": notification.notifiable_type,
-                    "action": notification.action,
-                    "action_type": notification.action_type,
-                    "created_at": notification.created_at,
-                    "is_read": !notification.read_at.nil?,
-                    "event_start_date": notification.resource.offer.event.start_date
-                    }
+                # when "pass_shared"
+                #   @notifications << {
+                #     "id": notification.id,
+                #     "pass_id": notification.resource.offer.id,
+                #     "event_name": notification.resource.offer.event.name,
+                #     "friend_name": User.get_full_name(notification.resource.user),
+                #     "business_name": User.get_full_name(notification.resource.offer.user),
+                #     "friend_id": notification.resource.user.id,
+                #     "actor_image": notification.actor.avatar,
+                #     "notifiable_id": notification.notifiable_id,
+                #     "notifiable_type": notification.notifiable_type,
+                #     "action": notification.action,
+                #     "action_type": notification.action_type,
+                #     "created_at": notification.created_at,
+                #     "is_read": !notification.read_at.nil?,
+                #     "event_start_date": notification.resource.offer.event.start_date
+                #     }
         
-                  when "special_offer_shared"
-                    @notifications << {
-                      "id": notification.id,
-                      "special_offer_id": notification.resource.offer.id,
-                      "special_offer_title": notification.resource.offer.title,
-                      "friend_name": User.get_full_name(notification.resource.user),
-                      "business_name": User.get_full_name(notification.resource.offer.user),
-                      "actor_image": notification.actor.avatar,
-                      "notifiable_id": notification.notifiable_id,
-                      "notifiable_type": notification.notifiable_type,
-                      "action": notification.action,
-                      "action_type": notification.action_type,
-                      "created_at": notification.created_at,
-                      "is_read": !notification.read_at.nil?
-                      }
+                  # when "special_offer_shared"
+                  #   @notifications << {
+                  #     "id": notification.id,
+                  #     "special_offer_id": notification.resource.offer.id,
+                  #     "special_offer_title": notification.resource.offer.title,
+                  #     "friend_name": User.get_full_name(notification.resource.user),
+                  #     "business_name": User.get_full_name(notification.resource.offer.user),
+                  #     "actor_image": notification.actor.avatar,
+                  #     "notifiable_id": notification.notifiable_id,
+                  #     "notifiable_type": notification.notifiable_type,
+                  #     "action": notification.action,
+                  #     "action_type": notification.action_type,
+                  #     "created_at": notification.created_at,
+                  #     "is_read": !notification.read_at.nil?
+                  #     }
         
-                    when "competition_shared"
-                      @notifications << {
-                        "id": notification.id,
-                        "competition_id": notification.resource.offer.id,
-                        "competition_name": notification.resource.offer.title,
-                        "friend_name": User.get_full_name(notification.resource.user),
-                        "business_name": User.get_full_name(notification.resource.offer.user),
-                        "actor_image": notification.actor.avatar,
-                        "notifiable_id": notification.notifiable_id,
-                        "notifiable_type": notification.notifiable_type,
-                        "action": notification.action,
-                        "action_type": notification.action_type,
-                        "created_at": notification.created_at,
-                        "is_read": !notification.read_at.nil?
-                        }
+                  #   when "competition_shared"
+                  #     @notifications << {
+                  #       "id": notification.id,
+                  #       "competition_id": notification.resource.offer.id,
+                  #       "competition_name": notification.resource.offer.title,
+                  #       "friend_name": User.get_full_name(notification.resource.user),
+                  #       "business_name": User.get_full_name(notification.resource.offer.user),
+                  #       "actor_image": notification.actor.avatar,
+                  #       "notifiable_id": notification.notifiable_id,
+                  #       "notifiable_type": notification.notifiable_type,
+                  #       "action": notification.action,
+                  #       "action_type": notification.action_type,
+                  #       "created_at": notification.created_at,
+                  #       "is_read": !notification.read_at.nil?
+                  #       }
         
               else
                 "do nothing"

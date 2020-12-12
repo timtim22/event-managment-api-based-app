@@ -47,14 +47,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
     end
     
     #API based user
-    def request_user
-      header = request.headers['Authorization']
-      token = header.split(' ').last if header
-      if token
-       @decoded = decode(token)
-       @current_user = User.find(@decoded[:user_id])
-      end
-    end
+  
 
     def get_user_from_token(token)
       @decoded = decode(token)
