@@ -62,7 +62,11 @@ GEM
     bcrypt (3.1.16)
     bindex (0.8.1)
     bond (0.5.1)
+<<<<<<< HEAD
     bootsnap (1.5.1)
+=======
+    bootsnap (1.4.6)
+>>>>>>> 4b30fc252dddcf2a03470e7f084916f682d88412
       msgpack (~> 1.0)
     bootstrap (4.3.1)
       autoprefixer-rails (>= 9.1.0)
@@ -241,9 +245,12 @@ GEM
       mini_portile2 (~> 2.4.0)
     nokogiri (1.10.10-x86-mingw32)
       mini_portile2 (~> 2.4.0)
+<<<<<<< HEAD
     pg (1.2.3)
     pg (1.2.3-x64-mingw32)
     pg (1.2.3-x86-mingw32)
+=======
+>>>>>>> 4b30fc252dddcf2a03470e7f084916f682d88412
     popper_js (1.16.0)
     pry (0.13.1)
       coderay (~> 1.1)
@@ -322,6 +329,7 @@ GEM
       chunky_png (~> 1.0)
       rqrcode_core (~> 0.1)
     rqrcode_core (0.1.2)
+<<<<<<< HEAD
     rspec (3.9.0)
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
@@ -345,6 +353,10 @@ GEM
       rspec-mocks (~> 3.9.0)
       rspec-support (~> 3.9.0)
     rspec-support (3.9.4)
+=======
+    rspec-console (0.6.1)
+      bond
+>>>>>>> 4b30fc252dddcf2a03470e7f084916f682d88412
     ruby-graphviz (1.2.5)
       rexml
     ruby2_keywords (0.0.2)
@@ -450,7 +462,6 @@ DEPENDENCIES
   lograge
   lol_dba
   mail_form
-  pg
   pry
   pubnub (~> 4.2.2)
   puma (~> 3.11)
@@ -460,9 +471,13 @@ DEPENDENCIES
   ransack!
   redis
   rqrcode
+<<<<<<< HEAD
   rspec (~> 3.5)
   rspec-console
   rspec-rails (~> 3.4, >= 3.4.2)
+=======
+  rspec-console
+>>>>>>> 4b30fc252dddcf2a03470e7f084916f682d88412
   ruby-graphviz
   sass-rails (~> 5.0)
   selenium-webdriver

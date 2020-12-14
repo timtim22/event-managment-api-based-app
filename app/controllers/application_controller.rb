@@ -27,6 +27,15 @@ class ApplicationController < ActionController::Base
       status
   end
 
+  def request_user
+    header = request.headers['Authorization']
+    token = header.split(' ').last if header
+    if token
+     @decoded = decode(token)
+     @current_user = User.find(@decoded[:user_id])
+    end
+  end
+
 
 
 
@@ -636,8 +645,10 @@ end
   end
 
   def added_to_wallet?(resource)
+   if request_user
     wallet = request_user.wallets.where(offer: resource)
     !wallet.blank?
+   end
   end
 
   def string_to_DateTime(string)
@@ -986,6 +997,40 @@ end
     false
    end
  end
+
+
+   def get_price(event)
+    price = ''
+    if !event.tickets.where(ticket_type: 'buy').blank? && event.tickets.size > 1
+       prices = event.tickets.map {|ticket| ticket.price }
+       price =  '€' + event.start_price + ' - ' + '€' + event.end_price
+    elsif !event.tickets.where(ticket_type: 'buy').blank? && event.tickets.size == 1
+       price = '€ ' + event.price
+    elsif !event.tickets.where(ticket_type: 'pay_at_door').blank?
+       price = '€' + event.tickets.first.start_price.to_s +  ' - €' + event.tickets.first.end_price.to_s
+    else
+      price = '0'
+   end
+   price
+ end
+
+
+
+ def get_max_price(event)
+  price = ''
+  if !event.tickets.where(ticket_type: 'buy').blank? && event.tickets.size > 1
+     prices = event.tickets.map {|ticket| ticket.price }
+     price =  event.end_price
+  elsif !event.tickets.where(ticket_type: 'buy').blank? && event.tickets.size == 1
+     price = event.price
+  elsif !event.tickets.where(ticket_type: 'pay_at_door').blank?
+     price = event.tickets.first.end_price.to_s
+  else
+    price = '0'
+ end
+ price
+end
+
 
 
 
