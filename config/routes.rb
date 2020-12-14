@@ -135,6 +135,9 @@ Rails.application.routes.draw do
        post "competitions/competition-single" => "competitions#competition_single"
        post "notifications/read" => "notifications#read_notification"
        post  "events/get-map-events" =>  "events#get_map_events"
+       post "settings/change-location-status" => "settings#change_location_status"
+       post "users/delete-account" => "users#delete_account"
+       
 
 
       # get '/*a', to: 'application#not_found'

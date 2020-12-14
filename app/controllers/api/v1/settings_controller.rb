@@ -142,4 +142,31 @@ class Api::V1::SettingsController < Api::V1::ApiMasterController
           end
         end
 
+
+        def change_location_status
+          if !params[:status].blank?
+            if request_user.update!(location_enabled: params[:status])
+              render json: {
+                code: 200,
+                success: true,
+                message: "Location #{if request_user.location_enabled == true then 'enabled' else 'disabled' end}",
+                data: nil
+              }
+            else
+              render json: {
+                code: 400,
+                success: false,
+                message: "Location status change failed.",
+                data: nil
+              }
+            end
+          else
+            render json: {
+              code: 400,
+              success: false,
+              message: "status is required field."
+            }
+          end
+        end
+
 end
