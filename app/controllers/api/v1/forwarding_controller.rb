@@ -420,17 +420,10 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
     end
    end
 
-<<<<<<< HEAD
-  api :POST, '/api/v1/events/share', 'To share an event via link'
- # param :event_id, :number, :desc => "Event ID", :required => true
- # param :event_shared, String, :desc => "True/False", :required => true
- # param :sender_token, String, :desc => "Sender Token", :required => true
-=======
   # api :POST, '/api/v1/events/share', 'To share an event via link'
   # param :event_id, :number, :desc => "Event ID", :required => true
   # param :event_shared, String, :desc => "True/False", :required => true
   # param :sender_token, String, :desc => "Sender Token", :required => true
->>>>>>> 4b30fc252dddcf2a03470e7f084916f682d88412
 
    def share_event
     if !params[:event_shared].blank? && params[:event_shared] ==  'true'
