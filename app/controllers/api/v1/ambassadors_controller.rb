@@ -168,7 +168,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
     }
   end
 
-  api :GET, '/api/v1/ambassadors/my-businesses', 'Get list of businesses whow accepted an ambassador'
+  api :GET, '/api/v1/ambassadors/my-businesses', 'Get list of businesses who accepted an ambassador'
   # list of business who approved an ambassador
   def my_businesses
     @businesses = request_user.ambassador_businesses

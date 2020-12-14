@@ -515,7 +515,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
 def create_view
   if !params[:competition_id].blank?
     competition = Competition.find(params[:competition_id])
-    if view = competition.views.create!(user_id: request_user.id)
+    if view = competition.views.create!(user_id: request_user.id, business_id: competition.user.id)
       render json: {
         code: 200,
         success: true,

@@ -194,7 +194,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
         'time' => e.start_time,
         'image' => e.image.url,
         "terms_conditions" => e.terms_conditions,
-        'creator_name' => e.user.first_name + " " + e.user.last_name,
+        'creator_name' => e.user.business_profile.profile_name,
         'creator_id' => e.user.id,
         'creator_image' => e.user.avatar,
         'location' => location,
@@ -734,6 +734,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
          if event.destroy
            render json: {
              code: 200,
+             success: true,
              message: 'Event successfully deleted.',
              data: nil
            }

@@ -121,11 +121,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
     end
   end
 
-  api :POST, '/api/v1/events', 'Get events by list'
-  # #param :location, String, :desc => "Location of the event", :required => true
-  # #param :price, :decimal, :desc => "Price of the event", :required => true
-  # param :pass, String, :desc => "Pass", :required => true
-  # param :categories, :number, :desc => "categories(1,2)", :required => true
+  api :get, '/api/v1/events', 'Get events by list'
 
 
   def index
@@ -322,7 +318,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   def create_view
     if !params[:event_id].blank?
       event = Event.find(params[:event_id])
-    if view = event.views.create!(user_id: request_user.id)
+    if view = event.views.create!(user_id: request_user.id, business_id: event.user.id)
       render json: {
         code: 200,
         success: true,
@@ -384,7 +380,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       data: {
         events: events
       }
-    }    
+    }
   end
 
 

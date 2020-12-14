@@ -140,7 +140,11 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
     @competition.image = params[:image]
     @competition.price = params[:price]
     @competition.terms_conditions = params[:terms_conditions]
-    @competition.location = params[:location]
+    if !params[:location].blank?
+      @competition.location = params[:location][:name]
+      @competition.lat = params[:location][:geometry][:lat]
+      @competition.lng = params[:location][:geometry][:lng]
+    end
 
     if @competition.save
       @pubnub = Pubnub.new(
@@ -240,7 +244,6 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
       @competition.lat = params[:location][:geometry][:lat]
       @competition.lng = params[:location][:geometry][:lng]
     end
-
 
     if @competition.save
       @pubnub = Pubnub.new(

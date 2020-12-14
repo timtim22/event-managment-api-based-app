@@ -9,7 +9,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
   api :POST, '/api/v1/event/post-comment', 'Post event based comment'
   param :event_id, :number, :desc => "Event ID", :required => true
   param :comment, String, :desc => "Comment", :required => true
-  param :is_reply, String, :desc => "True/False - If it is_reply=true, comment_id is required", :required => true
+  param :is_reply, String, :desc => "True/False", :required => true
 
   def create
 
@@ -116,7 +116,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
       end #not request_user
       end #each
 
-       
+
 
        render json: {
          code: 200,
@@ -219,7 +219,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
            end# mute if
          end ##notification create
 
-     
+
 
         render json: {
           code: 200,
@@ -325,7 +325,7 @@ end
    end
 
 
-  api :POST, '/api/v1/event/get-commented-events', 'Get comment events'
+  api :get, '/api/v1/event/get-commented-events', 'Get comment events'
 
    def get_commented_events
      @events = []
@@ -413,14 +413,14 @@ def mark_as_read
       render json: {
         code: 200,
         success: true,
-        message: "Messages read successfully.",
+        message: "Comment read successfully.",
         data: nil
       }
     else
       render json: {
         code: 400,
         success: false,
-        message: "Message read failed.",
+        message: "Comment read failed.",
         data: nil
       }
     end

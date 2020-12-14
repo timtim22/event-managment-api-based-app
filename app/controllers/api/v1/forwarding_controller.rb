@@ -24,7 +24,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
         )
-     
+
        if ids_array.kind_of?(Array)
        ids_array.each do |id|
        @check = OfferForwarding.where(offer_id: @offer.id).where(recipient_id: id).where(user_id: request_user.id).where(offer_type: params[:offer_type]).first
@@ -90,8 +90,8 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
             when "Competition"
               data = {
                 "id": notification.id,
-                "competition_id": notification.resource.offer.id, 
-                "competition_name": notification.resource.offer.title, 
+                "competition_id": notification.resource.offer.id,
+                "competition_name": notification.resource.offer.title,
                 "friend_name": User.get_full_name(notification.resource.user),
                 "actor_image": notification.actor.avatar,
                 "business_name": User.get_full_name(notification.resource.offer.user),
@@ -177,9 +177,9 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         end
 
         @already_shared = []
-       
+
         @check = OfferShare.where(offer_id: @offer.id).where(recipient_id: request_user.id).where(user_id: @sender.id).first
-       
+
         if @check.blank?
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
@@ -245,8 +245,8 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
               when "Competition"
                 data = {
                   "id": notification.id,
-                  "competition_id": notification.resource.offer.id, 
-                  "competition_name": notification.resource.offer.title, 
+                  "competition_id": notification.resource.offer.id,
+                  "competition_name": notification.resource.offer.title,
                   "friend_name": User.get_full_name(notification.resource.user),
                   "actor_image": notification.actor.avatar,
                   "business_name": User.get_full_name(notification.resource.offer.user),
@@ -258,7 +258,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
                   "is_read": !notification.read_at.nil?
                 }
               end
-  
+
 
              payload = {
              "pn_gcm":{
@@ -328,12 +328,12 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
        @check = EventForwarding.where(event_id: @event.id).where(recipient_id: id).where(user_id: request_user.id).first
         @recipient = User.find(id)
        if @check.blank?
-     
+
        @event_forward = EventForwarding.create!(user_id: request_user.id, recipient_id: id, event_id: params[:event_id])
 
        if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has forwarded you and event.", notifiable: @event, resource: @event, resource: @event_forward, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "event_forwarded")
 
-      
+
 
         #create_activity(request_user, "forwarded event", @event_forward, 'EventForwarding', '', '', 'post','forward_event')
 
@@ -419,9 +419,9 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
    end
 
   api :POST, '/api/v1/events/share', 'To share an event via link'
-  param :event_id, :number, :desc => "Event ID", :required => true
-  param :event_shared, String, :desc => "True/False", :required => true
-  param :sender_token, String, :desc => "Sender Token", :required => true
+ # param :event_id, :number, :desc => "Event ID", :required => true
+ # param :event_shared, String, :desc => "True/False", :required => true
+ # param :sender_token, String, :desc => "Sender Token", :required => true
 
    def share_event
     if !params[:event_shared].blank? && params[:event_shared] ==  'true'

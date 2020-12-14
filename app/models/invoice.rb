@@ -1,6 +1,6 @@
 class Invoice < ApplicationRecord
   belongs_to :user
-  
+
   def total_amount
     "%.2f" % self[:total_amount] if self[:total_amount]
   end

@@ -254,7 +254,7 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
   def create_view
     if !params[:pass_id].blank?
       pass = Pass.find(params[:pass_id])
-      if view = pass.views.create!(user_id: request_user.id)
+      if view = pass.views.create!(user_id: request_user.id, business_id: pass.user.id)
         render json: {
           code: 200,
           success: true,

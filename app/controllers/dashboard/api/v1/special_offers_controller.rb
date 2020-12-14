@@ -92,8 +92,11 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
     @special_offer.image = params[:image]
     @special_offer.redeem_code = generate_code
     @special_offer.terms_conditions = params[:terms_conditions]
-    @special_offer.location = params[:location]
-
+    if !params[:location].blank?
+      @special_offer.location = params[:location][:name]
+      @special_offer.lat = params[:location][:geometry][:lat]
+      @special_offer.lng = params[:location][:geometry][:lng]
+    end
 
     if @special_offer.save
      # create_activity(request_user, "created special offer", @special_offer, "SpecialOffer", admin_special_offer_path(@special_offer),@special_offer.title, 'post', 'created_special_offer')
@@ -168,12 +171,12 @@ end
   param :id, :number, :desc => "ID of the special offer", :required => true
   param :title, String, :desc => "Title of the special offer", :required => true
   param :description, String, :desc => "Description of the special offer", :required => true
-  param :date, :number, :desc => "Date of the special offer", :required => true
-  param :validity, :number, :desc => "Validity", :required => true
+  param :date, String, :desc => "Date of the special offer", :required => true
+  param :validity, String, :desc => "Validity", :required => true
   param :ambassador_rate, :number, :desc => "Ambassador rate of the special offer", :required => true
-  param :image, :number, :desc => "Image of the special offer", :required => true
-  param :redeem_code, :number, :desc => "Redeem Code", :required => true
-  param :terms_conditions, :number, :desc => "Terms and condition of the special offer", :required => true
+  param :image, String, :desc => "Image of the special offer", :required => true
+  param :redeem_code, String, :desc => "Redeem Code", :required => true
+  param :terms_conditions, String, :desc => "Terms and condition of the special offer", :required => true
  # param :id, :number, :desc => "Title of the competition", :required => true
 
 def update
@@ -185,7 +188,6 @@ def update
     @special_offer.validity = params[:validity]
     @special_offer.ambassador_rate = params[:ambassador_rate]
     @special_offer.image = params[:image]
-    @special_offer.is_redeemed = false
     @special_offer.terms_conditions = params[:terms_conditions]
     if !params[:location].blank?
       @special_offer.location = params[:location][:name]
