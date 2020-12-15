@@ -27,5 +27,7 @@ RSpec.describe Api::V1::AmbassadorsController, type: :controller do
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
 
+   
+
   end
 end

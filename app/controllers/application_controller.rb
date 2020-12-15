@@ -268,7 +268,8 @@ class ApplicationController < ActionController::Base
       "role" => 5,
       "is_my_following" => false,
       "is_my_friend" => is_my_friend?(user),
-      "mutual_friends_count" => get_mutual_friends(request_user, user).size
+      "mutual_friends_count" => get_mutual_friends(request_user, user).size,
+      "location_enabled" => user.location_enabled
     }
 
   end

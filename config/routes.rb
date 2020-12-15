@@ -90,6 +90,7 @@ Rails.application.routes.draw do
        post '/payments/confirm-payment' => 'payments#confirm_payment'
        post '/payments/place-refund-request' => 'payments#place_refund_request'
        post '/analytics/get-dashboard' => 'analytics#get_dashboard'
+       post '/analytics/get-offer-stats' => 'analytics#get_offer_stats'
        post '/events/share' => 'forwarding#share_event'
        post '/events/forward' => 'forwarding#forward_event'
        get '/competitions/get-winner' => 'competitions#get_winner_and_notify'

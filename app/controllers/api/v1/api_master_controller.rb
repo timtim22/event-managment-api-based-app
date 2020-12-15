@@ -189,6 +189,40 @@ class Api::V1::ApiMasterController < ApplicationController
       event.end_date < DateTime.now
     end
 
+
+
+    def get_offer_demographics(offer)
+        males = []
+        females = []
+        gays = []
+        demographics = {}
+        total_count = offer.redemptions.size
+        offer.redemptions.each do |redeem|
+         case redeem.user.profile.gender
+           when 'male'
+             males.push(redeem.user)
+           when 'female'
+             females.push(redeem.user)
+           when 'gay'
+             gays.push(redeem.user)
+           else
+              'No users'
+            end
+         end #each
+
+          demographics['males_percentage'] = if males.size > 0 then males.uniq.size.to_f / total_count.to_f * 100.0 else 0 end
+
+          demographics['females_percentage'] = if females.size > 0 then females.uniq.size.to_f / total_count.to_f * 100.0  else 0 end
+
+          demographics['gays_percentage'] = if gays.size > 0 then gays.uniq.size.to_f / total_count.to_f * 100.0  else 0 end
+
+          demographics
+     
+    end
+
+
+
+
     private
 
     def check_if_app_user?

@@ -5,8 +5,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
 
   def event_stats
     if !params[:event_id].blank?
-      event = Event.find(params[:event_id])
-       
+      event = Event.find(params[:event_id])       
         #if ticketed event
         if event.ticket_type == 'buy'
            #Scenario 1 before live 
@@ -56,11 +55,8 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
       
       #non ticketed event  
       else
-
-      end
+    end
       
-
-
      render json: {
        code: 200,
        success: true,
@@ -81,44 +77,38 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
 
 
 
+  def get_offer_stats
+    if !params[:special_offer_id].blank? && !params[:time_slot_dates].blank?
+    special_offer = SpecialOffer.find(params[:special_offer_id])
+      stats = {
+        "id" => special_offer.id,
+        "total_redemptions" => special_offer.redemptions.size,
+        "demographics" => get_offer_demographics(special_offer),
+        "time_slot_total_redemptions" => get_time_slot_total_redemptions(special_offer, params[:time_slot_dates]),
+        "time_slot_total_views" => get_time_slot_total_impresssions(special_offer, params[:time_slot_dates]),
+        "time_slot_views_date_wise" => get_time_slot_views_date_wise(params[:time_slot_dates], special_offer),
+        "time_slot_redemptions_date_wise" => get_time_slot_redemptions_date_wise(params[:time_slot_dates], special_offer),
+        "time_slot_total_offer_shares" => get_time_slot_total_offer_shares(params[:time_slot_dates], special_offer),
+        "time_slot_offer_shares_date_wise" => get_time_slot_offer_shares_date_wise(params[:time_slot_dates], special_offer)
+      }
 
-
-  # def specia_offer_stats
-  #   if !params[:special_offer_id].blank?
-  #   special_offer = SoecialOffer.find(params[:special_offer_id])
-  #     stats = {
-  #       "id" => special_offer.id,
-  #       "total_redemptions" => special_offer.
-  #       "time_slot_total_redemptions" => get_time_slot_total_redemptions(special_offer, params[:current_time]),
-  #       "time_slot_total_views" => get_time_slot_total_impresssions(special_offer, params[:current_time_slot]),
-  #       "time_slot_views_date_wise" => get_time_slot_views_date_wise(params[:current_time_slot_dates], offer),
-  #       "time_slot_redemptions_date_wise" => get_time_slot_redemptions_date_wise(params[:current_time_slot_dates], special_offer),
-  #       "time_slot_total_offer_shares" => get_time_slot_total_offer_shares(params[:current_time_slot_dates], special_offer),
-  #       "time_slot_offer_shares_date_wise" => get_time_slot_offer_shares_date_wise(params[:current_time_slot_dates], special_offer)
-  #     }
-  #   else
-  #     render json: {
-  #       code:400,
-  #       success: false,
-  #       message: 'special_offer_id is required.',
-  #       data: nil
-  #     }
-  #   end
-  # end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      render json: {
+        code: 200,
+        success: true,
+        message: '',
+        data: {
+          stats: stats
+        }
+      }
+    else
+      render json: {
+        code:400,
+        success: false,
+        message: 'special_offer_id and time_slot_dates are required.',
+        data: nil
+      }
+    end
+  end
 
 
 
