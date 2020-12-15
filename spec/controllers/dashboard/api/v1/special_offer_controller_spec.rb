@@ -1,13 +1,10 @@
 require 'rails_helper'
 require "spec_helper"
+require 'spec_web_login'
 
 
 RSpec.describe Dashboard::Api::V1::SpecialOffersController, type: :controller do
   describe "SpecialOffer API" do
-    before do
-      request.headers["Authorization"] = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMiwiZXhwIjoyMzY0OTgxNzYxfQ.Dq_FXVHsg5OeEuLS8zSTPb-VI7vGgsc-NuYvQNKWR7c"
-    end
-
     it "should return all special offers" do
       get :index
       expect(response).to have_http_status(200)

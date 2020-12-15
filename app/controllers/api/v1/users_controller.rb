@@ -899,6 +899,34 @@ end
   end
 
 
+ def delete_account
+  if !params[:user_id].blank?
+    if User.find(params[:user_id]).destroy
+      render json: {
+        code: 200,
+        success: true,
+        message: 'Account deleted successfully.',
+        data: nil
+      }
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "Account deletion failed.",
+        data: nil
+      }
+    end
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "user_id is required field.",
+      data: nil
+    }
+  end
+ end
+
+
 private
 
   def find_user

@@ -1,13 +1,11 @@
 require 'rails_helper'
 require "spec_helper"
+require "spec_app_login"
 
 
 RSpec.describe Api::V1::ForwardingController, type: :controller do
   describe "Mobile - Fowarding API - " do
 
-    before do #not for login API
-      request.headers["Authorization"] = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMSwiZXhwIjoyMzY1MzI1ODg2fQ.C7f6OoljKzwuW6IIlAYIZ3HPxjRwBg1IhuBnnaV1eP0"
-    end
 
     it "should forward offer" do
       post :forward_offer, params: {offer_id: OfferForwarding.last.offer_id, offer_type: OfferForwarding.last.offer_type, user_ids: User.app_users.last.id}

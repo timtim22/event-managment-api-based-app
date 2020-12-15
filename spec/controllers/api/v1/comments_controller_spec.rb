@@ -1,13 +1,10 @@
 require 'rails_helper'
 require "spec_helper"
+require "spec_app_login"
 
 
 RSpec.describe Api::V1::CommentsController, type: :controller do
   describe "Mobile - Comments API - " do
-
-    before do #not for login API
-      request.headers["Authorization"] = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMSwiZXhwIjoyMzY1MzE0NTU0fQ.mJ8tdTyYPel0DinW9_0M4NEWm8Gwrf-TEP90-FdgEVw"
-    end
 
     it "should create comments" do
       post :create, params: {event_id: Event.first.id, comment: "foo", is_reply: "false"}

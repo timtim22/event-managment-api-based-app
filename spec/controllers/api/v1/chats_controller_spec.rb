@@ -1,14 +1,10 @@
 require 'rails_helper'
 require "spec_helper"
+require "spec_app_login"
 
 
 RSpec.describe Api::V1::ChatsController, type: :controller do
   describe "Mobile - Chats API - " do
-
-    before do #not for login API
-      request.headers["Authorization"] = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMSwiZXhwIjoyMzY1MzE0NTU0fQ.mJ8tdTyYPel0DinW9_0M4NEWm8Gwrf-TEP90-FdgEVw"
-    end
-
     it "should send message" do
       post :send_message, params: {:recipient_id => User.app_users.first.id, :message => "foo"}
       expect(response).to have_http_status(200)

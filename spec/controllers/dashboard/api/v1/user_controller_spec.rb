@@ -1,13 +1,9 @@
 require 'rails_helper'
 require "spec_helper"
-
+require 'spec_web_login'
 
 RSpec.describe Dashboard::Api::V1::UsersController, type: :controller do
   describe "SpecialOffer API" do
-    before do
-      request.headers["Authorization"] = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMiwiZXhwIjoyMzY0OTgxNzYxfQ.Dq_FXVHsg5OeEuLS8zSTPb-VI7vGgsc-NuYvQNKWR7c"
-    end
-
     it "should return all users" do
       get :index
       expect(response).to have_http_status(200)
@@ -15,7 +11,7 @@ RSpec.describe Dashboard::Api::V1::UsersController, type: :controller do
     end
 
     it "should return a specific user" do
-      get :show, params: {id: 18}
+      get :show, params: {id: User.web_users.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end

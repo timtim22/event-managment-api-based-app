@@ -1,13 +1,10 @@
 require 'rails_helper'
 require "spec_helper"
+require "spec_app_login"
 
 
 RSpec.describe Api::V1::AuthenticationController, type: :controller do
   describe "Mobile - Authentication API - " do
-
-    before do #not for login API
-      request.headers["Authorization"] = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMSwiZXhwIjoyMzY1MzA5MzYyfQ.GLxTPsDhGAbWK7zoqSaX3UzRd9CJruc7tC0Rhe5TPY4"
-    end
 
     it "should login" do
       post :login, params: {id: User.app_users.last, device_token: "anything"}

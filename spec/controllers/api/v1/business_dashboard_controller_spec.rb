@@ -1,13 +1,10 @@
 require 'rails_helper'
 require "spec_helper"
+require "spec_web_login"
 
 
 RSpec.describe Api::V1::BusinessDashboardController, type: :controller do
   describe "Mobile - BusinessDashboard API - " do
-
-    before do #not for login API
-      request.headers["Authorization"] = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMiwiZXhwIjoyMzY1MzE0MDI1fQ.ST9BF1XMUOMvvJ42ruT1Qq1p_kb21d_o-rZVdXS0LVU"
-    end
 
     it "should get business details" do
       get :home

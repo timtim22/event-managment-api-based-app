@@ -1,13 +1,10 @@
 require 'rails_helper'
 require "spec_helper"
+require 'spec_web_login'
 
 
 RSpec.describe Dashboard::Api::V1::EventsController, type: :controller do
   describe "Dashboard Events APIs" do
-
-   before do
-    request.headers["Authorization"] = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMiwiZXhwIjoyMzY1MDY1NDMzfQ.KXpL0xf4MtPW15AC2b1AIuByin5P2fG_Oqh7E79AQBI"
-    end
 
     it "should return all events" do
       get :index
