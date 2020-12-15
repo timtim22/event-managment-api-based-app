@@ -28,7 +28,7 @@ RSpec.describe Api::V1::EventsController, type: :controller do
     end
 
     it "should return events by map" do
-      get :get_map_events
+      get :get_map_events, params: {date: "11-12-2020"}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end

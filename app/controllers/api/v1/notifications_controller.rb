@@ -6,7 +6,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
 
-  api :POST, '/api/v1/notifications/get-notifications', 'Get notifications list - logged IN user'
+  api :get, '/api/v1/notifications/get-notifications', 'Get notifications list - logged IN user'
 
   def index
     @notifications = []
@@ -524,7 +524,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                 #     "is_read": !notification.read_at.nil?,
                 #     "event_start_date": notification.resource.offer.event.start_date
                 #     }
-        
+
                   # when "special_offer_shared"
                   #   @notifications << {
                   #     "id": notification.id,
@@ -540,7 +540,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                   #     "created_at": notification.created_at,
                   #     "is_read": !notification.read_at.nil?
                   #     }
-        
+
                   #   when "competition_shared"
                   #     @notifications << {
                   #       "id": notification.id,
@@ -556,7 +556,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                   #       "created_at": notification.created_at,
                   #       "is_read": !notification.read_at.nil?
                   #       }
-        
+
               else
                 "do nothing"
               end #switch
@@ -1025,7 +1025,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
     end
 
   api :POST, '/api/v1/notifications/delete-notification', 'Delete a notification'
-  param :notification_id, :number, :desc => "Notification ID", :required => true
+  # param :notification_id, String, :desc => "Notification ID", :required => true
 
 
 

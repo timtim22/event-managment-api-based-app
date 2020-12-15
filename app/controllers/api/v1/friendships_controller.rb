@@ -412,9 +412,8 @@ end
 
  end #func
 
-   api :POST, '/api/v1/friendships/get-friends-details', 'To get friend details'
+  api :POST, '/api/v1/friendships/get-friends-details', 'To get friend details'
   param :user_id, :number, :desc => "User ID", :required => true
-  param :detail_type, String, :desc => "Friends/Followings", :required => true
 
  def get_friends_details
   if !params[:user_id].blank?

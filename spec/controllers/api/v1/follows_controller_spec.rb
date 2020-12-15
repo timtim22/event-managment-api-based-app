@@ -32,5 +32,23 @@ RSpec.describe Api::V1::FollowsController, type: :controller do
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
+
+    it "should return requests list" do
+      get :requests_list
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)["success"]).to eq(true)
+    end
+
+    it "should remove request" do
+      get :remove_request, params: {request_id: FollowRequest.last.id}
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)["success"]).to eq(true)
+    end
+
+    it "should return suggested businesses" do
+      get :suggest_businesses
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)["success"]).to eq(true)
+    end
   end
 end
