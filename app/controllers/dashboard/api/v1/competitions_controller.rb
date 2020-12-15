@@ -155,7 +155,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
       if !request_user.followers.blank?
         request_user.followers.each do |follower|
        if follower.competitions_notifications_setting.is_on == true
-          if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
+          if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, resource: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
 
             @current_push_token = @pubnub.add_channels_to_push(
              push_token: follower.profile.device_token,
@@ -254,7 +254,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
       if !request_user.followers.blank?
         request_user.followers.each do |follower|
        if follower.competitions_notifications_setting.is_on == true
-          if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " Updated new competition '#{@competition.title}'.", notifiable: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
+          if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " Updated new competition '#{@competition.title}'.", notifiable: @competition, resource: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
 
             @current_push_token = @pubnub.add_channels_to_push(
              push_token: follower.profile.device_token,

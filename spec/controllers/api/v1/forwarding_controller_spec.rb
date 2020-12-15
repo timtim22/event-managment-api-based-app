@@ -1,0 +1,46 @@
+require 'rails_helper'
+require "spec_helper"
+require "spec_authentication"
+
+
+RSpec.describe Api::V1::ForwardingController, type: :controller do
+  describe "Mobile - Fowarding API - " do
+   
+    before do
+      request.headers["Authorization"] = @app_login_token
+    end
+
+    it "should forward offer" do
+      post :forward_offer, params: {offer_id: OfferForwarding.last.offer_id, offer_type: OfferForwarding.last.offer_type, user_ids: User.app_users.last.id}
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)["success"]).to eq(true)
+    end
+
+    it "should share offer" do
+      post :share_offer, params: {
+        offer_shared: "true",
+        sender_token: @app_login_token,
+        offer_type: OfferForwarding.last.offer_type,
+        offer_id: OfferForwarding.last.offer_id
+      }
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)["success"]).to eq(true)
+    end
+
+    it "should forward event" do
+      post :forward_event, params: {event_id: Event.last.id, user_ids: User.app_users.last.id}
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)["success"]).to eq(true)
+    end
+
+    it "should share event" do
+      post :share_event, params: {
+        event_shared: "true",
+        sender_token: @app_login_token,
+        event_id: Event.last.id
+      }
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)["success"]).to eq(true)
+    end
+  end
+end

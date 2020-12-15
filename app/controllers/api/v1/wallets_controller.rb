@@ -9,127 +9,127 @@ class Api::V1::WalletsController < Api::V1::ApiMasterController
 
   api :GET, '/api/v1/get-wallet', 'Get wallet data (Logged in user)'
 
- def get_wallet
+ # def get_wallet
 
-  @wallet_data = {}
-  @special_offers = []
-  @passes = []
-  @tickets = []
-  @competitions = []
-  @wallets.each do |wallet|
-    case wallet.offer_type
-      when 'SpecialOffer'
-        @special_offers << {
-        id: wallet.offer.id,
-        title: wallet.offer.title,
-        description: wallet.offer.description,
-        sub_title:wallet.offer.sub_title,
-        location: wallet.offer.location,
-        date: wallet.offer.date,
-        time: wallet.offer.time,
-        lat: wallet.offer.lat,
-        lng: wallet.offer.lng,
-        image: wallet.offer.image.url,
-        creator_name: get_full_name(wallet.offer.user),
-        creator_image: wallet.offer.user.avatar,
-        validity: wallet.offer.validity.strftime(get_time_format),
-        is_expired: is_expired?(wallet.offer),
-        grabbers_count: wallet.offer.wallets.size,
-        is_redeemed: is_redeemed(wallet.offer.id, 'SpecialOffer', request_user.id),
-        grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
-        terms_and_conditions: wallet.offer.terms_conditions,
-        issued_by: get_full_name(wallet.offer.user),
-        redeem_count: get_redeem_count(wallet.offer),
-        quantity: wallet.offer.quantity
-      }
-     when 'Pass'
-      @passes << {
-        id: wallet.offer.id,
-        title: wallet.offer.title,
-        description: wallet.offer.description,
-        host_name: get_full_name(wallet.offer.event.user),
-        host_image: wallet.offer.event.user.avatar,
-        event_name: wallet.offer.event.name,
-        event_id: wallet.offer.event.id,
-        event_image: wallet.offer.event.image,
-        event_location: wallet.offer.event.location,
-        event_start_time: wallet.offer.event.start_time,
-        event_end_time: wallet.offer.event.end_time,
-        event_date: wallet.offer.event.start_date,
-        distributed_by: distributed_by(wallet.offer),
-        validity: wallet.offer.validity.strftime(get_time_format),
-        is_expired: is_expired?(wallet.offer),
-        grabbers_count: wallet.offer.wallets.size,
-        is_redeemed: is_redeemed(wallet.offer.id, 'Pass', request_user.id),
-        grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
-        terms_and_conditions: wallet.offer.terms_conditions,
-        redeem_count: get_redeem_count(wallet.offer),
-        quantity: wallet.offer.quantity,
-        issued_by: get_full_name(wallet.offer.user)
-      }
-    when 'Ticket'
-      @tickets << {
-        id: wallet.offer.id,
-        title: wallet.offer.title,
-        host_name: get_full_name(wallet.offer.event.user),
-        host_image: wallet.offer.event.user.avatar,
-        event_name: wallet.offer.event.name,
-        event_id: wallet.offer.event.id,
-        event_image: wallet.offer.event.image,
-        event_location: wallet.offer.event.location,
-        event_start_time: wallet.offer.event.start_time,
-        event_end_time: wallet.offer.event.end_time,
-        event_date: wallet.offer.event.start_date,
-        price: get_formated_price(wallet.offer.price),
-        quantity: wallet.offer.quantity,
-        purchased_quantity: getPurchaseQuantity(wallet.offer.id),
-        per_head: wallet.offer.per_head,
-        is_redeemed: is_redeemed(wallet.offer.id, "Ticket", request_user.id)
+ #  @wallet_data = {}
+ #  @special_offers = []
+ #  @passes = []
+ #  @tickets = []
+ #  @competitions = []
+ #  @wallets.each do |wallet|
+ #    case wallet.offer_type
+ #      when 'SpecialOffer'
+ #        @special_offers << {
+ #        id: wallet.offer.id,
+ #        title: wallet.offer.title,
+ #        description: wallet.offer.description,
+ #        sub_title:wallet.offer.sub_title,
+ #        location: wallet.offer.location,
+ #        date: wallet.offer.date,
+ #        time: wallet.offer.time,
+ #        lat: wallet.offer.lat,
+ #        lng: wallet.offer.lng,
+ #        image: wallet.offer.image.url,
+ #        creator_name: get_full_name(wallet.offer.user),
+ #        creator_image: wallet.offer.user.avatar,
+ #        validity: wallet.offer.validity.strftime(get_time_format),
+ #        is_expired: is_expired?(wallet.offer),
+ #        grabbers_count: wallet.offer.wallets.size,
+ #        is_redeemed: is_redeemed(wallet.offer.id, 'SpecialOffer', request_user.id),
+ #        grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+ #        terms_and_conditions: wallet.offer.terms_conditions,
+ #        issued_by: get_full_name(wallet.offer.user),
+ #        redeem_count: get_redeem_count(wallet.offer),
+ #        quantity: wallet.offer.quantity
+ #      }
+ #     when 'Pass'
+ #      @passes << {
+ #        id: wallet.offer.id,
+ #        title: wallet.offer.title,
+ #        description: wallet.offer.description,
+ #        host_name: get_full_name(wallet.offer.event.user),
+ #        host_image: wallet.offer.event.user.avatar,
+ #        event_name: wallet.offer.event.name,
+ #        event_id: wallet.offer.event.id,
+ #        event_image: wallet.offer.event.image,
+ #        event_location: wallet.offer.event.location,
+ #        event_start_time: wallet.offer.event.start_time,
+ #        event_end_time: wallet.offer.event.end_time,
+ #        event_date: wallet.offer.event.start_date,
+ #        distributed_by: distributed_by(wallet.offer),
+ #        validity: wallet.offer.validity.strftime(get_time_format),
+ #        is_expired: is_expired?(wallet.offer),
+ #        grabbers_count: wallet.offer.wallets.size,
+ #        is_redeemed: is_redeemed(wallet.offer.id, 'Pass', request_user.id),
+ #        grabbers_friends_count: wallet.offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+ #        terms_and_conditions: wallet.offer.terms_conditions,
+ #        redeem_count: get_redeem_count(wallet.offer),
+ #        quantity: wallet.offer.quantity,
+ #        issued_by: get_full_name(wallet.offer.user)
+ #      }
+ #    when 'Ticket'
+ #      @tickets << {
+ #        id: wallet.offer.id,
+ #        title: wallet.offer.title,
+ #        host_name: get_full_name(wallet.offer.event.user),
+ #        host_image: wallet.offer.event.user.avatar,
+ #        event_name: wallet.offer.event.name,
+ #        event_id: wallet.offer.event.id,
+ #        event_image: wallet.offer.event.image,
+ #        event_location: wallet.offer.event.location,
+ #        event_start_time: wallet.offer.event.start_time,
+ #        event_end_time: wallet.offer.event.end_time,
+ #        event_date: wallet.offer.event.start_date,
+ #        price: get_formated_price(wallet.offer.price),
+ #        quantity: wallet.offer.quantity,
+ #        purchased_quantity: getPurchaseQuantity(wallet.offer.id),
+ #        per_head: wallet.offer.per_head,
+ #        is_redeemed: is_redeemed(wallet.offer.id, "Ticket", request_user.id)
 
-      }
-    when 'Competition'
-      @competitions << {
-        id: wallet.offer.id,
-        title: wallet.offer.title,
-        description: wallet.offer.description,
-        location: wallet.offer.location,
-        start_date: wallet.offer.start_date,
-        end_date: wallet.offer.end_date,
-        start_time: wallet.offer.start_time,
-        end_time: wallet.offer.end_time,
-        price: wallet.offer.price,
-        lat: wallet.offer.lat,
-        lng: wallet.offer.lng,
-        image: wallet.offer.image.url,
-        is_entered: is_entered_competition?(wallet.offer.id),
-        participants_stats: get_participants_stats(wallet.offer),
-        creator_name: wallet.offer.user.business_profile.profile_name,
-        creator_image: wallet.offer.user.avatar,
-        creator_id: wallet.offer.user.id,
-        total_entries_count: get_entry_count(request_user, wallet.offer),
-        issued_by: get_full_name(wallet.offer.user),
-        is_followed: is_followed(wallet.offer.user),
-        validity: wallet.offer.validity.strftime(get_time_format),
-        terms_and_conditions: wallet.offer.terms_conditions
-       }
-    else
-       'do nothing'
-    end #case
-  end #each
-  @wallet_data['special_offers'] = @special_offers
-  @wallet_data['passes'] = @passes
-  @wallet_data['tickets'] = @tickets
-  @wallet_data['competitions'] = @competitions
+ #      }
+ #    when 'Competition'
+ #      @competitions << {
+ #        id: wallet.offer.id,
+ #        title: wallet.offer.title,
+ #        description: wallet.offer.description,
+ #        location: wallet.offer.location,
+ #        start_date: wallet.offer.start_date,
+ #        end_date: wallet.offer.end_date,
+ #        start_time: wallet.offer.start_time,
+ #        end_time: wallet.offer.end_time,
+ #        price: wallet.offer.price,
+ #        lat: wallet.offer.lat,
+ #        lng: wallet.offer.lng,
+ #        image: wallet.offer.image.url,
+ #        is_entered: is_entered_competition?(wallet.offer.id),
+ #        participants_stats: get_participants_stats(wallet.offer),
+ #        creator_name: wallet.offer.user.business_profile.profile_name,
+ #        creator_image: wallet.offer.user.avatar,
+ #        creator_id: wallet.offer.user.id,
+ #        total_entries_count: get_entry_count(request_user, wallet.offer),
+ #        issued_by: get_full_name(wallet.offer.user),
+ #        is_followed: is_followed(wallet.offer.user),
+ #        validity: wallet.offer.validity.strftime(get_time_format),
+ #        terms_and_conditions: wallet.offer.terms_conditions
+ #       }
+ #    else
+ #       'do nothing'
+ #    end #case
+ #  end #each
+ #  @wallet_data['special_offers'] = @special_offers
+ #  @wallet_data['passes'] = @passes
+ #  @wallet_data['tickets'] = @tickets
+ #  @wallet_data['competitions'] = @competitions
 
-  render json: {
-    code: 200,
-    success: true,
-    message: '',
-    data: {
-      wallet: @wallet_data
-    }
-  }
- end
+ #  render json: {
+ #    code: 200,
+ #    success: true,
+ #    message: '',
+ #    data: {
+ #      wallet: @wallet_data
+ #    }
+ #  }
+ # end
 
 
 

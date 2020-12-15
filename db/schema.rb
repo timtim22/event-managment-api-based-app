@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_09_052301) do
+ActiveRecord::Schema.define(version: 2020_12_14_140123) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -216,6 +216,7 @@ ActiveRecord::Schema.define(version: 2020_12_09_052301) do
     t.datetime "updated_at", null: false
     t.text "terms_conditions", default: ""
     t.boolean "price_range", default: false
+    t.boolean "has_passes", default: false
     t.string "pass", default: "false"
     t.integer "first_cat_id"
     t.string "video"
@@ -626,6 +627,7 @@ ActiveRecord::Schema.define(version: 2020_12_09_052301) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "location_enabled", default: true
   end
 
   create_table "views", force: :cascade do |t|
@@ -637,6 +639,10 @@ ActiveRecord::Schema.define(version: 2020_12_09_052301) do
     t.integer "business_id"
     t.index ["resource_id", "resource_type"], name: "index_views_on_resource_id_and_resource_type"
     t.index ["user_id"], name: "index_views_on_user_id"
+    t.index [nil, "user_id"], name: "index_views_on_competition_id_and_user_id"
+    t.index [nil, "user_id"], name: "index_views_on_event_id_and_user_id"
+    t.index [nil, "user_id"], name: "index_views_on_pass_id_and_user_id"
+    t.index [nil, "user_id"], name: "index_views_on_special_offer_id_and_user_id"
   end
 
   create_table "vip_pass_shares", force: :cascade do |t|
@@ -658,6 +664,8 @@ ActiveRecord::Schema.define(version: 2020_12_09_052301) do
     t.boolean "is_redeemed", default: false
     t.index ["offer_id", "offer_type"], name: "index_wallets_on_offer_id_and_offer_type"
     t.index ["user_id"], name: "index_wallets_on_user_id"
+    t.index [nil, "user_id"], name: "index_wallets_on_pass_id_and_user_id"
+    t.index [nil, "user_id"], name: "index_wallets_on_special_offer_id_and_user_id"
   end
 
 end

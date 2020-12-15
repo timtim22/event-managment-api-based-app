@@ -12,6 +12,7 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
   api :POST, '/api/v1/add-friend', 'To add user as a friend'
   param :friend_id, :number, :desc => "Friend ID", :required => true
 
+
   def send_request
     if !params[:friend_id].blank?
      @friend = User.find(params[:friend_id])
@@ -412,9 +413,8 @@ end
 
  end #func
 
-   api :POST, '/api/v1/friendships/get-friends-details', 'To get friend details'
+  api :POST, '/api/v1/friendships/get-friends-details', 'To get friend details'
   param :user_id, :number, :desc => "User ID", :required => true
-  param :detail_type, String, :desc => "Friends/Followings", :required => true
 
  def get_friends_details
   if !params[:user_id].blank?

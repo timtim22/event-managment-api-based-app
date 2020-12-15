@@ -1,16 +1,17 @@
 require 'rails_helper'
 require "spec_helper"
+require "spec_authentication"
 
 
 RSpec.describe Api::V1::AuthenticationController, type: :controller do
   describe "Mobile - Authentication API - " do
 
-    before do #not for login API
-      request.headers["Authorization"] = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMSwiZXhwIjoyMzY1MzA5MzYyfQ.GLxTPsDhGAbWK7zoqSaX3UzRd9CJruc7tC0Rhe5TPY4"
+    before do
+      request.headers["Authorization"] = @app_login_token
     end
 
     it "should login" do
-      post :login, params: {id: User.app_users.last, device_token: "anything"}
+      post :login, params: {id: User.app_users.last, device_token: "firebase_device_token"}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
@@ -21,7 +22,7 @@ RSpec.describe Api::V1::AuthenticationController, type: :controller do
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
 
-    it "should return accounts" do
+    it "should logout user and clear push token from pubnub push channel" do
       post :logout
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)

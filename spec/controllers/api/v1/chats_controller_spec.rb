@@ -1,12 +1,13 @@
 require 'rails_helper'
 require "spec_helper"
+require "spec_authentication"
 
 
 RSpec.describe Api::V1::ChatsController, type: :controller do
   describe "Mobile - Chats API - " do
 
-    before do #not for login API
-      request.headers["Authorization"] = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMSwiZXhwIjoyMzY1MzE0NTU0fQ.mJ8tdTyYPel0DinW9_0M4NEWm8Gwrf-TEP90-FdgEVw"
+    before do
+      request.headers["Authorization"] = @app_login_token
     end
 
     it "should send message" do

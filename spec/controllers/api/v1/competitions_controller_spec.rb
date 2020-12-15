@@ -1,12 +1,13 @@
 require 'rails_helper'
 require "spec_helper"
+require "spec_authentication"
 
 
 RSpec.describe Api::V1::CompetitionsController, type: :controller do
   describe "Mobile - Competitions API - " do
-
-    before do #not for login API
-      request.headers["Authorization"] = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMSwiZXhwIjoyMzY1MzI1ODg2fQ.C7f6OoljKzwuW6IIlAYIZ3HPxjRwBg1IhuBnnaV1eP0"
+    
+    before do
+      request.headers["Authorization"] = @app_login_token
     end
 
     it "should return all competitions" do
@@ -33,7 +34,7 @@ RSpec.describe Api::V1::CompetitionsController, type: :controller do
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
 
-    it "should create view" do
+    it "should create view/impression" do
       post :create_view, params: {competition_id: Competition.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)

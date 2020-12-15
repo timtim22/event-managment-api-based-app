@@ -1,12 +1,13 @@
 require 'rails_helper'
 require "spec_helper"
+require "spec_authentication"
 
 
 RSpec.describe Api::V1::EventsController, type: :controller do
   describe "Mobile - Events API - " do
-
-    before do #not for login API
-      request.headers["Authorization"] = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMSwiZXhwIjoyMzY1MzI1ODg2fQ.C7f6OoljKzwuW6IIlAYIZ3HPxjRwBg1IhuBnnaV1eP0"
+    
+    before do
+      request.headers["Authorization"] = @app_login_token
     end
 
     it "should return all competitions" do
@@ -28,7 +29,7 @@ RSpec.describe Api::V1::EventsController, type: :controller do
     end
 
     it "should return events by map" do
-      get :get_map_events
+      get :get_map_events, params: {date: "11-12-2020"}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end

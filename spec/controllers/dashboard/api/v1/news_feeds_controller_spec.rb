@@ -1,11 +1,13 @@
 require 'rails_helper'
 require "spec_helper"
+require 'spec_authentication'
 
 
 RSpec.describe Dashboard::Api::V1::NewsFeedsController, type: :controller do
   describe "NewsFeeds API" do
+
     before do
-      request.headers["Authorization"] = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMiwiZXhwIjoyMzY0OTgxNzYxfQ.Dq_FXVHsg5OeEuLS8zSTPb-VI7vGgsc-NuYvQNKWR7c"
+      request.headers["Authorization"] = @dashboard_login_token
     end
 
     it "should return all news feeds" do
@@ -38,7 +40,7 @@ RSpec.describe Dashboard::Api::V1::NewsFeedsController, type: :controller do
     end
 
     it "should destroy the news feed" do
-      delete :destroy, params: {id: 1}
+      delete :destroy, params: {id: NewsFeed.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end

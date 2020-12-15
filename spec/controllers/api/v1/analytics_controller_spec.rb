@@ -1,12 +1,13 @@
 require 'rails_helper'
 require "spec_helper"
+require "spec_authentication"
 
 
 RSpec.describe Api::V1::AnalyticsController, type: :controller do
   describe "Mobile - Analytics API - " do
 
     before do
-      request.headers["Authorization"] = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMiwiZXhwIjoyMzY1NDE3MDc4fQ.0ktJGlBr-tyzFiZVbwLwXNBY3MDngPsZuIi8EEG2RE4"
+      request.headers["Authorization"] = @app_login_token
     end
 
     it "should return business stats" do

@@ -1,11 +1,13 @@
 require 'rails_helper'
 require "spec_helper"
+require 'spec_authentication'
 
 
 RSpec.describe Dashboard::Api::V1::DashboardController, type: :controller do
   describe "GET Dashboard Stats" do
+
     before do
-      request.headers["Authorization"] = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMiwiZXhwIjoyMzY0OTgxNzYxfQ.Dq_FXVHsg5OeEuLS8zSTPb-VI7vGgsc-NuYvQNKWR7c"
+      request.headers["Authorization"] = @dashboard_login_token
     end
 
     it "returns http success" do

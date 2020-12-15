@@ -11,8 +11,8 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   param :ticket_id, :number, :desc => "Ticket ID", :required => true
   param :ticket_type, String, :desc => "Type of the ticket", :required => true
   #param :status, ['True', 'False'], :desc => "successful/failed", :required => true
-  param :stripe_response, String, :desc => "Stripe response", :required => true
-  param :transaction_id, :number, :desc => "Transaction ID", :required => true
+  # param :stripe_response, String, :desc => "Stripe response", :required => true
+  # param :transaction_id, :number, :desc => "Transaction ID", :required => true
 
   def purchase_ticket
     if !params[:ticket_id].blank? && !params[:ticket_type].blank?  && !params[:quantity].blank?
@@ -121,7 +121,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
           subscribe_key: ENV['SUBSCRIBE_KEY']
         )
 
-        if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
+        if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, resource: @purchase, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
 
           @current_push_token = @pubnub.add_channels_to_push(
             push_token: request_user.profile.device_token,
@@ -208,7 +208,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
             subscribe_key: ENV['SUBSCRIBE_KEY']
            )
 
-          if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
+          if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, resource: @purchase,  url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
 
             @current_push_token = @pubnub.add_channels_to_push(
                push_token: request_user.profile.device_token,
@@ -348,7 +348,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   end
 
   api :POST, '/api/v1/payments/get-secret', 'Get client secret and submit amout to pay'
- # param :total_price, :number, :desc => "Total Price", :required => true
+ param :total_price, String, :desc => "Total Price", :required => true
   param :ticket_id, :number, :desc => "Ticket ID", :required => true
   param :quantity, :number, :desc => "Quantity of the tickets", :required => true
 
@@ -411,7 +411,6 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
 
   api :POST, '/api/v1/payments/place-refund-request', 'Place a refund requests'
   param :ticket_id, :number, :desc => "Ticket ID", :required => true
-  param :reason, :number, :desc => "Reason", :required => true
 
   def place_refund_request
     if !params[:ticket_id].blank?

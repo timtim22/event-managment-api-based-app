@@ -863,6 +863,7 @@ end
    def get_redeem_count(resource)
      resource.redemptions.size
    end
+   
 
 
    def get_token_from_user(user)
