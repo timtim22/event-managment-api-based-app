@@ -3,7 +3,7 @@ require "spec_helper"
 require 'spec_authentication'
 
 RSpec.describe Dashboard::Api::V1::UsersController, type: :controller do
-  describe "SpecialOffer API" do
+  describe "User API" do
 
     before do
       request.headers["Authorization"] = @dashboard_login_token
@@ -29,7 +29,7 @@ RSpec.describe Dashboard::Api::V1::UsersController, type: :controller do
         address: "Islamabad",
         display_name: "timtim - display_name",
         phone_number: "+923109909077",
-        email: "taimoor.hassan10@yahoo.com",
+        email: "test@test.com",
         password: "Xerography2!",
         is_charity: "true",
         about: "timtim -about"

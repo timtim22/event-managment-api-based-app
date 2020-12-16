@@ -6,6 +6,9 @@ require "spec_authentication"
 RSpec.describe Api::V1::InterestLevelsController, type: :controller do
   describe "Mobile - InterestLevels API - " do
 
+    before do
+      request.headers["Authorization"] = @app_login_token
+    end
 
     it "should create interest for an event" do
       post :create_interest, params: {event_id: Event.last.id }
