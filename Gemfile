@@ -32,7 +32,9 @@ gem 'bootstrap', '~> 4.3.1'
 # Use ActiveStorage variant
 #gem 'mini_magick', '~> 4.8'
 gem 'file_validators'
-gem 'dotenv-rails'
+group :development, :test do
+  gem 'dotenv-rails'
+end
 gem 'pubnub', '~> 4.2.2'
 gem 'pry'
 gem 'gon'

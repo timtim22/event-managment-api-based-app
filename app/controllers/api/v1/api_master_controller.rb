@@ -221,6 +221,37 @@ class Api::V1::ApiMasterController < ApplicationController
     end
 
 
+    def get_competition_demographics(competition)
+      males = []
+      females = []
+      gays = []
+      demographics = {}
+      total_count = competition.registrations.size
+      competition.registrations.each do |reg|
+       case reg.user.profile.gender
+         when 'male'
+           males.push(reg.user)
+         when 'female'
+           females.push(reg.user)
+         when 'gay'
+           gays.push(reg.user)
+         else
+            'No users'
+          end
+       end #each
+
+        demographics['males_percentage'] = if males.size > 0 then males.uniq.size.to_f / total_count.to_f * 100.0 else 0 end
+
+        demographics['females_percentage'] = if females.size > 0 then females.uniq.size.to_f / total_count.to_f * 100.0  else 0 end
+
+        demographics['gays_percentage'] = if gays.size > 0 then gays.uniq.size.to_f / total_count.to_f * 100.0  else 0 end
+
+        demographics
+   
+  end
+
+
+
 
 
     private

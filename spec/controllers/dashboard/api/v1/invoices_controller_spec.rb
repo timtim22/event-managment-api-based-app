@@ -7,7 +7,7 @@ RSpec.describe Dashboard::Api::V1::InvoicesController, type: :controller do
   describe "Invoices API" do
 
     before do
-      request.headers["Authorization"] = @dashboard_login_token
+      request.headers["Authorization"] = ENV["WEB_LOGIN_TOKEN"]
     end
 
     it "should return all invoice" do

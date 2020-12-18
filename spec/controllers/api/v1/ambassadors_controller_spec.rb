@@ -6,7 +6,7 @@ RSpec.describe Api::V1::AmbassadorsController, type: :controller do
   describe "Mobile - Ambassadors API - " do
    
     before do
-      request.headers["Authorization"] = @app_login_token
+      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should send ambassador request to business user" do

@@ -7,7 +7,7 @@ RSpec.describe Dashboard::Api::V1::NewsFeedsController, type: :controller do
   describe "NewsFeeds API" do
 
     before do
-      request.headers["Authorization"] = @dashboard_login_token
+      request.headers["Authorization"] = ENV["WEB_LOGIN_TOKEN"]
     end
 
     it "should return all news feeds" do

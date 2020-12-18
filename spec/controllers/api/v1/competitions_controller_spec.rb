@@ -7,7 +7,7 @@ RSpec.describe Api::V1::CompetitionsController, type: :controller do
   describe "Mobile - Competitions API - " do
     
     before do
-      request.headers["Authorization"] = @app_login_token
+      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should return all competitions" do

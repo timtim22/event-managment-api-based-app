@@ -7,7 +7,7 @@ RSpec.describe Api::V1::ForwardingController, type: :controller do
   describe "Mobile - Fowarding API - " do
    
     before do
-      request.headers["Authorization"] = @app_login_token
+      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should forward offer" do
@@ -19,7 +19,7 @@ RSpec.describe Api::V1::ForwardingController, type: :controller do
     it "should share offer" do
       post :share_offer, params: {
         offer_shared: "true",
-        sender_token: @app_login_token,
+        sender_token: ENV["APP_LOGIN_TOKEN"],
         offer_type: OfferForwarding.last.offer_type,
         offer_id: OfferForwarding.last.offer_id
       }
@@ -36,7 +36,7 @@ RSpec.describe Api::V1::ForwardingController, type: :controller do
     it "should share event" do
       post :share_event, params: {
         event_shared: "true",
-        sender_token: @app_login_token,
+        sender_token: ENV["APP_LOGIN_TOKEN"],
         event_id: Event.last.id
       }
       expect(response).to have_http_status(200)

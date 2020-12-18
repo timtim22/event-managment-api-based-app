@@ -7,7 +7,7 @@ RSpec.describe Dashboard::Api::V1::DashboardController, type: :controller do
   describe "GET Dashboard Stats" do
 
     before do
-      request.headers["Authorization"] = @dashboard_login_token
+      request.headers["Authorization"] = ENV["WEB_LOGIN_TOKEN"]
     end
 
     it "returns http success" do

@@ -85,7 +85,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         "total_redemptions" => special_offer.redemptions.size,
         "demographics" => get_offer_demographics(special_offer),
         "time_slot_total_redemptions" => get_time_slot_total_redemptions(special_offer, params[:time_slot_dates]),
-        "time_slot_total_views" => get_time_slot_total_impresssions(special_offer, params[:time_slot_dates]),
+        "time_slot_total_views" => get_time_slot_total_offer_impresssions(special_offer, params[:time_slot_dates]),
         "time_slot_views_date_wise" => get_time_slot_views_date_wise(params[:time_slot_dates], special_offer),
         "time_slot_redemptions_date_wise" => get_time_slot_redemptions_date_wise(params[:time_slot_dates], special_offer),
         "time_slot_total_offer_shares" => get_time_slot_total_offer_shares(params[:time_slot_dates], special_offer),
@@ -108,6 +108,42 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         data: nil
       }
     end
+  end
+
+
+
+  def get_competition_stats
+    if !params[:competition_id].blank? && !params[:time_slot_dates].blank?
+      competition = Competition.find(params[:competition_id])
+        stats = {
+          "id" => competition.id,
+          "winners" => competition.competition_winners.map {|w| w.user },
+          "total_entries" => competition.registrations.size,
+          "demographics" =>  get_competition_demographics(competition),
+          "time_slot_total_entries" => get_time_slot_total_entries(competition, params[:time_slot_dates]),
+          "time_slot_total_views" => get_time_slot_total_competition_impresssions(competition, params[:time_slot_dates]),
+          "time_slot_shares" => get_time_slot_total_offer_shares(params[:time_slot_dates], competition),
+          "time_slot_entries_date_wise" => get_time_slot_entries_date_wise(params[:time_slot_dates],competition),
+          "time_slot_views_date_wise" => get_time_slot_views_date_wise(params[:time_slot_dates], competition),
+          "time_slot_shares_date_wise" => get_time_slot_offer_shares_date_wise(params[:time_slot_dates], competition)
+        }
+  
+        render json: {
+          code: 200,
+          success: true,
+          message: '',
+          data: {
+            stats: stats
+          }
+        }
+      else
+        render json: {
+          code:400,
+          success: false,
+          message: 'competition_id and time_slot_dates are required.',
+          data: nil
+        }
+      end
   end
 
 
@@ -969,7 +1005,7 @@ end
    @time_slot_dates_stats = {}
    dates_array.each do |date|
     p_date = Date.parse(date)
-    # @time_slot_dates_stats[date.to_date] = offer.views.where(created_at: p_date.midnight..p_date.end_of_day).size
+    @time_slot_dates_stats[date.to_date] = offer.views.where(created_at: p_date.midnight..p_date.end_of_day).size
    end# each
 
    @time_slot_dates_stats
@@ -1178,7 +1214,7 @@ def get_time_slot_total_redemptions(special_offer, time_slot)
 end
 
 
-def get_time_slot_total_impresssions(special_offer, time_slot)
+def get_time_slot_total_offer_impresssions(special_offer, time_slot)
   dates_array = time_slot.split(',').map {|s| s.to_s }
   @views = []
   dates_array.each do |date|
@@ -1189,6 +1225,47 @@ def get_time_slot_total_impresssions(special_offer, time_slot)
   end #if !blank?
   end #each
   @views.size
+end
+
+
+def get_time_slot_total_entries(competition, time_slot)
+  dates_array = time_slot.split(',').map {|s| s.to_s }
+  @entries = []
+  dates_array.each do |date|
+     p_date = Date.parse(date)
+     entry = competition.registrations.where(created_at: p_date.midnight..p_date.end_of_day)
+     if !entry.blank?
+       @entries.push(entry)
+  end #if !blank?
+  end #each
+  @entries.size
+end
+
+
+def get_time_slot_total_competition_impresssions(competition, time_slot)
+  dates_array = time_slot.split(',').map {|s| s.to_s }
+  @views = []
+  dates_array.each do |date|
+     p_date = Date.parse(date)
+     view = competition.views.where(created_at: p_date.midnight..p_date.end_of_day)
+     if !view.blank?
+       @views.push(view)
+  end #if !blank?
+  end #each
+  @views.size
+end
+
+
+def get_time_slot_entries_date_wise(time_slot_dates,competition)
+  dates_array = time_slot_dates.split(',').map {|s| s.to_s }
+
+  @time_slot_dates = {}
+  dates_array.each do |date|
+   p_date = Date.parse(date)
+   @time_slot_dates[date.to_date] = competition.registrations.where(created_at: p_date.midnight..p_date.end_of_day).size
+  end# each
+
+  @time_slot_dates
 end
 
 end

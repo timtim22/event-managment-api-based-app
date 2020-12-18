@@ -7,7 +7,7 @@ RSpec.describe Api::V1::AnalyticsController, type: :controller do
   describe "Mobile - Analytics API - " do
 
     before do
-      request.headers["Authorization"] = @app_login_token
+      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should return business stats" do
@@ -18,6 +18,12 @@ RSpec.describe Api::V1::AnalyticsController, type: :controller do
 
     it "should return special offers stats" do
       post :get_offer_stats, params: { special_offer_id: SpecialOffer.last.id, time_slot_dates: '2020-11-30,2020-11-28' }
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)["success"]).to eq(true)
+    end
+
+    it "should return competitiion stats" do
+      post :get_competition_stats, params: { competitiion_id: Competition.last.id, time_slot_dates: '2020-11-30,2020-11-28' }
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end

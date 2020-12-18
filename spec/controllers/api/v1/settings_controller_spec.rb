@@ -7,7 +7,7 @@ RSpec.describe Api::V1::SettingsController, type: :controller do
   describe "Mobile - Settings API - " do
 
     before do
-      request.headers["Authorization"] = @app_login_token
+      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should purchase ticket" do

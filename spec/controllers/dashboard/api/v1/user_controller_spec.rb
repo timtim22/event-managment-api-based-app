@@ -6,7 +6,7 @@ RSpec.describe Dashboard::Api::V1::UsersController, type: :controller do
   describe "User API" do
 
     before do
-      request.headers["Authorization"] = @dashboard_login_token
+      request.headers["Authorization"] = ENV["WEB_LOGIN_TOKEN"]
     end
 
 

@@ -7,8 +7,9 @@ RSpec.describe Api::V1::UsersController, type: :controller do
   describe "Mobile - User API - " do
 
     before do
-      request.headers["Authorization"] = @app_login_token
+      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
     end
+
 
    it "should return all users" do
       get :index

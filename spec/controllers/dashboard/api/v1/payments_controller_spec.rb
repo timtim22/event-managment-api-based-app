@@ -7,7 +7,7 @@ RSpec.describe Dashboard::Api::V1::PaymentsController, type: :controller do
   describe "Payment API" do
 
     before do
-      request.headers["Authorization"] = @dashboard_login_token
+      request.headers["Authorization"] = ENV["WEB_LOGIN_TOKEN"]
     end
 
     it "should create payment intent" do
