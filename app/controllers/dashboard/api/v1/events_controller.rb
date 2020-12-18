@@ -9,9 +9,9 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       api_versions "dashboard"
     end
 
-  api :GET, 'dashboard/api/v1/events', 'Get all events'
+  api :GET, 'dashboard/api/v1/get-my-events', 'Get all events'
 
-  def index
+  def get_my_events
 
     @events = request_user.events.map {|e| get_dashboard_event_object(e) }
     render json: {
@@ -24,7 +24,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     }
   end
 
-  api :POST, 'dashboard/api/v1/events', 'To view a specific competition'
+  api :POST, 'dashboard/api/v1/events', 'To view a specific event'
   param :id, :number, :desc => "Title of the competition", :required => true
 
   def show
