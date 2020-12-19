@@ -11,7 +11,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
   api :GET, 'dashboard/api/v1/get-my-events', 'Get all events'
 
-  def get_my_events
+  def index
 
     @events = request_user.events.map {|e| get_dashboard_event_object(e) }
     render json: {
