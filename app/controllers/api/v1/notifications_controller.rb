@@ -557,6 +557,26 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                         "is_read": !notification.read_at.nil?
                         }
 
+                      when "event_shared"
+                        @notifications << {
+                          "id": notification.id,
+                          "actor_id": notification.actor_id,
+                          "actor_image": notification.actor.avatar,
+                          "notifiable_id": notification.notifiable_id,
+                          "notifiable_type": notification.notifiable_type,
+                          "action": notification.action,
+                          "action_type": notification.action_type,
+                          "location": location,
+                          "created_at": notification.created_at,
+                          "is_read": !notification.read_at.nil?,
+                          "business_name": User.get_full_name(notification.resource.event.user),
+                          "event_name": notification.resource.event.name,
+                          "event_id": notification.resource.event.id,
+                          "event_location": notification.resource.event.location,
+                          "event_start_date": notification.resource.event.start_date,
+                          "friend_name": User.get_full_name(notification.resource.user)
+                        }
+
               else
                 "do nothing"
               end #switch

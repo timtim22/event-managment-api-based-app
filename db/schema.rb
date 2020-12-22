@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 2020_12_17_072722) do
+=======
+ActiveRecord::Schema.define(version: 2020_12_22_062641) do
+>>>>>>> schema_change
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -228,6 +232,8 @@ ActiveRecord::Schema.define(version: 2020_12_17_072722) do
     t.integer "first_cat_id"
     t.string "video"
     t.string "status", default: "active"
+    t.boolean "is_repetive", default: false
+    t.string "frequency", default: "daily"
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 

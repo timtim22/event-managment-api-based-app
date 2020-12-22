@@ -9,7 +9,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       api_versions "dashboard"
     end
 
-  api :GET, 'dashboard/api/v1/events', 'Get all events'
+  api :GET, 'dashboard/api/v1/get-my-events', 'Get all events'
 
   def index
 
@@ -24,7 +24,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     }
   end
 
-  api :POST, 'dashboard/api/v1/events', 'To view a specific competition'
+  api :POST, 'dashboard/api/v1/events', 'To view a specific event'
   param :id, :number, :desc => "Title of the competition", :required => true
 
   def show
@@ -329,6 +329,30 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       end #each
      end #blank
 
+     #validate dates array
+     if params[:event_dates].blank? 
+       @error_messages.push("event_dates is required field.")      
+     else
+      if !params[:event_dates].kind_of?(Array)
+        @error_messages.push("event_dates should be an array of dates in the format '2020-12-21'")
+      end
+     end
+
+
+     #validate recursion fields
+     if params[:is_repetive].blank?
+      @error_messages.push("is_repetive must not be empty.")
+     else
+    if is_boolean?(params[:is_repetive])
+      if params[:is_repetive] ==  true && params[:frequency].blank?
+        @error_messages.push("frequency must be defined in case of repetive events.")
+      end
+    else
+      @error_messages.push("is_repetive should be a boolean type.")
+    end
+    end
+    
+
   if @error_messages.blank?
     @event = request_user.events.new
     @event.name = params[:name]
@@ -338,6 +362,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     @event.start_time = params['start_time']
     @event.end_time = params['end_time']
     @event.over_18 = params[:over_18]
+    @event.is_repetive = params[:is_repetive]
+    @event.frequency = params[:frequency]
     @event.description = params[:description]
     @event.terms_conditions = params[:terms_conditions]
     @event.allow_chat = params[:allow_chat]
@@ -353,6 +379,10 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
 
     if @event.save
+
+      #create event dates
+      params[:dates].map { |date| @event.event_dates.create!(date: date.to_date) }
+    
       success = true
     # Admisssion sectiion
     if !params[:admission_resources].blank?

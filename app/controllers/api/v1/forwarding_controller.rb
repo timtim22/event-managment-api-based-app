@@ -438,7 +438,11 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
           @recipient = request_user
           @event_share = EventShare.create!(user_id: @sender.id, recipient_id: request_user.id, event_id: params[:event_id])
 
+<<<<<<< HEAD
           if @notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " shared an event with you.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "share_event")
+=======
+          if notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " shared an event with you.", notifiable: @event, resource: @event_share, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "event_shared")
+>>>>>>> schema_change
 
 
 
@@ -452,19 +456,25 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
              "pn_gcm":{
                "notification":{
                  "title": get_full_name(request_user),
-                 "body": @notification.action
+                 "body": notification.action
                },
                data: {
-                 "id": @notification.id,
-                 "actor_id": @notification.actor_id,
-                 "actor_image": @notification.actor.avatar,
-                 "notifiable_id": @notification.notifiable_id,
-                 "notifiable_type": @notification.notifiable_type,
-                 "action_type": @notification.action_type,
-                 "offer": @offer,
-                 "action": @notification.action,
-                 "created_at": @notification.created_at,
-                 "body": ''
+                "id": notification.id,
+                "actor_id": notification.actor_id,
+                "actor_image": notification.actor.avatar,
+                "notifiable_id": notification.notifiable_id,
+                "notifiable_type": notification.notifiable_type,
+                "action": notification.action,
+                "action_type": notification.action_type,
+                "location": location,
+                "created_at": notification.created_at,
+                "is_read": !notification.read_at.nil?,
+                "business_name": User.get_full_name(notification.resource.event.user),
+                "event_name": notification.resource.event.name,
+                "event_id": notification.resource.event.id,
+                "event_location": notification.resource.event.location,
+                "event_start_date": notification.resource.event.start_date,
+                "friend_name": User.get_full_name(notification.resource.user)
                }
              }
            }

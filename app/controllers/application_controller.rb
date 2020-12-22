@@ -1001,6 +1001,11 @@ end
  end
 
 
+ def is_boolean?(variable)
+  !!variable == variable
+ end
+
+
    def get_price(event)
     price = ''
     if !event.tickets.where(ticket_type: 'buy').blank? && event.tickets.size > 1

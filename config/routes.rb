@@ -139,7 +139,8 @@ Rails.application.routes.draw do
        post  "events/get-map-events" =>  "events#get_map_events"
        post "settings/change-location-status" => "settings#change_location_status"
        post "users/delete-account" => "users#delete_account"
-       
+       post "/search/global-search" => "search#global_search"
+
 
 
       # get '/*a', to: 'application#not_found'
@@ -232,7 +233,10 @@ Rails.application.routes.draw do
 
         patch 'dashboard/api/v1/competitions/:id', to: 'competition#update'
 
+
+
         resources :special_offers
+        get "/get-my-events" => "events#get_my_events"
         post '/auth/login', to: 'authentication#login'
         post '/send-verification-code', to: 'users#send_verification_code'
         get  '/get-followers' => 'users#get_followers'
