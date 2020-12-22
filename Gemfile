@@ -33,7 +33,6 @@ gem 'bootstrap', '~> 4.3.1'
 #gem 'mini_magick', '~> 4.8'
 gem 'file_validators'
 group :development, :test do
-  gem 'dotenv-rails'
 end
 gem 'pubnub', '~> 4.2.2'
 gem 'pry'
@@ -97,3 +96,4 @@ gem 'selenium-webdriver'
 # Easy installation and use of chromedriver to run system tests with Chrome
 gem 'webdrivers', '~> 4.0', require: false
 gem 'rspec-console'
+gem 'dotenv-rails'
