@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_14_140123) do
+ActiveRecord::Schema.define(version: 2020_12_22_062641) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -166,6 +166,13 @@ ActiveRecord::Schema.define(version: 2020_12_14_140123) do
     t.index ["event_id"], name: "index_event_attachments_on_event_id"
   end
 
+  create_table "event_dates", force: :cascade do |t|
+    t.integer "event_id"
+    t.datetime "date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "event_forwardings", force: :cascade do |t|
     t.integer "user_id"
     t.integer "recipient_id"
@@ -221,6 +228,8 @@ ActiveRecord::Schema.define(version: 2020_12_14_140123) do
     t.integer "first_cat_id"
     t.string "video"
     t.string "status", default: "active"
+    t.boolean "is_repetive", default: false
+    t.string "frequency", default: "daily"
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 

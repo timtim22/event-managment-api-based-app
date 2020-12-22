@@ -352,7 +352,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
 
-    if @event.save
+    if @event.savez
       success = true
     # Admisssion sectiion
     if !params[:admission_resources].blank?
