@@ -438,12 +438,8 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
           @recipient = request_user
           @event_share = EventShare.create!(user_id: @sender.id, recipient_id: request_user.id, event_id: params[:event_id])
 
-<<<<<<< HEAD
-          if @notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " shared an event with you.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "share_event")
-=======
-          if notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " shared an event with you.", notifiable: @event, resource: @event_share, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "event_shared")
->>>>>>> schema_change
 
+          if notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " shared an event with you.", notifiable: @event, resource: @event_share, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "event_shared")
 
 
             @current_push_token = @pubnub.add_channels_to_push(

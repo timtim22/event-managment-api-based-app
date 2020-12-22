@@ -330,8 +330,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
      end #blank
 
      #validate dates array
-     if params[:event_dates].blank? 
-       @error_messages.push("event_dates is required field.")      
+     if params[:event_dates].blank?
+       @error_messages.push("event_dates is required field.")
      else
       if !params[:event_dates].kind_of?(Array)
         @error_messages.push("event_dates should be an array of dates in the format '2020-12-21'")
@@ -351,7 +351,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       @error_messages.push("is_repetive should be a boolean type.")
     end
     end
-    
+
 
   if @error_messages.blank?
     @event = request_user.events.new
@@ -381,8 +381,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     if @event.save
 
       #create event dates
-      params[:dates].map { |date| @event.event_dates.create!(date: date.to_date) }
-    
+      params[:event_dates].map { |date| @event.event_dates.create!(date: date.to_date) }
+
       success = true
     # Admisssion sectiion
     if !params[:admission_resources].blank?
