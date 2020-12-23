@@ -409,6 +409,7 @@ class ApplicationController < ActionController::Base
       "start_time" => event.start_time,
       "end_time" => event.end_time,
       "event_type" => event.event_type,
+      "event_dates" => event.event_dates,
       "allow_chat" => event.allow_chat,
       "status" => event.status,
       "event_forwarding" => event.event_forwarding,
@@ -1108,6 +1109,10 @@ end
       downcase
   end
 
+def validate_event_dates(start_date, end_date, dates=[])
+    dates_array = generate_date_range(start_date, end_date)
+    (dates & dates_array) == dates
+end
 
 def all_passes_added_to_wallet?(request_user,passes)
     passes_ids = passes.map {|pass| pass.id }

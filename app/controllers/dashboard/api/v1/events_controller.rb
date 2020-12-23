@@ -246,6 +246,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
   # end
 
   def create
+
     success = false
     @error_messages = []
 
@@ -333,6 +334,10 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
      if params[:event_dates].blank?
        @error_messages.push("event_dates is required field.")
      else
+      validate = validate_event_dates(params[:start_date], params[:end_date], params[:event_dates])
+        if !validate
+            @error_messages.push("the dates should be within start_date and end_date of the event")
+        end
       if !params[:event_dates].kind_of?(Array)
         @error_messages.push("event_dates should be an array of dates in the format '2020-12-21'")
       end

@@ -31,13 +31,16 @@ RSpec.describe Dashboard::Api::V1::EventsController, type: :controller do
     it "should create an Event" do
       post :create, params: {
       name: "Test Dashboard",
-      start_date: "2020-07-30",
-      end_date: "2020-08-05",
+      start_date: "2020-12-24",
+      end_date: "2020-12-26",
+      is_repetive: true,
+      frequency: "daily",
+      event_dates: ["2020-12-24"],
       start_time: "23:14:00",
       end_time: "12:14:00",
       terms_conditions: "Dummy",
       event_type: "public",
-      price_type: "buy",
+      price_type: "paid",
       allow_chat: true,
       event_forwarding: true,
       over_18: true,
@@ -53,11 +56,12 @@ RSpec.describe Dashboard::Api::V1::EventsController, type: :controller do
       },
       admission_resources: [
         {
-          name: "free",
+          name: "paid",
           fields: [{
-            title: "paid",
+            title: "freeee",
             quantity: "23",
-            per_head: "22"
+            per_head: "22",
+            price: "228"
             }]
         }]
     }
@@ -118,7 +122,7 @@ RSpec.describe Dashboard::Api::V1::EventsController, type: :controller do
     end
 
     it "should delete event" do #should be cancelled first
-      post :delete_event, params: {event_id: Event.first}
+      post :delete_event, params: {event_id: Event.first.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
