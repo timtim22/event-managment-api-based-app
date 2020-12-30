@@ -1,0 +1,2 @@
+class ChildEvent < ApplicationRecord
+end

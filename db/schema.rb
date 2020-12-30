@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_22_062641) do
+ActiveRecord::Schema.define(version: 2020_12_30_102832) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -110,6 +110,38 @@ ActiveRecord::Schema.define(version: 2020_12_22_062641) do
     t.datetime "updated_at", null: false
     t.string "push_token"
     t.index ["user_id"], name: "index_chat_channels_on_user_id"
+  end
+
+  create_table "child_events", force: :cascade do |t|
+    t.integer "event_id"
+    t.string "name", default: ""
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.text "description", default: ""
+    t.string "host", default: ""
+    t.string "location", default: ""
+    t.string "lat", default: ""
+    t.string "lng", default: ""
+    t.boolean "over_18", default: true
+    t.boolean "event_forwarding", default: false
+    t.boolean "allow_chat", default: true
+    t.boolean "allow_additional_media", default: true
+    t.integer "invitees", default: 0
+    t.string "image", default: ""
+    t.string "placeholder", default: "http://placehold.it/900x300"
+    t.string "feature_media_link", default: ""
+    t.string "event_type", default: "public"
+    t.string "price_type", default: "free"
+    t.decimal "price", precision: 8, scale: 2, default: "0.0"
+    t.decimal "start_price", precision: 8, scale: 2, default: "0.0"
+    t.decimal "end_price", precision: 8, scale: 2, default: "0.0"
+    t.boolean "is_cancelled", default: false
+    t.boolean "is_private", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_child_events_on_event_id"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -636,7 +668,6 @@ ActiveRecord::Schema.define(version: 2020_12_22_062641) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "location_enabled", default: true
   end
 
   create_table "views", force: :cascade do |t|
