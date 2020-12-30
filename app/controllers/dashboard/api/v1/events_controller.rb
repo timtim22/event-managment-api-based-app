@@ -385,11 +385,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
       #create event dates
       # params[:event_dates].map { |date| @event.event_dates.create!(date: date.to_date) }
-
-
-
       params[:event_dates].map { |date| @event.child_events.create!(
-
             name: params[:name],
             image: params[:image],
             start_date: date.to_date,
@@ -405,8 +401,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
             lat: params[:location][:geometry][:lat],
             lng: params[:location][:geometry][:lng],
             price: params[:price],
-            event_type: params[:event_type],
-                                      )}
+            event_type: params[:event_type]
+          )}
 
       success = true
     # Admisssion sectiion
@@ -646,11 +642,47 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
     if @event.save
 
-
-      params[:event_dates].map { |date| @event.event_dates.find(date[:id]).update!(date: date[:date]) }
-
-      # params[:event_dates].pluck :date
-
+      params[:event_dates].each do |date|
+        if date.include? "id"
+          @event.child_events.find(date[:id]).update!(
+              name: params[:name],
+              image: params[:image],
+              start_date: date,
+              end_date: date,
+              start_time: params['start_time'],
+              end_time: params['end_time'],
+              over_18: params[:over_18],
+              description: params[:description],
+              terms_conditions: params[:terms_conditions],
+              allow_chat: params[:allow_chat],
+              event_forwarding: params[:event_forwarding],
+              location: params[:location][:name],
+              lat: params[:location][:geometry][:lat],
+              lng: params[:location][:geometry][:lng],
+              price: params[:price],
+              event_type: params[:event_type]
+            )
+        else
+           @event.child_events.create!(
+                  name: params[:name],
+                  image: params[:image],
+                  start_date: date.to_date,
+                  end_date: date.to_date,
+                  start_time: params['start_time'],
+                  end_time: params['end_time'],
+                  over_18: params[:over_18],
+                  description: params[:description],
+                  terms_conditions: params[:terms_conditions],
+                  allow_chat: params[:allow_chat],
+                  event_forwarding: params[:event_forwarding],
+                  location: params[:location][:name],
+                  lat: params[:location][:geometry][:lat],
+                  lng: params[:location][:geometry][:lng],
+                  price: params[:price],
+                  event_type: params[:event_type]
+                )
+        end
+      end
       success = true
     # Admisssion sectiion
     if !params[:admission_resources].blank?
