@@ -664,23 +664,23 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
             )
         else
            @event.child_events.create!(
-                  name: params[:name],
-                  image: params[:image],
-                  start_date: date.to_date,
-                  end_date: date.to_date,
-                  start_time: params['start_time'],
-                  end_time: params['end_time'],
-                  over_18: params[:over_18],
-                  description: params[:description],
-                  terms_conditions: params[:terms_conditions],
-                  allow_chat: params[:allow_chat],
-                  event_forwarding: params[:event_forwarding],
-                  location: params[:location][:name],
-                  lat: params[:location][:geometry][:lat],
-                  lng: params[:location][:geometry][:lng],
-                  price: params[:price],
-                  event_type: params[:event_type]
-                )
+              name: params[:name],
+              image: params[:image],
+              start_date: date.to_date,
+              end_date: date.to_date,
+              start_time: params['start_time'],
+              end_time: params['end_time'],
+              over_18: params[:over_18],
+              description: params[:description],
+              terms_conditions: params[:terms_conditions],
+              allow_chat: params[:allow_chat],
+              event_forwarding: params[:event_forwarding],
+              location: params[:location][:name],
+              lat: params[:location][:geometry][:lat],
+              lng: params[:location][:geometry][:lng],
+              price: params[:price],
+              event_type: params[:event_type]
+            )
         end
       end
       success = true
@@ -697,8 +697,6 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
               @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions],  user: request_user, ticket_type: 'free', price: 0)
             end
           end #each
-
-
        when 'paid'
           resource[:fields].each do |f|
             if f.include? "id"
@@ -707,8 +705,6 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
               @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'buy')
             end
           end #each
-
-
         when 'pay_at_door'
           resource[:fields].each do |f|
             if f.include? "id"

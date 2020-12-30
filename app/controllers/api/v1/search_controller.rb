@@ -7,7 +7,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
 
   api :POST, '/api/v1/search/global-search', 'To add user as a friend'
   param :resource_type, String, :desc => "Should be one of the resource type", :required => true
-  param :search_term, String, :desc => "Friend ID", :required => true
+  # param :search_term, String, :desc => "Friend ID", :required => true
 
   def global_search
       if !params[:search_term].blank? && !params[:resource_type].blank?
