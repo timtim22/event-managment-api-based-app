@@ -198,13 +198,6 @@ ActiveRecord::Schema.define(version: 2020_12_30_102832) do
     t.index ["event_id"], name: "index_event_attachments_on_event_id"
   end
 
-  create_table "event_dates", force: :cascade do |t|
-    t.integer "event_id"
-    t.datetime "date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "event_forwardings", force: :cascade do |t|
     t.integer "user_id"
     t.integer "recipient_id"

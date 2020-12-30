@@ -331,17 +331,17 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
      end #blank
 
      #validate dates array
-     if params[:event_dates].blank?
-       @error_messages.push("event_dates is required field.")
-     else
-      validate = validate_event_dates(params[:start_date], params[:end_date], params[:event_dates])
-        if !validate
-            @error_messages.push("the dates should be within start_date and end_date of the event")
-        end
-      if !params[:event_dates].kind_of?(Array)
-        @error_messages.push("event_dates should be an array of dates in the format '2020-12-21'")
-      end
-     end
+     # if params[:event_dates].blank?
+     #   @error_messages.push("event_dates is required field.")
+     # else
+     #  validate = validate_event_dates(params[:start_date], params[:end_date], params[:event_dates])
+     #    if !validate
+     #        @error_messages.push("the dates should be within start_date and end_date of the event")
+     #    end
+     #  if !params[:event_dates].kind_of?(Array)
+     #    @error_messages.push("event_dates should be an array of dates in the format '2020-12-21'")
+     #  end
+     # end
 
 
     #  #validate recursion fields
@@ -386,7 +386,30 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     if @event.save
 
       #create event dates
-      params[:event_dates].map { |date| @event.event_dates.create!(date: date.to_date) }
+      # params[:event_dates].map { |date| @event.event_dates.create!(date: date.to_date) }
+
+
+
+      params[:event_dates].map { |date| @event.child_events.create!(
+
+            @event.name = params[:name],
+            @event.image = params[:image],
+            @event.start_date = date.to_date,
+            @event.end_date = date.to_date,
+            @event.start_time = params['start_time'],
+            @event.end_time = params['end_time'],
+            @event.over_18 = params[:over_18],
+            @event.is_repetive = params[:is_repetive],
+            @event.frequency = params[:frequency],
+            @event.description = params[:description],
+            @event.terms_conditions = params[:terms_conditions],
+            @event.allow_chat = params[:allow_chat],
+            @event.event_forwarding = params[:event_forwarding],
+            @event.location = params[:location][:name],
+            @event.price = params[:price],
+            @event.event_type = params[:event_type],
+            @event.category_ids = params[:category_ids]
+                          )}
 
       success = true
     # Admisssion sectiion
