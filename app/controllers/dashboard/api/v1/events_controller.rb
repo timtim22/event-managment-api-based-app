@@ -367,8 +367,6 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     @event.start_time = params['start_time']
     @event.end_time = params['end_time']
     @event.over_18 = params[:over_18]
-    @event.is_repetive = params[:is_repetive]
-    @event.frequency = params[:frequency]
     @event.description = params[:description]
     @event.terms_conditions = params[:terms_conditions]
     @event.allow_chat = params[:allow_chat]
@@ -392,24 +390,23 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
       params[:event_dates].map { |date| @event.child_events.create!(
 
-            @event.name = params[:name],
-            @event.image = params[:image],
-            @event.start_date = date.to_date,
-            @event.end_date = date.to_date,
-            @event.start_time = params['start_time'],
-            @event.end_time = params['end_time'],
-            @event.over_18 = params[:over_18],
-            @event.is_repetive = params[:is_repetive],
-            @event.frequency = params[:frequency],
-            @event.description = params[:description],
-            @event.terms_conditions = params[:terms_conditions],
-            @event.allow_chat = params[:allow_chat],
-            @event.event_forwarding = params[:event_forwarding],
-            @event.location = params[:location][:name],
-            @event.price = params[:price],
-            @event.event_type = params[:event_type],
-            @event.category_ids = params[:category_ids]
-                          )}
+            name: params[:name],
+            image: params[:image],
+            start_date: date.to_date,
+            end_date: date.to_date,
+            start_time: params['start_time'],
+            end_time: params['end_time'],
+            over_18: params[:over_18],
+            description: params[:description],
+            terms_conditions: params[:terms_conditions],
+            allow_chat: params[:allow_chat],
+            event_forwarding: params[:event_forwarding],
+            location: params[:location][:name],
+            lat: params[:location][:geometry][:lat],
+            lng: params[:location][:geometry][:lng],
+            price: params[:price],
+            event_type: params[:event_type],
+                                      )}
 
       success = true
     # Admisssion sectiion

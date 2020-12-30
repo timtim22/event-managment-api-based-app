@@ -117,6 +117,7 @@ ActiveRecord::Schema.define(version: 2020_12_30_102832) do
     t.string "name", default: ""
     t.datetime "start_date"
     t.datetime "end_date"
+    t.datetime "terms_conditions"
     t.datetime "start_time"
     t.datetime "end_time"
     t.text "description", default: ""

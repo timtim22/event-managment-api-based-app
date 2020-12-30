@@ -5,6 +5,7 @@ class CreateChildEvents < ActiveRecord::Migration[5.2]
       t.string :name, default: ''
       t.datetime :start_date
       t.datetime :end_date
+      t.datetime :terms_conditions
       t.datetime :start_time
       t.datetime :end_time
       t.text :description, default: ''

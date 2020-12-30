@@ -409,7 +409,6 @@ class ApplicationController < ActionController::Base
       "start_time" => event.start_time,
       "end_time" => event.end_time,
       "event_type" => event.event_type,
-      "event_dates" => event.event_dates,
       "allow_chat" => event.allow_chat,
       "status" => event.status,
       "event_forwarding" => event.event_forwarding,
