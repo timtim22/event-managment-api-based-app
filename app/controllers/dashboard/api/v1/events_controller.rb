@@ -344,18 +344,18 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
      end
 
 
-     #validate recursion fields
-     if params[:is_repetive].blank?
-      @error_messages.push("is_repetive must not be empty.")
-     else
-    if is_boolean?(params[:is_repetive])
-      if params[:is_repetive] ==  true && params[:frequency].blank?
-        @error_messages.push("frequency must be defined in case of repetive events.")
-      end
-    else
-      @error_messages.push("is_repetive should be a boolean type.")
-    end
-    end
+    #  #validate recursion fields
+    #  if params[:is_repetive].blank?
+    #   @error_messages.push("is_repetive must not be empty.")
+    #  else
+    # if is_boolean?(params[:is_repetive])
+    #   if params[:is_repetive] ==  true && params[:frequency].blank?
+    #     @error_messages.push("frequency must be defined in case of repetive events.")
+    #   end
+    # else
+    #   @error_messages.push("is_repetive should be a boolean type.")
+    # end
+    # end
 
 
   if @error_messages.blank?
@@ -566,6 +566,19 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
         end #each
     end #admission resource validation
 
+
+     # if params[:event_dates].blank?
+     #   @error_messages.push("event_dates is required field.")
+     # else
+     #  validate = validate_event_dates(params[:start_date], params[:end_date], params[:event_dates])
+     #    if !validate
+     #        @error_messages.push("the dates should be within start_date and end_date of the event")
+     #    end
+     #  if !params[:event_dates].kind_of?(Array)
+     #    @error_messages.push("event_dates should be an array of dates in the format '2020-12-21'")
+     #  end
+     # end
+
      if !params[:sponsors].blank?
       required_fields = ['sponsor_image', 'external_url']
       params[:sponsors].each do |sponsor|
@@ -612,6 +625,12 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
 
     if @event.save
+
+
+      params[:event_dates].map { |date| @event.event_dates.find(date[:id]).update!(date: date[:date]) }
+
+      # params[:event_dates].pluck :date
+
       success = true
     # Admisssion sectiion
     if !params[:admission_resources].blank?

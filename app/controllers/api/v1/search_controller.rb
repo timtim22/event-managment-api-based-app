@@ -21,36 +21,65 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
               data:  @events
             }
           when params[:resource_type] == "Competition"
-            @events = Competition.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
+          @competitions = []
+          if request_user
+            Competition.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC").each do |competition|
+              if !is_removed_competition?(request_user, competition) && showability?(request_user, competition) == true
+              @competitions << {
+                  id: competition.id,
+                  title: competition.title,
+                  description: competition.description,
+                  host_image: competition.user.avatar,
+                  image: competition.image.url,
+                  is_added_to_wallet: is_added_to_wallet?(competition.id),
+                  total_entries_count: get_entry_count(request_user, competition),
+                  validity: competition.validity.strftime(get_time_format)
+                  }
+              end
+            end
+          else
+            Competition.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC").each do |competition|
+              @competitions << {
+                  id: competition.id,
+                  title: competition.title,
+                  description: competition.description,
+                  host_image: competition.user.avatar,
+                  image: competition.image.url,
+                  is_added_to_wallet: is_added_to_wallet?(competition.id),
+                  total_entries_count: get_entry_count(request_user, competition),
+                  validity: competition.validity.strftime(get_time_format)
+                  }
+            end
+          end
               render json: {
               code: 200,
               success: true,
               message: '',
-              data:  @events
+              data:  @competitions
             }
           when params[:resource_type] == "Pass"
-            @events = Pass.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
+            @passes = Pass.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
               render json: {
               code: 200,
               success: true,
               message: '',
-              data:  @events
+              data:  @passes
             }
           when params[:resource_type] == "Ticket"
-            @events = Ticket.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
+            @tickets = Ticket.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
               render json: {
               code: 200,
               success: true,
               message: '',
-              data:  @events
+              data:  @tickets
             }
           when params[:resource_type] == "Offer"
-            @events = SpecialOffer.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
+            @offers = SpecialOffer.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
               render json: {
               code: 200,
               success: true,
               message: '',
-              data:  @events
+              data:  @offers
             }
         else
               render json: {
@@ -61,7 +90,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
         render json: {
           code: 400,
           success: false,
-          message: 'search_base and search_type are required params',
+          message: 'search_term and search_type are required params',
           data: nil
         }
     end
