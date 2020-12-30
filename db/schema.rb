@@ -262,6 +262,7 @@ ActiveRecord::Schema.define(version: 2020_12_30_102832) do
     t.string "status", default: "active"
     t.boolean "is_repetive", default: false
     t.string "frequency", default: "daily"
+    t.boolean "is_private", default: false
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
@@ -668,6 +669,7 @@ ActiveRecord::Schema.define(version: 2020_12_30_102832) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "location_enabled", default: true
   end
 
   create_table "views", force: :cascade do |t|

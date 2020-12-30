@@ -34,7 +34,8 @@ has_many :sponsors, dependent: :destroy
 has_many :event_shares, dependent: :destroy
 has_many :event_forwardings, dependent: :destroy
 has_many :activity_logs, dependent: :destroy, as: :resource
-has_many :event_dates, dependent: :destroy
+has_many :child_events, dependent: :destroy
+
 
 accepts_nested_attributes_for :event_attachments
 
