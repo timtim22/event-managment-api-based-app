@@ -7,7 +7,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
 
   api :POST, '/api/v1/search/global-search', 'To add user as a friend'
   param :resource_type, String, :desc => "Should be one of the resource type", :required => true
-  # param :search_term, String, :desc => "Friend ID", :required => true
+  param :search_term, String, :desc => "Friend ID", :required => true
 
   def global_search
       if !params[:search_term].blank? && !params[:resource_type].blank?
@@ -58,13 +58,41 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
               data:  @competitions
             }
           when params[:resource_type] == "Pass"
-            @passes = Pass.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
-              render json: {
-              code: 200,
-              success: true,
-              message: '',
-              data:  @passes
-            }
+            @passes = []
+            passes = Pass.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
+              if !passes.blank?
+                      passes.each do |pass|
+                       if request_user
+                        if !is_removed_pass?(request_user, pass)
+                          @passes << {
+                            id: pass.id,
+                            event_name:pass.event.name,
+                            pass_type: pass.pass_type,
+                            host_image:pass.event.user.avatar,
+                            event_image:pass.event.image,
+                            is_added_to_wallet: is_added_to_wallet?(pass.id),
+                            validity: pass.validity.strftime(get_time_format)
+                          }
+                        end
+                      else
+                        @passes << {
+                            id: pass.id,
+                            event_name:pass.event.name,
+                            pass_type: pass.pass_type,
+                            host_image:pass.event.user.avatar,
+                            event_image:pass.event.image,
+                            is_added_to_wallet: is_added_to_wallet?(pass.id),
+                            validity: pass.validity.strftime(get_time_format)
+                        }
+                       end
+                      end#each
+                    end#if
+                        render json: {
+                        code: 200,
+                        success: true,
+                        message: '',
+                        data:  @passes
+                      }
           when params[:resource_type] == "Ticket"
             @tickets = Ticket.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
               render json: {
@@ -74,18 +102,62 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
               data:  @tickets
             }
           when params[:resource_type] == "Offer"
-            @offers = SpecialOffer.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
+            @special_offers = []
+            if request_user
+              SpecialOffer.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC").each do |offer|
+
+                if !is_removed_offer?(request_user, offer) && !is_added_to_wallet?(offer.id)
+                    @special_offers << {
+                    id: offer.id,
+                    title: offer.title,
+                    offer_total_count: offer.quantity,
+                    offer_remaining_count: offer.quantity - offer.wallets.size,
+                    image: offer.image.url,
+                    host_image: offer.user.avatar,
+                    validity: offer.validity.strftime(get_time_format),
+                    is_added_to_wallet: is_added_to_wallet?(offer.id)
+                  }
+                end
+              end #if
+            else
+              SpecialOffer.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC").each do |offer|
+                    @special_offers << {
+                    id: offer.id,
+                    title: offer.title,
+                    offer_total_count: offer.quantity,
+                    offer_remaining_count: offer.quantity - offer.wallets.size,
+                    image: offer.image.url,
+                    host_image: offer.user.avatar,
+                    validity: offer.validity.strftime(get_time_format),
+                    is_added_to_wallet: is_added_to_wallet?(offer.id)
+                  }
+              end
+            end
               render json: {
               code: 200,
               success: true,
               message: '',
-              data:  @offers
+              data:  @special_offers
+            }
+        when params[:resource_type] == "User"
+            app = User.app_users.ransack(name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").map  { |user| get_user_object(user) }
+            business = User.web_users.ransack(name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").map  { |user| get_business_object(user) }
+              render json: {
+              code: 200,
+              success: true,
+              message: '',
+              data:  {
+                users: {
+                    "businesses" => business,
+                    "app_users" => app
+                }
+              }
             }
         else
               render json: {
-               message: "wrong search type selected"
+               message: "wrong search type selected. Available resource are Event, Competition, Pass, Offer, Ticket and User."
               }
-            end
+        end
       else
         render json: {
           code: 400,
