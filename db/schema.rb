@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_30_102832) do
+ActiveRecord::Schema.define(version: 2020_12_30_132811) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -662,6 +662,7 @@ ActiveRecord::Schema.define(version: 2020_12_30_102832) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "location_enabled"
   end
 
   create_table "views", force: :cascade do |t|

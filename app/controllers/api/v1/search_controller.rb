@@ -140,17 +140,15 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
               data:  @special_offers
             }
         when params[:resource_type] == "User"
-            app = User.app_users.ransack(name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").map  { |user| get_user_object(user) }
-            business = User.web_users.ransack(name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").map  { |user| get_business_object(user) }
+            all_users = []
+            app = User.app_users.ransack(name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").map  { |user| all_users.push(get_user_object(user)) }
+            business = User.web_users.ransack(name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").map  { |user| all_users.push(get_business_object(user)) }
               render json: {
               code: 200,
               success: true,
               message: '',
               data:  {
-                users: {
-                    "businesses" => business,
-                    "app_users" => app
-                }
+                users: all_users
               }
             }
         else
