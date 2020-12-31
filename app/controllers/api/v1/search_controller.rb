@@ -13,7 +13,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
       if !params[:search_term].blank? && !params[:resource_type].blank?
         case
           when params[:resource_type] == "Event"
-            @events = Event.ransack(name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
+            @events = Event.ransack(name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC")
               render json: {
               code: 200,
               success: true,
@@ -23,7 +23,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
           when params[:resource_type] == "Competition"
           @competitions = []
           if request_user
-            Competition.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC").each do |competition|
+            Competition.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC").each do |competition|
               if !is_removed_competition?(request_user, competition) && showability?(request_user, competition) == true
               @competitions << {
                   id: competition.id,
@@ -38,7 +38,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
               end
             end
           else
-            Competition.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC").each do |competition|
+            Competition.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).not_expired.per(10).order(created_at: "ASC").each do |competition|
               @competitions << {
                   id: competition.id,
                   title: competition.title,
@@ -59,7 +59,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
             }
           when params[:resource_type] == "Pass"
             @passes = []
-            passes = Pass.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
+            passes = Pass.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).not_expired.per(10).order(created_at: "ASC")
               if !passes.blank?
                       passes.each do |pass|
                        if request_user
@@ -71,7 +71,8 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                             host_image:pass.event.user.avatar,
                             event_image:pass.event.image,
                             is_added_to_wallet: is_added_to_wallet?(pass.id),
-                            validity: pass.validity.strftime(get_time_format)
+                            validity: pass.validity.strftime(get_time_format),
+                            is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id)
                           }
                         end
                       else
@@ -82,7 +83,8 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                             host_image:pass.event.user.avatar,
                             event_image:pass.event.image,
                             is_added_to_wallet: is_added_to_wallet?(pass.id),
-                            validity: pass.validity.strftime(get_time_format)
+                            validity: pass.validity.strftime(get_time_format),
+                            is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id)
                         }
                        end
                       end#each
@@ -104,7 +106,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
           when params[:resource_type] == "Offer"
             @special_offers = []
             if request_user
-              SpecialOffer.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC").each do |offer|
+              SpecialOffer.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC").each do |offer|
 
                 if !is_removed_offer?(request_user, offer) && !is_added_to_wallet?(offer.id)
                     @special_offers << {
@@ -115,12 +117,13 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                     image: offer.image.url,
                     host_image: offer.user.avatar,
                     validity: offer.validity.strftime(get_time_format),
-                    is_added_to_wallet: is_added_to_wallet?(offer.id)
+                    is_added_to_wallet: is_added_to_wallet?(offer.id),
+                    is_redeemed: is_redeemed(offer.id, 'SpecialOffer', request_user.id),
                   }
                 end
               end #if
             else
-              SpecialOffer.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC").each do |offer|
+              SpecialOffer.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).not_expired.per(10).order(created_at: "ASC").each do |offer|
                     @special_offers << {
                     id: offer.id,
                     title: offer.title,
@@ -129,7 +132,8 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                     image: offer.image.url,
                     host_image: offer.user.avatar,
                     validity: offer.validity.strftime(get_time_format),
-                    is_added_to_wallet: is_added_to_wallet?(offer.id)
+                    is_added_to_wallet: is_added_to_wallet?(offer.id),
+                    is_redeemed: is_redeemed(offer.id, 'SpecialOffer', request_user.id),
                   }
               end
             end
@@ -140,17 +144,91 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
               data:  @special_offers
             }
         when params[:resource_type] == "User"
+            @profiles = []
+            @business_profile = []
             all_users = []
-            app = User.app_users.ransack(name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").map  { |user| all_users.push(get_user_object(user)) }
-            business = User.web_users.ransack(name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").map  { |user| all_users.push(get_business_object(user)) }
+            profile = Profile.ransack(first_name_or_last_name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").each do |profile|
+              @profiles << {
+                id: profile.user.id,
+                first_name: profile.first_name,
+                last_name: profile.last_name,
+                email: profile.user.email,
+                avatar: profile.user.avatar,
+                phone_number: profile.user.phone_number,
+                app_user: profile.user.app_user,
+                is_email_verified: profile.user.is_email_verified,
+                web_user: profile.user.web_user,
+                about: profile.about,
+                facebook: profile.facebook,
+                twitter: profile.twitter,
+                snapchat: profile.snapchat,
+                instagram: profile.instagram,
+                linkedin: profile.linkedin,
+                youtube: profile.youtube,
+                is_email_subscribed: profile.is_email_subscribed,
+                is_ambassador: profile.is_ambassador,
+                earning: profile.earning,
+                location: profile.location,
+                lat: profile.lat,
+                lng: profile.lng,
+                device_token: profile.device_token,
+                ranking: profile.ranking,
+                dob: profile.dob,
+                gender: profile.gender,
+                is_request_sent: request_status(request_user, profile.user)['status'],
+                role: 5,
+                is_my_following: false,
+                is_my_friend: is_my_friend?(profile.user),
+                mutual_friends_count: get_mutual_friends(request_user, profile.user).size,
+                location_enabled: profile.user.location_enabled
+              }
+            end
+          business_profile = BusinessProfile.ransack(profile_name_or_contact_name_or_display_name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").each do |profile|
+            @business_profile << {
+              id: profile.user.id,
+              profile_name: profile.profile_name,
+              contact_name: profile.contact_name,
+              display_name: profile.display_name,
+              first_name: profile.profile_name,
+              last_name: "",
+              email: profile.user.email,
+              avatar: profile.user.avatar,
+              phone_number: profile.user.phone_number,
+              app_user: profile.user.app_user,
+              is_email_verified: profile.user.is_email_verified,
+              web_user: profile.user.web_user,
+              vat_number: profile.vat_number,
+              charity_number: profile.charity_number,
+              address: profile.address,
+              about: profile.about,
+              facebook: profile.facebook,
+              twitter: profile.twitter,
+              linkedin: profile.linkedin,
+              website: profile.website,
+              instagram: profile.instagram,
+              is_charity: profile.is_charity,
+              is_ambassador: profile.is_ambassador,
+              is_request_sent: false,
+              is_my_following: is_my_following?(profile.user),
+              role: 2,
+              is_my_friend: false,
+              mutual_friends_count: 0,
+              total_followers_count: profile.user.followers.size
+            }
+
+          end
+
+
+            # business = User.web_users.ransack(name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").map  { |user| all_users.push(get_business_object(user)) }
               render json: {
               code: 200,
               success: true,
               message: '',
               data:  {
-                users: all_users
+                users: @business_profile
               }
             }
+
         else
               render json: {
                message: "wrong search type selected. Available resource are Event, Competition, Pass, Offer, Ticket and User."
@@ -270,4 +348,15 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
    def force_json
      request.format = :json
    end
+
+    def is_redeemed(offer_id, offer_type,user_id)
+      @check = Redemption.where(offer_id: offer_id).where(offer_type: offer_type).where(user_id: user_id)
+      if !@check.blank?
+         true
+      else
+        false
+      end
+    end
+
+
 end
