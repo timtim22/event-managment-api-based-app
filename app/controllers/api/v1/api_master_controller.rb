@@ -170,12 +170,12 @@ class Api::V1::ApiMasterController < ApplicationController
         "start_time" => event.start_time,
         "end_time" => event.end_time,
         "over_18" => event.over_18,
-        "price_type" => get_price_type(event),
-        "price" => get_price(event).to_s,
-        "has_passes" => has_passes?(event),
+        "price_type" => get_price_type(event.event),
+        "price" => get_price(event.event).to_s,
+        "has_passes" => has_passes?(event.event),
         "all_passes_added_to_wallet" => all_pass_added,
         "created_at" => event.created_at,
-        "categories" => event.categories
+        "categories" => event.event.categories
       }
      end
 
@@ -248,6 +248,14 @@ class Api::V1::ApiMasterController < ApplicationController
 
         demographics
    
+  end
+
+
+
+  def get_total_event_earning(event)
+    @total_amount = 0.0
+    event.tickets.map {|ticket| ticket.ticket_purchases.map {|p| total_amount += p.price } }
+    @total_amount
   end
 
 

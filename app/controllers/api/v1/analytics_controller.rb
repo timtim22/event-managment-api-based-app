@@ -3,7 +3,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
 
 
 
-  def event_stats
+  def get_event_stats
     if !params[:event_id].blank?
       event = Event.find(params[:event_id])       
         #if ticketed event
@@ -11,23 +11,17 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
            #Scenario 1 before live 
            if event.start_date > DateTime.now && event.end_date > DateTime
               stats = {
+                "total_attendees" => event.going_interest_levels.size,
                 "time_slot_total_attendees" => get_time_slot_total_attendees(params[:current_time_slot_dates], event),
-                "time_slot_increment_decrement_in_attendees" => get_time_slot_increment_decrement_in_attendees(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
-                "time_slot_attendees_date_wise" => get_time_slot_attendees_date_wise(params[:current_time_slot_dates], event),
+                "demographics" => get_demographics(event),
                 "time_slot_total_views" => get_time_slot_total_views(params[:current_time_slot_dates], event),
-                "time_slot_increment_decrement_in_views" => get_time_slot_increment_decrement_in_views(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
                 "time_slot_event_views_date_wise" => get_time_slot_event_views_date_wise(params[:current_time_slot_dates],event),
-                "time_slot_total_sold_tickets" => get_time_slot_total_sold_tickets(params[:current_time_slot_dates], event),
-                "time_slot_increment_decrement_in_sold_tickets" => time_slot_increment_decrement_in_sold_tickets(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
-                "time_slot_sold_tickets_date_wise" => get_time_slot_sold_tickets_date_wise(params[:current_time_slot_dates] ,event),
+                "time_slot_attendees_date_wise" => get_time_slot_attendees_date_wise(params[:current_time_slot_dates], event),
                 "time_slot_total_interested_people" => get_time_slot_total_interested_people(params[:current_time_slot_dates], event),
-                "time_slot_interested_increment_decrement" => get_time_slot_interested_increment_decrement(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
+                "time_slot_interested_people_date_wise" => get_time_slot_interested_people_date_wise(params[:current_time_slot_dates],event),
                 "time_slot_total_shared_events" => get_time_slot_total_shared_events(params[:current_time_slot_dates], event),
-                "time_slot_increment_decrement_in_shared_events" => get_time_slot_increment_decrement_in_shared_events(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
                 "time_slot_shares_date_wise" => get_time_slot_shares_date_wise(params[:current_time_slot_dates],event),
-                "time_slot_total_event_comments" => get_time_slot_total_event_comments(params[:current_time_slot_dates], event),
-                "time_slot_increment_decrement_in_event_comments" => get_time_slot_increment_decrement_in_event_comments(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
-                "time_slot_comments_date_wise" => get_time_slot_comments_date_wise(params[:current_time_slot_dates],event)
+                "total_earning" => event
               }
         
               event = {
@@ -495,6 +489,18 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
 
    @time_slot_dates_stats
  end
+
+ def get_time_slot_interested_people_date_wise(time_slot_dates,event)
+  dates_array = time_slot_dates.split(',').map {|s| s.to_s }
+  @time_slot_dates_stats = {}
+  dates_array.each do |date|
+   p_date = Date.parse(date)
+   @time_slot_dates_stats[date.to_date] = event.interested_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day).size
+
+  end# each
+
+  @time_slot_dates_stats
+end
 
 
 

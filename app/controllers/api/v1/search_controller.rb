@@ -145,7 +145,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
             }
         when params[:resource_type] == "User"
             @profiles = []
-            @business_profile = []
+            @business_profiles = []
             all_users = []
             profile = Profile.ransack(first_name_or_last_name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").each do |profile|
               @profiles << {
@@ -184,7 +184,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
               }
             end
           business_profile = BusinessProfile.ransack(profile_name_or_contact_name_or_display_name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").each do |profile|
-            @business_profile << {
+            @business_profiles << {
               id: profile.user.id,
               profile_name: profile.profile_name,
               contact_name: profile.contact_name,
@@ -218,6 +218,8 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
 
           end
 
+          all_users["business_users"] = @business_profiles
+          all_users["app_users"] = @profiles
 
             # business = User.web_users.ransack(name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").map  { |user| all_users.push(get_business_object(user)) }
               render json: {
@@ -225,7 +227,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
               success: true,
               message: '',
               data:  {
-                users: @business_profile
+                users: all_users
               }
             }
 

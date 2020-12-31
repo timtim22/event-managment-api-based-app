@@ -37,6 +37,7 @@ has_many :activity_logs, dependent: :destroy, as: :resource
 has_many :child_events, dependent: :destroy
 
 
+
 accepts_nested_attributes_for :event_attachments
 
 
