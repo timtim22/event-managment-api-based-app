@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_30_132811) do
+ActiveRecord::Schema.define(version: 2020_12_31_103614) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -599,6 +599,7 @@ ActiveRecord::Schema.define(version: 2020_12_30_132811) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "quantity"
+    t.string "price"
     t.index ["ticket_id"], name: "index_ticket_purchases_on_ticket_id"
     t.index ["user_id"], name: "index_ticket_purchases_on_user_id"
   end
