@@ -386,6 +386,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       #create event dates
       # params[:event_dates].map { |date| @event.event_dates.create!(date: date.to_date) }
       params[:event_dates].map { |date| @event.child_events.create!(
+            user_id: request_user.id,
             name: params[:name],
             image: params[:image],
             start_date: date.to_date,
