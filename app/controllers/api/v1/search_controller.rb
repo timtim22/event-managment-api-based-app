@@ -14,7 +14,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
       if !params[:search_term].blank? && !params[:resource_type].blank?
         case
           when params[:resource_type] == "Event"
-            e = Event.ransack(name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC").each do |event|
+            e = ChildEvent.ransack(name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC").each do |event|
               @event << {
                   "id" => event.id,
                   "image" => event.image,
@@ -26,11 +26,11 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                   "start_time" => event.start_time,
                   "end_time" => event.end_time,
                   "over_18" => event.over_18,
-                  "price_type" => get_price_type(event),
-                  "price" => get_price(event).to_s,
-                  "has_passes" => has_passes?(event),
+                  "price_type" => get_child_event_price_type(event),
+                  "price" => get_child_event_price(event).to_s,
+                  "has_passes" => has__child_event_passes?(event),
                   "created_at" => event.created_at,
-                  "categories" => event.categories
+                  "categories" => event.event.categories
                   }
             end
               render json: {
@@ -378,6 +378,35 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
         false
       end
     end
+
+  def get_child_event_price_type(event)
+    price_type = ''
+    if !event.event.tickets.blank?
+      price_type = event.event.tickets.first.ticket_type
+    else
+      price_type = 'no_admission_resources'
+    end
+     price_type
+  end
+
+  def get_child_event_price(event)
+    price = ''
+    if !event.event.tickets.where(ticket_type: 'buy').blank? && event.event.tickets.size > 1
+       prices = event.event.tickets.map {|ticket| ticket.price }
+       price =  '€' + event.event.start_price + ' - ' + '€' + event.event.end_price
+    elsif !event.event.tickets.where(ticket_type: 'buy').blank? && event.event.tickets.size == 1
+       price = '€' + event.event.ticket.price
+    elsif !event.event.tickets.where(ticket_type: 'pay_at_door').blank?
+       price = '€' + event.event.tickets.first.start_price.to_s +  ' - €' + event.event.tickets.first.end_price.to_s
+    else
+      price = '0'
+   end
+   price
+ end
+
+  def has__child_event_passes?(event)
+    !event.event.passes.blank?
+  end
 
 
 end
