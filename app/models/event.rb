@@ -11,7 +11,7 @@ validate  :has_one_category_at_least, on: :create
 validates :terms_conditions, presence: true, on: :create
 validates :image, file_size: { less_than: 3.megabytes }
 
-belongs_to :user, optional: true
+belongs_to :user
 has_many :comments, dependent: :destroy
 has_many :notifications, dependent: :destroy, as: :resource
 has_many :users, through: :comments
