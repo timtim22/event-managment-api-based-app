@@ -410,29 +410,29 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
     }
  end
 
-     def get_simple_child_event_object(event)
+     def get_simple_child_event_object(child_event)
         if request_user
-          all_pass_added = has_passes?(event.event) && all_passes_added_to_wallet?(request_user,event.passes)
+          all_pass_added = has_passes?(child_event.event) && all_passes_added_to_wallet?(request_user,child_event.event.passes)
         else
           all_pass_added = false
         end
       e = {
-        "id" => event.event.id,
-        "image" => event.event.image,
-        "name" => event.event.name,
-        "description" => event.event.description,
-        "location" => insert_space_after_comma(event.event.location),
-        "start_date" => event.event.end_date,
-        "end_date" => event.event.end_date,
-        "start_time" => event.event.start_time,
-        "end_time" => event.event.end_time,
-        "over_18" => event.event.over_18,
-        "price_type" => get_price_type(event.event),
-        "price" => get_price(event.event).to_s,
-        "has_passes" => has_passes?(event.event),
+        "id" => child_event.event.id,
+        "image" => child_event.event.image,
+        "name" => child_event.event.name,
+        "description" => child_event.event.description,
+        "location" => insert_space_after_comma(child_event.event.location),
+        "start_date" => child_event.event.end_date,
+        "end_date" => child_event.event.end_date,
+        "start_time" => child_event.event.start_time,
+        "end_time" => child_event.event.end_time,
+        "over_18" => child_event.event.over_18,
+        "price_type" => get_price_type(child_event.event),
+        "price" => get_price(child_event.event).to_s,
+        "has_passes" => has_passes?(child_event.event),
         "all_passes_added_to_wallet" => all_pass_added,
-        "created_at" => event.created_at,
-        "categories" => event.event.categories
+        "created_at" => child_event.created_at,
+        "categories" => child_event.event.categories
       }
      end
 
