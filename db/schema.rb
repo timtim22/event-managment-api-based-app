@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_30_132811) do
+ActiveRecord::Schema.define(version: 2020_12_31_103614) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -117,7 +117,6 @@ ActiveRecord::Schema.define(version: 2020_12_30_132811) do
     t.string "name", default: ""
     t.datetime "start_date"
     t.datetime "end_date"
-    t.datetime "terms_conditions"
     t.datetime "start_time"
     t.datetime "end_time"
     t.text "description", default: ""
@@ -199,6 +198,13 @@ ActiveRecord::Schema.define(version: 2020_12_30_132811) do
     t.index ["event_id"], name: "index_event_attachments_on_event_id"
   end
 
+  create_table "event_dates", force: :cascade do |t|
+    t.integer "event_id"
+    t.datetime "date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "event_forwardings", force: :cascade do |t|
     t.integer "user_id"
     t.integer "recipient_id"
@@ -256,6 +262,7 @@ ActiveRecord::Schema.define(version: 2020_12_30_132811) do
     t.string "status", default: "active"
     t.boolean "is_repetive", default: false
     t.string "frequency", default: "daily"
+    t.boolean "is_private", default: false
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
@@ -599,6 +606,7 @@ ActiveRecord::Schema.define(version: 2020_12_30_132811) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "quantity"
+    t.decimal "price", precision: 8, scale: 2, default: "0.0"
     t.index ["ticket_id"], name: "index_ticket_purchases_on_ticket_id"
     t.index ["user_id"], name: "index_ticket_purchases_on_user_id"
   end
@@ -662,7 +670,7 @@ ActiveRecord::Schema.define(version: 2020_12_30_132811) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "location_enabled"
+    t.boolean "location_enabled", default: true
   end
 
   create_table "views", force: :cascade do |t|

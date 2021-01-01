@@ -258,7 +258,26 @@ class Api::V1::ApiMasterController < ApplicationController
     @total_amount
   end
 
+ def get_total_event_checked_in(event)
+   total_checked_in = 0
+   event.passes.map {|pass| total_checked_in += pass.redemptions.size }
+   event.tickets.map {|ticket| total_checked_in += ticket.redemptiions.size }
+   total_checked_in
+ end
 
+
+ def get_event_pass_checked_in(event)
+  pass_checked_in = 0
+  event.passes.map {|pass| pass_checked_in += pass.redemptions.size }
+  pass_checked_in
+ end
+
+
+ def get_event_paid_checked_in(event)
+   paid_checked_in = 0
+   event.tickets.map {|ticket| paid_checked_in += ticket.redemptiions.size }
+   paid_checked_in
+ end
 
 
 
