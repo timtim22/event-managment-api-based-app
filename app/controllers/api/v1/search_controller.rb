@@ -10,15 +10,34 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
   param :search_term, String, :desc => "Friend ID", :required => true
 
   def global_search
+    @event = []
       if !params[:search_term].blank? && !params[:resource_type].blank?
         case
           when params[:resource_type] == "Event"
-            @events = Event.ransack(name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC")
+            e = Event.ransack(name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC").each do |event|
+              @event << {
+                  "id" => event.id,
+                  "image" => event.image,
+                  "name" => event.name,
+                  "description" => event.description,
+                  "location" => insert_space_after_comma(event.location),
+                  "start_date" => event.end_date,
+                  "end_date" => event.end_date,
+                  "start_time" => event.start_time,
+                  "end_time" => event.end_time,
+                  "over_18" => event.over_18,
+                  "price_type" => get_price_type(event),
+                  "price" => get_price(event).to_s,
+                  "has_passes" => has_passes?(event),
+                  "created_at" => event.created_at,
+                  "categories" => event.categories
+                  }
+            end
               render json: {
               code: 200,
               success: true,
               message: '',
-              data:  @events
+              data:  @event
             }
           when params[:resource_type] == "Competition"
           @competitions = []
