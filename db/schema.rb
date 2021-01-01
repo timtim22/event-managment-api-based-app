@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_31_103614) do
+ActiveRecord::Schema.define(version: 2021_01_01_060300) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -142,6 +142,7 @@ ActiveRecord::Schema.define(version: 2020_12_31_103614) do
     t.boolean "is_private", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "pass", default: "false"
     t.index ["event_id"], name: "index_child_events_on_event_id"
   end
 

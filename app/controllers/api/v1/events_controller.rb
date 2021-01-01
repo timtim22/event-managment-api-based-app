@@ -153,7 +153,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         end
 
         #all events 1
-        @events = ChildEvent
+        @events = ChildEvent.not_expired
 
         #location based events 2
         @events = ChildEvent.ransack(location_cont: location).result(distinct: true) if !params[:location].blank?
@@ -197,7 +197,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
               #location ,pass, categories, price 14
               @events = ChildEvent.where("price #{operator} ?", params[:price]).where("start_price < ?", 1).where("end_price < ?", 1).where(pass: 'true').where(first_cat_id: cats_ids).or(Event.where(pass: "true").where(first_cat_id: cats_ids).where("price < ?", 1).where("start_price #{operator} ?", params[:price]).or(Event.where(pass: "true").where(first_cat_id: cats_ids).where("price < ?", 1).where("end_price #{operator} ?", params[:price]))).ransack(location_cont: location).result(distinct: true) if !params[:price].blank? && !params[:pass].blank? && !params[:location].blank? && !params[:categories].blank?
 
-              @response = @events.sort_by_date.page(params[:page]).per(75).map {|event| get_simple_event_object(event) }
+              @response = @events.sort_by_date.page(params[:page]).per(75).map {|event| get_simple_event_object(event.event) }
 
               render json: {
                 code: 200,

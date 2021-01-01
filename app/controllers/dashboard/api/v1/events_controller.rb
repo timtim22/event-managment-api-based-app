@@ -430,6 +430,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
           resource[:fields].each do |f|
           @pass =@event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], terms_conditions: f[:terms_conditions], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
           @event.update!(pass: 'true')
+          @event.child_events.map {|ch| ch.update!(pass: 'true')}
           end #each
 
         else
