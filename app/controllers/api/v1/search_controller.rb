@@ -86,6 +86,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                           @passes << {
                             id: pass.id,
                             event_name:pass.event.name,
+                            event_name:pass.title,
                             pass_type: pass.pass_type,
                             host_image:pass.event.user.avatar,
                             event_image:pass.event.image,
@@ -142,7 +143,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                 end
               end #if
             else
-              SpecialOffer.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).not_expired.per(10).order(created_at: "ASC").each do |offer|
+              SpecialOffer.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC").each do |offer|
                     @special_offers << {
                     id: offer.id,
                     title: offer.title,
@@ -202,7 +203,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                 location_enabled: profile.user.location_enabled
               }
             end
-          business_profile = BusinessProfile.ransack(profile_name_or_contact_name_or_display_name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").each do |profile|
+          business_profile = BusinessProfile.ransack(profile_name_or_contact_name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").each do |profile|
             @business_profiles << {
               id: profile.user.id,
               profile_name: profile.profile_name,
