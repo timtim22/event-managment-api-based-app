@@ -169,13 +169,13 @@ class Api::V1::ApiMasterController < ApplicationController
         "end_date" => event.end_date,
         "start_time" => event.start_time,
         "end_time" => event.end_time,
-        "over_18" => event.over_18,
+        "over_18" => event.event.over_18,
         "price_type" => get_price_type(event.event),
         "price" => get_price(event.event).to_s,
         "has_passes" => has_passes?(event.event),
         "all_passes_added_to_wallet" => all_pass_added,
         "created_at" => event.created_at,
-        "categories" => event.event.categories
+        "categories" => event.categories
       }
      end
 
@@ -217,7 +217,7 @@ class Api::V1::ApiMasterController < ApplicationController
           demographics['gays_percentage'] = if gays.size > 0 then gays.uniq.size.to_f / total_count.to_f * 100.0  else 0 end
 
           demographics
-     
+
     end
 
 
@@ -247,7 +247,7 @@ class Api::V1::ApiMasterController < ApplicationController
         demographics['gays_percentage'] = if gays.size > 0 then gays.uniq.size.to_f / total_count.to_f * 100.0  else 0 end
 
         demographics
-   
+
   end
 
 

@@ -10,20 +10,39 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
   param :search_term, String, :desc => "Friend ID", :required => true
 
   def global_search
+    @event = []
       if !params[:search_term].blank? && !params[:resource_type].blank?
         case
           when params[:resource_type] == "Event"
-            @events = Event.ransack(name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC")
+            e = ChildEvent.ransack(name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC").each do |event|
+              @event << {
+                  "id" => event.id,
+                  "image" => event.image,
+                  "name" => event.name,
+                  "description" => event.description,
+                  "location" => insert_space_after_comma(event.location),
+                  "start_date" => event.end_date,
+                  "end_date" => event.end_date,
+                  "start_time" => event.start_time,
+                  "end_time" => event.end_time,
+                  "over_18" => event.over_18,
+                  "price_type" => get_child_event_price_type(event),
+                  "price" => get_child_event_price(event).to_s,
+                  "has_passes" => has__child_event_passes?(event),
+                  "created_at" => event.created_at,
+                  "categories" => event.event.categories
+                  }
+            end
               render json: {
               code: 200,
               success: true,
               message: '',
-              data:  @events
+              data:  @event
             }
           when params[:resource_type] == "Competition"
           @competitions = []
           if request_user
-            Competition.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC").each do |competition|
+            Competition.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC").each do |competition|
               if !is_removed_competition?(request_user, competition) && showability?(request_user, competition) == true
               @competitions << {
                   id: competition.id,
@@ -38,7 +57,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
               end
             end
           else
-            Competition.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).not_expired.per(10).order(created_at: "ASC").each do |competition|
+            Competition.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).not_expired.per(10).order(created_at: "ASC").each do |competition|
               @competitions << {
                   id: competition.id,
                   title: competition.title,
@@ -59,7 +78,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
             }
           when params[:resource_type] == "Pass"
             @passes = []
-            passes = Pass.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).not_expired.per(10).order(created_at: "ASC")
+            passes = Pass.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).not_expired.per(10).order(created_at: "ASC")
               if !passes.blank?
                       passes.each do |pass|
                        if request_user
@@ -96,7 +115,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                         data:  @passes
                       }
           when params[:resource_type] == "Ticket"
-            @tickets = Ticket.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
+            @tickets = Ticket.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
               render json: {
               code: 200,
               success: true,
@@ -106,7 +125,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
           when params[:resource_type] == "Offer"
             @special_offers = []
             if request_user
-              SpecialOffer.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC").each do |offer|
+              SpecialOffer.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC").each do |offer|
 
                 if !is_removed_offer?(request_user, offer) && !is_added_to_wallet?(offer.id)
                     @special_offers << {
@@ -123,7 +142,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                 end
               end #if
             else
-              SpecialOffer.ransack(title_cont: params[:search_term]).result(distinct:true).page(params[:page]).not_expired.per(10).order(created_at: "ASC").each do |offer|
+              SpecialOffer.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).not_expired.per(10).order(created_at: "ASC").each do |offer|
                     @special_offers << {
                     id: offer.id,
                     title: offer.title,
@@ -146,8 +165,8 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
         when params[:resource_type] == "User"
             @profiles = []
             @business_profiles = []
-            all_users = []
-            profile = Profile.ransack(first_name_or_last_name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").each do |profile|
+            all_users = Hash.new
+            profile = Profile.ransack(first_name_or_last_name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").each do |profile|
               @profiles << {
                 id: profile.user.id,
                 first_name: profile.first_name,
@@ -183,7 +202,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                 location_enabled: profile.user.location_enabled
               }
             end
-          business_profile = BusinessProfile.ransack(profile_name_or_contact_name_or_display_name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").each do |profile|
+          business_profile = BusinessProfile.ransack(profile_name_or_contact_name_or_display_name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").each do |profile|
             @business_profiles << {
               id: profile.user.id,
               profile_name: profile.profile_name,
@@ -359,6 +378,35 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
         false
       end
     end
+
+  def get_child_event_price_type(event)
+    price_type = ''
+    if !event.event.tickets.blank?
+      price_type = event.event.tickets.first.ticket_type
+    else
+      price_type = 'no_admission_resources'
+    end
+     price_type
+  end
+
+  def get_child_event_price(event)
+    price = ''
+    if !event.event.tickets.where(ticket_type: 'buy').blank? && event.event.tickets.size > 1
+       prices = event.event.tickets.map {|ticket| ticket.price }
+       price =  '€' + event.event.start_price + ' - ' + '€' + event.event.end_price
+    elsif !event.event.tickets.where(ticket_type: 'buy').blank? && event.event.tickets.size == 1
+       price = '€' + event.event.ticket.price
+    elsif !event.event.tickets.where(ticket_type: 'pay_at_door').blank?
+       price = '€' + event.event.tickets.first.start_price.to_s +  ' - €' + event.event.tickets.first.end_price.to_s
+    else
+      price = '0'
+   end
+   price
+ end
+
+  def has__child_event_passes?(event)
+    !event.event.passes.blank?
+  end
 
 
 end

@@ -101,11 +101,11 @@ class Api::V1::SettingsController < Api::V1::ApiMasterController
               }
             end
          else
-             blockee = User.find(params[:resource_id])
              if setting.update!(is_on: params[:is_on], blocked_at: Time.zone.now)
               if(params[:setting_name] == 'block' && params[:resource_type] == 'User')
-              setting_reverse = UserSetting.where(user_id: blockee.id).where(resource_id: request_user.id).where(resource_type:  params[:resource_type]).where(name: params[:setting_name]).first
-               setting_reverse.update!(is_on: params[:is_on])
+              blockee = User.find(params[:resource_id])
+                setting_reverse = UserSetting.where(user_id: blockee.id).where(resource_id: request_user.id).where(resource_type:  params[:resource_type]).where(name: params[:setting_name]).first
+                 setting_reverse.update!(is_on: params[:is_on])
               end
               render json:  {
                 code: 200,

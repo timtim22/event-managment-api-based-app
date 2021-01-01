@@ -7,8 +7,9 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   def show_event
 
     if !params[:event_id].blank?
-      e = Event.find(params[:event_id])
-      @passes = []
+        child_event = ChildEvent.find(params[:event_id])
+        e = child_event.event
+          @passes = []
           @ticket = []
           all_pass_added = false
           if request_user
@@ -153,7 +154,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         end
 
         #all events 1
-        @events = ChildEvent
+        @events = ChildEvent.not_expired
 
         #location based events 2
         @events = ChildEvent.ransack(location_cont: location).result(distinct: true) if !params[:location].blank?

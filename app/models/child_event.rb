@@ -4,5 +4,4 @@ class ChildEvent < ApplicationRecord
  scope :sort_by_date, -> { order(start_date: 'ASC') }
  mount_uploader :image, ImageUploader
  mount_base64_uploader :image, ImageUploader
-
 end
