@@ -7,6 +7,7 @@ class Ticket < ApplicationRecord
   has_many :ticket_purchases, dependent: :destroy
   has_many :transactions, dependent: :destroy
   has_many :refund_requests, dependent: :destroy
+  has_many :redemptions, dependent: :destroy, as: :offer
 
   
 

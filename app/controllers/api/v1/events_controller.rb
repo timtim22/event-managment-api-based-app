@@ -7,8 +7,9 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   def show_event
 
     if !params[:event_id].blank?
-      e = Event.find(params[:event_id])
-      @passes = []
+        child_event = ChildEvent.find(params[:event_id])
+        e = child_event.event
+          @passes = []
           @ticket = []
           all_pass_added = false
           if request_user
@@ -198,7 +199,6 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
               @events = ChildEvent.where("price #{operator} ?", params[:price]).where("start_price < ?", 1).where("end_price < ?", 1).where(pass: 'true').where(first_cat_id: cats_ids).or(Event.where(pass: "true").where(first_cat_id: cats_ids).where("price < ?", 1).where("start_price #{operator} ?", params[:price]).or(Event.where(pass: "true").where(first_cat_id: cats_ids).where("price < ?", 1).where("end_price #{operator} ?", params[:price]))).ransack(location_cont: location).result(distinct: true) if !params[:price].blank? && !params[:pass].blank? && !params[:location].blank? && !params[:categories].blank?
 
               @response = @events.sort_by_date.page(params[:page]).per(75).map {|event| get_simple_child_event_object(event) }
-
               render json: {
                 code: 200,
                 size: @response.size,

@@ -6,6 +6,7 @@ class User < ApplicationRecord
   has_many :assignments, dependent: :destroy
   has_many :roles, through: :assignments
   has_many :events, dependent: :destroy
+  has_many :child_events, dependent: :destroy
   has_one :student_detail, dependent: :destroy
   has_one :business_detail, dependent: :destroy
   has_one :profile, dependent: :destroy
