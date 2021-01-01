@@ -197,7 +197,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
               #location ,pass, categories, price 14
               @events = ChildEvent.where("price #{operator} ?", params[:price]).where("start_price < ?", 1).where("end_price < ?", 1).where(pass: 'true').where(first_cat_id: cats_ids).or(Event.where(pass: "true").where(first_cat_id: cats_ids).where("price < ?", 1).where("start_price #{operator} ?", params[:price]).or(Event.where(pass: "true").where(first_cat_id: cats_ids).where("price < ?", 1).where("end_price #{operator} ?", params[:price]))).ransack(location_cont: location).result(distinct: true) if !params[:price].blank? && !params[:pass].blank? && !params[:location].blank? && !params[:categories].blank?
 
-              @response = @events.sort_by_date.page(params[:page]).per(75).map {|event| get_simple_event_object(event.event) }
+              @response = @events.sort_by_date.page(params[:page]).per(75).map {|event| get_simple_child_event_object(event) }
 
               render json: {
                 code: 200,
@@ -409,6 +409,32 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       "categories" => event.categories
     }
  end
+
+     def get_simple_child_event_object(event)
+        if request_user
+          all_pass_added = has_child_event_passes?(event) && all_passes_added_to_wallet?(request_user,event.passes)
+        else
+          all_pass_added = false
+        end
+      e = {
+        "id" => event.event.id,
+        "image" => event.event.image,
+        "name" => event.event.name,
+        "description" => event.event.description,
+        "location" => insert_space_after_comma(event.event.location),
+        "start_date" => event.event.end_date,
+        "end_date" => event.event.end_date,
+        "start_time" => event.event.start_time,
+        "end_time" => event.event.end_time,
+        "over_18" => event.event.over_18,
+        "price_type" => get_price_type(event.event),
+        "price" => get_price(event.event).to_s,
+        "has_passes" => has_passes?(event.event),
+        "all_passes_added_to_wallet" => all_pass_added,
+        "created_at" => event.created_at,
+        "categories" => event.event.categories
+      }
+     end
 
   # calculates interest level demographics interested + going
 
