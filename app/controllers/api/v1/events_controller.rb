@@ -412,7 +412,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 
      def get_simple_child_event_object(event)
         if request_user
-          all_pass_added = has_child_event_passes?(event) && all_passes_added_to_wallet?(request_user,event.passes)
+          all_pass_added = has_passes?(event) && all_passes_added_to_wallet?(request_user,event.passes)
         else
           all_pass_added = false
         end
