@@ -417,7 +417,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
           all_pass_added = false
         end
       e = {
-        "id" => child_event.event.id,
+        "id" => child_event.id,
         "image" => child_event.event.image,
         "name" => child_event.event.name,
         "description" => child_event.event.description,
