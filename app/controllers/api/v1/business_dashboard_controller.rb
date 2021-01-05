@@ -94,7 +94,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         title: offer.title,
         image: offer.image,
         location: location,
-        validity: offer.validity,
+        validity: offer.validity.strftime(get_time_format),
         description: offer.description,
         ambassador_rate: offer.ambassador_rate,
         terms_conditions: offer.terms_conditions, 
