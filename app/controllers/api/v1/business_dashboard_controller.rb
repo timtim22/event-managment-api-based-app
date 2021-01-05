@@ -131,7 +131,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        location: competition.location,
+        location: location,
         image: competition.image.url,
         start_date: competition.start_date,
         end_date: competition.end_date,
