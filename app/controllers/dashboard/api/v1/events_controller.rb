@@ -669,10 +669,11 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
             )
         else
            @event.child_events.create!(
+              user_id: request_user.id,
               name: params[:name],
               image: params[:image],
-              start_date: date.to_date,
-              end_date: date.to_date,
+              start_date: date[:date].to_date,
+              end_date: date[:date].to_date,
               start_time: params['start_time'],
               end_time: params['end_time'],
               over_18: params[:over_18],
@@ -686,6 +687,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
               price: params[:price],
               event_type: params[:event_type]
             )
+         
         end
       end
       success = true
@@ -754,9 +756,9 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
     end#if
 
-    @event["id"] =
+    @event["id"] = 
 
-    
+
      if success
         render json:  {
           code: 200,
