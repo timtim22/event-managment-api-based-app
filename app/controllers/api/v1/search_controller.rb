@@ -238,8 +238,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
 
           end
 
-          all_users["business_users"] = @business_profiles
-          all_users["app_users"] = @profiles
+          all_users = @business_profiles + @profiles
 
             # business = User.web_users.ransack(name_cont: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").map  { |user| all_users.push(get_business_object(user)) }
               render json: {

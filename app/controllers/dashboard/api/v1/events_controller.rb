@@ -82,7 +82,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
      'creator_name' => get_full_name(e.user),
      'creator_id' => e.user.id,
      'creator_image' => e.user.avatar,
-     'event_status' => e.status
+     'event_status' => e.status,
+     'event_type' => e.event_type
   }
 
    render json: {

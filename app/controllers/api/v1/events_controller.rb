@@ -198,8 +198,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
               #location ,pass, categories, price 14
               @events = ChildEvent.where("price #{operator} ?", params[:price]).where("start_price < ?", 1).where("end_price < ?", 1).where(pass: 'true').where(first_cat_id: cats_ids).or(Event.where(pass: "true").where(first_cat_id: cats_ids).where("price < ?", 1).where("start_price #{operator} ?", params[:price]).or(Event.where(pass: "true").where(first_cat_id: cats_ids).where("price < ?", 1).where("end_price #{operator} ?", params[:price]))).ransack(location_cont: location).result(distinct: true) if !params[:price].blank? && !params[:pass].blank? && !params[:location].blank? && !params[:categories].blank?
 
-              @response = @events.sort_by_date.page(params[:page]).per(75).map {|event| get_simple_event_object(event) }
-
+              @response = @events.sort_by_date.page(params[:page]).per(75).map {|event| get_simple_child_event_object(event) }
               render json: {
                 code: 200,
                 size: @response.size,
@@ -410,6 +409,32 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       "categories" => event.categories
     }
  end
+
+     def get_simple_child_event_object(child_event)
+        if request_user
+          all_pass_added = has_passes?(child_event.event) && all_passes_added_to_wallet?(request_user,child_event.event.passes)
+        else
+          all_pass_added = false
+        end
+      e = {
+        "id" => child_event.id,
+        "image" => child_event.event.image,
+        "name" => child_event.event.name,
+        "description" => child_event.event.description,
+        "location" => insert_space_after_comma(child_event.event.location),
+        "start_date" => child_event.event.end_date,
+        "end_date" => child_event.event.end_date,
+        "start_time" => child_event.event.start_time,
+        "end_time" => child_event.event.end_time,
+        "over_18" => child_event.event.over_18,
+        "price_type" => get_price_type(child_event.event),
+        "price" => get_price(child_event.event).to_s,
+        "has_passes" => has_passes?(child_event.event),
+        "all_passes_added_to_wallet" => all_pass_added,
+        "created_at" => child_event.created_at,
+        "categories" => child_event.event.categories
+      }
+     end
 
   # calculates interest level demographics interested + going
 

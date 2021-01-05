@@ -51,40 +51,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
 
   def events
     @events = []
-    business.events.page(params[:page]).per(20).each do |e|
-      sponsors = []
-      additional_media = []
-      location = {
-        "name" => e.location,
-        "geometry" => {
-          "lat" => e.lat,
-          'lng' => e.lng
-        }
-      }
-
-      admission_resources = {
-        "ticketes" => e.tickets,
-        "passes" => e.passes
-      }
-
-      if !e.sponsors.blank?
-        e.sponsors.each do |sponsor|
-        sponsors << {
-          "sponsor_image" => sponsor.sponsor_image.url,
-          "external_url" => sponsor.external_url
-        }
-       end #each
-      end
-
-      if !e.event_attachments.blank?
-        e.event_attachments.each do |attachment|
-        additional_media << {
-          "media_type" => attachment.media_type,
-          "media" => attachment.media.url 
-        }
-       end#each 
-      end
-
+    business.child_events.page(params[:page]).per(30).each do |e|
       @events << {
         'id' => e.id,
         'name' => e.name,
@@ -92,16 +59,10 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         'end_date' => e.end_date,
         'start_time' => e.start_time,
         'end_time' => e.end_time,
-        'image' => e.image.url,
-        'location' => location,
-        'description' => e.description,
-        'categories' => e.categories,
-        'admission_resources' => admission_resources, 
-        'sponsors' => sponsors,
-        'event_attachments' => additional_media,
-        'creator_name' => get_full_name(e.user),
-        'creator_id' => e.user.id,
-        'creator_image' => e.user.avatar,
+        'image' => e.image,
+        'location' => e.location,
+        'price' => get_price(e.event),
+        'price_type' => get_price_type(e.event)
      }
      
     end #each
@@ -136,7 +97,11 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         validity: offer.validity,
         description: offer.description,
         ambassador_rate: offer.ambassador_rate,
-        terms_conditions: offer.terms_conditions 
+        terms_conditions: offer.terms_conditions, 
+        creator_name: get_full_name(offer.user), 
+        creator_image: offer.user.avatar, 
+        start_time: offer.time, 
+        end_time: offer.end_time
       }
     end
     render json: {
@@ -151,9 +116,28 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
 
 
   def competitions
-    competitions = []
-    business.competitions.page(params[:page]).per(20).each do |competition|
-      competitions <<  get_competition_object(competition)
+    @competitions = []
+    business.competitions.page(params[:page]).per(30).each do |competition|
+      location = {
+        name: competition.location,
+        geometry: {
+          lat: competition.lat,
+          lng: competition.lng
+        }
+      }
+      @competitions <<  {
+        id: competition.id,
+        title: competition.title,
+        description: competition.description,
+        location: competition.location,
+        image: competition.image.url,
+        start_date: competition.start_date,
+        end_date: competition.end_date,
+        creator_name: get_full_name(competition.user),
+        creator_image: competition.user.avatar,
+        terms_conditions: competition.terms_conditions,
+        validity: competition.validity.strftime(get_time_format)
+      }
     end #each
 
     render json: {
@@ -161,7 +145,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
       success: true,
       message: '',
       data: {
-        competitions: competitions
+        competitions: @competitions
       }
     }
   end
