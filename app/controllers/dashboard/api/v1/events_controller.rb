@@ -652,8 +652,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
           @event.child_events.find(date[:id]).update!(
               name: params[:name],
               image: params[:image],
-              start_date: date,
-              end_date: date,
+              start_date: date[:date],
+              end_date: date[:date],
               start_time: params['start_time'],
               end_time: params['end_time'],
               over_18: params[:over_18],
@@ -754,6 +754,9 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
     end#if
 
+    @event["id"] =
+
+    
      if success
         render json:  {
           code: 200,
