@@ -52,39 +52,6 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
   def events
     @events = []
     business.child_events.page(params[:page]).per(30).each do |e|
-      # sponsors = []
-      # additional_media = []
-      # location = {
-      #   "name" => e.location,
-      #   "geometry" => {
-      #     "lat" => e.lat,
-      #     'lng' => e.lng
-      #   }
-      # }
-
-      # admission_resources = {
-      #   "ticketes" => e.tickets,
-      #   "passes" => e.passes
-      # }
-
-      # if !e.sponsors.blank?
-      #   e.sponsors.each do |sponsor|
-      #   sponsors << {
-      #     "sponsor_image" => sponsor.sponsor_image.url,
-      #     "external_url" => sponsor.external_url
-      #   }
-      #  end #each
-      # end
-
-      # if !e.event_attachments.blank?
-      #   e.event_attachments.each do |attachment|
-      #   additional_media << {
-      #     "media_type" => attachment.media_type,
-      #     "media" => attachment.media.url 
-      #   }
-      #  end#each 
-      # end
-
       @events << {
         'id' => e.id,
         'name' => e.name,
@@ -145,9 +112,19 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
 
 
   def competitions
-    competitions = []
-    business.competitions.page(params[:page]).per(20).each do |competition|
-      competitions <<  get_competition_object(competition)
+    @competitions = []
+    business.competitions.page(params[:page]).per(30).each do |competition|
+      @competitions <<  {
+        id: competition.id,
+        title: competition.title,
+        description: competition.description,
+        location: competition.location,
+        start_date: competition.start_date,
+        end_date: competition.end_date,
+        creator_name: get_full_name(competition.user),
+        creator_image: competition.user.avatar,
+        terms_conditions: competition.terms_conditions
+      }
     end #each
 
     render json: {
@@ -155,7 +132,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
       success: true,
       message: '',
       data: {
-        competitions: competitions
+        competitions: @competitions
       }
     }
   end
