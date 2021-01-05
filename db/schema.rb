@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 2021_01_01_105059) do
-=======
 ActiveRecord::Schema.define(version: 2021_01_01_105414) do
->>>>>>> 479989f8a18264a1c0e6428edf46f2053921ff98
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -121,10 +117,7 @@ ActiveRecord::Schema.define(version: 2021_01_01_105414) do
     t.string "name", default: ""
     t.datetime "start_date"
     t.datetime "end_date"
-<<<<<<< HEAD
-=======
     t.datetime "terms_conditions"
->>>>>>> 479989f8a18264a1c0e6428edf46f2053921ff98
     t.datetime "start_time"
     t.datetime "end_time"
     t.text "description", default: ""
@@ -272,10 +265,6 @@ ActiveRecord::Schema.define(version: 2021_01_01_105414) do
     t.string "status", default: "active"
     t.boolean "is_repetive", default: false
     t.string "frequency", default: "daily"
-<<<<<<< HEAD
-    t.boolean "is_private", default: false
-=======
->>>>>>> 479989f8a18264a1c0e6428edf46f2053921ff98
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
@@ -683,11 +672,7 @@ ActiveRecord::Schema.define(version: 2021_01_01_105414) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-<<<<<<< HEAD
-    t.boolean "location_enabled", default: true
-=======
     t.boolean "location_enabled"
->>>>>>> 479989f8a18264a1c0e6428edf46f2053921ff98
   end
 
   create_table "views", force: :cascade do |t|

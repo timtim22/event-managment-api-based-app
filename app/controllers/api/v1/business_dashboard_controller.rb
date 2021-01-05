@@ -94,14 +94,16 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         title: offer.title,
         image: offer.image,
         location: location,
-        validity: offer.validity,
+        validity: offer.validity.strftime(get_time_format),
         description: offer.description,
         ambassador_rate: offer.ambassador_rate,
         terms_conditions: offer.terms_conditions, 
         creator_name: get_full_name(offer.user), 
         creator_image: offer.user.avatar, 
         start_time: offer.time, 
-        end_time: offer.end_time
+        end_time: offer.end_time,
+        quantity: offer.quantity,
+        redeem_count: get_redeem_count(offer)
       }
     end
     render json: {
@@ -129,7 +131,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        location: competition.location,
+        location: location,
         image: competition.image.url,
         start_date: competition.start_date,
         end_date: competition.end_date,
