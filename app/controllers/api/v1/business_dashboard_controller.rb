@@ -129,13 +129,14 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        location: location,
+        location: competition.location,
         image: competition.image.url,
         start_date: competition.start_date,
         end_date: competition.end_date,
         creator_name: get_full_name(competition.user),
         creator_image: competition.user.avatar,
-        terms_conditions: competition.terms_conditions
+        terms_conditions: competition.terms_conditions,
+        validity: competition.validity.strftime(get_time_format)
       }
     end #each
 
