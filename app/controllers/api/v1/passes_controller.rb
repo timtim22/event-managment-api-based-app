@@ -2,7 +2,8 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
 
   def index
     if !params[:event_id].blank?
-      @event = Event.find(params[:event_id])
+      child_event = ChildEvent.find(params[:event_id])
+      @event = child_event.event
       @passes = []
       passes = Pass.where(event_id: @event.id).page(params[:page]).per(30)
       if !passes.blank?

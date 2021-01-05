@@ -398,7 +398,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
              success: true,
              message: '',
              data: {
-               passees: @final_sorted }
+               passes: @final_sorted }
            }
 
 end

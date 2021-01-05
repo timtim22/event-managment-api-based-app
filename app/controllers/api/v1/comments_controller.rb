@@ -14,7 +14,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
   def create
 
    if !params[:event_id].blank? && !params[:is_reply].blank?
-    @event = Event.find(params[:event_id])
+    @event = ChildEvent.find(params[:event_id])
     if !blocked_event?(request_user, @event)
     if params[:is_reply] == 'false'
      @comment = @event.comments.new
@@ -272,7 +272,7 @@ end
 
 
    def comments
-    @event = Event.find(params[:event_id])
+    @event = ChildEvent.find(params[:event_id])
      @comments = []
     ## if event is not blocked by request user
     if !blocked_event?(request_user, @event)
@@ -408,7 +408,7 @@ end
 
 def mark_as_read
   if !params[:event_id].blank?
-    event = Event.find(params[:event_id])
+    event = ChildEvent.find(params[:event_id])
     if event.comments.unread.update_all(read_at: Time.zone.now, reader_id: request_user.id)
       render json: {
         code: 200,

@@ -350,7 +350,7 @@ end
      user.activity_logs.sort_by_date.page(params[:page]).per(10).each do |log|
       resource = {}
       case log.resource_type
-      when 'Event'
+      when 'ChildEvent'
        resource['id'] = log.resource_id
        resource['name'] = log.resource.name
        resource['host_name'] = get_full_name(log.resource.user)
