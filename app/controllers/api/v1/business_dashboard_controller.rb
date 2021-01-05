@@ -92,10 +92,10 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         'end_date' => e.end_date,
         'start_time' => e.start_time,
         'end_time' => e.end_time,
-        'image' => e.image.url,
-        'location' => location,
-        'price' => e.event.ticket.price,
-        'price_type' => e.event.ticket.ticket_type
+        'image' => e.image,
+        'location' => e.location,
+        'price' => get_price(e.event),
+        'price_type' => get_price_type(e.event)
      }
      
     end #each
