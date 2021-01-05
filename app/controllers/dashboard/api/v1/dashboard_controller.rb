@@ -54,6 +54,35 @@ class Dashboard::Api::V1::DashboardController < Dashboard::Api::V1::ApiMasterCon
 end
    # end
 
+  def get_parent_event_stats
+    if !params[:event_id].blank?
+      @event = []
+      e = Event.find(params[:event_id])
+      @event = {
+        total_views: e.views.size,
+        total_comments: e.comments.size,
+        ambassadors: e.user.ambassadors.size,
+        new_followers: e.user.following_relationships.where('created_at >= ?', 1.week.ago).count
+      }
+      render json: {
+        code: 200,
+        success: true,
+        message: 'Dashboard Stats',
+        data: {
+          stats: @event
+        }
+          }
+    else
+        render json: {
+          code: 400,
+          success: false,
+          message: 'event required.',
+          data: nil
+        }
+      end #if
+   # def total_events
+end
+
 
 
   def get_event_stats

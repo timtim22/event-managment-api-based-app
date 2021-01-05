@@ -1,6 +1,7 @@
 class Competition < ApplicationRecord
   belongs_to :user, optional: true
   mount_uploader :image, ImageUploader
+  mount_base64_uploader :image, ImageUploader
   has_many :registrations,->{ where(event_type: 'Competition') }, foreign_key: :event_id, class_name: "Registration", dependent: :destroy
   has_many :participants, through: :registrations, source: :user
   has_many :competition_winners

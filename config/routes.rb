@@ -258,6 +258,7 @@ Rails.application.routes.draw do
 
 
         get '/get-dashboard-stats' => 'dashboard#get_dashboard_stats'
+        post '/get-parent-event-stats' => 'dashboard#get_parent_event_stats'
 
       end
     end
