@@ -317,7 +317,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 
   def create_view
     if !params[:event_id].blank?
-      event = Event.find(params[:event_id])
+      event = ChildEvent.find(params[:event_id])
     if view = event.views.create!(user_id: request_user.id, business_id: event.user.id)
       render json: {
         code: 200,
