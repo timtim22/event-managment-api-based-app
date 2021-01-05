@@ -97,7 +97,11 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         validity: offer.validity,
         description: offer.description,
         ambassador_rate: offer.ambassador_rate,
-        terms_conditions: offer.terms_conditions 
+        terms_conditions: offer.terms_conditions, 
+        creator_name: get_full_name(offer.user), 
+        creator_image: offer.user.avatar, 
+        start_time: offer.time, 
+        end_time: offer.end_time
       }
     end
     render json: {
@@ -114,11 +118,19 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
   def competitions
     @competitions = []
     business.competitions.page(params[:page]).per(30).each do |competition|
+      location = {
+        name: competition.location,
+        geometry: {
+          lat: competition.lat,
+          lng: competition.lng
+        }
+      }
       @competitions <<  {
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        location: competition.location,
+        location: location,
+        image: competition.image.url,
         start_date: competition.start_date,
         end_date: competition.end_date,
         creator_name: get_full_name(competition.user),
