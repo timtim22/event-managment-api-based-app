@@ -53,6 +53,15 @@ class Dashboard::Api::V1::DashboardController < Dashboard::Api::V1::ApiMasterCon
    # def total_events
 end
    # end
+
+
+
+  def get_event_stats
+
+  end
+
+
+  
    private
 
   def get_time_slot_total_events(current_time_slot_dates, business)

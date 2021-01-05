@@ -201,6 +201,13 @@ ActiveRecord::Schema.define(version: 2021_01_01_105414) do
     t.index ["event_id"], name: "index_event_attachments_on_event_id"
   end
 
+  create_table "event_dates", force: :cascade do |t|
+    t.integer "event_id"
+    t.datetime "date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "event_forwardings", force: :cascade do |t|
     t.integer "user_id"
     t.integer "recipient_id"
@@ -601,7 +608,7 @@ ActiveRecord::Schema.define(version: 2021_01_01_105414) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "quantity"
-    t.string "price"
+    t.decimal "price", precision: 8, scale: 2, default: "0.0"
     t.index ["ticket_id"], name: "index_ticket_purchases_on_ticket_id"
     t.index ["user_id"], name: "index_ticket_purchases_on_user_id"
   end
