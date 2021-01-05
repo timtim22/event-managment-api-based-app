@@ -140,7 +140,9 @@ Rails.application.routes.draw do
        post "settings/change-location-status" => "settings#change_location_status"
        post "users/delete-account" => "users#delete_account"
        post "/search/global-search" => "search#global_search"
-
+       post "/analytics/get-event-stats" => "analytics#get_event_stats"
+       post "/analytics/get-offer-stats" => "analytics#get_offer_stats"
+       post "/analytics/get-competition-stats" => "analytics#get_competition_stats"
 
 
       # get '/*a', to: 'application#not_found'
