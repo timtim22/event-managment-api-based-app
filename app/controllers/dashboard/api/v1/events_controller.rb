@@ -657,7 +657,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
 
       params[:event_dates].each do |date|
         if date.include? "id"
-          if date.include? "date"
+          # %w(id date).any? { |s| date.include? s }
           @event.child_events.find(date[:id]).update!(
             user_id: request_user.id,
               name: params[:name],
@@ -677,7 +677,6 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
               price: params[:price],
               event_type: params[:event_type]
             )
-        end
         elsif date.include? "date"
            @event.child_events.create!(
               user_id: request_user.id,
