@@ -131,27 +131,41 @@ class Api::V1::ApiMasterController < ApplicationController
     end
 
 
+  
+  
     def getInterestedUsers(event)
-      @interested_followers = []
-      @interested_others = []
-      event.interested_users.uniq.each do |user|
-     if request_user
-      if request_user.friends.include? user
-         @interested_followers.push(get_user_object(user))
-      else
-         if not_me?(user)
+      @interested_users = []
+        @interested_followers_or_friends = []
+        @interested_others = []
+        event.interested_users.uniq.each do |user|
+      if request_user && request_user.app_user == true
+          key = "interested_friends"
+        if request_user.friends.include? user
+          @interested_followers_or_friends.push(get_user_object(user))
+        else
+        if not_me?(user)
           @interested_others.push(get_user_object(user))
-         end
+        end
       end
-    end
-    end #each
-    @interested_users = {
-      "interested_friends" => @interested_followers,
-      "interested_others" => @interested_others
-    }
-    @interested_users
+      elsif request_user && request_user.web_user == true
+        key = "interested_followers"
+        if request_user.followers.include? user
+          @interested_followers_or_friends.push(get_user_object(user))
+      else
+      if not_me?(user)
+        @interested_others.push(get_user_object(user))
+      end
+      end
+      end #each
+      @interested_users = {
+          key => @interested_followers_or_friends,
+          "interested_others" => @interested_others
+        }
+      @interested_users
+  end
 
-    end
+
+
 
      def get_simple_event_object(event)
         if request_user
