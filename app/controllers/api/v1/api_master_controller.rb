@@ -147,18 +147,18 @@ class Api::V1::ApiMasterController < ApplicationController
             if request_user.friends.include? user
               @interested_followers_or_friends.push(get_user_object(user))
             else
-            if not_me?(user)
-              @interested_others.push(get_user_object(user))
-            end
+              if not_me?(user)
+                @interested_others.push(get_user_object(user))
+              end
           end
           elsif request_user && request_user.web_user == true
             if request_user.followers.include? user
               @interested_followers_or_friends.push(get_user_object(user))
             else
-            if not_me?(user)
-              @interested_others.push(get_user_object(user))
+              if not_me?(user)
+                @interested_others.push(get_user_object(user))
+              end
             end
-          end
         end
       end #each
 
