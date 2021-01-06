@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_01_105414) do
+ActiveRecord::Schema.define(version: 2021_01_06_134737) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -157,6 +157,7 @@ ActiveRecord::Schema.define(version: 2021_01_01_105414) do
     t.string "user_avatar"
     t.datetime "read_at"
     t.integer "reader_id"
+    t.integer "child_event_id"
     t.index ["event_id"], name: "index_comments_on_event_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
@@ -214,6 +215,7 @@ ActiveRecord::Schema.define(version: 2021_01_01_105414) do
     t.integer "event_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "child_event_id"
     t.index ["event_id"], name: "index_event_forwardings_on_event_id"
     t.index ["user_id"], name: "index_event_forwardings_on_user_id"
   end
@@ -224,6 +226,7 @@ ActiveRecord::Schema.define(version: 2021_01_01_105414) do
     t.integer "event_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "child_event_id"
     t.index ["event_id"], name: "index_event_shares_on_event_id"
     t.index ["user_id"], name: "index_event_shares_on_user_id"
   end
@@ -316,6 +319,7 @@ ActiveRecord::Schema.define(version: 2021_01_01_105414) do
     t.string "level", default: "0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "child_event_id"
     t.index ["event_id", "user_id"], name: "index_interest_levels_on_event_id_and_user_id"
     t.index ["event_id"], name: "index_interest_levels_on_event_id"
     t.index ["user_id"], name: "index_interest_levels_on_user_id"
@@ -682,6 +686,7 @@ ActiveRecord::Schema.define(version: 2021_01_01_105414) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "business_id"
+    t.integer "child_event_id"
     t.index ["resource_id", "resource_type"], name: "index_views_on_resource_id_and_resource_type"
     t.index ["user_id"], name: "index_views_on_user_id"
     t.index [nil, "user_id"], name: "index_views_on_competition_id_and_user_id"
