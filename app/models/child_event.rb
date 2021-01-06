@@ -6,7 +6,7 @@ class ChildEvent < ApplicationRecord
  mount_uploader :image, ImageUploader
  mount_base64_uploader :image, ImageUploader
 
- has_many :comments, dependent: :destroy, foreign_key: :event_id
+ has_many :comments, dependent: :destroy, foreign_key: :event_id, table_name: "Comment"
  has_many :users, through: :comments
  has_many :interest_levels, dependent: :destroy, foreign_key: :event_id
  has_many :interest_levels, dependent: :destroy, foreign_key: :event_id
