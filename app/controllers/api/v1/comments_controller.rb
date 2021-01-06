@@ -7,9 +7,9 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
   include ActionView::Helpers::DateHelper
 
   api :POST, '/api/v1/event/post-comment', 'Post event based comment'
-  param :event_id, :number, :desc => "Event ID", :required => true
-  param :comment, String, :desc => "Comment", :required => true
-  param :is_reply, String, :desc => "True/False", :required => true
+  # param :event_id, :number, :desc => "Event ID", :required => true
+  # param :comment, String, :desc => "Comment", :required => true
+  # param :is_reply, String, :desc => "True/False", :required => true
 
   def create
 
