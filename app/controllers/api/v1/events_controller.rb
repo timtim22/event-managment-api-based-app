@@ -8,7 +8,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 
     if !params[:event_id].blank?
         child_event = ChildEvent.find(params[:event_id])
-        e = child_event.event
+        e = child_event
           @passes = []
           @ticket = []
           all_pass_added = false

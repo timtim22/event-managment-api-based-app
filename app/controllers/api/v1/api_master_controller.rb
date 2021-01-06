@@ -2,7 +2,7 @@
 class Api::V1::ApiMasterController < ApplicationController
     SECRET_KEY = Rails.application.secrets.secret_key_base.to_s
     protect_from_forgery with: :null_session
-    before_action :check_if_app_user?
+    #before_action :check_if_app_user?
 
 
 
@@ -137,9 +137,14 @@ class Api::V1::ApiMasterController < ApplicationController
       @interested_users = []
         @interested_followers_or_friends = []
         @interested_others = []
+         if request_user && request_user.app_user == true
+          @key = "interested_friends"
+         elsif request_user && request_user.web_user == true
+          @key = "interested_followers"
+         end
         event.interested_users.uniq.each do |user|
       if request_user && request_user.app_user == true
-          key = "interested_friends"
+         
         if request_user.friends.include? user
           @interested_followers_or_friends.push(get_user_object(user))
         else
@@ -148,7 +153,6 @@ class Api::V1::ApiMasterController < ApplicationController
         end
       end
       elsif request_user && request_user.web_user == true
-        key = "interested_followers"
         if request_user.followers.include? user
           @interested_followers_or_friends.push(get_user_object(user))
       else
@@ -156,9 +160,11 @@ class Api::V1::ApiMasterController < ApplicationController
         @interested_others.push(get_user_object(user))
       end
       end
+    end
       end #each
+
       @interested_users = {
-          key => @interested_followers_or_friends,
+           @key => @interested_followers_or_friends,
           "interested_others" => @interested_others
         }
       @interested_users
