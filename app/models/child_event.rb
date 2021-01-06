@@ -18,5 +18,4 @@ class ChildEvent < ApplicationRecord
  has_many :viewers, through: :views, source: :user, foreign_key: :event_id
  has_many :event_shares, dependent: :destroy, foreign_key: :event_id
  has_many :event_forwardings, dependent: :destroy, foreign_key: :event_id
-
 end

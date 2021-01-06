@@ -62,7 +62,8 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         'image' => e.image,
         'location' => e.location,
         'price' => get_price(e.event),
-        'price_type' => get_price_type(e.event)
+        'price_type' => get_price_type(e.event),
+        'has_passes' => has_passes?(e.event)
      }
      
     end #each
