@@ -4,16 +4,17 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   api :POST, '/api/v1/events/show', 'To view a specific event'
   param :event_id, String, :desc => "Event ID", :required => true
 
-   def show_event
+  def show_event
     if !params[:event_id].blank?
         child_event = ChildEvent.find(params[:event_id])
-        e = child_event.event
+        e = child_event
           @passes = []
           @ticket = []
           all_pass_added = false
           if request_user
-            all_pass_added = has_passes?(e) && all_passes_added_to_wallet?(request_user, e.passes)
-          e.passes.not_expired.map { |pass|
+
+            all_pass_added = has_passes?(e.event) && all_passes_added_to_wallet?(request_user, e.event.passes)
+          e.event.passes.not_expired.map { |pass|
           if !is_removed_pass?(request_user, pass)
             @passes << {
             id: pass.id,
