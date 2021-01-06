@@ -160,7 +160,7 @@ class Api::V1::ApiMasterController < ApplicationController
         @interested_others.push(get_user_object(user))
       end
       end
-      end
+   
       end #each
 
       @interested_users = {
