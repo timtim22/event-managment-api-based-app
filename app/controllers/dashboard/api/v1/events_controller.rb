@@ -84,7 +84,15 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
      'creator_image' => e.user.avatar,
      'event_status' => e.status,
      'event_type' => e.event_type,
-     'event_type' => e.over_18
+     'event_type' => e.over_18,
+      "event_dates" => e.child_events.map {|ch| 
+        {
+          id: ch.id,
+          start_date: ch.start_date,
+          end_date: ch.end_date
+        }
+
+      }
 
   }
 
@@ -652,8 +660,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
           @event.child_events.find(date[:id]).update!(
               name: params[:name],
               image: params[:image],
-              start_date: date,
-              end_date: date,
+              start_date: date[:date],
+              end_date: date[:date],
               start_time: params['start_time'],
               end_time: params['end_time'],
               over_18: params[:over_18],
@@ -669,10 +677,11 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
             )
         else
            @event.child_events.create!(
+              user_id: request_user.id,
               name: params[:name],
               image: params[:image],
-              start_date: date.to_date,
-              end_date: date.to_date,
+              start_date: date[:date].to_date,
+              end_date: date[:date].to_date,
               start_time: params['start_time'],
               end_time: params['end_time'],
               over_18: params[:over_18],
@@ -686,6 +695,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
               price: params[:price],
               event_type: params[:event_type]
             )
+         
         end
       end
       success = true
@@ -753,6 +763,9 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       end#if
 
     end#if
+
+    @event["id"] = 
+
 
      if success
         render json:  {

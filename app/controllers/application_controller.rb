@@ -420,7 +420,15 @@ class ApplicationController < ActionController::Base
       "location" => location,
       "admission_resources" => admission_resources,
       "event_attachments" => event.event_attachments,
-      "sponsors" => event.sponsors
+      "sponsors" => event.sponsors,
+      "event_dates" => event.child_events.map {|ch| 
+        {
+          id: ch.id,
+          start_date: ch.start_date,
+          end_date: ch.end_date
+        }
+
+      }
     }
   end
 
