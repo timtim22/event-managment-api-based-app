@@ -9,9 +9,9 @@ class ChildEvent < ApplicationRecord
  has_many :comments, dependent: :destroy, foreign_key: :child_event_id, table_name: "Comment"
  has_many :users, through: :comments
  has_many :interest_levels, dependent: :destroy, foreign_key: :child_event_id, table_name: "InterestLevel"
- has_many :interested_interest_levels, ->{ where(level: 'interested') }, foreign_key: :child_event_id, class_name: 'InterestLevel', dependent: :destroy, foreign_key: :child_event_id, table_name: "InterestLevel"
+ has_many :interested_interest_levels, ->{ where(level: 'interested') }, foreign_key: :child_event_id, class_name: 'InterestLevel', dependent: :destroy
  has_many :interested_users, through: :interested_interest_levels, source: :user
- has_many :going_interest_levels, -> { where(level: 'going') }, foreign_key: :child_event_id, class_name: 'InterestLevel', dependent: :destroy, foreign_key: :child_event_id, table_name: "InterestLevel"
+ has_many :going_interest_levels, -> { where(level: 'going') }, foreign_key: :child_event_id, class_name: 'InterestLevel', dependent: :destroy
  has_many :going_users, through: :going_interest_levels, source: :user
  has_many :views, dependent: :destroy, as: :resource, foreign_key: :child_event_id, table_name: "View"
  has_many :viewers, through: :views, source: :user, foreign_key: :child_event_id
