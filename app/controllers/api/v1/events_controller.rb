@@ -5,7 +5,6 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   param :event_id, String, :desc => "Event ID", :required => true
 
   def show_event
-
     if !params[:event_id].blank?
         child_event = ChildEvent.find(params[:event_id])
         e = child_event
@@ -13,8 +12,9 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
           @ticket = []
           all_pass_added = false
           if request_user
-            all_pass_added = has_passes?(e) && all_passes_added_to_wallet?(request_user, e.passes)
-          e.passes.not_expired.map { |pass|
+
+            all_pass_added = has_passes?(e.event) && all_passes_added_to_wallet?(request_user, e.event.passes)
+          e.event.passes.not_expired.map { |pass|
           if !is_removed_pass?(request_user, pass)
             @passes << {
             id: pass.id,
@@ -39,7 +39,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         end# remove if
       } #map
       else
-        e.passes.not_expired.map { |pass|
+        e.event.passes.not_expired.map { |pass|
           @passes << {
           id: pass.id,
           title: pass.title,
@@ -71,10 +71,10 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
             'end_date' => e.end_date,
             'start_time' => e.start_time,
             'end_time' => e.end_time,
-            'price' => get_price(e), # check for price if it is zero
-            'price_type' => get_price_type(e),
+            'price' => get_price(e.event), # check for price if it is zero
+            'price_type' => get_price_type(e.event),
             'event_type' => e.event_type,
-            'additional_media' => e.event_attachments,
+            'additional_media' => e.event.event_attachments,
             'location' => insert_space_after_comma(e.location),
             'lat' => e.lat,
             'lng' => e.lng,
@@ -90,14 +90,14 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
             'creator_name' => e.user.business_profile.profile_name,
             'creator_id' => e.user.id,
             'creator_image' => e.user.avatar,
-            'categories' => !e.categories.blank? ? e.categories : @empty,
-            'sponsors' => e.sponsors,
+            'categories' => !e.event.categories.blank? ? e.event.categories : @empty,
+            'sponsors' => e.event.sponsors,
             "mute_chat" => get_mute_chat_status(e),
             "mute_notifications" => get_mute_notifications_status(e),
             "terms_and_conditions" => e.terms_conditions,
             "forwards_count" => e.event_forwardings.count,
             "comments_count" => e.comments.size + e.comments.map {|c| c.replies }.size,
-            "has_passes" => has_passes?(e),
+            "has_passes" => has_passes?(e.event),
             "all_passes_added_to_wallet" => all_pass_added
          }
 

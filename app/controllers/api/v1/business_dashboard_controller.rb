@@ -187,6 +187,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
           @ticket = []
           all_pass_added = false
           if request_user
+
             all_pass_added = has_passes?(e.event) && all_passes_added_to_wallet?(request_user, e.event.passes)
           e.event.passes.not_expired.map { |pass|
           if !is_removed_pass?(request_user, pass)

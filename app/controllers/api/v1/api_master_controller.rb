@@ -135,32 +135,31 @@ class Api::V1::ApiMasterController < ApplicationController
   
     def getInterestedUsers(event)
       @interested_users = []
-        @interested_followers_or_friends = []
-        @interested_others = []
-         if request_user && request_user.app_user == true
-          @key = "interested_friends"
-         elsif request_user && request_user.web_user == true
-          @key = "interested_followers"
-         end
-        event.interested_users.uniq.each do |user|
+      @interested_followers_or_friends = []
+      @interested_others = []
       if request_user && request_user.app_user == true
-         
-        if request_user.friends.include? user
-          @interested_followers_or_friends.push(get_user_object(user))
-        else
-        if not_me?(user)
-          @interested_others.push(get_user_object(user))
-        end
-      end
+        @key = "interested_friends"
       elsif request_user && request_user.web_user == true
-        if request_user.followers.include? user
-          @interested_followers_or_friends.push(get_user_object(user))
-      else
-      if not_me?(user)
-        @interested_others.push(get_user_object(user))
+        @key = "interested_followers"
       end
-      end
-    end
+      event.interested_users.uniq.each do |user|
+          if request_user && request_user.app_user == true
+            if request_user.friends.include? user
+              @interested_followers_or_friends.push(get_user_object(user))
+            else
+              if not_me?(user)
+                @interested_others.push(get_user_object(user))
+              end
+          end
+          elsif request_user && request_user.web_user == true
+            if request_user.followers.include? user
+              @interested_followers_or_friends.push(get_user_object(user))
+            else
+              if not_me?(user)
+                @interested_others.push(get_user_object(user))
+              end
+            end
+        end
       end #each
 
       @interested_users = {
