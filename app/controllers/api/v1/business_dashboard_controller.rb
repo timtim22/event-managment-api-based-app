@@ -178,6 +178,125 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
 
 
 
+  def show_event
+    if !params[:event_id].blank?
+        child_event = ChildEvent.find(params[:event_id])
+        e = child_event.event
+          @passes = []
+          @ticket = []
+          all_pass_added = false
+          if request_user
+            all_pass_added = has_passes?(e) && all_passes_added_to_wallet?(request_user, e.passes)
+          e.passes.not_expired.map { |pass|
+          if !is_removed_pass?(request_user, pass)
+            @passes << {
+            id: pass.id,
+            title: pass.title,
+            host_name: e.user.business_profile.profile_name,
+            host_image: e.user.avatar,
+            event_name: e.name,
+            event_image: e.image,
+            event_location: e.location,
+            event_start_time: e.start_time,
+            event_end_time: e.end_time,
+            event_date: e.start_date,
+            is_added_to_wallet: is_added_to_wallet?(pass.id),
+            validity: pass.validity.strftime(get_time_format),
+            grabbers_count: pass.wallets.size,
+            terms_and_conditions: pass.terms_conditions,
+            description: pass.description,
+            issued_by: get_full_name(pass.user),
+            redeem_count: get_redeem_count(pass),
+            quantity: pass.quantity
+          }
+        end# remove if
+      } #map
+      else
+        e.passes.not_expired.map { |pass|
+          @passes << {
+          id: pass.id,
+          title: pass.title,
+          description: pass.description,
+          host_name: e.user.business_profile.profile_name,
+          host_image: e.user.avatar,
+          event_name: e.name,
+          event_image: e.image,
+          event_location: e.location,
+          event_start_time: e.start_time,
+          event_end_time: e.end_time,
+          event_date: e.start_date,
+          is_added_to_wallet: is_added_to_wallet?(pass.id),
+          validity: pass.validity.strftime(get_time_format),
+          grabbers_count: pass.wallets.size,
+          terms_and_conditions: pass.terms_conditions,
+          issued_by: get_full_name(pass.user),
+          redeem_count: get_redeem_count(pass),
+          quantity: pass.quantity
+        }
+      }# passes map
+      end #if request_user
+
+          @event = {
+            'id' => e.id,
+            'name' => e.name,
+            'description' => e.description,
+            'start_date' => e.start_date,
+            'end_date' => e.end_date,
+            'start_time' => e.start_time,
+            'end_time' => e.end_time,
+            'price' => get_price(e), # check for price if it is zero
+            'price_type' => get_price_type(e),
+            'event_type' => e.event_type,
+            'additional_media' => e.event_attachments,
+            'location' => insert_space_after_comma(e.location),
+            'lat' => e.lat,
+            'lng' => e.lng,
+            'image' => e.image,
+            'is_interested' => is_interested?(e),
+            'is_going' => is_attending?(e),
+            'is_followed' => is_followed(e.user),
+            'interest_count' => e.interested_interest_levels.size,
+            'going_count' => e.going_interest_levels.size,
+            'demographics' => get_demographics(e),
+            'going_users' => e.going_users,
+            "interested_users" => getInterestedUsers(e),
+            'creator_name' => e.user.business_profile.profile_name,
+            'creator_id' => e.user.id,
+            'creator_image' => e.user.avatar,
+            'categories' => !e.categories.blank? ? e.categories : @empty,
+            'sponsors' => e.sponsors,
+            "mute_chat" => get_mute_chat_status(e),
+            "mute_notifications" => get_mute_notifications_status(e),
+            "terms_and_conditions" => e.terms_conditions,
+            "forwards_count" => e.event_forwardings.count,
+            "comments_count" => e.comments.size + e.comments.map {|c| c.replies }.size,
+            "has_passes" => has_passes?(e),
+            "all_passes_added_to_wallet" => all_pass_added
+         }
+
+         render json: {
+           code: 200,
+           success: true,
+           message: '',
+           user: request_user,
+           data: {
+             event: @event,
+             #business_all_events: e.user.events.sort_by_date.page(params[:page]).per(10).map {|e| get_simple_event_object(e) }
+           }
+         }
+
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "event_id is required.",
+        data: nil
+      }
+    end
+  end
+
+
+
   private
 
    def business

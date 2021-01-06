@@ -110,6 +110,7 @@ Rails.application.routes.draw do
        get '/get-business-competitions' => 'business_dashboard#competitions'
        get '/get-phone-numbers' => 'users#get_phone_numbers'
        post '/events/show' => 'events#show_event'
+       post '/business-events/show' => 'business_dashboard#show_event'
        get '/events/map-event-list' => 'events#map_event_list'
        get '/events/search' => 'search#events_live_search'
        post '/events/passes' => 'passes#index'
@@ -232,11 +233,7 @@ Rails.application.routes.draw do
         end
 
         resources :competitions
-
         patch 'dashboard/api/v1/competitions/:id', to: 'competition#update'
-
-
-
         resources :special_offers
         get "/get-my-events" => "events#get_my_events"
         post '/auth/login', to: 'authentication#login'
@@ -256,9 +253,6 @@ Rails.application.routes.draw do
         post '/payments/create-intant' => 'payments#create_intant'
         post '/payments/confirm-payment' => 'payments#confirm_payment'
         post '/payments/get-invoice' => 'payments#get_invoice'
-
-
-
         get '/get-dashboard-stats' => 'dashboard#get_dashboard_stats'
 
       end
