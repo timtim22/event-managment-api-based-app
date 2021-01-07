@@ -863,6 +863,40 @@
 
 
   private
+
+ def delete_resource
+    id = params[:id]
+    resource = params[:resource]
+    success = false
+    case resource
+      when 'ticket'
+       if Ticket.find(id).destroy
+        success = true
+       end
+      when 'pass'
+       if Pass.find(id).destroy
+        success = true
+       end
+      else
+        "do nothing"
+      end
+    if success
+      render json: {
+        code: 200,
+        success: true,
+        message: 'Resource successfully deleted.',
+        data: nil
+      }
+    else
+        render json: {
+          code: 400,
+          success: false,
+          message: 'Resource deletion failed.',
+          data: nil
+        }
+    end
+end
+
   def setCategories
     @categories = Category.all
   end
