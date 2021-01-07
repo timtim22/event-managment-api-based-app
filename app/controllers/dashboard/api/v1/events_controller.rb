@@ -57,7 +57,7 @@
    if !e.event_attachments.blank?
      e.event_attachments.each do |attachment|
      additional_media << {
-      "id". attachment.id,
+      "id": attachment.id,
        "media_type" => attachment.media_type,
        "media" => attachment.media.url
      }
