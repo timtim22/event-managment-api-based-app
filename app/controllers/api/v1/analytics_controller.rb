@@ -434,7 +434,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
    def get_time_slot_attendees_date_wise(time_slot_dates,event)
      dates_array = time_slot_dates.split(',').map {|s| s.to_s }
 
-     @time_slot_dates_stats = []
+     @time_slot_dates_stats = {}
 
      dates_array.each do |date|
       p_date = Date.parse(date)
