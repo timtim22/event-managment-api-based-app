@@ -1,4 +1,4 @@
-class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterController
+ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterController
   before_action :authorize_request
 
   require 'action_view'
@@ -47,6 +47,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
    if !e.sponsors.blank?
      e.sponsors.each do |sponsor|
      sponsors << {
+      "id": sponsors.id,
        "sponsor_image" => sponsor.sponsor_image.url,
        "external_url" => sponsor.external_url
      }
@@ -56,6 +57,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
    if !e.event_attachments.blank?
      e.event_attachments.each do |attachment|
      additional_media << {
+      "id". attachment.id,
        "media_type" => attachment.media_type,
        "media" => attachment.media.url
      }
@@ -340,34 +342,6 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       end #each
      end #blank
 
-     #validate dates array
-     # if params[:event_dates].blank?
-     #   @error_messages.push("event_dates is required field.")
-     # else
-     #  validate = validate_event_dates(params[:start_date], params[:end_date], params[:event_dates])
-     #    if !validate
-     #        @error_messages.push("the dates should be within start_date and end_date of the event")
-     #    end
-     #  if !params[:event_dates].kind_of?(Array)
-     #    @error_messages.push("event_dates should be an array of dates in the format '2020-12-21'")
-     #  end
-     # end
-
-
-    #  #validate recursion fields
-    #  if params[:is_repetive].blank?
-    #   @error_messages.push("is_repetive must not be empty.")
-    #  else
-    # if is_boolean?(params[:is_repetive])
-    #   if params[:is_repetive] ==  true && params[:frequency].blank?
-    #     @error_messages.push("frequency must be defined in case of repetive events.")
-    #   end
-    # else
-    #   @error_messages.push("is_repetive should be a boolean type.")
-    # end
-    # end
-
-
   if @error_messages.blank?
     @event = request_user.events.new
     @event.name = params[:name]
@@ -399,8 +373,8 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
             user_id: request_user.id,
             name: params[:name],
             image: params[:image],
-            start_date: date[:date].to_date,
-            end_date: date[:date].to_date,
+            start_date: date.to_date,
+            end_date: date.to_date,
             start_time: params['start_time'],
             end_time: params['end_time'],
             over_18: params[:over_18],
@@ -425,17 +399,17 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
           resource[:fields].each do |f|
            @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'free', price: 0)
           end #each
-          @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00)
+          @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free")
        when 'paid'
           resource[:fields].each do |f|
            @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
           end #each
-           @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00)
+           @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00, price_type: "paid")
         when 'pay_at_door'
           resource[:fields].each do |f|
            @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
           end #each
-          @event.update!(price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"])
+          @event.update!(price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"], price_type: "pay_at_door")
 
         when 'pass'
           resource[:fields].each do |f|

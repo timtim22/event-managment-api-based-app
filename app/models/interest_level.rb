@@ -1,5 +1,5 @@
 class InterestLevel < ApplicationRecord
   belongs_to :user, optional: true
-  belongs_to :event, foreign_key: :event_id
-  belongs_to :child_event_
+  # belongs_to :event, foreign_key: :event_id
+  belongs_to :child_event
 end
