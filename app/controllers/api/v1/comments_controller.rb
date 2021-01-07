@@ -170,7 +170,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          end
        end ##notification create
         #also notify who commented on the event
-
+        if @comment.user != request_user
         if notification = Notification.create!(recipient: @comment.user, actor: request_user, action: "#{User.get_full_name(request_user)}  replied to your comemnt on the event '#{@event.name}'.", notifiable: @reply, resource: @reply, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'reply_comment')
 
           if !event_chat_muted?(@comment.user, @event) && !@comment.user.all_chat_notifications_setting.blank?  && @comment.user.all_chat_notifications_setting.is_on == true && !@comment.user.event_notifications_setting.blank? && @comment.user.event_notifications_setting.is_on == true
@@ -218,7 +218,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
             end #publish
            end# mute if
          end ##notification create
-
+        end #comment_user not equal to request user
 
 
         render json: {

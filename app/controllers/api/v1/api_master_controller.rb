@@ -131,8 +131,7 @@ class Api::V1::ApiMasterController < ApplicationController
     end
 
 
-  
-  
+    
     def getInterestedUsers(event)
       @interested_users = []
       @interested_followers_or_friends = []

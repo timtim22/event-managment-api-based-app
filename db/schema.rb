@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_06_134737) do
+ActiveRecord::Schema.define(version: 2021_01_07_061103) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -268,6 +268,7 @@ ActiveRecord::Schema.define(version: 2021_01_06_134737) do
     t.boolean "is_repetive", default: false
     t.string "frequency", default: "daily"
     t.boolean "is_private", default: false
+    t.integer "max_attendees", default: 1
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
