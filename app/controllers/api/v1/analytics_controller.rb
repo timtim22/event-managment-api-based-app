@@ -14,10 +14,11 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                  "checked_in" => {
                   "total_checked_in" => get_total_event_checked_in(event.event),
                   "time_slot_total_checked_in" => get_event_pass_checked_in(event.event) + get_event_paid_checked_in(event.event),
-                  "total_pass_checked_in" => get_pass_total_checked_in(event.event)
+                  "total_pass_checked_in" => get_pass_total_checked_in(event.event),
                   "time_slot_total_pass_checked_in" => get_event_pass_checked_in(event.event),
                   "time_slot_pass_checked_in_date_wise" => get_event_pass_checked_in_date_wise(params[:time_slot_dates], event.event),
-                  "total_paid_checked_in" => get_event_paid_checked_in(event.event),
+                  "total_paid_checked_in" => get_total_paid_checked_in(event.event),
+                  "time_slot_total_paid_checked_in" => get_event_paid_checked_in(event.event),
                   "time_slot_paid_checked_in_date_wise" => get_event_paid_checked_in_date_wise(params[:time_slot_dates],event.event)
                  },
                 "attendees" => {
@@ -40,6 +41,11 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                  "shares" => {
                   "time_slot_total_shared_events" => get_time_slot_total_shared_events(params[:time_slot_dates], event),
                   "time_slot_shares_date_wise" => get_time_slot_shares_date_wise(params[:time_slot_dates],event),
+                 },
+                 "pass" => {
+                  "total_pass_checked_in" => get_pass_total_checked_in(event.event),
+                  "time_slot_total_pass_checked_in" => get_event_pass_checked_in(event.event),
+                  "time_slot_pass_checked_in_date_wise" => get_event_pass_checked_in_date_wise
                  }
                 }
         
@@ -442,7 +448,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
       @time_slot_dates_stats[date] = event.going_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day).size
      end# each
 
-    dates_array
+     @time_slot_dates_stats
    end
 
    ########################## views ##############################
@@ -1321,6 +1327,11 @@ end
 
 def get_pass_total_checked_in(event)
   event.passes.map {|p| p.redemptions.size }.sum
+end
+
+
+def get_total_paid_checked_in(event)
+  event.tickets.where(ticket_type: 'buy').size
 end
 
 
