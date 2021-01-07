@@ -47,7 +47,7 @@
    if !e.sponsors.blank?
      e.sponsors.each do |sponsor|
      sponsors << {
-      "id": sponsors.id,
+      "id": sponsor.id,
        "sponsor_image" => sponsor.sponsor_image.url,
        "external_url" => sponsor.external_url
      }
