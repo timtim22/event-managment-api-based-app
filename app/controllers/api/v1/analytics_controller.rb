@@ -7,27 +7,42 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
     if !params[:event_id].blank?
       event = ChildEvent.find(params[:event_id])       
         #if ticketed event
-        if event.ticket_type == 'buy'
+       # if event.event.price_type == 'buy'
            #Scenario 1 before live 
-           if event.start_date > DateTime.now && event.end_date > DateTime
-              stats = {
-                "total_attendees" => event.going_interest_levels.size,
-                "time_slot_total_attendees" => get_time_slot_total_attendees(params[:current_time_slot_dates], event),
-                "demographics" => get_demographics(event),
-                "time_slot_total_views" => get_time_slot_total_views(params[:current_time_slot_dates], event),
-                "time_slot_event_views_date_wise" => get_time_slot_event_views_date_wise(params[:current_time_slot_dates],event),
-                "time_slot_attendees_date_wise" => get_time_slot_attendees_date_wise(params[:current_time_slot_dates], event),
-                "time_slot_total_interested_people" => get_time_slot_total_interested_people(params[:current_time_slot_dates], event),
-                "time_slot_interested_people_date_wise" => get_time_slot_interested_people_date_wise(params[:current_time_slot_dates],event),
-                "time_slot_total_shared_events" => get_time_slot_total_shared_events(params[:current_time_slot_dates], event),
-                "time_slot_shares_date_wise" => get_time_slot_shares_date_wise(params[:current_time_slot_dates],event),
-                "total_earning" => get_total_event_earning(event.event),
-                "total_checked_in" => get_total_event_checked_in(event.event),
-                "pass_checked_in" => get_event_pass_checked_in(event.event),
-                "paid_checked_in" => get_event_paid_checked_in(event.event)
-              }
         
-              event = {
+              stats = {
+                 "checked_in" => {
+                  "total_checked_in" => get_total_event_checked_in(event.event),
+                  "time_slot_total_checked_in" => get_event_pass_checked_in(event.event) + get_event_paid_checked_in(event.event),
+                  "total_pass_checked_in" => get_event_pass_checked_in(event.event),
+                  "time_slot_pass_checked_in_date_wise" => get_event_pass_checked_in_date_wise(params[:time_slot_dates], event.event)
+                  "total_paid_checked_in" => get_event_paid_checked_in(event.event),
+                  "time_slot_paid_checked_in" => get_event_paid_checked_in_date_wise(params[:time_slot_dates],event.event)
+                 },
+                "attendees" => {
+                  "max_attendees" => event.event.max_attendees,
+                  "max_passes" => event.event.passes.size,
+                  "total_attendees" => event.going_interest_levels.size,
+                  "time_slot_attendees" => get_time_slot_total_attendees(params[:time_slot_dates], event),
+                  "time_slot_attendees_date_wise" => get_time_slot_attendees_date_wise(params[:time_slot_dates], event),
+                },
+                "total_earning" => get_total_event_earning(event.event),
+                "demographics" => get_demographics(event),
+                 "impressions" => {
+                  "time_slot_total_impressions" => get_time_slot_total_views(params[:time_slot_dates], event),
+                  "time_slot_impressions_date_wise" => get_time_slot_event_views_date_wise(params[:time_slot_dates],event),
+                 },
+                 "interested" => {
+                   "time_slot_total_interested_people" => get_time_slot_total_interested_people(params[:time_slot_dates], event),
+                   "time_slot_interested_people_date_wise" => get_time_slot_interested_people_date_wise(params[:time_slot_dates],event),
+                 },
+                 "shares" => {
+                  "time_slot_total_shared_events" => get_time_slot_total_shared_events(params[:time_slot_dates], event),
+                  "time_slot_shares_date_wise" => get_time_slot_shares_date_wise(params[:time_slot_dates],event),
+                 }
+                }
+        
+              @event_stats = {
                 "event_id" => event.id,
                 "name" => event.name,
                 "start_date" => event.start_date,
@@ -39,16 +54,16 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                 "lng" => event.lng,
                 "event_type" => event.event_type,
                 "image" => event.image,
-                "price_type" => event.price_type,
-                "price" => event.price,
-                "additional_media" => event.event_attachments,
+                "price_type" => event.event.price_type,
+                "price" => event.event.price,
+                "additional_media" => event.event.event_attachments,
                 "created_at" => event.created_at,
                 "updated_at" => event.updated_at,
                 "stats" => stats
                 }
-           else 
+          #  else 
      
-           end
+          #  end
       
       #non ticketed event  
       else
@@ -59,7 +74,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
        success: true,
        message: '',
        data: {
-         event: event
+         stats: @event_stats
        }
      }
     else
@@ -419,12 +434,12 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
    def get_time_slot_attendees_date_wise(time_slot_dates,event)
      dates_array = time_slot_dates.split(',').map {|s| s.to_s }
 
-    #  @time_slot_dates_stats = []
+     @time_slot_dates_stats = []
 
-    #  dates_array.each do |date|
-    #   p_date = Date.parse(date)
-    #   @time_slot_dates_stats[date.to_date] = event.going_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day).size
-    #  end# each
+     dates_array.each do |date|
+      p_date = Date.parse(date)
+      @time_slot_dates_stats[date.to_date] = event.going_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day).size
+     end# each
 
     dates_array
    end
@@ -1276,5 +1291,34 @@ def get_time_slot_entries_date_wise(time_slot_dates,competition)
 
   @time_slot_dates
 end
+
+def get_event_paid_checked_in_date_wise(time_slot_dates,event)
+  dates_array = time_slot_dates.split(',').map {|s| s.to_s }
+
+  @time_slot_dates = {}
+  dates_array.each do |date|
+   p_date = Date.parse(date)
+   @time_slot_dates[date.to_date] =  event.tickets.where(created_at: p_date.midnight..p_date.end_of_day).where(ticket_type: 'buy').size
+  end# each
+
+  @time_slot_dates
+end
+
+
+def get_event_pass_checked_in_date_wise(time_slot_dates,event)
+  dates_array = time_slot_dates.split(',').map {|s| s.to_s }
+
+  @time_slot_dates = {}
+  dates_array.each do |date|
+   p_date = Date.parse(date)
+   @time_slot_dates[date.to_date] =  event.passes.where(created_at: p_date.midnight..p_date.end_of_day).size
+  end# each
+
+  @time_slot_dates
+end
+
+
+
+
 
 end
