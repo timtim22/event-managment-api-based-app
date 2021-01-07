@@ -73,9 +73,9 @@ group :development do
   gem 'lol_dba' #to check out indexes
 end
 
-# group :production do
-#   gem 'pg'
-# end
+group :production do
+  gem 'pg'
+end
 
 gem 'rspec-console'
 

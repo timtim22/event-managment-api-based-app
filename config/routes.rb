@@ -253,8 +253,9 @@ Rails.application.routes.draw do
         post '/payments/create-intant' => 'payments#create_intant'
         post '/payments/confirm-payment' => 'payments#confirm_payment'
         post '/payments/get-invoice' => 'payments#get_invoice'
-        get '/get-dashboard-stats' => 'dashboard#get_dashboard_stats'
+        post '/get-dashboard-stats' => 'dashboard#get_dashboard_stats'
         post '/get-parent-event-stats' => 'dashboard#get_parent_event_stats'
+        post '/parent-interest-date-wise' => 'dashboard#parent_event_interest_level_date_wise'
 
       end
     end

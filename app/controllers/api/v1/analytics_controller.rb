@@ -5,7 +5,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
 
   def get_event_stats
     if !params[:event_id].blank?
-      event = Event.find(params[:event_id])       
+      event = ChildEvent.find(params[:event_id])       
         #if ticketed event
         if event.ticket_type == 'buy'
            #Scenario 1 before live 
@@ -21,10 +21,10 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                 "time_slot_interested_people_date_wise" => get_time_slot_interested_people_date_wise(params[:current_time_slot_dates],event),
                 "time_slot_total_shared_events" => get_time_slot_total_shared_events(params[:current_time_slot_dates], event),
                 "time_slot_shares_date_wise" => get_time_slot_shares_date_wise(params[:current_time_slot_dates],event),
-                "total_earning" => get_total_event_earning(event),
-                "total_checked_in" => get_total_event_checked_in(event),
-                "pass_checked_in" => get_event_pass_checked_in(event),
-                "paid_checked_in" => get_event_paid_checked_in(event)
+                "total_earning" => get_total_event_earning(event.event),
+                "total_checked_in" => get_total_event_checked_in(event.event),
+                "pass_checked_in" => get_event_pass_checked_in(event.event),
+                "paid_checked_in" => get_event_paid_checked_in(event.event)
               }
         
               event = {
