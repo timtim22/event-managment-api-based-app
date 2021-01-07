@@ -13,9 +13,9 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
               stats = {
                  "checked_in" => {
                   "total_checked_in" => get_total_event_checked_in(event.event),
-                  "time_slot_total_checked_in" => get_event_pass_checked_in(event.event) + get_event_paid_checked_in(event.event),
+                  "time_slot_total_checked_in" => get_time_slot_total_pass_checked_in(params[:time_slot_dates], event.event) + get_time_slot_total_paid_checked_in(params[:time_slot_dates], event.event),
                   "total_pass_checked_in" => get_pass_total_checked_in(event.event),
-                  "time_slot_total_pass_checked_in" => get_event_pass_checked_in(event.event),
+                  "time_slot_total_pass_checked_in" => get_event_pass_checked_in(params[:time_slot_dates], event.event),
                   "time_slot_pass_checked_in_date_wise" => get_event_pass_checked_in_date_wise(params[:time_slot_dates], event.event),
                   "total_paid_checked_in" => get_total_paid_checked_in(event.event),
                   "time_slot_total_paid_checked_in" => get_event_paid_checked_in(event.event),
@@ -1332,6 +1332,34 @@ end
 
 def get_total_paid_checked_in(event)
   event.tickets.where(ticket_type: 'buy').size
+end
+
+
+def get_time_slot_total_pass_checked_in(time_slot_dates, event)
+  dates_array = time_slot_dates.split(',').map {|s| s.to_s }
+  @checked_in = []
+  dates_array.each do |date|
+     p_date = Date.parse(date)
+     checked_in = event.passes.redemptions.where(created_at: p_date.midnight..p_date.end_of_day)
+     if !view.blank?
+       @checked_in.push(checked_in)
+  end #if !blank?
+  end #each
+  @checked_in.size
+end
+
+
+def get_time_slot_total_paid_checked_in(time_slot_dates, event)
+  dates_array = time_slot_dates.split(',').map {|s| s.to_s }
+  @checked_in = []
+  dates_array.each do |date|
+     p_date = Date.parse(date)
+     checked_in = event.tickets.map{|t| t.ticket_purchases.where(created_at: p_date.midnight..p_date.end_of_day).size }.sum
+     if !view.blank?
+       @checked_in.push(checked_in)
+  end #if !blank?
+  end #each
+  @checked_in.size
 end
 
 
