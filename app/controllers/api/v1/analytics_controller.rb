@@ -14,10 +14,11 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                  "checked_in" => {
                   "total_checked_in" => get_total_event_checked_in(event.event),
                   "time_slot_total_checked_in" => get_event_pass_checked_in(event.event) + get_event_paid_checked_in(event.event),
-                  "total_pass_checked_in" => get_event_pass_checked_in(event.event),
+                  "total_pass_checked_in" => get_pass_total_checked_in(event.event)
+                  "time_slot_total_pass_checked_in" => get_event_pass_checked_in(event.event),
                   "time_slot_pass_checked_in_date_wise" => get_event_pass_checked_in_date_wise(params[:time_slot_dates], event.event),
                   "total_paid_checked_in" => get_event_paid_checked_in(event.event),
-                  "time_slot_paid_checked_in" => get_event_paid_checked_in_date_wise(params[:time_slot_dates],event.event)
+                  "time_slot_paid_checked_in_date_wise" => get_event_paid_checked_in_date_wise(params[:time_slot_dates],event.event)
                  },
                 "attendees" => {
                   "max_attendees" => event.event.max_attendees,
@@ -1311,10 +1312,15 @@ def get_event_pass_checked_in_date_wise(time_slot_dates,event)
   @time_slot_dates = {}
   dates_array.each do |date|
    p_date = Date.parse(date)
-   @time_slot_dates[date.to_date] =  event.passes.where(created_at: p_date.midnight..p_date.end_of_day).size
+   @time_slot_dates[date.to_date] =  event.passes.where(created_at: p_date.midnight..p_date.end_of_day).map {|p| p.redemptions.size }.sum
   end# each
 
   @time_slot_dates
+end
+
+
+def get_pass_total_checked_in(event)
+  event.passes.map {|p| p.redemptions.size }.sum
 end
 
 
