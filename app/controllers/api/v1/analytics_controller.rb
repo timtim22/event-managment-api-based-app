@@ -15,7 +15,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                   "total_checked_in" => get_total_event_checked_in(event.event),
                   "time_slot_total_checked_in" => get_event_pass_checked_in(event.event) + get_event_paid_checked_in(event.event),
                   "total_pass_checked_in" => get_event_pass_checked_in(event.event),
-                  "time_slot_pass_checked_in_date_wise" => get_event_pass_checked_in_date_wise(params[:time_slot_dates], event.event)
+                  "time_slot_pass_checked_in_date_wise" => get_event_pass_checked_in_date_wise(params[:time_slot_dates], event.event),
                   "total_paid_checked_in" => get_event_paid_checked_in(event.event),
                   "time_slot_paid_checked_in" => get_event_paid_checked_in_date_wise(params[:time_slot_dates],event.event)
                  },
@@ -66,8 +66,8 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
           #  end
       
       #non ticketed event  
-      else
-    end
+    #   else
+    # end
       
      render json: {
        code: 200,
@@ -438,7 +438,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
 
      dates_array.each do |date|
       p_date = Date.parse(date)
-      @time_slot_dates_stats[date.to_date] = event.going_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day).size
+      @time_slot_dates_stats[date] = event.going_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day).size
      end# each
 
     dates_array
@@ -501,7 +501,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
    @time_slot_dates_stats = {}
    dates_array.each do |date|
     p_date = Date.parse(date)
-    @time_slot_dates_stats[date.to_date] = event.views.where(created_at: p_date.midnight..p_date.end_of_day).size
+    @time_slot_dates_stats[date] = event.views.where(created_at: p_date.midnight..p_date.end_of_day).size
 
    end# each
 
@@ -513,7 +513,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
   @time_slot_dates_stats = {}
   dates_array.each do |date|
    p_date = Date.parse(date)
-   @time_slot_dates_stats[date.to_date] = event.interested_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day).size
+   @time_slot_dates_stats[date] = event.interested_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day).size
 
   end# each
 
