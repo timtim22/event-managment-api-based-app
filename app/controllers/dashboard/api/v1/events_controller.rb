@@ -84,7 +84,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
      'creator_image' => e.user.avatar,
      'event_status' => e.status,
      'event_type' => e.event_type,
-     'event_type' => e.over_18,
+     'over_18' => e.over_18,
       "event_dates" => e.child_events.map {|ch| 
         {
           id: ch.id,
