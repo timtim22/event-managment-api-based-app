@@ -88,8 +88,7 @@ class Dashboard::Api::V1::EventsController < Dashboard::Api::V1::ApiMasterContro
       "event_dates" => e.child_events.map {|ch| 
         {
           id: ch.id,
-          start_date: ch.start_date,
-          end_date: ch.end_date
+          date: ch.start_date.to_date
         }
 
       }
