@@ -236,6 +236,7 @@ Rails.application.routes.draw do
         patch 'dashboard/api/v1/competitions/:id', to: 'competition#update'
         resources :special_offers
         get "/get-my-events" => "events#get_my_events"
+        post "/delete-resource" => "events#delete_resource"
         post '/auth/login', to: 'authentication#login'
         post '/send-verification-code', to: 'users#send_verification_code'
         get  '/get-followers' => 'users#get_followers'
