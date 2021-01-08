@@ -4,7 +4,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
 
 
   def get_event_stats
-    if !params[:event_id].blank?
+    if !params[:event_id].blank? && !params[:time_slot_dates].blank? && !params[:before_current_time_slot_dates].blank?
       event = ChildEvent.find(params[:event_id])       
         #if ticketed event
        # if event.event.price_type == 'buy'
@@ -26,8 +26,10 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                   "total_attendees" => event.going_interest_levels.size,
                   "time_slot_attendees" => get_time_slot_total_attendees(params[:time_slot_dates], event),
                   "time_slot_attendees_date_wise" => get_time_slot_attendees_date_wise(params[:time_slot_dates], event),
+                  "time_slot_movement" => get_time_slot_increment_decrement_in_attendees(params[:time_slot_dates], params[:before_current_time_slot_dates], event)
                 },
                 "total_earning" => get_total_event_earning(event.event),
+               
                 "demographics" => get_demographics(event),
                  "impressions" => {
                   "time_slot_total_impressions" => get_time_slot_total_views(params[:time_slot_dates], event),
@@ -87,7 +89,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
       render json: {
         code: 400,
         success: true,
-        message: '',
+        message: 'event_id, time_slot_dates and before_current_time_slot_dates',
         data: nil
       }
     end
@@ -401,13 +403,13 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
 
 
 
-   def get_time_slot_increment_decrement_in_attendees(current_time_slot_dates, before_current_time_slot_dates, event)
+   def get_time_slot_increment_decrement_in_attendees(time_slot_dates, before_current_time_slot_dates, event)
 
       @current_time_slot_registrations = []
       @before_current_time_slot_registrations = []
       @increment_decreament_in_registrations = {}
 
-      current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
+      current_dates_array = time_slot_dates.split(',').map {|s| s.to_s }
       current_dates_array.each do |date|
         p_date = Date.parse(date)
         @attendees = event.going_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day)
@@ -911,12 +913,14 @@ def get_time_slot_special_offers_increment_decrement(current_time_slot_dates,   
 
      def get_time_slot_shares_date_wise(time_slot_dates,event)
       dates_array = time_slot_dates.split(',').map {|s| s.to_s }
-      @time_slot_dates_stats = {}
+      @time_slot_dates_stats = []
       dates_array.each do |date|
+        date_hash = {}
        p_date = Date.parse(date)
-       @time_slot_dates_stats[date.to_date] = event.event_shares.where(created_at: p_date.midnight..p_date.end_of_day).size
+       date_hash[date.to_date] = event.event_shares.where(created_at: p_date.midnight..p_date.end_of_day).size
+       @time_slot_dates_stats.push(date_hash)
       end# each
-
+      
       @time_slot_dates_stats
     end
 
@@ -1299,10 +1303,12 @@ end
 
 def get_event_paid_checked_in_date_wise(time_slot_dates,event)
   dates_array = time_slot_dates.split(',').map {|s| s.to_s }
-  @time_slot_dates = {}
+  @time_slot_dates = []
   dates_array.each do |date|
+    date_hash = {}
    p_date = Date.parse(date)
-   @time_slot_dates[date.to_date] =  event.tickets.where(ticket_type: 'buy').map {|t| t.redemptions.where(created_at: p_date.midnight..p_date.end_of_day).size }.sum
+   date_hash[date.to_date] =  event.tickets.where(ticket_type: 'buy').map {|t| t.redemptions.where(created_at: p_date.midnight..p_date.end_of_day).size }.sum
+   @time_slot_dates.push(date_hash)
   end# each
   @time_slot_dates
 end
@@ -1311,10 +1317,12 @@ end
 def get_event_pass_checked_in_date_wise(time_slot_dates,event)
   dates_array = time_slot_dates.split(',').map {|s| s.to_s }
 
-  @time_slot_dates = {}
+  @time_slot_dates = []
   dates_array.each do |date|
+    date_hash = {}
    p_date = Date.parse(date)
-   @time_slot_dates[date.to_date] =  event.passes.where(created_at: p_date.midnight..p_date.end_of_day).map {|p| p.redemptions.size }.sum
+   date_hash[date.to_date] =  event.passes.where(created_at: p_date.midnight..p_date.end_of_day).map {|p| p.redemptions.size }.sum
+   @time_slot_dates.push(date_hash)
   end# each
 
   @time_slot_dates
@@ -1401,9 +1409,6 @@ def get_event_paid_checked_in(event)
  event.tickets.map {|ticket| paid_checked_in += ticket.redemptions.size }
  paid_checked_in
 end
-
-
-
 
 
 end
