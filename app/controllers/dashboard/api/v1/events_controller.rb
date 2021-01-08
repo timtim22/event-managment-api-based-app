@@ -345,7 +345,6 @@ end
     @event.end_time = params['end_time']
     @event.over_18 = params[:over_18]
     @event.description = params[:description]
-    @event.terms_conditions = params[:terms_conditions]
     @event.allow_chat = params[:allow_chat]
     @event.event_forwarding = params[:event_forwarding]
     if !params[:location].blank?
@@ -357,6 +356,8 @@ end
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
+    @event.terms_conditions = params[:terms_conditions] if params[:price_type] == "free_event"
+    @event.quantity = params[:quantity] if params[:price_type] == "free_event"
 
     if @event.save
 
@@ -379,15 +380,12 @@ end
             lat: params[:location][:geometry][:lat],
             lng: params[:location][:geometry][:lng],
             price: params[:price],
-            quantity: params[:quantity],
             event_type: params[:event_type]
           )}
 
       success = true
 
       if params[:price_type] == "free_event"
-        @event.terms_conditions = params[:terms_conditions]
-        @event.quantity = params[:quantity]
 
       # Admisssion sectiion
       else !params[:admission_resources].blank?
@@ -640,7 +638,6 @@ end
               lat: params[:location][:geometry][:lat],
               lng: params[:location][:geometry][:lng],
               price: params[:price],
-              quantity: params[:quantity],
               event_type: params[:event_type]
             )
         else
@@ -661,7 +658,6 @@ end
               lat: params[:location][:geometry][:lat],
               lng: params[:location][:geometry][:lng],
               price: params[:price],
-              quantity: params[:quantity],
               event_type: params[:event_type]
             )
         end    
