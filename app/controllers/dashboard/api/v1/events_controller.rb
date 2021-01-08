@@ -262,15 +262,7 @@
     success = false
     @error_messages = []
 
-    if params[:admission_resources].blank?
-      render json: {
-        code: 400,
-        success: false,
-        message: 'One of admission process must be defined.',
-        data: nil
-      }
-      return
-    else
+    if params[:price_type] != "free_event"
       params[:admission_resources].each do |resource|
         case resource[:name]
         when "free"
@@ -318,8 +310,7 @@
             process_validated = false
           end
         end #each
-    end #admission resource validation
-
+end
      if !params[:sponsors].blank?
       required_fields = ['sponsor_image', 'external_url']
       params[:sponsors].each do |sponsor|
@@ -390,39 +381,45 @@
           )}
 
       success = true
-    # Admisssion sectiion
-    if !params[:admission_resources].blank?
-      params[:admission_resources].each do |resource|
 
-      case resource[:name]
-      when "free"
-          resource[:fields].each do |f|
-           @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'free', price: 0)
-          end #each
-          @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free")
-       when 'paid'
-          resource[:fields].each do |f|
-           @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
-          end #each
-           @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00, price_type: "paid")
-        when 'pay_at_door'
-          resource[:fields].each do |f|
-           @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'pay_at_door')
-          end #each
-          @event.update!(price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"], price_type: "pay_at_door")
+      if params[:price_type] == "free_event"
+        @event.terms_conditions = params[:terms_conditions]
+        @event.quantity = params[:quantity]
 
-        when 'pass'
-          resource[:fields].each do |f|
-          @pass =@event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], terms_conditions: f[:terms_conditions], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
-          @event.update!(pass: 'true')
-          @event.child_events.map {|ch| ch.update!(pass: 'true')}
-          end #each
+      # Admisssion sectiion
+      else !params[:admission_resources].blank?
+        params[:admission_resources].each do |resource|
 
-        else
-          @error_messages.push('invalid resource type is submitted.')
-        end
-      end #each
-    end#if
+
+        case resource[:name]
+        when "free"
+            resource[:fields].each do |f|
+             @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'free', price: 0)
+            end #each
+            @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free")
+         when 'paid'
+            resource[:fields].each do |f|
+             @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
+            end #each
+             @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00, price_type: "paid")
+          when 'pay_at_door'
+            resource[:fields].each do |f|
+             @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'pay_at_door')
+            end #each
+            @event.update!(price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"], price_type: "pay_at_door")
+
+          when 'pass'
+            resource[:fields].each do |f|
+            @pass =@event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], terms_conditions: f[:terms_conditions], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+            @event.update!(pass: 'true')
+            @event.child_events.map {|ch| ch.update!(pass: 'true')}
+            end #each
+
+          else
+            @error_messages.push('invalid resource type is submitted.')
+          end
+        end #each
+      end#if
 
 
     #save attachement if there is any
@@ -510,15 +507,7 @@
     success = false
     @error_messages = []
 
-    if params[:admission_resources].blank?
-      render json: {
-        code: 400,
-        success: false,
-        message: 'One of admission process must be defined.',
-        data: nil
-      }
-      return
-    else
+    if params[:price_type] != "free_event"
       params[:admission_resources].each do |resource|
         case resource[:name]
         when "free"
@@ -566,8 +555,7 @@
             process_validated = false
           end
         end #each
-    end #admission resource validation
-
+    end
 
      # if params[:event_dates].blank?
      #   @error_messages.push("event_dates is required field.")
@@ -652,7 +640,7 @@
               event_type: params[:event_type]
             )
         else
-          @event.child_events.find_by(start_date: date.to_date).update!(
+          @event.child_events.find_by(start_date: date).update!(
             user_id: request_user.id,
               name: params[:name],
               image: params[:image],
@@ -760,54 +748,57 @@
       #   end
       # end
       success = true
+
+      if params[:price_type] == "free_event"
+        @event.terms_conditions = params[:terms_conditions]
+        @event.quantity = params[:quantity]
     # Admisssion sectiion
-    if !params[:admission_resources].blank?
-      params[:admission_resources].each do |resource|
+          else !params[:admission_resources].blank?
+            params[:admission_resources].each do |resource|
 
-      case resource[:name]
-      when "free"
-          resource[:fields].each do |f|
-           if f.include? "id"
-              @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions],  user: request_user, ticket_type: 'free', price: 0)
-            else
-              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions],  user: request_user, ticket_type: 'free', price: 0)
-            end
-          end #each
-       when 'paid'
-          resource[:fields].each do |f|
-            if f.include? "id"
-              @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
-            else
-              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'buy')
-            end
-          end #each
-        when 'pay_at_door'
-          resource[:fields].each do |f|
-            if f.include? "id"
-              @ticket = @event.tickets.find(f[:id]).update!(start_price: f[:start_price], end_price: f[:end_price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'pay_at_door')
-            else
-              @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
-            end
-          end #each
-
-
-        when 'pass'
-          resource[:fields].each do |f|
-            if f.include? "id"
-              @pass = @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], terms_conditions: f[:terms_conditions],  ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
-          else
-                @pass = @event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], terms_conditions: f[:terms_conditions],  ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
-            end
-            @event.update!(pass: 'true')
-          end #each
+            case resource[:name]
+            when "free"
+                resource[:fields].each do |f|
+                 if f.include? "id"
+                    @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions],  user: request_user, ticket_type: 'free', price: 0)
+                  else
+                    @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions],  user: request_user, ticket_type: 'free', price: 0)
+                  end
+                end #each
+             when 'paid'
+                resource[:fields].each do |f|
+                  if f.include? "id"
+                    @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
+                  else
+                    @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'buy')
+                  end
+                end #each
+              when 'pay_at_door'
+                resource[:fields].each do |f|
+                  if f.include? "id"
+                    @ticket = @event.tickets.find(f[:id]).update!(start_price: f[:start_price], end_price: f[:end_price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'pay_at_door')
+                  else
+                    @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
+                  end
+                end #each
 
 
-        else
-          @error_messages.push('invalid resource type is submitted.')
-        end
-      end #each
-    end#if
+              when 'pass'
+                resource[:fields].each do |f|
+                  if f.include? "id"
+                    @pass = @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], terms_conditions: f[:terms_conditions],  ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+                else
+                      @pass = @event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], terms_conditions: f[:terms_conditions],  ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+                  end
+                  @event.update!(pass: 'true')
+                end #each
 
+
+              else
+                @error_messages.push('invalid resource type is submitted.')
+              end
+            end #each
+          end#if
 
     #save attachement if there is any
     if !params[:event_attachments].blank?
