@@ -193,7 +193,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         movement_percentage: get_time_slot_increment_decrement_in_offer_views(@current_time_slot_dates, @before_current_time_slot_dates, offer),
         "demographics" => get_offer_demographics(offer),
         graph_stats: {
-          # total_impression_count: get_time_slot_total_offer_impresssions(offer, @current_time_slot_dates),
+          total_impression_count: get_time_slot_total_offer_impresssions(offer, @current_time_slot_dates),
           total_in_wallet_count: get_time_slot_offer_in_wallet(@current_time_slot_dates, offer),
           total_redeemed_count: get_time_slot_total_redemptions(offer, @current_time_slot_dates),
           total_shared_count: get_time_slot_total_offer_shares(@current_time_slot_dates, offer),
@@ -1580,7 +1580,7 @@ def get_time_slot_offer_in_wallet(time_slot_dates, offer)
       @in_wallet += in_wallet
      end #if !blank?
   end #each
-   @checked_in
+   @in_wallet
 end
 
 
