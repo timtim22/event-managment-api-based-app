@@ -9,13 +9,12 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         #if ticketed event
        # if event.event.price_type == 'buy'
            #Scenario 1 before live 
-        
               stats = {
                  "checked_in" => {
                   "total_checked_in" => get_total_event_checked_in(event.event),
                   "time_slot_total_checked_in" => get_time_slot_total_pass_checked_in(params[:time_slot_dates], event.event) + get_time_slot_total_paid_checked_in(params[:time_slot_dates], event.event),
                   "total_pass_checked_in" => get_pass_total_checked_in(event.event),
-                  "time_slot_total_pass_checked_in" => get_event_pass_checked_in(params[:time_slot_dates], event.event),
+                  "time_slot_total_pass_checked_in" => get_time_slot_total_pass_checked_in(params[:time_slot_dates], event.event),
                   "time_slot_pass_checked_in_date_wise" => get_event_pass_checked_in_date_wise(params[:time_slot_dates], event.event),
                   "total_paid_checked_in" => get_total_paid_checked_in(event.event),
                   "time_slot_total_paid_checked_in" => get_event_paid_checked_in(event.event),
@@ -42,10 +41,10 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                   "time_slot_total_shared_events" => get_time_slot_total_shared_events(params[:time_slot_dates], event),
                   "time_slot_shares_date_wise" => get_time_slot_shares_date_wise(params[:time_slot_dates],event),
                  },
-                 "pass" => {
+                 "passes" => {
                   "total_pass_checked_in" => get_pass_total_checked_in(event.event),
-                  "time_slot_total_pass_checked_in" => get_event_pass_checked_in(event.event),
-                  "time_slot_pass_checked_in_date_wise" => get_event_pass_checked_in_date_wise
+                  "time_slot_total_pass_checked_in" => get_time_slot_total_pass_checked_in(params[:time_slot_dates], event.event),
+                  "time_slot_pass_checked_in_date_wise" => get_event_pass_checked_in_date_wise(params[:time_slot_dates], event.event),
                  }
                 }
         
@@ -1289,7 +1288,6 @@ end
 
 def get_time_slot_entries_date_wise(time_slot_dates,competition)
   dates_array = time_slot_dates.split(',').map {|s| s.to_s }
-
   @time_slot_dates = {}
   dates_array.each do |date|
    p_date = Date.parse(date)
@@ -1301,13 +1299,11 @@ end
 
 def get_event_paid_checked_in_date_wise(time_slot_dates,event)
   dates_array = time_slot_dates.split(',').map {|s| s.to_s }
-
   @time_slot_dates = {}
   dates_array.each do |date|
    p_date = Date.parse(date)
-   @time_slot_dates[date.to_date] =  event.tickets.where(created_at: p_date.midnight..p_date.end_of_day).where(ticket_type: 'buy').size
+   @time_slot_dates[date.to_date] =  event.tickets.where(ticket_type: 'buy').map {|t| t.redemptions.where(created_at: p_date.midnight..p_date.end_of_day).size }.sum
   end# each
-
   @time_slot_dates
 end
 
@@ -1331,7 +1327,7 @@ end
 
 
 def get_total_paid_checked_in(event)
-  event.tickets.where(ticket_type: 'buy').size
+  event.tickets.where(ticket_type: 'buy').map {|t| t.redemptions.size }.sum
 end
 
 
@@ -1340,8 +1336,8 @@ def get_time_slot_total_pass_checked_in(time_slot_dates, event)
   @checked_in = []
   dates_array.each do |date|
      p_date = Date.parse(date)
-     checked_in = event.passes.redemptions.where(created_at: p_date.midnight..p_date.end_of_day)
-     if !view.blank?
+     checked_in = event.passes.map {|p| p.redemptions.where(created_at: p_date.midnight..p_date.end_of_day).size }.sum
+     if !checked_in.blank?
        @checked_in.push(checked_in)
   end #if !blank?
   end #each
@@ -1354,12 +1350,56 @@ def get_time_slot_total_paid_checked_in(time_slot_dates, event)
   @checked_in = []
   dates_array.each do |date|
      p_date = Date.parse(date)
-     checked_in = event.tickets.map{|t| t.ticket_purchases.where(created_at: p_date.midnight..p_date.end_of_day).size }.sum
-     if !view.blank?
+     checked_in = event.tickets.map{|t| t.redemptions.where(created_at: p_date.midnight..p_date.end_of_day).size }.sum
+     if !checked_in.blank?
        @checked_in.push(checked_in)
   end #if !blank?
   end #each
   @checked_in.size
+end
+
+
+
+def get_total_event_earning(event)
+  @total_amount = 0.0
+  event.tickets.map {|ticket| ticket.ticket_purchases.map {|p| total_amount += p.price } }
+  @total_amount
+end
+
+def get_total_event_checked_in(event)
+ total_checked_in = 0
+ event.passes.map {|pass| total_checked_in += pass.redemptions.size }
+ event.tickets.map {|ticket| total_checked_in += ticket.redemptions.size }
+ total_checked_in
+end
+
+
+def get_event_pass_checked_in(event)
+pass_checked_in = 0
+event.passes.map {|pass| pass_checked_in += pass.redemptions.size }
+pass_checked_in
+end
+
+def get_time_slot_total_pass_checked_in(time_slot_dates, event)
+  dates_array = time_slot_dates.split(',').map {|s| s.to_s }
+  @checked_in = []
+  dates_array.each do |date|
+     p_date = Date.parse(date)
+     checked_in = event.passes.map{|p| p.redemptions.where(created_at: p_date.midnight..p_date.end_of_day).size }.sum
+     if !checked_in.blank?
+       @checked_in.push(checked_in)
+  end #if !blank?
+  end #each
+
+   @checked_in.size
+
+end
+
+
+def get_event_paid_checked_in(event)
+ paid_checked_in = 0
+ event.tickets.map {|ticket| paid_checked_in += ticket.redemptions.size }
+ paid_checked_in
 end
 
 
