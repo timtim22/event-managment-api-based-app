@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_08_054416) do
+ActiveRecord::Schema.define(version: 2021_01_08_095527) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -144,6 +144,7 @@ ActiveRecord::Schema.define(version: 2021_01_08_054416) do
     t.datetime "updated_at", null: false
     t.string "pass", default: "false"
     t.integer "user_id"
+    t.integer "quantity"
     t.index ["event_id"], name: "index_child_events_on_event_id"
   end
 
@@ -679,6 +680,7 @@ ActiveRecord::Schema.define(version: 2021_01_08_054416) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "location_enabled"
+    t.boolean "is_subscribed"
   end
 
   create_table "views", force: :cascade do |t|
