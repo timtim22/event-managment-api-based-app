@@ -1,6 +1,6 @@
 class Comment < ApplicationRecord
   belongs_to :user
-  belongs_to :event, foreign_key: :event_id
+  belongs_to :event, optional: true
   belongs_to :child_event
 
   has_many :replies, dependent: :destroy

@@ -25,7 +25,7 @@ class User < ApplicationRecord
   has_many :follow_requests, foreign_key: :recipient_id, class_name: 'FollowRequest', dependent: :destroy
   has_many :interest_levels, dependent: :destroy
   has_many :interested_interest_levels, -> { where(level:'interested') }, foreign_key: :user_id, class_name: 'InterestLevel', dependent: :destroy
-  has_many :interested_in_events, through: :interested_interest_levels, source: :event
+  has_many :interested_in_events, through: :interested_interest_levels, source: :child_event
   has_many :passes, dependent: :destroy
   has_many :special_offers, dependent: :destroy
   has_many :own_competitions, dependent: :destroy, foreign_key: :user_id, class_name: 'Competition'
@@ -37,7 +37,7 @@ class User < ApplicationRecord
   has_many :competitions, dependent: :destroy
   has_many :competitions_to_attend, through: :registrations, source: :event, :source_type => "Competition"
   has_many :going_interest_levels, -> { where(level: 'going') }, foreign_key: :user_id, class_name: 'InterestLevel', dependent: :destroy
-  has_many :events_to_attend, through: :going_interest_levels, source: :event
+  has_many :events_to_attend, through: :going_interest_levels, source: :child_event
   has_many :reminders, dependent: :destroy
   has_many :ambassador_requests, dependent: :destroy
   has_many :accepted_ambassador_requests, -> { where(status: 'accepted') }, foreign_key: :user_id, class_name: 'AmbassadorRequest', dependent: :destroy

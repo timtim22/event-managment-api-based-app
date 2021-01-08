@@ -131,8 +131,7 @@ class Api::V1::ApiMasterController < ApplicationController
     end
 
 
-  
-  
+
     def getInterestedUsers(event)
       @interested_users = []
       @interested_followers_or_friends = []
@@ -280,7 +279,7 @@ class Api::V1::ApiMasterController < ApplicationController
  def get_total_event_checked_in(event)
    total_checked_in = 0
    event.passes.map {|pass| total_checked_in += pass.redemptions.size }
-   event.tickets.map {|ticket| total_checked_in += ticket.redemptiions.size }
+   event.tickets.map {|ticket| total_checked_in += ticket.redemptions.size }
    total_checked_in
  end
 
@@ -294,7 +293,7 @@ class Api::V1::ApiMasterController < ApplicationController
 
  def get_event_paid_checked_in(event)
    paid_checked_in = 0
-   event.tickets.map {|ticket| paid_checked_in += ticket.redemptiions.size }
+   event.tickets.map {|ticket| paid_checked_in += ticket.redemptions.size }
    paid_checked_in
  end
 
