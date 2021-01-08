@@ -63,8 +63,8 @@ end
         total_comments: get_time_slot_parent_event_total_comments(params[:current_time_slot_dates], e),
         total_ambassadors: get_time_slot_parent_event_ambassadors(params[:current_time_slot_dates], e),
         new_followers: get_time_slot_parent_event_followers(params[:current_time_slot_dates], e),
-        total_going: get_time_slot_parent_event_total_going(params[:current_time_slot_dates], e),
-        total_interested: get_time_slot_parent_event_total_interested(params[:current_time_slot_dates], e)
+        total_going_date_wise: get_time_slot_parent_event_total_going(params[:current_time_slot_dates], e),
+        total_interested_date_wise: get_time_slot_parent_event_total_interested(params[:current_time_slot_dates], e)
       }
     
       render json: {
@@ -86,23 +86,26 @@ end
    # def total_events
 end
 
-  def get_child_event_stats
+def get_child_event_stats
     if !params[:event_id].blank? && !params[:current_time_slot_dates].blank?
       @event = []
-      e = Event.find(params[:event_id])
-      @event = {
-        total_views: get_time_slot_parent_total_views(params[:current_time_slot_dates], e),
-        total_comments: get_time_slot_parent_event_total_comments(params[:current_time_slot_dates], e),
-        total_ambassadors: get_time_slot_parent_event_ambassadors(params[:current_time_slot_dates], e),
-        new_followers: get_time_slot_parent_event_followers(params[:current_time_slot_dates], e),
-        total_going: get_time_slot_parent_event_total_going(params[:current_time_slot_dates], e),
-        total_interested: get_time_slot_parent_event_total_interested(params[:current_time_slot_dates], e)
-      }
+      e = ChildEvent.find(params[:event_id])
+      case
+        when e.event.price_type == "free_event"
+        @event = {
+          total_views: get_time_slot_child_total_views(params[:current_time_slot_dates], e),
+          # total_comments: get_time_slot_parent_event_total_comments(params[:current_time_slot_dates], e),
+          # total_ambassadors: get_time_slot_parent_event_ambassadors(params[:current_time_slot_dates], e),
+          # new_followers: get_time_slot_parent_event_followers(params[:current_time_slot_dates], e),
+          # total_going_date_wise: get_time_slot_parent_event_total_going(params[:current_time_slot_dates], e),
+          # total_interested_date_wise: get_time_slot_parent_event_total_interested(params[:current_time_slot_dates], e)
+        }
+      end
     
       render json: {
         code: 200,
         success: true,
-        message: 'Parent Event Stats',
+        message: 'Child-Event Stats',
         data: {
           stats: @event
         }
@@ -117,20 +120,33 @@ end
       end #if
    # def total_events
 end
-  
+
   private
 
-     def get_time_slot_parent_event_total_interested(time_slot_dates, event)
-     dates_array = time_slot_dates.split(',').map {|s| s.to_s }
-     @time_slot_dates_stats = {}
-     dates_array.each do |date|
-      p_date = Date.parse(date)
-      @time_slot_dates_stats[date.to_date] = event.child_events.map {|e| e.interested_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day).size}.sum 
+ def get_time_slot_child_total_views(current_time_slot_dates, business)
+  @total_views = []
+  current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
+  current_dates_array.each do |date|
+    p_date = Date.parse(date)
+    @views = business.views.where(created_at: p_date.midnight..p_date.end_of_day).size
+    if !@views.blank?
+      @total_views.push(@views.size)
+    end
+    end #each
+    get_sum_of_array_elements(@total_views)
+ end
 
-     end# each
+def get_time_slot_parent_event_total_interested(time_slot_dates, event)
+ dates_array = time_slot_dates.split(',').map {|s| s.to_s }
+ @time_slot_dates_stats = {}
+ dates_array.each do |date|
+  p_date = Date.parse(date)
+  @time_slot_dates_stats[date.to_date] = event.child_events.map {|e| e.interested_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day).size}.sum 
 
-     @time_slot_dates_stats
-   end
+ end# each
+
+ @time_slot_dates_stats
+end
 
    def get_time_slot_parent_event_total_going(time_slot_dates, event)
      dates_array = time_slot_dates.split(',').map {|s| s.to_s }

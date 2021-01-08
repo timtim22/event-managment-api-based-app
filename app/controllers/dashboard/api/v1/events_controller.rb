@@ -358,6 +358,9 @@ end
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
     @event.terms_conditions = params[:terms_conditions] if params[:price_type] == "free_event"
     @event.quantity = params[:quantity] if params[:price_type] == "free_event"
+    @event.is_repetive = params[:is_repetive]
+    @event.frequency = params[:frequency]
+    
 
     if @event.save
 
@@ -615,6 +618,8 @@ end
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
     @event.terms_conditions = params[:terms_conditions] if params[:price_type] == "free_event"
     @event.quantity = params[:quantity] if params[:price_type] == "free_event"
+    @event.is_repetive = params[:is_repetive]
+    @event.frequency = params[:frequency]
 
     if @event.save
       
