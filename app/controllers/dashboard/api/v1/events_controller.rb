@@ -386,7 +386,7 @@ end
       success = true
 
       if params[:price_type] == "free_event"
-
+          @event.update!(price_type: "free_event")
       # Admisssion sectiion
       else !params[:admission_resources].blank?
         params[:admission_resources].each do |resource|
@@ -602,7 +602,6 @@ end
     @event.end_time = params['end_time']
     @event.over_18 = params[:over_18]
     @event.description = params[:description]
-    @event.terms_conditions = params[:terms_conditions]
     @event.allow_chat = params[:allow_chat]
     @event.event_forwarding = params[:event_forwarding]
     if !params[:location].blank?
@@ -667,6 +666,7 @@ end
       success = true
 
       if params[:price_type] == "free_event"
+         @event.update!(price_type: "free_event")
     # Admisssion sectiion
           else !params[:admission_resources].blank?
             params[:admission_resources].each do |resource|
