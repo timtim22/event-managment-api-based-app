@@ -627,36 +627,17 @@
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
 
     if @event.save
-
+      
+      @event.child_events.where.not(start_date: params[:event_dates]).destroy_all
       params[:event_dates].each do |date|
-        if date.include? "id"
-          # %w(id date).any? { |s| date.include? s }
-          @event.child_events.find(date[:id]).update!(
-            user_id: request_user.id,
-              name: params[:name],
-              image: params[:image],
-              start_date: date[:date],
-              end_date: date[:date],
-              start_time: params['start_time'],
-              end_time: params['end_time'],
-              over_18: params[:over_18],
-              description: params[:description],
-              terms_conditions: params[:terms_conditions],
-              allow_chat: params[:allow_chat],
-              event_forwarding: params[:event_forwarding],
-              location: params[:location][:name],
-              lat: params[:location][:geometry][:lat],
-              lng: params[:location][:geometry][:lng],
-              price: params[:price],
-              event_type: params[:event_type]
-            )
-        elsif date.include? "date"
-           @event.child_events.create!(
+        ch = @event.child_events.where(start_date: date).first
+        if ch.blank?
+          @event.child_events.create!(
               user_id: request_user.id,
               name: params[:name],
               image: params[:image],
-              start_date: date[:date].to_date,
-              end_date: date[:date].to_date,
+              start_date: date.to_date,
+              end_date: date.to_date,
               start_time: params['start_time'],
               end_time: params['end_time'],
               over_18: params[:over_18],
@@ -670,8 +651,114 @@
               price: params[:price],
               event_type: params[:event_type]
             )
-        end
-    end
+        else
+          @event.child_events.find_by(start_date: date.to_date).update!(
+            user_id: request_user.id,
+              name: params[:name],
+              image: params[:image],
+              start_date: date.to_date,
+              end_date: date.to_date,
+              start_time: params['start_time'],
+              end_time: params['end_time'],
+              over_18: params[:over_18],
+              description: params[:description],
+              terms_conditions: params[:terms_conditions],
+              allow_chat: params[:allow_chat],
+              event_forwarding: params[:event_forwarding],
+              location: params[:location][:name],
+              lat: params[:location][:geometry][:lat],
+              lng: params[:location][:geometry][:lng],
+              price: params[:price],
+              event_type: params[:event_type]
+            )
+        end    
+      end
+      # if params[:event_dates] == @event.child_events.map { |e| e.start_date}
+      #       params[:event_dates].each do |date|
+      #         @event.child_events.find(date[:id]).update!(
+      #         user_id: request_user.id,
+      #         name: params[:name],
+      #         image: params[:image],
+      #         start_date: date[:date],
+      #         end_date: date[:date],
+      #         start_time: params['start_time'],
+      #         end_time: params['end_time'],
+      #         over_18: params[:over_18],
+      #         description: params[:description],
+      #         terms_conditions: params[:terms_conditions],
+      #         allow_chat: params[:allow_chat],
+      #         event_forwarding: params[:event_forwarding],
+      #         location: params[:location][:name],
+      #         lat: params[:location][:geometry][:lat],
+      #         lng: params[:location][:geometry][:lng],
+      #         price: params[:price],
+      #         event_type: params[:event_type]
+      #       )
+      #     end
+        
+      #   params[:event_dates].map { |date| @event.child_events.create!(
+      #         user_id: request_user.id,
+      #         name: params[:name],
+      #         image: params[:image],
+      #         start_date: date.to_date,
+      #         end_date: date.to_date,
+      #         start_time: params['start_time'],
+      #         end_time: params['end_time'],
+      #         over_18: params[:over_18],
+      #         description: params[:description],
+      #         terms_conditions: params[:terms_conditions],
+      #         allow_chat: params[:allow_chat],
+      #         event_forwarding: params[:event_forwarding],
+      #         location: params[:location][:name],
+      #         lat: params[:location][:geometry][:lat],
+      #         lng: params[:location][:geometry][:lng],
+      #         price: params[:price],
+      #         event_type: params[:event_type]
+      #       )}
+      # params[:event_dates].each do |date|
+      #   if date.include? "id"
+      #     # %w(id date).any? { |s| date.include? s }
+      #     @event.child_events.find(date[:id]).update!(
+      #       user_id: request_user.id,
+      #         name: params[:name],
+      #         image: params[:image],
+      #         start_date: date[:date],
+      #         end_date: date[:date],
+      #         start_time: params['start_time'],
+      #         end_time: params['end_time'],
+      #         over_18: params[:over_18],
+      #         description: params[:description],
+      #         terms_conditions: params[:terms_conditions],
+      #         allow_chat: params[:allow_chat],
+      #         event_forwarding: params[:event_forwarding],
+      #         location: params[:location][:name],
+      #         lat: params[:location][:geometry][:lat],
+      #         lng: params[:location][:geometry][:lng],
+      #         price: params[:price],
+      #         event_type: params[:event_type]
+      #       )
+      #   elsif date.include? "date"
+      #      @event.child_events.create!(
+      #         user_id: request_user.id,
+      #         name: params[:name],
+      #         image: params[:image],
+      #         start_date: date[:date].to_date,
+      #         end_date: date[:date].to_date,
+      #         start_time: params['start_time'],
+      #         end_time: params['end_time'],
+      #         over_18: params[:over_18],
+      #         description: params[:description],
+      #         terms_conditions: params[:terms_conditions],
+      #         allow_chat: params[:allow_chat],
+      #         event_forwarding: params[:event_forwarding],
+      #         location: params[:location][:name],
+      #         lat: params[:location][:geometry][:lat],
+      #         lng: params[:location][:geometry][:lng],
+      #         price: params[:price],
+      #         event_type: params[:event_type]
+      #       )
+      #   end
+      # end
       success = true
     # Admisssion sectiion
     if !params[:admission_resources].blank?
@@ -859,11 +946,6 @@
 
   end
 
-
-
-
-  private
-
  def delete_resource
     id = params[:id]
     resource = params[:resource]
@@ -875,6 +957,14 @@
        end
       when 'pass'
        if Pass.find(id).destroy
+        success = true
+       end
+      when 'event_attachment'
+       if EventAttachment.find(id).destroy
+        success = true
+       end
+      when 'sponsor'
+       if Sponsor.find(id).destroy
         success = true
        end
       else
@@ -896,6 +986,12 @@
         }
     end
 end
+
+
+
+  private
+
+
 
   def setCategories
     @categories = Category.all
