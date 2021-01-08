@@ -87,6 +87,8 @@
      'event_status' => e.status,
      'event_type' => e.event_type,
      'over_18' => e.over_18,
+     'quantity' => e.quantity,
+     'price_type' => e.price_type,
       "event_dates" => e.child_events.map {|ch| 
         {
           id: ch.id,
@@ -343,7 +345,6 @@ end
     @event.end_time = params['end_time']
     @event.over_18 = params[:over_18]
     @event.description = params[:description]
-    @event.terms_conditions = params[:terms_conditions]
     @event.allow_chat = params[:allow_chat]
     @event.event_forwarding = params[:event_forwarding]
     if !params[:location].blank?
@@ -355,6 +356,11 @@ end
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
+    @event.terms_conditions = params[:terms_conditions] if params[:price_type] == "free_event"
+    @event.quantity = params[:quantity] if params[:price_type] == "free_event"
+    @event.is_repetive = params[:is_repetive]
+    @event.frequency = params[:frequency]
+    
 
     if @event.save
 
@@ -383,9 +389,7 @@ end
       success = true
 
       if params[:price_type] == "free_event"
-        @event.terms_conditions = params[:terms_conditions]
-        @event.quantity = params[:quantity]
-
+          @event.update!(price_type: "free_event")
       # Admisssion sectiion
       else !params[:admission_resources].blank?
         params[:admission_resources].each do |resource|
@@ -601,7 +605,6 @@ end
     @event.end_time = params['end_time']
     @event.over_18 = params[:over_18]
     @event.description = params[:description]
-    @event.terms_conditions = params[:terms_conditions]
     @event.allow_chat = params[:allow_chat]
     @event.event_forwarding = params[:event_forwarding]
     if !params[:location].blank?
@@ -613,6 +616,10 @@ end
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
+    @event.terms_conditions = params[:terms_conditions] if params[:price_type] == "free_event"
+    @event.quantity = params[:quantity] if params[:price_type] == "free_event"
+    @event.is_repetive = params[:is_repetive]
+    @event.frequency = params[:frequency]
 
     if @event.save
       
@@ -661,97 +668,10 @@ end
             )
         end    
       end
-      # if params[:event_dates] == @event.child_events.map { |e| e.start_date}
-      #       params[:event_dates].each do |date|
-      #         @event.child_events.find(date[:id]).update!(
-      #         user_id: request_user.id,
-      #         name: params[:name],
-      #         image: params[:image],
-      #         start_date: date[:date],
-      #         end_date: date[:date],
-      #         start_time: params['start_time'],
-      #         end_time: params['end_time'],
-      #         over_18: params[:over_18],
-      #         description: params[:description],
-      #         terms_conditions: params[:terms_conditions],
-      #         allow_chat: params[:allow_chat],
-      #         event_forwarding: params[:event_forwarding],
-      #         location: params[:location][:name],
-      #         lat: params[:location][:geometry][:lat],
-      #         lng: params[:location][:geometry][:lng],
-      #         price: params[:price],
-      #         event_type: params[:event_type]
-      #       )
-      #     end
-        
-      #   params[:event_dates].map { |date| @event.child_events.create!(
-      #         user_id: request_user.id,
-      #         name: params[:name],
-      #         image: params[:image],
-      #         start_date: date.to_date,
-      #         end_date: date.to_date,
-      #         start_time: params['start_time'],
-      #         end_time: params['end_time'],
-      #         over_18: params[:over_18],
-      #         description: params[:description],
-      #         terms_conditions: params[:terms_conditions],
-      #         allow_chat: params[:allow_chat],
-      #         event_forwarding: params[:event_forwarding],
-      #         location: params[:location][:name],
-      #         lat: params[:location][:geometry][:lat],
-      #         lng: params[:location][:geometry][:lng],
-      #         price: params[:price],
-      #         event_type: params[:event_type]
-      #       )}
-      # params[:event_dates].each do |date|
-      #   if date.include? "id"
-      #     # %w(id date).any? { |s| date.include? s }
-      #     @event.child_events.find(date[:id]).update!(
-      #       user_id: request_user.id,
-      #         name: params[:name],
-      #         image: params[:image],
-      #         start_date: date[:date],
-      #         end_date: date[:date],
-      #         start_time: params['start_time'],
-      #         end_time: params['end_time'],
-      #         over_18: params[:over_18],
-      #         description: params[:description],
-      #         terms_conditions: params[:terms_conditions],
-      #         allow_chat: params[:allow_chat],
-      #         event_forwarding: params[:event_forwarding],
-      #         location: params[:location][:name],
-      #         lat: params[:location][:geometry][:lat],
-      #         lng: params[:location][:geometry][:lng],
-      #         price: params[:price],
-      #         event_type: params[:event_type]
-      #       )
-      #   elsif date.include? "date"
-      #      @event.child_events.create!(
-      #         user_id: request_user.id,
-      #         name: params[:name],
-      #         image: params[:image],
-      #         start_date: date[:date].to_date,
-      #         end_date: date[:date].to_date,
-      #         start_time: params['start_time'],
-      #         end_time: params['end_time'],
-      #         over_18: params[:over_18],
-      #         description: params[:description],
-      #         terms_conditions: params[:terms_conditions],
-      #         allow_chat: params[:allow_chat],
-      #         event_forwarding: params[:event_forwarding],
-      #         location: params[:location][:name],
-      #         lat: params[:location][:geometry][:lat],
-      #         lng: params[:location][:geometry][:lng],
-      #         price: params[:price],
-      #         event_type: params[:event_type]
-      #       )
-      #   end
-      # end
       success = true
 
       if params[:price_type] == "free_event"
-        @event.terms_conditions = params[:terms_conditions]
-        @event.quantity = params[:quantity]
+         @event.update!(price_type: "free_event")
     # Admisssion sectiion
           else !params[:admission_resources].blank?
             params[:admission_resources].each do |resource|

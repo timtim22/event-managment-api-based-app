@@ -421,6 +421,9 @@ class ApplicationController < ActionController::Base
       "admission_resources" => admission_resources,
       "event_attachments" => event.event_attachments,
       "sponsors" => event.sponsors,
+      "quantity" => event.quantity,
+      "price_type" => event.price_type,
+      "frequency" => event.frequency,
       "event_dates" => event.child_events.map {|ch| 
         {
           id: ch.id,
