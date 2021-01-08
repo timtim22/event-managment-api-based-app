@@ -614,6 +614,8 @@ end
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
+    @event.terms_conditions = params[:terms_conditions] if params[:price_type] == "free_event"
+    @event.quantity = params[:quantity] if params[:price_type] == "free_event"
 
     if @event.save
       
@@ -665,8 +667,6 @@ end
       success = true
 
       if params[:price_type] == "free_event"
-        @event.terms_conditions = params[:terms_conditions]
-        @event.quantity = params[:quantity]
     # Admisssion sectiion
           else !params[:admission_resources].blank?
             params[:admission_resources].each do |resource|
