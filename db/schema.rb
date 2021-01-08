@@ -679,7 +679,7 @@ ActiveRecord::Schema.define(version: 2021_01_08_095527) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "location_enabled"
+    t.boolean "location_enabled", default: true
     t.boolean "is_subscribed"
   end
 
