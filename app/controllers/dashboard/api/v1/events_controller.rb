@@ -390,6 +390,7 @@ end
 
       if params[:price_type] == "free_event"
           @event.update!(price_type: "free_event")
+          @event.child_events.map { |e| e.update!(price_type: "free_event") }
       # Admisssion sectiion
       else !params[:admission_resources].blank?
         params[:admission_resources].each do |resource|
@@ -401,16 +402,19 @@ end
              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'free', price: 0)
             end #each
             @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free")
+            @event.child_events.map { |e| e.update!(price_type: "free") }
          when 'paid'
             resource[:fields].each do |f|
              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
             end #each
              @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00, price_type: "paid")
+             @event.child_events.map { |e| e.update!(price_type: "paid") }
           when 'pay_at_door'
             resource[:fields].each do |f|
              @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'pay_at_door')
             end #each
             @event.update!(price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"], price_type: "pay_at_door")
+            @event.child_events.map { |e| e.update!(price_type: "pay_at_door") }
 
           when 'pass'
             resource[:fields].each do |f|

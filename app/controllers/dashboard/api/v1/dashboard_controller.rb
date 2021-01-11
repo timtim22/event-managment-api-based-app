@@ -58,14 +58,48 @@ end
     if !params[:event_id].blank? && !params[:current_time_slot_dates].blank?
       @event = []
       e = Event.find(params[:event_id])
-      @event = {
-        total_views: get_time_slot_parent_total_views(params[:current_time_slot_dates], e),
-        total_comments: get_time_slot_parent_event_total_comments(params[:current_time_slot_dates], e),
-        total_ambassadors: get_time_slot_parent_event_ambassadors(params[:current_time_slot_dates], e),
-        new_followers: get_time_slot_parent_event_followers(params[:current_time_slot_dates], e),
-        total_going_date_wise: get_time_slot_parent_event_total_going(params[:current_time_slot_dates], e),
-        total_interested_date_wise: get_time_slot_parent_event_total_interested(params[:current_time_slot_dates], e)
-      }
+      case
+      when e.price_type == "free_event" || e.price_type == "free"
+        @event = {
+          location: e.location,
+          start_date: e.start_date,
+          Impressions: get_time_slot_parent_total_views(params[:current_time_slot_dates], e),
+          Comments: get_time_slot_parent_event_total_comments(params[:current_time_slot_dates], e),
+          Ambassadors: get_time_slot_user_event_ambassadors(params[:current_time_slot_dates], e),
+          New_followers: get_time_slot_user_event_followers(params[:current_time_slot_dates], e),
+          total_going_date_wise: get_time_slot_parent_event_total_going(params[:current_time_slot_dates], e),
+          total_interested_date_wise: get_time_slot_parent_event_total_interested(params[:current_time_slot_dates], e),
+          # recent_activity: get_time_slot_interestlevel_recent_activity(params[:current_time_slot_dates], e)
+          recent_activity: e.child_events.map { |e| e.interest_levels.last(4).map { |i| {level: i.level, user: i.user.id } }}
+        }
+      when e.price_type == "paid"
+        @event = {
+          location: e.location,
+          start_date: e.start_date,
+          price: e.tickets.first.price,   
+          Comments: get_time_slot_parent_event_total_comments(params[:current_time_slot_dates], e),
+          New_followers: get_time_slot_user_event_followers(params[:current_time_slot_dates], e),
+          Ambassadors: get_time_slot_user_event_ambassadors(params[:current_time_slot_dates], e),
+          Impressions: get_time_slot_parent_total_views(params[:current_time_slot_dates], e),
+          # Tickets: get_time_slot_parent_event_ticket(params[:current_time_slot_dates], e)
+          Tickets: e.tickets.first.quantity,
+          passes_in_wallets: e.passes.map { |e| e.wallets }.size,
+          recent_sales: TicketPurchase.where(ticket_id: e.tickets.first.id).map { |e| {user: e.user.id, quantity: e.quantity, price: e.price} }.last(4)
+          }
+      when e.price_type == "pay_at_door"
+          @event = {
+          location: e.location,
+          start_date: e.start_date,
+          Impressions: get_time_slot_parent_total_views(params[:current_time_slot_dates], e),
+          Comments: get_time_slot_parent_event_total_comments(params[:current_time_slot_dates], e),
+          Ambassadors: get_time_slot_user_event_ambassadors(params[:current_time_slot_dates], e),
+          New_followers: get_time_slot_user_event_followers(params[:current_time_slot_dates], e),
+          total_going_date_wise: get_time_slot_parent_event_total_going(params[:current_time_slot_dates], e),
+          total_interested_date_wise: get_time_slot_parent_event_total_interested(params[:current_time_slot_dates], e),
+          recent_activity: e.child_events.map { |e| e.interest_levels.last(4).map { |i| {level: i.level, user: i.user.id } }},
+          passes_in_wallets: e.passes.map { |e| e.wallets }.size
+          }
+      end
     
       render json: {
         code: 200,
@@ -86,26 +120,109 @@ end
    # def total_events
 end
 
+
 def get_child_event_stats
-    if !params[:event_id].blank? && !params[:current_time_slot_dates].blank?
+    if !params[:event_id].blank? 
       @event = []
       e = ChildEvent.find(params[:event_id])
       case
-        when e.event.price_type == "free_event"
-        @event = {
-          total_views: get_time_slot_child_total_views(params[:current_time_slot_dates], e),
-          # total_comments: get_time_slot_parent_event_total_comments(params[:current_time_slot_dates], e),
-          # total_ambassadors: get_time_slot_parent_event_ambassadors(params[:current_time_slot_dates], e),
-          # new_followers: get_time_slot_parent_event_followers(params[:current_time_slot_dates], e),
-          # total_going_date_wise: get_time_slot_parent_event_total_going(params[:current_time_slot_dates], e),
-          # total_interested_date_wise: get_time_slot_parent_event_total_interested(params[:current_time_slot_dates], e)
+
+      when e.start_date == Time.now.to_date
+        # if e.price_type == "free_event"
+        #   @event << {
+        #     title: "FREE EVENT"
+        #   }
+        # elsif e.price_type == "free"
+        #   @event << {
+        #     title: "FREE TICKET"
+        #   }
+        # end
+        @attendees = []
+        @attendees << {
+
+
+          attendees: TicketPurchase.where(ticket_id: e.event.tickets.first.id).map { |e| {
+            user:  e.user.id,
+            confirmation_date:  e.created_at.to_date,
+            ticket_title:  e.ticket.title,
+            quantity:  e.quantity,
+            paid:  e.price,
+          }}}
+        @event << {
+          # title: "FREE EVENT" if e.price_type == "free_event",
+          # title: "FREE TICKET" if e.price_type == "free",
+          location: e.location,
+          date: e.start_date,
+          going: e.going_interest_levels.size,
+          passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
+          vip_pass: e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum,
+          tickets: e.event.tickets.first.ticket_purchases.map {|e| e.quantity}.sum.to_s + " of " + e.event.tickets.first.quantity.to_s,
+          guest_passes: "" + " of " + e.event.passes.map {|e| e.quantity}.sum.to_s,
+          vip_passes: "" + " of " + e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum.to_s,
+          attendees: @attendees.find { |u| u['user'] == 12} 
         }
+          # Ambassadors: get_time_slot_user_event_ambassadors(params[:current_time_slot_dates], e),
+          # new_followers: get_time_slot_user_event_followers(params[:current_time_slot_dates], e),
+          # total_going_date_wise: get_time_slot_child_event_total_going(params[:current_time_slot_dates], e),
+          # total_interested_date_wise: get_time_slot_child_event_total_interested(params[:current_time_slot_dates], e),
+          # recent_activity: e.interest_levels.last(4).map { |i| {level: i.level, user: i.user.id }}
+          
+      when e.price_type == "free_event" || e.price_type == "free"
+        # if e.price_type == "free_event"
+        #   @event << {
+        #     title: "FREE EVENT"
+        #   }
+        # elsif e.price_type == "free"
+        #   @event << {
+        #     title: "FREE TICKET"
+        #   }
+        # end
+        @event << {
+          # title: "FREE EVENT" if e.price_type == "free_event",
+          # title: "FREE TICKET" if e.price_type == "free",
+          location: e.location,
+          date: e.start_date,
+          Impressions: get_time_slot_child_total_views(params[:current_time_slot_dates], e),
+          Comments: get_time_slot_child_total_comments(params[:current_time_slot_dates], e),
+          Ambassadors: get_time_slot_user_event_ambassadors(params[:current_time_slot_dates], e),
+          new_followers: get_time_slot_user_event_followers(params[:current_time_slot_dates], e),
+          total_going_date_wise: get_time_slot_child_event_total_going(params[:current_time_slot_dates], e),
+          total_interested_date_wise: get_time_slot_child_event_total_interested(params[:current_time_slot_dates], e),
+          recent_activity: e.interest_levels.last(4).map { |i| {level: i.level, user: i.user.id }}
+          }
+      when e.price_type == "paid"
+        @event = {
+          location: e.location,
+          start_date: e.start_date,
+          price: e.event.tickets.first.price,   
+          Comments: get_time_slot_child_total_comments(params[:current_time_slot_dates], e),
+          new_followers: get_time_slot_user_event_followers(params[:current_time_slot_dates], e),
+          Ambassadors: get_time_slot_user_event_ambassadors(params[:current_time_slot_dates], e),
+          Impressions: get_time_slot_child_total_views(params[:current_time_slot_dates], e),
+          Tickets: e.event.tickets.first.quantity,
+          passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
+          recent_sales: TicketPurchase.where(ticket_id: e.event.tickets.first.id).map { |e| {user: e.user.id, quantity: e.quantity, price: e.price} }.last(4)
+          }
+        when e.price_type == "pay_at_door"
+          @event = {
+          location: e.location,
+          start_date: e.start_date,
+          Impressions: get_time_slot_child_total_views(params[:current_time_slot_dates], e),
+          Comments: get_time_slot_child_total_comments(params[:current_time_slot_dates], e),
+          Ambassadors: get_time_slot_user_event_ambassadors(params[:current_time_slot_dates], e),
+          New_followers: get_time_slot_user_event_followers(params[:current_time_slot_dates], e),
+          total_going_date_wise: get_time_slot_child_event_total_going(params[:current_time_slot_dates], e),
+          total_interested_date_wise: get_time_slot_child_event_total_interested(params[:current_time_slot_dates], e),
+          recent_activity: e.interest_levels.last(4).map { |i| {level: i.level, user: i.user.id }},
+          passes_in_wallets: e.event.passes.map { |e| e.wallets }.size
+          }
+            
       end
     
       render json: {
         code: 200,
         success: true,
-        message: 'Child-Event Stats',
+        message: 'Child_Event Stats',
         data: {
           stats: @event
         }
@@ -123,12 +240,68 @@ end
 
   private
 
- def get_time_slot_child_total_views(current_time_slot_dates, business)
+   def get_time_slot_child_total_going(current_time_slot_dates, event)
+    @total_views = []
+    current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
+    current_dates_array.each do |date|
+      p_date = Date.parse(date)
+      @views = event.going_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day)
+      if !@views.blank?
+        @total_views.push(@views.size)
+      end
+      end #each
+      get_sum_of_array_elements(@total_views)
+   end
+
+
+   # def get_time_slot_interestlevel_recent_activity(current_time_slot_dates, event)
+   #  @total_views = []
+   #  current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
+   #  current_dates_array.each do |date|
+   #    p_date = Date.parse(date)
+   #    @views = event.child_events.map { |e| e.interest_levels.where(created_at: p_date.midnight..p_date.end_of_day)}.each do |activity|
+   #      @total_views << {
+          
+   #      }
+   #    end
+   #    end #each
+   #    @total_views
+   # end
+
+  #  def get_time_slot_parent_event_ticket(current_time_slot_dates, business)
+  #   @total_views = []
+  #   current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
+  #   current_dates_array.each do |date|
+  #     p_date = Date.parse(date)
+  #      if business.created_at == p_date.midnight..p_date.end_of_day
+  #          @views = business.tickets.map { |e| e.quantity }
+  #     end #each
+        
+  #     end
+  #     @views
+  # end
+
+
+ def get_time_slot_child_total_views(current_time_slot_dates, event)
   @total_views = []
   current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
   current_dates_array.each do |date|
     p_date = Date.parse(date)
-    @views = business.views.where(created_at: p_date.midnight..p_date.end_of_day).size
+    @views = event.views.where(created_at: p_date.midnight..p_date.end_of_day)
+    if !@views.blank?
+      @total_views.push(@views.size)
+    end
+    end #each
+    get_sum_of_array_elements(@total_views)
+ end
+
+
+ def get_time_slot_child_total_comments(current_time_slot_dates, event)
+  @total_views = []
+  current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
+  current_dates_array.each do |date|
+    p_date = Date.parse(date)
+    @views = event.comments.where(created_at: p_date.midnight..p_date.end_of_day)
     if !@views.blank?
       @total_views.push(@views.size)
     end
@@ -148,6 +321,30 @@ def get_time_slot_parent_event_total_interested(time_slot_dates, event)
  @time_slot_dates_stats
 end
 
+   def get_time_slot_child_event_total_going(time_slot_dates, event)
+     dates_array = time_slot_dates.split(',').map {|s| s.to_s }
+     @time_slot_dates_stats = {}
+     dates_array.each do |date|
+      p_date = Date.parse(date)
+      @time_slot_dates_stats[date.to_date] = event.going_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day).size
+
+     end# each
+
+     @time_slot_dates_stats
+   end
+
+   def get_time_slot_child_event_total_interested(time_slot_dates, event)
+     dates_array = time_slot_dates.split(',').map {|s| s.to_s }
+     @time_slot_dates_stats = {}
+     dates_array.each do |date|
+      p_date = Date.parse(date)
+      @time_slot_dates_stats[date.to_date] = event.interested_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day).size
+
+     end# each
+
+     @time_slot_dates_stats
+   end
+
    def get_time_slot_parent_event_total_going(time_slot_dates, event)
      dates_array = time_slot_dates.split(',').map {|s| s.to_s }
      @time_slot_dates_stats = {}
@@ -160,7 +357,7 @@ end
      @time_slot_dates_stats
    end
 
-   def get_time_slot_parent_event_followers(current_time_slot_dates, business)
+   def get_time_slot_user_event_followers(current_time_slot_dates, business)
     @total_views = []
     current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
     current_dates_array.each do |date|
@@ -173,7 +370,7 @@ end
       get_sum_of_array_elements(@total_views)
    end
 
-   def get_time_slot_parent_event_ambassadors(current_time_slot_dates, business)
+   def get_time_slot_user_event_ambassadors(current_time_slot_dates, business)
     @total_views = []
     current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
     current_dates_array.each do |date|
