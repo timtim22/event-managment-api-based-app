@@ -123,7 +123,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
  def create_going
   if !params[:event_id].blank?
   user = request_user
-  @event = Event.find(params[:event_id])
+  @event = ChildEvent.find(params[:event_id])
   check = @event.interest_levels.where(user_id: user.id).where(level: 'going').first
   if check.blank?
   if @interest_level = @event.interest_levels.create!(user_id: user.id, level: 'going')
