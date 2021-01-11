@@ -154,7 +154,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
       "start_time" => event.start_time,
       "end_time" => event.end_time,
       "over_18" => event.over_18,
-      "price_type" => get_price_type(event),
+      "price_type" => event.price_type,
       "price" => get_price(event).to_s,
       "has_passes" => has_passes?(event),
       "all_passes_added_to_wallet" => all_pass_added,
@@ -182,18 +182,17 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
  end
 
 
- def get_dashboard_event_object(event)
+ def get_dashboard_child_event_object(event)
     qr = []
-     if !event.passes.blank?
-       event.passes.map {|p| qr.push(p.redeem_code) }
+     if !event.event.passes.blank?
+       event.event.passes.map {|p| qr.push(p.redeem_code) }
      end
   e = {
     "id" => event.id,
     "name" => event.name,
-    "image" => event.image,
+    "image" => event.event.image,
     "event_type"  => event.event_type,
     "price_type"  => event.price_type,
-    "price"  => event.price,
     "location"  => event.location,
     "start_date"  => event.start_date,
     "end_date"  => event.end_date,
@@ -201,8 +200,10 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
     "end_time"  => event.end_time,
     "going"  => event.going_interest_levels.size,
     "maybe"  => event.interested_interest_levels.size,
-    "get_demographics" => get_demographics(event),
-    "event_status" => event.status
+    "get_demographics" => get_demographics(event.event),
+    "event_status" => event.event.status,
+    "parent_event_id" => event.event.id,
+    "price" => get_price(event.event)
   }
  end
 

@@ -188,7 +188,7 @@ class Api::V1::ApiMasterController < ApplicationController
         "start_time" => event.start_time,
         "end_time" => event.end_time,
         "over_18" => event.event.over_18,
-        "price_type" => get_price_type(event.event),
+        "price_type" => event.price_type,
         "price" => get_price(event.event).to_s,
         "has_passes" => has_passes?(event.event),
         "all_passes_added_to_wallet" => all_pass_added,
