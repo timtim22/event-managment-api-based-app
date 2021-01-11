@@ -182,10 +182,10 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
  end
 
 
- def get_dashboard_event_object(event)
+ def get_dashboard_child_event_object(event)
     qr = []
-     if !event.passes.blank?
-       event.passes.map {|p| qr.push(p.redeem_code) }
+     if !event.event.passes.blank?
+       event.event.passes.map {|p| qr.push(p.redeem_code) }
      end
   e = {
     "id" => event.id,
@@ -193,7 +193,6 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
     "image" => event.image,
     "event_type"  => event.event_type,
     "price_type"  => event.price_type,
-    "price"  => event.price,
     "location"  => event.location,
     "start_date"  => event.start_date,
     "end_date"  => event.end_date,
@@ -201,8 +200,10 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
     "end_time"  => event.end_time,
     "going"  => event.going_interest_levels.size,
     "maybe"  => event.interested_interest_levels.size,
-    "get_demographics" => get_demographics(event),
-    "event_status" => event.status
+    "get_demographics" => get_demographics(event.event),
+    "event_status" => event.event.status,
+    "parent_event_id" => event.event.id,
+    "price" => get_price(event.event)
   }
  end
 
