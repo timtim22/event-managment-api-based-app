@@ -190,7 +190,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
   e = {
     "id" => event.id,
     "name" => event.name,
-    "image" => event.image,
+    "image" => event.event.image,
     "event_type"  => event.event_type,
     "price_type"  => event.price_type,
     "location"  => event.location,
