@@ -142,11 +142,16 @@ def get_child_event_stats
 
 
           attendees: TicketPurchase.where(ticket_id: e.event.tickets.first.id).map { |e| {
-            user:  e.user.id,
+            user:  e.user_id,
             confirmation_date:  e.created_at.to_date,
             ticket_title:  e.ticket.title,
             quantity:  e.quantity,
             paid:  e.price,
+            is_ambassador:  if @amb = !e.user.ambassador_requests.where(business_id: e.ticket.user_id).first.blank?
+                               @amb
+                            else
+                                false
+                            end
           }}}
         @event << {
           # title: "FREE EVENT" if e.price_type == "free_event",
@@ -159,7 +164,7 @@ def get_child_event_stats
           tickets: e.event.tickets.first.ticket_purchases.map {|e| e.quantity}.sum.to_s + " of " + e.event.tickets.first.quantity.to_s,
           guest_passes: "" + " of " + e.event.passes.map {|e| e.quantity}.sum.to_s,
           vip_passes: "" + " of " + e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum.to_s,
-          attendees: @attendees.find { |u| u['user'] == 12} 
+          attendees: @attendees 
         }
           # Ambassadors: get_time_slot_user_event_ambassadors(params[:current_time_slot_dates], e),
           # new_followers: get_time_slot_user_event_followers(params[:current_time_slot_dates], e),

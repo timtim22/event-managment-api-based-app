@@ -352,7 +352,6 @@ end
     @event.lat = params[:location][:geometry][:lat]
     @event.lng = params[:location][:geometry][:lng]
     end
-    @event.price = params[:price]
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
@@ -382,8 +381,8 @@ end
             location: params[:location][:name],
             lat: params[:location][:geometry][:lat],
             lng: params[:location][:geometry][:lng],
-            price: params[:price],
-            event_type: params[:event_type]
+            event_type: params[:event_type],
+            price_type: params[:price_type]
           )}
 
       success = true
@@ -616,7 +615,6 @@ end
     @event.lat = params[:location][:geometry][:lat]
     @event.lng = params[:location][:geometry][:lng]
     end
-    @event.price = params[:price]
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
@@ -647,8 +645,8 @@ end
               location: params[:location][:name],
               lat: params[:location][:geometry][:lat],
               lng: params[:location][:geometry][:lng],
-              price: params[:price],
-              event_type: params[:event_type]
+              event_type: params[:event_type],
+              price_type: params[:price_type]
             )
         else
           @event.child_events.find_by(start_date: date).update!(
@@ -667,8 +665,8 @@ end
               location: params[:location][:name],
               lat: params[:location][:geometry][:lat],
               lng: params[:location][:geometry][:lng],
-              price: params[:price],
-              event_type: params[:event_type]
+              event_type: params[:event_type],
+              price_type: params[:price_type]
             )
         end    
       end

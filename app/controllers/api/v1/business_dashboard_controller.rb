@@ -62,7 +62,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         'image' => e.image,
         'location' => e.location,
         'price' => get_price(e.event),
-        'price_type' => get_price_type(e.event),
+        'price_type' => e.event.price_type,
         'has_passes' => has_passes?(e.event)
      }
      
@@ -247,7 +247,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
             'start_time' => e.start_time,
             'end_time' => e.end_time,
             'price' => get_price(e.event), # check for price if it is zero
-            'price_type' => get_price_type(e.event),
+            'price_type' => e.event.price_type,
             'event_type' => e.event_type,
             'additional_media' => e.event.event_attachments,
             'location' => insert_space_after_comma(e.location),

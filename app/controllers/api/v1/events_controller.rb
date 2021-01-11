@@ -71,7 +71,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
             'start_time' => e.start_time,
             'end_time' => e.end_time,
             'price' => get_price(e.event), # check for price if it is zero
-            'price_type' => get_price_type(e.event),
+            'price_type' => e.event.price_type,
             'event_type' => e.event_type,
             'additional_media' => e.event.event_attachments,
             'location' => insert_space_after_comma(e.location),
@@ -426,7 +426,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         "start_time" => child_event.event.start_time,
         "end_time" => child_event.event.end_time,
         "over_18" => child_event.event.over_18,
-        "price_type" => get_price_type(child_event.event),
+        "price_type" => child_event.event.price_type,
         "price" => get_price(child_event.event).to_s,
         "has_passes" => has_passes?(child_event.event),
         "all_passes_added_to_wallet" => all_pass_added,

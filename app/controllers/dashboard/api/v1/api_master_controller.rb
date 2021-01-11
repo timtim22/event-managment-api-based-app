@@ -154,7 +154,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
       "start_time" => event.start_time,
       "end_time" => event.end_time,
       "over_18" => event.over_18,
-      "price_type" => get_price_type(event),
+      "price_type" => event.price_type,
       "price" => get_price(event).to_s,
       "has_passes" => has_passes?(event),
       "all_passes_added_to_wallet" => all_pass_added,
