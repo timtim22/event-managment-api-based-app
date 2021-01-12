@@ -568,18 +568,6 @@ end
         end #each
     end
 
-     # if params[:event_dates].blank?
-     #   @error_messages.push("event_dates is required field.")
-     # else
-     #  validate = validate_event_dates(params[:start_date], params[:end_date], params[:event_dates])
-     #    if !validate
-     #        @error_messages.push("the dates should be within start_date and end_date of the event")
-     #    end
-     #  if !params[:event_dates].kind_of?(Array)
-     #    @error_messages.push("event_dates should be an array of dates in the format '2020-12-21'")
-     #  end
-     # end
-
      if !params[:sponsors].blank?
       required_fields = ['sponsor_image', 'external_url']
       params[:sponsors].each do |sponsor|
@@ -924,7 +912,7 @@ end
   end
 
   def event_params
-		params.permit(:name,:start_date,:end_date,:price,:price_type,:event_type,:start_time, :end_time, :external_link, :host, :description,:location,:image, :feature_media_link, :additional_media, :lat,:lng,:allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18, :category_ids => [], event_attachments_attributes:
+		params.permit(:name,:start_date,:end_date,:price,:price_type,:event_type,:start_time, :end_time, :external_link, :host, :description,:location,:image, :feature_media_link, :additional_media, :lat,:lng,:allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18, :quantity, :is_repetive, :frequency, :category_ids => [], event_attachments_attributes:
     [:id, :event_id, :media])
   end
 
