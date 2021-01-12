@@ -7,6 +7,7 @@ class ChildEvent < ApplicationRecord
  mount_base64_uploader :image, ImageUploader
 
  has_many :comments, dependent: :destroy, foreign_key: :child_event_id, table_name: "Comment"
+ has_many :activity_logs, dependent: :destroy, as: :resource
  has_many :users, through: :comments
  has_many :interest_levels, dependent: :destroy, foreign_key: :child_event_id, table_name: "InterestLevel"
  has_many :interested_interest_levels, ->{ where(level: 'interested') }, foreign_key: :child_event_id, class_name: 'InterestLevel', dependent: :destroy

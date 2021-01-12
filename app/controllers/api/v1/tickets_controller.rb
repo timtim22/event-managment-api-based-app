@@ -12,7 +12,7 @@ class Api::V1::TicketsController < Api::V1::ApiMasterController
     if(@ticket && @ticket.redeem_code == params[:redeem_code].to_s)
       if  @redemption = Redemption.create!(:user_id =>  request_user.id, offer_id: @ticket.id, code: params[:redeem_code], offer_type: 'Ticket')
         # resource should be parent resource in case of api so that event id should be available in order to show event based interest level.
-        create_activity("redeemed Ticket", @redemption, 'Redemption', '', @ticket.title, 'post')
+        #create_activity("redeemed Ticket", @redemption, 'Redemption', '', @ticket.title, 'post')
       render json: {
         code: 200,
         success: true,
