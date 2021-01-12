@@ -89,6 +89,8 @@
      'over_18' => e.over_18,
      'quantity' => e.quantity,
      'price_type' => e.price_type,
+     'is_repetive' => e.is_repetive,
+     'frequency' => e.frequency,
       "event_dates" => e.child_events.map {|ch| 
         {
           id: ch.id,
