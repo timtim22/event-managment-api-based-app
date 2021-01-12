@@ -895,7 +895,7 @@ end
   def get_price(event)
     price = ''
     if !event.tickets.where(ticket_type: 'buy').blank? && event.tickets.size > 1
-       prices = event.tickets.map {|ticket| ticket.price }
+       price = event.tickets.map {|ticket| ticket.price }
        price =  '€' + event.start_price + ' - ' + '€' + event.end_price
     elsif !event.tickets.where(ticket_type: 'buy').blank? && event.tickets.size == 1
        price = '€' + event.ticket.price
