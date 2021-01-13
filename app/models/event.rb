@@ -51,7 +51,7 @@ paginates_per 20
 #custom queries/scopes\
 scope :events_by_date, ->(date) { Event.where(:date => date) }
 scope :expired, -> { where(['end_date < ?', DateTime.now]) }
-scope :not_expired, -> { where(['end_time > ?', DateTime.now]).where(['start_date > ?', DateTime.now]) }
+scope :not_expired, -> { where("start_date > ?",  DateTime.now).or(ChildEvent.where("start_date = ?", DateTime.now).where("end_time > ?", DateTime.now)) }
 scope :sort_by_date, -> { order(start_date: 'ASC') }
 
 

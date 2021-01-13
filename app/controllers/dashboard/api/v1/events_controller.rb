@@ -410,8 +410,8 @@ end
             resource[:fields].each do |f|
              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
             end #each
-             @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00, price_type: "paid")
-             @event.child_events.map { |e| e.update!(price_type: "paid", price: get_price(@event), start_price: 0.00, end_price: 0.00) }
+             @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00, price_type: "buy")
+             @event.child_events.map { |e| e.update!(price_type: "buy", price: get_price(@event), start_price: 0.00, end_price: 0.00) }
           when 'pay_at_door'
             resource[:fields].each do |f|
              @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'pay_at_door')
@@ -691,8 +691,8 @@ end
                   else
                     @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'buy')                 
                   end
-                     @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00, price_type: "paid")
-                     @event.child_events.map { |e| e.update!(price_type: "paid", price: get_price(@event), start_price: 0.00, end_price: 0.00) } 
+                     @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00, price_type: "buy")
+                     @event.child_events.map { |e| e.update!(price_type: "buy", price: get_price(@event), start_price: 0.00, end_price: 0.00) } 
                 end #each
               when 'pay_at_door'
                 resource[:fields].each do |f|

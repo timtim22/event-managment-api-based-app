@@ -216,7 +216,7 @@ class ApplicationController < ActionController::Base
       "web_user" => user.web_user,
       "vat_number" => user.business_profile.vat_number,
       "charity_number" => user.business_profile.charity_number,
-      "address" => user.business_profile.address,
+      "address" => user.business_profile.address["formatted_address"],
       "about" => user.business_profile.about,
       "twitter" => user.business_profile.twitter,
       "facebook" => user.business_profile.facebook,
@@ -1121,6 +1121,11 @@ end
 
 def friend_request_sent?(request_user, user)
   request_status(request_user, user)['status']
+end
+
+
+def get_percent_of(number, total)
+  number.to_f / total.to_f * 100.0
 end
 
   helper_method :SetJsVariables

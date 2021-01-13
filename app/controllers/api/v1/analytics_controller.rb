@@ -38,7 +38,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                 @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
               when  "overall"
                 start_date = event.event.start_date.to_date.to_s
-                end_date = event.event.end_date.to.date.to_s
+                end_date = event.event.end_date.to_date.to_s
                  @current_time_slot_dates = generate_date_range(start_date, end_date)
                  # in case of overall there should be no comparison between time slots
                  @before_current_time_slot_dates = generate_date_range(start_date, end_date)
@@ -65,14 +65,15 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                 "total_checked_in" => get_total_event_checked_in(event.event),
                 "time_slot_total_checked_in" => get_time_slot_total_pass_checked_in(@current_time_slot_dates, event.event),
                 "total_paid_checked_in" => get_total_paid_checked_in(event.event),
-                "time_slot_total_paid_checked_in" => get_event_paid_checked_in(event.event),
+                "time_slot_total_paid_checked_in" => get_time_slot_event_paid_checked_in(@current_time_slot_dates, event.event),
                 "total_pass_checked_in" => get_pass_total_checked_in(event.event),
                 "time_slot_total_pass_checked_in" => get_time_slot_total_pass_checked_in(@current_time_slot_dates, event.event),
                 "max_attendees" => event.event.max_attendees,
                 "max_passes" => event.event.passes.size,
                 "total_earning" => get_total_event_earning(event.event),
                 "total_attendees" => event.going_interest_levels.size,
-                "time_slot_movement" => get_time_slot_total_attendees(@current_time_slot_dates, event),
+                "time_slot_total_attendees" => get_time_slot_total_attendees(@current_time_slot_dates, event),
+                "time_slot_movement" => get_time_slot_movement(@current_time_slot_dates, @before_current_time_slot_dates, event),
                 "demographics" => get_demographics(event),
                  "graph_stats" => {
                     "time_slot_total_impressions" => get_time_slot_total_views(@current_time_slot_dates, event),
@@ -121,8 +122,6 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
       }
     end
   end
-
-
 
 
 
@@ -1526,7 +1525,7 @@ end
 
 
 def get_total_event_earning(event)
-  @total_amount = 0.0
+  @total_amount = 0
   event.tickets.map {|ticket| ticket.ticket_purchases.map {|p| total_amount += p.price } }
   @total_amount
 end
@@ -1552,7 +1551,7 @@ def get_time_slot_total_pass_checked_in(time_slot_dates, event)
      p_date = Date.parse(date)
      checked_in = event.passes.map{|p| p.redemptions.where(created_at: p_date.midnight..p_date.end_of_day).size }.sum
      if !checked_in.blank?
-      @checked_in += @checked_in
+      @checked_in += checked_in
   end #if !blank?
   end #each
    @checked_in
@@ -1581,6 +1580,52 @@ def get_time_slot_offer_in_wallet(time_slot_dates, offer)
      end #if !blank?
   end #each
    @in_wallet
+end
+
+
+def get_time_slot_event_paid_checked_in(time_slot_dates, event)
+  dates_array = time_slot_dates.split(',').map {|s| s.to_s }
+  @paid_checked_in = 0
+  dates_array.each do |date|
+     p_date = Date.parse(date)
+      paid_checked_in = event.tickets.where(ticket_type: 'buy').map {|t| ticket.redemptions.size }.sum
+     if !paid_checked_in.blank?
+      @paid_checked_in += paid_checked_in
+     end #if !blank?
+  end #each
+   @paid_checked_in
+end
+
+
+def get_time_slot_movement(current_time_slot_dates, before_current_time_slot_dates, event)
+
+    current_size = 0
+    before_size = 0
+    movement_percent = 0
+  
+
+  current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
+  current_dates_array.each do |date|
+    p_date = Date.parse(date)
+    attendees = event.going_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day)
+    current_size += attendees.size
+    end #each
+
+    before_current_dates_array = before_current_time_slot_dates.split(',').map {|s| s.to_s }
+    current_dates_array.each do |date|
+      p_date = Date.parse(date)
+      attendees = event.going_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day)
+      before_size += attendees.size
+      end #each
+
+       difference = before_size - current_size
+     
+      if difference != 0
+        movement_percent = get_percent_of(difference, before_size)
+      end
+
+      movement_percent
+    
 end
 
 
