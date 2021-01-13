@@ -1123,6 +1123,11 @@ def friend_request_sent?(request_user, user)
   request_status(request_user, user)['status']
 end
 
+
+def get_percent_of(number, total)
+  number.to_f / total.to_f * 100.0
+end
+
   helper_method :SetJsVariables
   helper_method :is_admin_or_super_admin?
   helper_method :create_activity
