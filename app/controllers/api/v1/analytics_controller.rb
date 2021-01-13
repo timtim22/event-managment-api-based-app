@@ -161,8 +161,8 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         before_end_date_to_string = before_end_date.to_s
         @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
       when  "overall"
-        start_date = event.event.start_date.to_date.to_s
-        end_date = event.event.end_date.to.date.to_s
+            start_date = offer.date.to_date.to_s
+          end_date = offer.end_time.to_date.to_s
          @current_time_slot_dates = generate_date_range(start_date, end_date)
          # in case of overall there should be no comparison between time slots
          @before_current_time_slot_dates = generate_date_range(start_date, end_date)
@@ -257,8 +257,8 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         before_end_date_to_string = before_end_date.to_s
         @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
       when  "overall"
-        start_date = event.event.start_date.to_date.to_s
-        end_date = event.event.end_date.to.date.to_s
+          start_date = competition.start_date.to_date.to_s
+          end_date = competition.end_date.to_date.to_s
          @current_time_slot_dates = generate_date_range(start_date, end_date)
          # in case of overall there should be no comparison between time slots
          @before_current_time_slot_dates = generate_date_range(start_date, end_date)
@@ -326,7 +326,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         render json: {
           code:400,
           success: false,
-          message: 'competition_id and time_slot_dates are required.',
+          message: 'competition_id, date and frequency are required.',
           data: nil
         }
       end

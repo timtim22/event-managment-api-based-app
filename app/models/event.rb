@@ -18,7 +18,7 @@ has_many :users, through: :comments
 has_many :categorizations, dependent: :destroy
 has_many :categories, through: :categorizations
 has_many :interest_levels, dependent: :destroy
-has_many :interested_interest_levels, ->{ where(level: 'interested') }, foreign_key: :event_id, class_name: 'InterestLevel', dependent: :destroy
+has_many :interested_interest_levels, -> { where(level: 'interested') }, foreign_key: :event_id, class_name: 'InterestLevel', dependent: :destroy
 has_many :interested_users, through: :interested_interest_levels, source: :user
 has_many :going_interest_levels, -> { where(level: 'going') }, foreign_key: :event_id, class_name: 'InterestLevel', dependent: :destroy
 has_many :going_users, through: :going_interest_levels, source: :user

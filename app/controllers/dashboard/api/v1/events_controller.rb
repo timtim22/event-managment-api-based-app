@@ -343,8 +343,8 @@ end
     @event.image = params[:image]
     @event.start_date = params[:start_date]
     @event.end_date = params[:end_date]
-    @event.start_time = params['start_time']
-    @event.end_time = params['end_time']
+    @event.start_time = params[:start_time]
+    @event.end_time = params[:end_time]
     @event.over_18 = params[:over_18]
     @event.description = params[:description]
     @event.allow_chat = params[:allow_chat]
@@ -374,8 +374,8 @@ end
             image: params[:image],
             start_date: date.to_date,
             end_date: date.to_date,
-            start_time: params['start_time'],
-            end_time: params['end_time'],
+            start_time: params[:start_time],
+            end_time: params[:end_time],
             over_18: params[:over_18],
             description: params[:description],
             terms_conditions: params[:terms_conditions],
@@ -596,8 +596,8 @@ end
     @event.image = params[:image]
     @event.start_date = params[:start_date]
     @event.end_date = params[:end_date]
-    @event.start_time = params['start_time']
-    @event.end_time = params['end_time']
+    @event.start_time = params[:start_time]
+    @event.end_time = params[:end_time]
     @event.over_18 = params[:over_18]
     @event.description = params[:description]
     @event.allow_chat = params[:allow_chat]
@@ -628,8 +628,8 @@ end
               image: params[:image],
               start_date: date.to_date,
               end_date: date.to_date,
-              start_time: params['start_time'],
-              end_time: params['end_time'],
+              start_time: params[:start_time],
+              end_time: params[:end_time],
               over_18: params[:over_18],
               description: params[:description],
               terms_conditions: params[:terms_conditions],
@@ -649,8 +649,8 @@ end
               image: params[:image],
               start_date: date.to_date,
               end_date: date.to_date,
-              start_time: params['start_time'],
-              end_time: params['end_time'],
+              start_time: params[:start_time],
+              end_time: params[:end_time],
               over_18: params[:over_18],
               description: params[:description],
               terms_conditions: params[:terms_conditions],
