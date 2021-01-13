@@ -13,7 +13,7 @@
 
   def index
 
-    @events = request_user.child_events.not_expired.order(start_date: 'ASC').map {|e| get_dashboard_child_event_object(e) }
+    @events = request_user.child_events.order(start_date: 'ASC').map {|e| get_dashboard_child_event_object(e) }
     render json: {
       code: 200,
       success: true,
@@ -89,6 +89,8 @@
      'over_18' => e.over_18,
      'quantity' => e.quantity,
      'price_type' => e.price_type,
+     'is_repetive' => e.is_repetive,
+     'frequency' => e.frequency,
       "event_dates" => e.child_events.map {|ch| 
         {
           id: ch.id,
@@ -341,8 +343,8 @@ end
     @event.image = params[:image]
     @event.start_date = params[:start_date]
     @event.end_date = params[:end_date]
-    @event.start_time = params['start_time']
-    @event.end_time = params['end_time']
+    @event.start_time =  params["start_time"]
+    @event.end_time = params["end_time"]
     @event.over_18 = params[:over_18]
     @event.description = params[:description]
     @event.allow_chat = params[:allow_chat]
@@ -359,6 +361,7 @@ end
     @event.quantity = params[:quantity] if params[:price_type] == "free_event"
     @event.is_repetive = params[:is_repetive]
     @event.frequency = params[:frequency]
+    @event.price = params[:price]
     
 
     if @event.save
@@ -371,8 +374,8 @@ end
             image: params[:image],
             start_date: date.to_date,
             end_date: date.to_date,
-            start_time: params['start_time'],
-            end_time: params['end_time'],
+            start_time: params["start_time"],
+            end_time: params["end_time"],
             over_18: params[:over_18],
             description: params[:description],
             terms_conditions: params[:terms_conditions],
@@ -382,14 +385,15 @@ end
             lat: params[:location][:geometry][:lat],
             lng: params[:location][:geometry][:lng],
             event_type: params[:event_type],
-            price_type: params[:price_type]
+            price_type: params[:price_type],
+            price: params[:price]
           )}
 
       success = true
 
       if params[:price_type] == "free_event"
-          @event.update!(price_type: "free_event")
-          @event.child_events.map { |e| e.update!(price_type: "free_event") }
+          @event.update!(price_type: "free_event", price: 0.00)
+          @event.child_events.map { |e| e.update!(price_type: "free_event", price: 0.00) }
       # Admisssion sectiion
       else !params[:admission_resources].blank?
         params[:admission_resources].each do |resource|
@@ -401,19 +405,19 @@ end
              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'free', price: 0)
             end #each
             @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free")
-            @event.child_events.map { |e| e.update!(price_type: "free") }
+            @event.child_events.map { |e| e.update!(price_type: "free", price: 0.00, start_price: 0.00, end_price: 0.00,) }
          when 'paid'
             resource[:fields].each do |f|
              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
             end #each
              @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00, price_type: "paid")
-             @event.child_events.map { |e| e.update!(price_type: "paid") }
+             @event.child_events.map { |e| e.update!(price_type: "paid", price: get_price(@event), start_price: 0.00, end_price: 0.00) }
           when 'pay_at_door'
             resource[:fields].each do |f|
              @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'pay_at_door')
             end #each
             @event.update!(price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"], price_type: "pay_at_door")
-            @event.child_events.map { |e| e.update!(price_type: "pay_at_door") }
+            @event.child_events.map { |e| e.update!(price_type: "pay_at_door", price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"]) }
 
           when 'pass'
             resource[:fields].each do |f|
@@ -564,18 +568,6 @@ end
         end #each
     end
 
-     # if params[:event_dates].blank?
-     #   @error_messages.push("event_dates is required field.")
-     # else
-     #  validate = validate_event_dates(params[:start_date], params[:end_date], params[:event_dates])
-     #    if !validate
-     #        @error_messages.push("the dates should be within start_date and end_date of the event")
-     #    end
-     #  if !params[:event_dates].kind_of?(Array)
-     #    @error_messages.push("event_dates should be an array of dates in the format '2020-12-21'")
-     #  end
-     # end
-
      if !params[:sponsors].blank?
       required_fields = ['sponsor_image', 'external_url']
       params[:sponsors].each do |sponsor|
@@ -622,6 +614,7 @@ end
     @event.quantity = params[:quantity] if params[:price_type] == "free_event"
     @event.is_repetive = params[:is_repetive]
     @event.frequency = params[:frequency]
+    @event.price = params[:price]
 
     if @event.save
       
@@ -646,7 +639,8 @@ end
               lat: params[:location][:geometry][:lat],
               lng: params[:location][:geometry][:lng],
               event_type: params[:event_type],
-              price_type: params[:price_type]
+              price_type: params[:price_type],
+              price: params[:price]
             )
         else
           @event.child_events.find_by(start_date: date).update!(
@@ -666,14 +660,15 @@ end
               lat: params[:location][:geometry][:lat],
               lng: params[:location][:geometry][:lng],
               event_type: params[:event_type],
-              price_type: params[:price_type]
+              price_type: params[:price_type],
+              price: params[:price]
             )
         end    
       end
       success = true
 
       if params[:price_type] == "free_event"
-         @event.update!(price_type: "free_event")
+         @event.update!(price_type: "free_event", price: 0.00)
     # Admisssion sectiion
           else !params[:admission_resources].blank?
             params[:admission_resources].each do |resource|
@@ -686,14 +681,18 @@ end
                   else
                     @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions],  user: request_user, ticket_type: 'free', price: 0)
                   end
+                    @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free")
+                    @event.child_events.map { |e| e.update!(price_type: "free", price: 0.00, start_price: 0.00, end_price: 0.00,) }
                 end #each
              when 'paid'
                 resource[:fields].each do |f|
                   if f.include? "id"
                     @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
                   else
-                    @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'buy')
+                    @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'buy')                 
                   end
+                     @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00, price_type: "paid")
+                     @event.child_events.map { |e| e.update!(price_type: "paid", price: get_price(@event), start_price: 0.00, end_price: 0.00) } 
                 end #each
               when 'pay_at_door'
                 resource[:fields].each do |f|
@@ -702,6 +701,8 @@ end
                   else
                     @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
                   end
+                  @event.update!(price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"], price_type: "pay_at_door")
+                  @event.child_events.map { |e| e.update!(price_type: "pay_at_door", price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"]) }                
                 end #each
 
 
@@ -911,7 +912,7 @@ end
   end
 
   def event_params
-		params.permit(:name,:start_date,:end_date,:price,:price_type,:event_type,:start_time, :end_time, :external_link, :host, :description,:location,:image, :feature_media_link, :additional_media, :lat,:lng,:allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18, :category_ids => [], event_attachments_attributes:
+		params.permit(:name,:start_date,:end_date,:price,:price_type,:event_type,:start_time, :end_time, :external_link, :host, :description,:location,:image, :feature_media_link, :additional_media, :lat,:lng,:allow_chat,:invitees,:event_forwarding,:allow_additional_media,:over_18, :quantity, :is_repetive, :frequency, :category_ids => [], event_attachments_attributes:
     [:id, :event_id, :media])
   end
 
