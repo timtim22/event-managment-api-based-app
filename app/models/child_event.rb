@@ -1,7 +1,13 @@
 class ChildEvent < ApplicationRecord
  belongs_to :event
  belongs_to :user
- scope :not_expired, -> { where(['end_date > ?', DateTime.now]) }
+
+ # date = start_date
+ # time = end_time
+
+ # datetime = DateTime.new(date.year, date.month, date.day, time.hour, date.min, time.sec, time.zone)
+
+ scope :not_expired, -> { where("start_date > ?",  DateTime.now).or(ChildEvent.where("start_date = ?", DateTime.now).where("end_time > ?", DateTime.now)) }
  scope :sort_by_date, -> { order(start_date: 'ASC') }
  mount_uploader :image, ImageUploader
  mount_base64_uploader :image, ImageUploader
