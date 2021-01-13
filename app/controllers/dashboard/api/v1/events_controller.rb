@@ -13,7 +13,7 @@
 
   def index
 
-    @events = request_user.child_events.not_expired.order(start_date: 'ASC').map {|e| get_dashboard_child_event_object(e) }
+    @events = request_user.child_events.order(start_date: 'ASC').map {|e| get_dashboard_child_event_object(e) }
     render json: {
       code: 200,
       success: true,
