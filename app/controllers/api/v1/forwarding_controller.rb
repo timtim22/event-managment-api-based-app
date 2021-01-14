@@ -331,7 +331,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         @recipient = User.find(id)
        if @check.blank?
 
-       @event_forward = EventForwarding.create!(user_id: request_user.id, recipient_id: id, event_id: params[:event_id])
+       @event_forward = EventForwarding.create!(user_id: request_user.id, recipient_id: id, child_event: @event )
 
        if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has forwarded you and event.", notifiable: @event, resource: @event, resource: @event_forward, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "event_forwarded")
 
