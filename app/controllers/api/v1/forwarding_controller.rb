@@ -317,7 +317,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
     if !params[:event_id].blank? && !params[:user_ids].blank?
       ids_array = params[:user_ids].split(',').map {|s| s.to_i } # convert into array
 
-          @event = Event.find(params[:event_id])
+          @event = ChildEvent.find(params[:event_id])
           @already_shared = []
        success = false
        @pubnub = Pubnub.new(
