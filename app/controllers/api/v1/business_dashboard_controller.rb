@@ -14,7 +14,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
       "avatar" => business.avatar,
       "about" => business.business_profile.about,
       "unread_messages_count" => business.incoming_messages.unread.size,
-      "address" => business.business_profile.address,
+      "address" => business.business_profile.address["formatted_address"],
       # # "location" => {
       # #   "name" => business.business_profile.location,
       # #   "geometry" => {

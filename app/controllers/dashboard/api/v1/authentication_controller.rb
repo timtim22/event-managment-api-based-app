@@ -35,7 +35,7 @@ class Dashboard::Api::V1::AuthenticationController < Dashboard::Api::V1::ApiMast
               "profile_name" => @user.business_profile.profile_name,
               "contact_name" =>  @user.business_profile.contact_name,
               "display_name" =>  @user.business_profile.display_name,
-              "address" => @user.business_profile.address,
+              "address" => @user.business_profile.address["formatted_address"],
               "website" => @user.business_profile.website,
               "about" =>  @user.business_profile.about,
               "vat_number" =>  @user.business_profile.vat_number,
