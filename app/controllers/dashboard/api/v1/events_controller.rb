@@ -279,7 +279,7 @@
             end #each
            end #each
 
-        when 'paid'
+        when 'buy'
           required_fields = ['title', 'quantity', 'per_head','price']
           resource[:fields].each do |f|
             required_fields.each do |field|
@@ -314,7 +314,7 @@
             process_validated = false
           end
         end #each
-end
+      end
      if !params[:sponsors].blank?
       required_fields = ['sponsor_image', 'external_url']
       params[:sponsors].each do |sponsor|
@@ -406,7 +406,7 @@ end
             end #each
             @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free")
             @event.child_events.map { |e| e.update!(price_type: "free", price: 0.00, start_price: 0.00, end_price: 0.00,) }
-         when 'paid'
+         when 'buy'
             resource[:fields].each do |f|
              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
             end #each
@@ -531,7 +531,7 @@ end
             end #each
            end #each
 
-        when 'paid'
+        when 'buy'
           required_fields = ['title', 'quantity', 'per_head','price']
           resource[:fields].each do |f|
             required_fields.each do |field|
@@ -684,7 +684,7 @@ end
                 end #each
                     @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free")
                     @event.child_events.map { |e| e.update!(price_type: "free", price: 0.00, start_price: 0.00, end_price: 0.00,) }
-             when 'paid'
+             when 'buy'
                 resource[:fields].each do |f|
                   if f.include? "id"
                     @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
