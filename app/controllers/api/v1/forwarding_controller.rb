@@ -331,7 +331,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         @recipient = User.find(id)
        if @check.blank?
 
-       @event_forward = EventForwarding.create!(user_id: request_user.id, recipient_id: id, event_id: params[:event_id])
+       @event_forward = EventForwarding.create!(user_id: request_user.id, recipient_id: id, child_event: @event )
 
        if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has forwarded you and event.", notifiable: @event, resource: @event, resource: @event_forward, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "event_forwarded")
 
@@ -353,12 +353,12 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
             },
             data: {
               "id": notification.id,
-              "event_id": notification.resource.event.id,
+              "event_id": notification.resource.child_event.id,
               "friend_name": User.get_full_name(notification.resource.user),
               "friend_id": notification.resource.user.id,
-              "event_name": notification.resource.event.name,
-              "event_start_date": notification.resource.event.start_date,
-              "event_location": notification.resource.event.location,
+              "event_name": notification.resource.child_event.name,
+              "event_start_date": notification.resource.child_event.start_date,
+              "event_location": notification.resource.child_event.location,
               "actor_image": notification.actor.avatar,
               "notifiable_id": notification.notifiable_id,
               "notifiable_type": notification.notifiable_type,

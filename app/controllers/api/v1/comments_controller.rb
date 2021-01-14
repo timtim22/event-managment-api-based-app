@@ -87,9 +87,9 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
               "id": notification.id,
               "user_name": User.get_full_name(notification.resource.user),
               "comment": notification.resource.comment,
-              "event_name": notification.resource.event.name,
+              "event_name": notification.resource.child_event.name,
               "user_id": notification.resource.user.id,
-              "event_id": notification.resource.event.id,
+              "event_id": notification.resource.child_event.id,
               "actor_id": notification.actor_id,
               "actor_image": notification.actor.avatar,
               "notifiable_id": notification.notifiable_id,
@@ -331,7 +331,7 @@ end
      @events = []
      @response = []
      @commented_events = request_user.comments.each do |comment|
-       @events.push(comment.event)
+       @events.push(comment.child_event)
      end#each
      @events.uniq.each do |e|
       last_comment = e.comments.order(created_at: 'DESC').first
@@ -339,7 +339,7 @@ end
        "id" => last_comment.id,
        "comment" => last_comment.comment,
        "user_id" => last_comment.user_id,
-       "event_id" => last_comment.event_id,
+       "event_id" => last_comment.child_event_id,
        "created_at" => last_comment.created_at,
        "updated_at" => last_comment.updated_at,
        "from" => get_full_name(last_comment.user),
