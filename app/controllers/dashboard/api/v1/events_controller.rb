@@ -357,8 +357,8 @@ end
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
-    @event.terms_conditions = params[:terms_conditions] if params[:price_type] == "free_event"
-    @event.quantity = params[:quantity] if params[:price_type] == "free_event"
+    @event.terms_conditions = params[:terms_conditions]
+    @event.quantity = params[:quantity]
     @event.is_repetive = params[:is_repetive]
     @event.frequency = params[:frequency]
     @event.price = params[:price]
@@ -681,9 +681,9 @@ end
                   else
                     @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions],  user: request_user, ticket_type: 'free', price: 0)
                   end
+                end #each
                     @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free")
                     @event.child_events.map { |e| e.update!(price_type: "free", price: 0.00, start_price: 0.00, end_price: 0.00,) }
-                end #each
              when 'paid'
                 resource[:fields].each do |f|
                   if f.include? "id"
@@ -691,21 +691,19 @@ end
                   else
                     @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'buy')                 
                   end
+                end #each
                      @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00, price_type: "buy")
                      @event.child_events.map { |e| e.update!(price_type: "buy", price: get_price(@event), start_price: 0.00, end_price: 0.00) } 
-                end #each
               when 'pay_at_door'
                 resource[:fields].each do |f|
                   if f.include? "id"
                     @ticket = @event.tickets.find(f[:id]).update!(start_price: f[:start_price], end_price: f[:end_price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'pay_at_door')
                   else
                     @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
-                  end
-                  @event.update!(price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"], price_type: "pay_at_door")
-                  @event.child_events.map { |e| e.update!(price_type: "pay_at_door", price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"]) }                
+                  end             
                 end #each
-
-
+                  @event.update!(price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"], price_type: "pay_at_door")
+                  @event.child_events.map { |e| e.update!(price_type: "pay_at_door", price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"]) }   
               when 'pass'
                 resource[:fields].each do |f|
                   if f.include? "id"
