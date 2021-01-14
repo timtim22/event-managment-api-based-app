@@ -18,7 +18,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
         data: nil
        }
 
-      elsif params[:device_token].blank? == true
+      elsif params[:device_token].blank? == true || param[:device_token].nil?
         render json: {
           code: 400,
           success: false,
