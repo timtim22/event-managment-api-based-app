@@ -331,7 +331,7 @@ end
      @events = []
      @response = []
      @commented_events = request_user.comments.each do |comment|
-       @events.push(comment.event)
+       @events.push(comment.child_event)
      end#each
      @events.uniq.each do |e|
       last_comment = e.comments.order(created_at: 'DESC').first
@@ -339,7 +339,7 @@ end
        "id" => last_comment.id,
        "comment" => last_comment.comment,
        "user_id" => last_comment.user_id,
-       "event_id" => last_comment.event_id,
+       "event_id" => last_comment.child_event_id,
        "created_at" => last_comment.created_at,
        "updated_at" => last_comment.updated_at,
        "from" => get_full_name(last_comment.user),
