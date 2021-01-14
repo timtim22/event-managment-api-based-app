@@ -97,7 +97,8 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
             "forwards_count" => e.event_forwardings.count,
             "comments_count" => e.comments.size + e.comments.map {|c| c.replies }.size,
             "has_passes" => has_passes?(e.event),
-            "all_passes_added_to_wallet" => all_pass_added
+            "all_passes_added_to_wallet" => all_pass_added,
+            "parent_event_id" => e.event.id
          }
 
          render json: {
