@@ -35,10 +35,7 @@ has_many :event_forwardings, dependent: :destroy
 has_many :activity_logs, dependent: :destroy, as: :resource
 has_many :child_events, dependent: :destroy
 
-
-
 accepts_nested_attributes_for :event_attachments
-
 
 mount_uploader :image, ImageUploader
 mount_base64_uploader :image, ImageUploader
