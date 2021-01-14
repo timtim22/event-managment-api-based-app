@@ -116,7 +116,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "business_name": User.get_full_name(notification.resource.child_event.user),
             "friend_name": User.get_full_name(notification.resource.user),
             "event_name": notification.resource.child_event.name,
-            "event_id": notification.resource.event.id,
+            "event_id": notification.resource.child_event.id,
             "event_start_date": notification.resource.child_event.start_date,
             "event_location": notification.resource.child_event.location,
             "actor_id": notification.actor_id,

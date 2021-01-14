@@ -149,6 +149,8 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
       push_token: request_user.profile.device_token,
       type: 'gcm'
       ).value
+      # put a dummy text in device_token field in order to avoid nil error
+      request_user.profile.update!(device_token: "token_removed")
 
       render json: {
         code: 200,
