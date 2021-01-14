@@ -404,8 +404,8 @@
             resource[:fields].each do |f|
              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'free', price: 0)
             end #each
-            @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free")
-            @event.child_events.map { |e| e.update!(price_type: "free", price: 0.00, start_price: 0.00, end_price: 0.00,) }
+            @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free_ticketed_event")
+            @event.child_events.map { |e| e.update!(price_type: "free_ticketed_event", price: 0.00, start_price: 0.00, end_price: 0.00,) }
          when 'buy'
             resource[:fields].each do |f|
              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
@@ -682,8 +682,8 @@
                     @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions],  user: request_user, ticket_type: 'free', price: 0)
                   end
                 end #each
-                    @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free")
-                    @event.child_events.map { |e| e.update!(price_type: "free", price: 0.00, start_price: 0.00, end_price: 0.00,) }
+                    @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free_ticketed_event")
+                    @event.child_events.map { |e| e.update!(price_type: "free_ticketed_event", price: 0.00, start_price: 0.00, end_price: 0.00,) }
              when 'buy'
                 resource[:fields].each do |f|
                   if f.include? "id"
