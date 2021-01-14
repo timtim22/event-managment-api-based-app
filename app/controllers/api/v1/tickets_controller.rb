@@ -58,9 +58,9 @@ class Api::V1::TicketsController < Api::V1::ApiMasterController
 
   def get_tickets
     if !params[:event_id].blank?
-       @event = Event.find(params[:event_id])
+       @event = ChildEvent.find(params[:event_id])
        @tickets = []
-       @event.tickets.each do |ticket|
+       @event.event.tickets.each do |ticket|
          @tickets << {
            id: ticket.id,
            title: ticket.title,
