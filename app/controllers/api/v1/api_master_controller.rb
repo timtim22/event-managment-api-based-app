@@ -173,7 +173,7 @@ class Api::V1::ApiMasterController < ApplicationController
 
      def get_simple_event_object(event)
         if request_user
-          all_pass_added = has_passes?(event) && all_passes_added_to_wallet?(request_user,event.passes)
+          all_pass_added = has_passes?(event.event) && all_passes_added_to_wallet?(request_user,event.event.passes)
         else
           all_pass_added = false
         end
@@ -193,7 +193,7 @@ class Api::V1::ApiMasterController < ApplicationController
         "has_passes" => has_passes?(event.event),
         "all_passes_added_to_wallet" => all_pass_added,
         "created_at" => event.created_at,
-        "categories" => event.categories
+        "categories" => event.event.categories
       }
      end
 
