@@ -186,6 +186,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
       
 
       stats = {
+        offer_start_date: offer.date.strftime(get_time_format),
         offer_end_date: offer.validity.strftime(get_time_format),
         max_redemptions: offer.quantity,
         total_redeem_count: offer.redemptions.size,
@@ -288,6 +289,8 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
             winner_id: c.user.id
         }},
         draw_date: competition.end_date,
+        start_date: competition.start_date,
+        end_date: competition.end_date,
         total_entries_count: competition.registrations.size,
         movement_percentage: get_time_slot_competitions_increment_decrement(@current_time_slot_dates, @before_current_time_slot_dates, competition),
         "demographics" =>  get_competition_demographics(competition),

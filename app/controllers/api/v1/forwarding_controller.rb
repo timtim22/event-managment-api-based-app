@@ -426,7 +426,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
       if !params[:sender_token].blank? && !params[:event_id].blank?
         @sender = get_user_from_token(params[:sender_token])
 
-        @event = Event.find(params[:event_id])
+        @event = ChildEvent.find(params[:event_id])
 
         @check = EventShare.where(event_id: @event.id).where(recipient_id: request_user.id).where(user_id: @sender.id).first
         if @check.blank?

@@ -46,7 +46,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
         @current_push_token = @pubnub.add_channels_to_push(
            push_token: friend.profile.device_token,
            type: 'gcm',
-           add: friend.profile.device_tokenno
+           add: friend.profile.device_token
     
            ).value
 
@@ -59,12 +59,12 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
            data: {
 
             "id": notification.id,
-            "business_name": User.get_full_name(notification.resource.event.user),
+            "business_name": User.get_full_name(notification.resource.child_event.user),
             "friend_name": User.get_full_name(notification.resource.user),
-            "event_name": notification.resource.event.name,
-            "event_id": notification.resource.event.id,
-            "event_start_date": notification.resource.event.start_date,
-            "event_location": notification.resource.event.location,
+            "event_name": notification.resource.child_event.name,
+            "event_id": notification.resource.child_event.id,
+            "event_start_date": notification.resource.child_event.start_date,
+            "event_location": notification.resource.child_event.location,
             "actor_id": notification.actor_id,
             "actor_image": notification.actor.avatar,
             "notifiable_id": notification.notifiable_id,
@@ -169,12 +169,12 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
              data: {
 
               "id": notification.id,
-              "business_name": User.get_full_name(notification.resource.event.user),
+              "business_name": User.get_full_name(notification.resource.child_event.user),
               "friend_name": User.get_full_name(notification.resource.user),
-              "event_name": notification.resource.event.name,
-              "event_id": notification.resource.event.id,
-              "event_start_date": notification.resource.event.start_date,
-              "event_location": notification.resource.event.location,
+              "event_name": notification.resource.child_event.name,
+              "event_id": notification.resource.child_event.id,
+              "event_start_date": notification.resource.child_event.start_date,
+              "event_location": notification.resource.child_event.location,
               "actor_id": notification.actor_id,
               "actor_image": notification.actor.avatar,
               "notifiable_id": notification.notifiable_id,
