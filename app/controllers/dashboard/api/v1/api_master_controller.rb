@@ -183,11 +183,12 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
 
 
  def get_dashboard_child_event_object(event)
+    e = []
     qr = []
      if !event.event.passes.blank?
        event.event.passes.map {|p| qr.push(p.redeem_code) }
      end
-  e = {
+  e << {
     "id" => event.id,
     "name" => event.name,
     "image" => event.event.image,
@@ -204,7 +205,27 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
     "event_status" => event.event.status,
     "parent_event_id" => event.event.id,
     "price" => get_price(event.event)
+    
   }
+
+  case
+  when event.start_date.to_date == Date.today
+  e << {
+    "status" => "Now On"
+  }
+  when event.start_date.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door"
+  e << {
+    "status" => event.going_interest_levels.size.to_s + " Going"
+  }
+  when event.start_date.to_date > Date.today && event.price_type == "buy"
+  e << {
+    "status" => event.event.tickets.first.wallets.size.to_s + " Tickets Gone"
+  }
+  when event.start_date.to_date < Date.today
+  e << {
+    "status" => "Event Over"
+  }
+  end
  end
 
 end
