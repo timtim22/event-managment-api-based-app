@@ -183,7 +183,6 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
 
 
  def get_dashboard_child_event_object(event)
-    e = []
     qr = []
      if !event.event.passes.blank?
        event.event.passes.map {|p| qr.push(p.redeem_code) }
@@ -198,7 +197,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
   when event.start_date.to_date < Date.today
    status = "Event Over"
   end
-  e << {
+  e = {
     "id" => event.id,
     "name" => event.name,
     "image" => event.event.image,
