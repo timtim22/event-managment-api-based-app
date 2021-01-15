@@ -302,20 +302,6 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
       }
     }
 
-
-        # stats = {
-        #   "id" => competition.id,
-        #   "winners" => competition.competition_winners.map {|w| w.user },
-        #   "total_entries" => competition.registrations.size,
-        #   "demographics" =>  get_competition_demographics(competition),
-        #   "time_slot_total_entries" => get_time_slot_total_entries(competition, params[:time_slot_dates]),
-        #   "time_slot_total_views" => get_time_slot_total_competition_impresssions(competition, params[:time_slot_dates]),
-        #   "time_slot_shares" => get_time_slot_total_offer_shares(params[:time_slot_dates], competition),
-        #   "time_slot_entries_date_wise" => get_time_slot_entries_date_wise(params[:time_slot_dates],competition),
-        #   "time_slot_views_date_wise" => get_time_slot_views_date_wise(params[:time_slot_dates], competition),
-        #   "time_slot_shares_date_wise" => get_time_slot_offer_shares_date_wise(params[:time_slot_dates], competition)
-        # }
-  
         render json: {
           code: 200,
           success: true,
@@ -825,7 +811,6 @@ end
      @increment_decreament_in_interested['before_interested'] = @before_interested
      @increment_decreament_in_interested['current_interested'] = @current_interested
      @increment_decreament_in_interested['difference'] = @diff
-
      @increment_decreament_in_interested
 
  end
