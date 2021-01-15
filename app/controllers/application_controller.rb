@@ -656,6 +656,19 @@ end
   end
   end
 
+  def is_added_to_wallet?(competition_id)
+    if request_user
+    wallet = request_user.wallets.where(offer_id: competition_id).where(offer_type: 'Competition')
+    if !wallet.blank?
+      true
+    else
+      false
+    end
+  else
+     false
+  end
+  end
+
   def added_to_wallet?(resource)
    if request_user
     wallet = request_user.wallets.where(offer: resource)
