@@ -15,7 +15,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   # param :transaction_id, :number, :desc => "Transaction ID", :required => true
 
   def purchase_ticket
-    if !params[:ticket_id].blank? && !params[:ticket_type].blank?  && !params[:quantity].blank?
+    if !params[:ticket_id].blank? && !params[:ticket_type].blank?  && !params[:quantity].blank? && !params[:event_id]
         @ticket = Ticket.find(params[:ticket_id])
         if @ticket.quantity <  params[:quantity].to_i
           render json: {
@@ -26,7 +26,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
           }
           return
         end
-        @event = @ticket.event
+        @event = ChildEvent.find(params[:event_id])
       if params[:ticket_type] == 'buy'
         if !params[:status].blank? && !params[:stripe_response].blank? && !params[:transaction_id].blank?
 
@@ -34,7 +34,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
 
 
           if(params[:status] == 'successful') #while tikcet_type ==  'buy' 'can_purchase' is already inmpleted  to 'get_secret' api which is the first step of stripe payment, so doesn't need here
-            request_user.going_interest_levels.create!(event: @event)
+            request_user.going_interest_levels.create!(child_event: @event)
 
               @check = TicketPurchase.where(ticket_id: params[:ticket_id]).where(user_id: request_user.id, price: @ticket.price)
           if @check.blank?
@@ -341,7 +341,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
     render json: {
       code: 400,
       success: false,
-      message: "ticket_id, ticket_type and quantity are required.",
+      message: "ticket_id, event_id, ticket_type and quantity are required.",
       data: nil
     }
   end
