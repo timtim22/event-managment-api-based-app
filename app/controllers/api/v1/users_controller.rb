@@ -644,7 +644,7 @@ end
       profile['first_name'] = user.business_profile.profile_name
       profile['last_name'] = ''
       profile['avatar'] = user.avatar
-      profile['about'] = user.profile.about
+      profile['about'] = user.business_profile.about
       profile['address'] = user.business_profile.address["formatted_address"]
       profile['followers_count'] = user.followers.size
       profile['events_count'] = user.events.size
