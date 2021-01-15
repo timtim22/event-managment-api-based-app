@@ -115,7 +115,7 @@ class Admin::PassesController < Admin::AdminMasterController
               "action_type": @notification.action_type,
               "created_at": @notification.created_at,
               "body": '',
-              "is_added_to_wallet": added_to_wallet?(request_user,request_user,notification.resource)
+              "is_added_to_wallet": added_to_wallet?(request_user,notification.resource)
              }
             }
            }
