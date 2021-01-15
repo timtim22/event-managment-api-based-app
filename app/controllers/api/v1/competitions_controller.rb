@@ -194,7 +194,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                       "action_type": notification.action_type,
                       "created_at": notification.created_at,
                       "is_read": !notification.read_at.nil?,
-                      "is_added_to_wallet": added_to_wallet?(request_user, notification.resource)
+                      "is_added_to_wallet": added_to_wallet?(request_user, notification.resource.event)
                     }
                    }
                   }
@@ -279,7 +279,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                   "action_type": notification.action_type,
                   "created_at": notification.created_at,
                   "is_read": !notification.read_at.nil?,
-                  "is_added_to_wallet": added_to_wallet?(request_user, notification.resource)
+                  "is_added_to_wallet": added_to_wallet?(request_user, notification.resource.event)
                  }
                 }
                }
