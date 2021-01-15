@@ -194,7 +194,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
             @passes << {
             id: pass.id,
             title: pass.title,
-            host_name: e.user.business_profile.profile_name,
+            host_name: get_full_name(e.user),
             host_image: e.user.avatar,
             event_name: e.name,
             event_image: e.image,
@@ -219,7 +219,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
           id: pass.id,
           title: pass.title,
           description: pass.description,
-          host_name: e.user.business_profile.profile_name,
+          host_name: get_full_name(e.user),
           host_image: e.user.avatar,
           event_name: e.name,
           event_image: e.image,
