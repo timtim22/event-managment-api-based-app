@@ -12,6 +12,9 @@
 
 ActiveRecord::Schema.define(version: 2021_01_15_055037) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
     t.string "browser"
@@ -43,8 +46,8 @@ ActiveRecord::Schema.define(version: 2021_01_15_055037) do
   end
 
   create_table "assignments", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "role_id"
+    t.bigint "user_id"
+    t.bigint "role_id"
     t.index ["role_id"], name: "index_assignments_on_role_id"
     t.index ["user_id"], name: "index_assignments_on_user_id"
   end
@@ -52,7 +55,7 @@ ActiveRecord::Schema.define(version: 2021_01_15_055037) do
   create_table "business_details", force: :cascade do |t|
     t.string "name"
     t.string "type"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_business_details_on_user_id"
@@ -80,7 +83,7 @@ ActiveRecord::Schema.define(version: 2021_01_15_055037) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "display_name"
-    t.json "address"
+    t.jsonb "address"
     t.index ["user_id"], name: "index_business_profiles_on_user_id"
   end
 
@@ -94,8 +97,8 @@ ActiveRecord::Schema.define(version: 2021_01_15_055037) do
   end
 
   create_table "categorizations", force: :cascade do |t|
-    t.integer "event_id"
-    t.integer "category_id"
+    t.bigint "event_id"
+    t.bigint "category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["category_id"], name: "index_categorizations_on_category_id"
@@ -105,7 +108,7 @@ ActiveRecord::Schema.define(version: 2021_01_15_055037) do
   create_table "chat_channels", force: :cascade do |t|
     t.integer "recipient_id"
     t.string "name"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "push_token"
@@ -113,7 +116,7 @@ ActiveRecord::Schema.define(version: 2021_01_15_055037) do
   end
 
   create_table "child_events", force: :cascade do |t|
-    t.integer "event_id"
+    t.bigint "event_id"
     t.string "name", default: ""
     t.datetime "start_date"
     t.datetime "end_date"
@@ -150,8 +153,8 @@ ActiveRecord::Schema.define(version: 2021_01_15_055037) do
 
   create_table "comments", force: :cascade do |t|
     t.string "comment"
-    t.integer "user_id"
-    t.integer "event_id"
+    t.bigint "user_id"
+    t.bigint "event_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "from"
@@ -260,7 +263,6 @@ ActiveRecord::Schema.define(version: 2021_01_15_055037) do
     t.datetime "updated_at", null: false
     t.text "terms_conditions", default: ""
     t.boolean "price_range", default: false
-    t.boolean "has_passes", default: false
     t.string "pass", default: "false"
     t.integer "first_cat_id"
     t.string "video"
@@ -300,8 +302,8 @@ ActiveRecord::Schema.define(version: 2021_01_15_055037) do
 
   create_table "friend_requests", force: :cascade do |t|
     t.string "status"
-    t.integer "user_id"
-    t.integer "friend_id"
+    t.bigint "user_id"
+    t.bigint "friend_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "read_at"
@@ -363,7 +365,7 @@ ActiveRecord::Schema.define(version: 2021_01_15_055037) do
     t.integer "recipient_id"
     t.text "message"
     t.datetime "read_at"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "from"
@@ -603,7 +605,7 @@ ActiveRecord::Schema.define(version: 2021_01_15_055037) do
     t.string "university"
     t.string "email"
     t.string "student_id"
-    t.integer "user_id"
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_student_details_on_user_id"
@@ -615,7 +617,7 @@ ActiveRecord::Schema.define(version: 2021_01_15_055037) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "quantity"
-    t.decimal "price", precision: 8, scale: 2, default: "0.0"
+    t.string "price"
     t.index ["ticket_id"], name: "index_ticket_purchases_on_ticket_id"
     t.index ["user_id"], name: "index_ticket_purchases_on_user_id"
   end
@@ -694,10 +696,6 @@ ActiveRecord::Schema.define(version: 2021_01_15_055037) do
     t.integer "child_event_id"
     t.index ["resource_id", "resource_type"], name: "index_views_on_resource_id_and_resource_type"
     t.index ["user_id"], name: "index_views_on_user_id"
-    t.index [nil, "user_id"], name: "index_views_on_competition_id_and_user_id"
-    t.index [nil, "user_id"], name: "index_views_on_event_id_and_user_id"
-    t.index [nil, "user_id"], name: "index_views_on_pass_id_and_user_id"
-    t.index [nil, "user_id"], name: "index_views_on_special_offer_id_and_user_id"
   end
 
   create_table "vip_pass_shares", force: :cascade do |t|
@@ -720,8 +718,15 @@ ActiveRecord::Schema.define(version: 2021_01_15_055037) do
     t.integer "quantity", default: 1
     t.index ["offer_id", "offer_type"], name: "index_wallets_on_offer_id_and_offer_type"
     t.index ["user_id"], name: "index_wallets_on_user_id"
-    t.index [nil, "user_id"], name: "index_wallets_on_pass_id_and_user_id"
-    t.index [nil, "user_id"], name: "index_wallets_on_special_offer_id_and_user_id"
   end
 
+  add_foreign_key "business_details", "users"
+  add_foreign_key "categorizations", "categories"
+  add_foreign_key "categorizations", "events"
+  add_foreign_key "chat_channels", "users"
+  add_foreign_key "comments", "events"
+  add_foreign_key "comments", "users"
+  add_foreign_key "friend_requests", "users"
+  add_foreign_key "messages", "users"
+  add_foreign_key "student_details", "users"
 end

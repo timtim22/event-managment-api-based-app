@@ -669,12 +669,7 @@ end
   end
   end
 
-  def added_to_wallet?(resource)
-   if request_user
-    wallet = request_user.wallets.where(offer: resource)
-    !wallet.blank?
-   end
-  end
+
 
   def string_to_DateTime(string)
     DateTime.parse(string)

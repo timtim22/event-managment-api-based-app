@@ -1,3 +1,4 @@
+
 class Event < ApplicationRecord
 validates :name, presence: true, on: :create
 validates :image, presence: true, on: :create

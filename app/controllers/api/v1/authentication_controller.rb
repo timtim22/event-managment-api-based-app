@@ -140,25 +140,25 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
 
 
   def logout
-    @pubnub = Pubnub.new(
-      publish_key: ENV['PUBLISH_KEY'],
-      subscribe_key: ENV['SUBSCRIBE_KEY']
-     )
-     @remove_current_push_token = @pubnub.remove_channels_from_push(
-      remove: request_user.profile.device_token,
-      push_token: request_user.profile.device_token,
-      type: 'gcm'
-      ).value
-      # put a dummy text in device_token field in order to avoid nil error
-      request_user.profile.update!(device_token: "token_removed")
+
+    if  update = request_user.profile.update!(device_token: "token_removed")
 
       render json: {
         code: 200,
         success: true,
-        data: 'Logout successfully.',
+        message: 'Logout successfully.',
         data: nil
       }
+   else
+    render json: {
+        code: 400,
+        success: false,
+        message: update.errors.full_messages,
+        data: nil 
+    }
+   end
   end
+
   # def send_verification_email
   #   @user = User.find_by(email: params[:email])
   #   @code = (SecureRandom.random_number(9e5) + 1e5).to_i
