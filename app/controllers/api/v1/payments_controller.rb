@@ -15,7 +15,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   # param :transaction_id, :number, :desc => "Transaction ID", :required => true
 
   def purchase_ticket
-    if !params[:ticket_id].blank? && !params[:ticket_type].blank?  && !params[:quantity].blank? && !params[:event_id]
+    if !params[:ticket_id].blank? && !params[:ticket_type].blank?  && !params[:quantity].blank? && !params[:event_id].blank?
         @ticket = Ticket.find(params[:ticket_id])
         if @ticket.quantity <  params[:quantity].to_i
           render json: {
