@@ -41,22 +41,6 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
             }
           when params[:resource_type] == "Competition"
           @competitions = []
-          if request_user
-            Competition.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC").each do |competition|
-              if !is_removed_competition?(request_user, competition) && showability?(request_user, competition) == true
-              @competitions << {
-                  id: competition.id,
-                  title: competition.title,
-                  description: competition.description,
-                  host_image: competition.user.avatar,
-                  image: competition.image.url,
-                  is_added_to_wallet: is_added_to_wallet?(competition.id),
-                  total_entries_count: get_entry_count(request_user, competition),
-                  validity: competition.validity.strftime(get_time_format)
-                  }
-              end
-            end
-          else
             Competition.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).not_expired.per(10).order(created_at: "ASC").each do |competition|
               @competitions << {
                   id: competition.id,
@@ -69,7 +53,6 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                   validity: competition.validity.strftime(get_time_format)
                   }
             end
-          end
               render json: {
               code: 200,
               success: true,
