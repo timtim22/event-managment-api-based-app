@@ -64,7 +64,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                   description: competition.description,
                   host_image: competition.user.avatar,
                   image: competition.image.url,
-                  is_added_to_wallet: is_added_to_wallet?(competition.id),
+                  is_added_to_wallet: added_to_wallet?(request_user, competition),
                   total_entries_count: get_entry_count(request_user, competition),
                   validity: competition.validity.strftime(get_time_format)
                   }
@@ -90,7 +90,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                             pass_type: pass.pass_type,
                             host_image:pass.event.user.avatar,
                             event_image:pass.event.image,
-                            is_added_to_wallet: is_added_to_wallet?(pass.id),
+                            is_added_to_wallet: added_to_wallet?(request_user, pass),
                             validity: pass.validity.strftime(get_time_format),
                             is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id)
                           }
@@ -102,7 +102,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                             pass_type: pass.pass_type,
                             host_image:pass.event.user.avatar,
                             event_image:pass.event.image,
-                            is_added_to_wallet: is_added_to_wallet?(pass.id),
+                            is_added_to_wallet: added_to_wallet?(request_user, pass),
                             validity: pass.validity.strftime(get_time_format),
                             is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id)
                         }
@@ -137,7 +137,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                     image: offer.image.url,
                     host_image: offer.user.avatar,
                     validity: offer.validity.strftime(get_time_format),
-                    is_added_to_wallet: is_added_to_wallet?(offer.id),
+                    is_added_to_wallet: added_to_wallet?(request_user, offer),
                     is_redeemed: is_redeemed(offer.id, 'SpecialOffer', request_user.id),
                   }
                 end
@@ -152,7 +152,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                     image: offer.image.url,
                     host_image: offer.user.avatar,
                     validity: offer.validity.strftime(get_time_format),
-                    is_added_to_wallet: is_added_to_wallet?(offer.id),
+                    is_added_to_wallet: added_to_wallet?(request_user, offer),
                     is_redeemed: is_redeemed(offer.id, 'SpecialOffer', request_user.id),
                   }
               end

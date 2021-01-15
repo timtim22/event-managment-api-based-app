@@ -267,6 +267,11 @@ class Api::V1::ApiMasterController < ApplicationController
         demographics
 
   end
+  
+   def added_to_wallet?(user, resource)
+     w = resource.wallets.where(user: user)
+     !w.blank?
+   end
 
 
     private
