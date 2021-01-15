@@ -595,7 +595,7 @@ def my_attending
        "interest_count" => event.interested_interest_levels.size,
        "going_count" => event.going_interest_levels.size,
        "demographics" => get_demographics(event),
-       'has_passes' => has_passes?(event)
+       'has_passes' => has_passes?(event.event)
      }
     end#each
 

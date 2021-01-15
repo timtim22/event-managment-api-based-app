@@ -574,9 +574,23 @@ end
 
  def add_to_wallet
   if !params[:offer_id].blank? && !params[:offer_type].blank?
+       quantity = 1
+      if params[:offer_type] == "Ticket" && params[:quantity].blank?
+         render json: {
+           code: 400,
+           success: false,
+           message: "quantity is required field.",
+           data: nil
+         }
+        return
+        else
+          quantity = params[:quantity]
+        end 
+      
+      
     check  = request_user.wallets.where(offer_id: params[:offer_id]).where(offer_type: params[:offer_type]).first
     if check == nil
-    @wallet  = request_user.wallets.new(offer_id: params[:offer_id], offer_type: params[:offer_type])
+    @wallet  = request_user.wallets.new(offer_id: params[:offer_id], offer_type: params[:offer_type],quantity: quantity)
     if @wallet.save
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
