@@ -909,7 +909,7 @@ end
     price = ''
     if !event.tickets.where(ticket_type: 'buy').blank? && event.tickets.size > 1
        price = event.tickets.map {|ticket| ticket.price }
-       price =  '€' + event.start_price + ' - ' + '€' + event.end_price
+       price =  '€' + price.min + ' - ' + '€' + price.max
     elsif !event.tickets.where(ticket_type: 'buy').blank? && event.tickets.size == 1
        price = '€' + event.ticket.price
     elsif !event.tickets.where(ticket_type: 'pay_at_door').blank?
