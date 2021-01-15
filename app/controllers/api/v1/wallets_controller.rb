@@ -552,7 +552,7 @@ end
     end
   elsif params[:offer_type] == 'Ticket' && check.quantity < check.offer.quantity
     @wallet  = request_user.wallets.new(offer_id: params[:offer_id], offer_type: params[:offer_type],quantity: quantity)
-    fail
+  
     if @wallet.save
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
@@ -776,7 +776,7 @@ end
  def remove_from_wallet
  end
 
- 
+
 
  private
 
