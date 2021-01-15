@@ -187,6 +187,16 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
      if !event.event.passes.blank?
        event.event.passes.map {|p| qr.push(p.redeem_code) }
      end
+  case
+  when event.start_date.to_date == Date.today
+  status =  "Now On"
+  when event.start_date.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door" || event.price_type == "free_event"
+    status =  event.going_interest_levels.size.to_s + " Going"  
+  when event.start_date.to_date > Date.today && event.price_type == "buy"
+    status =  event.event.tickets.first.wallets.size.to_s + " Tickets Gone"
+  when event.start_date.to_date < Date.today
+   status = "Event Over"
+  end
   e = {
     "id" => event.id,
     "name" => event.name,
@@ -203,8 +213,12 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
     "get_demographics" => get_demographics(event.event),
     "event_status" => event.event.status,
     "parent_event_id" => event.event.id,
-    "price" => get_price(event.event)
+    "price" => get_price(event.event),
+    "status" => status
+    
   }
+
+
  end
 
 end

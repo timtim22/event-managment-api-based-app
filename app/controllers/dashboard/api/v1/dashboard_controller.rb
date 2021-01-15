@@ -120,8 +120,89 @@ end
    # def total_events
 end
 
+def get_child_event_attendees_stats
+    if !params[:event_id].blank? 
+      @event = []
+      e = ChildEvent.find(params[:event_id])
+        @attendees = []
+        
+        case
+        when e.start_time.to_date != DateTime.now
+          @attendees << {
+          attendees: TicketPurchase.where(ticket_id: e.event.tickets.first.id).map { |e| {
+            user:  e.user_id,
+            confirmation_date:  e.created_at.to_date,
+            ticket_title:  e.ticket.title,
+            quantity:  e.quantity,
+            paid:  e.price,
+            is_ambassador:  
+            if @amb = !e.user.ambassador_requests.where(business_id: e.ticket.user_id).first.blank?
+               @amb
+            else
+                false
+            end
+          }}}
+        @event << {
+          time_remaning: (e.start_date.to_date - Date.today).to_i.to_s + " days remaning",
+          location: e.location,
+          date: e.start_date,
+          going: e.going_interest_levels.size,
+          passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
+          vip_pass: e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum,
+          tickets: e.event.tickets.first.ticket_purchases.map {|e| e.quantity}.sum.to_s + " of " + e.event.tickets.first.wallets.size.to_s,
+          guest_passes: e.event.passes.where(pass_type: "ordinary").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "ordinary").map {|e| e.wallets}.size.to_s,
+          vip_passes: e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "vip").map {|e| e.wallets}.size.to_s,
+          attendees: @attendees 
+        }
 
-def get_child_event_stats
+        when e.start_time.to_date == DateTime.now
+          @attendees << {
+          attendees: TicketPurchase.where(ticket_id: e.event.tickets.first.id).map { |e| {
+            user:  e.user_id,
+            confirmation_date:  e.created_at.to_date,
+            ticket_title:  e.ticket.title,
+            quantity:  e.quantity,
+            paid:  e.price,
+            is_ambassador:  
+            if @amb = !e.user.ambassador_requests.where(business_id: e.ticket.user_id).first.blank?
+               @amb
+            else
+                false
+            end
+          }}}
+        @event << {
+          location: e.location,
+          date: e.start_date,
+          going: e.going_interest_levels.size,
+          passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
+          vip_pass: e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum,
+          tickets: e.event.tickets.first.ticket_purchases.map {|e| e.quantity}.sum.to_s + " of " + e.event.tickets.first.wallets.size.to_s,
+          guest_passes: e.event.passes.where(pass_type: "ordinary").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "ordinary").map {|e| e.wallets}.size.to_s,
+          vip_passes: e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "vip").map {|e| e.wallets}.size.to_s,
+          attendees: @attendees 
+        }
+
+        end
+      
+      render json: {
+        code: 200,
+        success: true,
+        message: 'Child_Event Stats',
+        data: {
+          stats: @event
+        }
+          }
+    else
+        render json: {
+          code: 400,
+          success: false,
+          message: 'event_id',
+          data: nil
+        }
+      end #if
+end
+
+def get_child_event_full_analytics
     if !params[:event_id].blank? 
       @event = []
       e = ChildEvent.find(params[:event_id])

@@ -439,7 +439,7 @@ class ApplicationController < ActionController::Base
     object = {
       id: pass.id,
       title: pass.title,
-      host_name: pass.event.user.business_profile.profile_name,
+      host_name: get_full_name(pass.event.user),
       host_image: pass.event.user.avatar,
       event_name: pass.event.name,
       event_image: pass.event.image,
@@ -574,7 +574,7 @@ class ApplicationController < ActionController::Base
           type: 'pass',
           title: pass.title,
           description: pass.description,
-          host_name: business.business_profile.profile_name,
+          host_name: get_full_name(business),
           host_image: business.avatar,
           event_name: pass.event.name,
           event_image: pass.event.image,
@@ -646,6 +646,19 @@ end
   def is_added_to_wallet?(pass_id)
     if request_user
     wallet = request_user.wallets.where(offer_id: pass_id).where(offer_type: 'Pass')
+    if !wallet.blank?
+      true
+    else
+      false
+    end
+  else
+     false
+  end
+  end
+
+  def is_added_to_wallet?(competition_id)
+    if request_user
+    wallet = request_user.wallets.where(offer_id: competition_id).where(offer_type: 'Competition')
     if !wallet.blank?
       true
     else

@@ -91,6 +91,7 @@
      'price_type' => e.price_type,
      'is_repetive' => e.is_repetive,
      'frequency' => e.frequency,
+     'repeatEndDate' => e.child_events.maximum('start_date'),
       "event_dates" => e.child_events.map {|ch| 
         {
           id: ch.id,
