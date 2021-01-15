@@ -190,7 +190,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
   case
   when event.start_date.to_date == Date.today
   status =  "Now On"
-  when event.start_date.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door"
+  when event.start_date.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door" || event.price_type == "free_event"
     status =  event.going_interest_levels.size.to_s + " Going"  
   when event.start_date.to_date > Date.today && event.price_type == "buy"
     status =  event.event.tickets.first.wallets.size.to_s + " Tickets Gone"
