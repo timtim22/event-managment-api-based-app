@@ -26,8 +26,8 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                   "start_time" => event.start_time,
                   "end_time" => event.end_time,
                   "over_18" => event.over_18,
-                  "price_type" => get_child_event_price_type(event),
-                  "price" => get_child_event_price(event).to_s,
+                  "price_type" => event.price_type,
+                  "price" => get_price(event.event),
                   "has_passes" => has__child_event_passes?(event),
                   "created_at" => event.created_at,
                   "categories" => event.event.categories
@@ -379,15 +379,6 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
       end
     end
 
-  def get_child_event_price_type(event)
-    price_type = ''
-    if !event.event.tickets.blank?
-      price_type = event.event.tickets.first.ticket_type
-    else
-      price_type = 'no_admission_resources'
-    end
-     price_type
-  end
 
   def get_child_event_price(event)
     price = ''
