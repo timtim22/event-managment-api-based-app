@@ -210,7 +210,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "action_type": notification.action_type,
           "created_at": notification.created_at,
           "is_read": !notification.read_at.nil?,
-          "is_added_to_wallet": added_to_wallet?(request_user, notification.resource)
+          "is_added_to_wallet": added_to_wallet?(request_user, notification.resource.competition)
         }
 
         when "add_Pass_to_wallet"
@@ -230,7 +230,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "action_type": notification.action_type,
             "created_at": notification.created_at,
             "is_read": !notification.read_at.nil?,
-            "is_added_to_wallet": added_to_wallet?(request_user, notification.resource)
+            "is_added_to_wallet": added_to_wallet?(request_user, notification.resource.pass)
           }
 
         when "add_SpecialOffer_to_wallet"
