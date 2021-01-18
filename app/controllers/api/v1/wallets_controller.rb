@@ -191,7 +191,9 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
             terms_and_conditions: pass.terms_conditions,
             redeem_count: get_redeem_count(pass),
             quantity: pass.quantity,
-            issued_by: get_full_name(pass.user)
+            issued_by: get_full_name(pass.user),
+            pass_type: pass.pass_type
+
           }
         else
           @unredeemed_passes << {
@@ -216,7 +218,8 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
             terms_and_conditions: pass.terms_conditions,
             redeem_count: get_redeem_count(pass),
             quantity: pass.quantity,
-            issued_by: get_full_name(pass.user)
+            issued_by: get_full_name(pass.user),
+            pass_type: pass.pass_type
 
           }
          end #if
