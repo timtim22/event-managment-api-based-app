@@ -298,8 +298,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "action": notification.action,
           "action_type": notification.action_type,
           "created_at": notification.created_at,
-          "is_read": !notification.read_at.nil?,
-          "is_added_to_wallet": added_to_wallet?(request_user,notification.resource.offer)
+          "is_read": !notification.read_at.nil?
         }
 
       when "ask_location"
