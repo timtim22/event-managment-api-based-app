@@ -40,7 +40,7 @@ RSpec.describe Dashboard::Api::V1::EventsController, type: :controller do
       end_time: "12:14:00",
       terms_conditions: "Dummy",
       event_type: "public",
-      price_type: "paid",
+      price_type: "buy",
       allow_chat: true,
       event_forwarding: true,
       over_18: true,
@@ -56,7 +56,7 @@ RSpec.describe Dashboard::Api::V1::EventsController, type: :controller do
       },
       admission_resources: [
         {
-          name: "paid",
+          name: "buy",
           fields: [{
             title: "freeee",
             quantity: "23",
@@ -78,6 +78,7 @@ RSpec.describe Dashboard::Api::V1::EventsController, type: :controller do
       end_date: "2020-08-05",
       start_time: "23:14:00",
       end_time: "12:14:00",
+      event_dates: ["2020-12-24"],
       terms_conditions: "Dummy",
       event_type: "public",
       price_type: "buy",
@@ -116,7 +117,7 @@ RSpec.describe Dashboard::Api::V1::EventsController, type: :controller do
     end
 
     it "should cancel event status" do
-      post :cancel_event, params: {event_id: Event.first.id}
+      post :cancel_event, params: {event_id: Event.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end

@@ -29,7 +29,7 @@ RSpec.describe Dashboard::Api::V1::UsersController, type: :controller do
         address: "Islamabad",
         display_name: "timtim - display_name",
         phone_number: "+923109909077",
-        email: "test@test.com",
+        email: "test111@test.com",
         password: "Xerography2!",
         is_charity: "true",
         about: "timtim -about"

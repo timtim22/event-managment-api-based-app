@@ -18,17 +18,17 @@ RSpec.describe Dashboard::Api::V1::PaymentsController, type: :controller do
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
 
-    it "should confirm payment" do
-      post :confirm_payment, params: {
-        status: "successful",
-        stripe_response: "successful",
-        total_tickets: 22,
-        vat_amount: 22,
-        transaction_id: Transaction.last.id,
-      }
-      expect(response).to have_http_status(200)
-      expect(JSON.parse(response.body)["success"]).to eq(true)
-    end
+    # it "should confirm payment" do
+    #   post :confirm_payment, params: {
+    #     status: "successful",
+    #     stripe_response: "successful",
+    #     total_tickets: 22,
+    #     vat_amount: 22,
+    #     transaction_id: Transaction.last.id,
+    #   }
+    #   expect(response).to have_http_status(200)
+    #   expect(JSON.parse(response.body)["success"]).to eq(true)
+    # end
 
   end
 end

@@ -376,7 +376,7 @@ end
 
    def delete_event_comments
      if !params[:event_id].blank?
-       event = Event.find(params[:event_id])
+       event = ChildEvent.find(params[:event_id])
         comments = event.comments.where(user_id: request_user.id)
         if comments.destroy_all
           render json: {

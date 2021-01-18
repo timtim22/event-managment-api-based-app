@@ -7,7 +7,7 @@ RSpec.describe Api::V1::BusinessDashboardController, type: :controller do
   describe "Mobile - BusinessDashboard API - " do
 
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] = ENV["WEB_LOGIN_TOKEN"]
     end
 
     it "should get business details" do
