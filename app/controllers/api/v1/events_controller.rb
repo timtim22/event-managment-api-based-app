@@ -373,7 +373,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
   def get_map_events
     if !params[:date].blank?
       date = Date.parse(params[:date])
-      @events = Event.where(start_date:  date.midnight..date.end_of_day)
+      @events = ChildEvent.where(start_date:  date.midnight..date.end_of_day)
       events  = @events.map {|event| get_map_event_object(event) }
       render json: {
         code: 200,
@@ -403,10 +403,10 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       "id" => event.id,
       "lat" => event.lat,
       "lng" => event.lng,
-      "price_type" => event.price_type,
-      "max_price" => get_max_price(event),
-      "has_passes" => has_passes?(event),
-      "categories" => event.categories
+      "price_type" => event.event.price_type,
+      "max_price" => get_max_price(event.event),
+      "has_passes" => has_passes?(event.event),
+      "categories" => event.event.categories
     }
  end
 

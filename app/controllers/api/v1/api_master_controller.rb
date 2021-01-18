@@ -136,6 +136,7 @@ class Api::V1::ApiMasterController < ApplicationController
       @interested_users = []
       @interested_followers_or_friends = []
       @interested_others = []
+        @key = "interested_friends"
       if request_user && request_user.app_user == true
         @key = "interested_friends"
       elsif request_user && request_user.web_user == true

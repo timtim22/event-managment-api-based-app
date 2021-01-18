@@ -577,22 +577,27 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                           "friend_name": User.get_full_name(notification.resource.user)
                         }
 
-              else
-                "do nothing"
-              end #switch
+                      else
+                        "do nothing"
+                      end #switch
 
-             end #end
+                    end #end
 
-    render json: {
-      code: 200,
-      success: true,
-      message: '',
-      data: {
-        notifications: @notifications,
-        "unread_count": request_user.notifications.unread.size
-      }
-    }
-  end
+            render json: {
+                code: 200,
+                success: true,
+                message: '',
+                data: {
+                  notifications: @notifications,
+                  "unread_count": request_user.notifications.unread.size
+                }
+              }
+            end
+
+
+
+
+
 
   api :POST, '/api/v1/ask-location', 'Ask for target user location'
   #param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true
