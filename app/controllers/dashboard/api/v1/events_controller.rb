@@ -904,6 +904,11 @@ end
 
   private
 
+ def get_date_time(date, time)
+    d = date.strftime("%Y-%b-%d")
+    t = time.strftime("%H-%M-%S")
+    datetime = d + " " + t
+ end
 
 
   def setCategories
