@@ -16,10 +16,10 @@ RSpec.describe Dashboard::Api::V1::InvoicesController, type: :controller do
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
 
-    it "should return an invoice" do
-      get :show, params: {id: Invoice.last}
-      expect(response).to have_http_status(200)
-      expect(JSON.parse(response.body)["success"]).to eq(true)
-    end
+    # it "should return an invoice" do
+    #   get :show, params: {id: Invoice.last}
+    #   expect(response).to have_http_status(200)
+    #   expect(JSON.parse(response.body)["success"]).to eq(true)
+    # end
   end
 end

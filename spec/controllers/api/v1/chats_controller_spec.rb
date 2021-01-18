@@ -11,7 +11,7 @@ RSpec.describe Api::V1::ChatsController, type: :controller do
     end
 
     it "should send message" do
-      post :send_message, params: {:recipient_id => User.app_users.first.id, :message => "foo"}
+      post :send_message, params: {recipient_id: User.app_users.first.id, message: "foo"}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end

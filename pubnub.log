@@ -1,0 +1,157 @@
+# Logfile created on 2021-01-18 13:00:47 +0500 by logger.rb/66358
+D, [2021-01-18T13:00:47.503540 #1093] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-18T13:00:47.503731 #1093] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-18T13:02:58.106427 #182] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-18T13:02:58.106902 #182] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-18T13:03:27.314302 #1155] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-18T13:03:27.314579 #1155] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-18T13:03:27.352697 #1155] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-18T13:03:27.352978 #1155] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-18T14:48:42.163621 #1923] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-18T14:48:42.163895 #1923] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-18T14:48:42.224461 #1923] DEBUG -- Pubnub::Telemetry: Fetching telemetry for 
+D, [2021-01-18T14:48:42.224658 #1923] DEBUG -- Pubnub::Event: Initialized Pubnub::AddChannelsToPush
+D, [2021-01-18T14:48:42.224857 #1923] DEBUG -- Pubnub::Event: Fired event Pubnub::AddChannelsToPush
+D, [2021-01-18T14:48:42.224927 #1923] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-18T14:48:42.224973 #1923] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-18T14:48:42.225019 #1923] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-18T14:48:42.239032 #1923] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-18T14:48:42.239257 #1923] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/v1/push/sub-key/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/devices/Secret@123?add=Secret%40123&pnsdk=PubNub-Ruby%2F4.2.7&push_token=Secret%40123&type=gcm&uuid=fa024ff6-d143-4887-a5d0-a235e3ed7ad0
+D, [2021-01-18T14:48:42.410560 #1923] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-18T14:48:42.410890 #1923] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::AddChannelsToPush
+D, [2021-01-18T14:48:42.412776 #1923] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-18T14:48:42.412946 #1923] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-18T14:48:42.421084 #1923] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-18T14:48:42.436222 #1923] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-18T14:48:42.437815 #1923] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-18T14:48:42.437936 #1923] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-18T14:48:42.438684 #1923] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-18T14:48:42.439891 #1923] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/Secret%40123/0/%7B%22pn_gcm%22%3A%7B%22notification%22%3A%7B%22title%22%3A%22timtim%22%2C%22body%22%3A%22timtim%20has%20approved%20you%20as%20an%20ambassador.%22%7D%2C%22data%22%3A%7B%22id%22%3A1%2C%22business_name%22%3A%22timtim%22%2C%22actor_image%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F3%2Fb9809525-f658-438d-8910-f89ca7735114.png%22%7D%2C%22notifiable_id%22%3A6%2C%22notifiable_type%22%3A%22AmbassadorRequest%22%2C%22action%22%3A%22timtim%20has%20approved%20you%20as%20an%20ambassador.%22%2C%22action_type%22%3A%22become_ambassador%22%2C%22created_at%22%3A%222021-01-18T09%3A48%3A42.222Z%22%2C%22is_read%22%3Afalse%2C%22location%22%3Anull%7D%7D%7D?ortt=%7B%22t%22%3A16109633224130156%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=fa024ff6-d143-4887-a5d0-a235e3ed7ad0
+D, [2021-01-18T14:48:42.541184 #1923] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-18T14:48:42.542128 #1923] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::Publish
+D, [2021-01-18T14:55:34.506750 #1996] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-18T14:55:34.507058 #1996] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-18T14:55:34.564631 #1996] DEBUG -- Pubnub::Telemetry: Fetching telemetry for 
+D, [2021-01-18T14:55:34.564829 #1996] DEBUG -- Pubnub::Event: Initialized Pubnub::AddChannelsToPush
+D, [2021-01-18T14:55:34.565024 #1996] DEBUG -- Pubnub::Event: Fired event Pubnub::AddChannelsToPush
+D, [2021-01-18T14:55:34.565094 #1996] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-18T14:55:34.565142 #1996] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-18T14:55:34.565188 #1996] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-18T14:55:34.568613 #1996] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-18T14:55:34.568815 #1996] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/v1/push/sub-key/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/devices/Secret@123?add=Secret%40123&pnsdk=PubNub-Ruby%2F4.2.7&push_token=Secret%40123&type=gcm&uuid=ca23dc82-1c7b-4947-9bb9-c2dd59f35d4b
+D, [2021-01-18T14:55:34.739728 #1996] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-18T14:55:34.740048 #1996] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::AddChannelsToPush
+D, [2021-01-18T14:55:34.741894 #1996] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-18T14:55:34.742063 #1996] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-18T14:55:34.750507 #1996] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-18T14:55:34.765370 #1996] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-18T14:55:34.766993 #1996] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-18T14:55:34.767389 #1996] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-18T14:55:34.768013 #1996] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-18T14:55:34.769155 #1996] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/Secret%40123/0/%7B%22pn_gcm%22%3A%7B%22notification%22%3A%7B%22title%22%3A%22taimoor%22%2C%22body%22%3A%22taimoor%20has%20approved%20you%20as%20an%20ambassador.%22%7D%2C%22data%22%3A%7B%22id%22%3A1%2C%22business_name%22%3A%22taimoor%22%2C%22actor_image%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F3%2Fb9809525-f658-438d-8910-f89ca7735114.png%22%7D%2C%22notifiable_id%22%3A6%2C%22notifiable_type%22%3A%22AmbassadorRequest%22%2C%22action%22%3A%22taimoor%20has%20approved%20you%20as%20an%20ambassador.%22%2C%22action_type%22%3A%22become_ambassador%22%2C%22created_at%22%3A%222021-01-18T09%3A55%3A34.562Z%22%2C%22is_read%22%3Afalse%2C%22location%22%3Anull%7D%7D%7D?ortt=%7B%22t%22%3A16109637347421306%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=ca23dc82-1c7b-4947-9bb9-c2dd59f35d4b
+D, [2021-01-18T14:55:35.099361 #1996] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-18T14:55:35.100503 #1996] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::Publish
+D, [2021-01-18T14:56:44.674899 #2061] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-18T14:56:44.675119 #2061] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-18T14:56:44.740197 #2061] DEBUG -- Pubnub::Telemetry: Fetching telemetry for 
+D, [2021-01-18T14:56:44.740397 #2061] DEBUG -- Pubnub::Event: Initialized Pubnub::AddChannelsToPush
+D, [2021-01-18T14:56:44.740602 #2061] DEBUG -- Pubnub::Event: Fired event Pubnub::AddChannelsToPush
+D, [2021-01-18T14:56:44.740714 #2061] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-18T14:56:44.740763 #2061] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-18T14:56:44.740826 #2061] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-18T14:56:44.744395 #2061] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-18T14:56:44.744585 #2061] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/v1/push/sub-key/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/devices/Secret@123?add=Secret%40123&pnsdk=PubNub-Ruby%2F4.2.7&push_token=Secret%40123&type=gcm&uuid=d0571790-3526-44cc-ba80-6a6a56e4eb67
+D, [2021-01-18T14:56:44.985594 #2061] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-18T14:56:44.985943 #2061] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::AddChannelsToPush
+D, [2021-01-18T14:56:44.989463 #2061] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-18T14:56:44.989724 #2061] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-18T14:56:44.998313 #2061] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-18T14:56:45.017105 #2061] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-18T14:56:45.020343 #2061] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-18T14:56:45.021013 #2061] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-18T14:56:45.022079 #2061] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-18T14:56:45.023729 #2061] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/Secret%40123/0/%7B%22pn_gcm%22%3A%7B%22notification%22%3A%7B%22title%22%3A%22taimoor%22%2C%22body%22%3A%22taimoor%20has%20approved%20you%20as%20an%20ambassador.%22%7D%2C%22data%22%3A%7B%22id%22%3A1%2C%22business_name%22%3A%22taimoor%22%2C%22actor_image%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F3%2Fb9809525-f658-438d-8910-f89ca7735114.png%22%7D%2C%22notifiable_id%22%3A6%2C%22notifiable_type%22%3A%22AmbassadorRequest%22%2C%22action%22%3A%22taimoor%20has%20approved%20you%20as%20an%20ambassador.%22%2C%22action_type%22%3A%22become_ambassador%22%2C%22created_at%22%3A%222021-01-18T09%3A56%3A44.737Z%22%2C%22is_read%22%3Afalse%2C%22location%22%3Anull%7D%7D%7D?ortt=%7B%22t%22%3A16109638049898010%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=d0571790-3526-44cc-ba80-6a6a56e4eb67
+D, [2021-01-18T14:56:45.104694 #2061] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-18T14:56:45.105029 #2061] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::Publish
+D, [2021-01-18T14:59:09.298161 #2185] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-18T14:59:09.298373 #2185] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-18T14:59:09.354983 #2185] DEBUG -- Pubnub::Telemetry: Fetching telemetry for 
+D, [2021-01-18T14:59:09.355189 #2185] DEBUG -- Pubnub::Event: Initialized Pubnub::AddChannelsToPush
+D, [2021-01-18T14:59:09.355376 #2185] DEBUG -- Pubnub::Event: Fired event Pubnub::AddChannelsToPush
+D, [2021-01-18T14:59:09.355449 #2185] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-18T14:59:09.355498 #2185] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-18T14:59:09.355546 #2185] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-18T14:59:09.358953 #2185] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-18T14:59:09.359142 #2185] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/v1/push/sub-key/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/devices/Secret@123?add=Secret%40123&pnsdk=PubNub-Ruby%2F4.2.7&push_token=Secret%40123&type=gcm&uuid=77559f5e-d2c8-41d7-a3a0-971d9dc25afb
+D, [2021-01-18T14:59:09.536684 #2185] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-18T14:59:09.537053 #2185] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::AddChannelsToPush
+D, [2021-01-18T14:59:09.539378 #2185] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-18T14:59:09.539581 #2185] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-18T14:59:09.549209 #2185] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-18T14:59:09.598456 #2185] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-18T14:59:09.598673 #2185] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-18T14:59:09.598872 #2185] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-18T14:59:09.598957 #2185] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-18T14:59:09.600967 #2185] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/Secret%40123/0/%7B%22pn_gcm%22%3A%7B%22notification%22%3A%7B%22title%22%3A%22taimoor%22%2C%22body%22%3A%22taimoor%20has%20approved%20you%20as%20an%20ambassador.%22%7D%2C%22data%22%3A%7B%22id%22%3A1%2C%22business_name%22%3A%22taimoor%22%2C%22actor_image%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F3%2Fb9809525-f658-438d-8910-f89ca7735114.png%22%7D%2C%22notifiable_id%22%3A6%2C%22notifiable_type%22%3A%22AmbassadorRequest%22%2C%22action%22%3A%22taimoor%20has%20approved%20you%20as%20an%20ambassador.%22%2C%22action_type%22%3A%22become_ambassador%22%2C%22created_at%22%3A%222021-01-18T09%3A59%3A09.352Z%22%2C%22is_read%22%3Afalse%2C%22location%22%3Anull%7D%7D%7D?ortt=%7B%22t%22%3A16109639495396676%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=77559f5e-d2c8-41d7-a3a0-971d9dc25afb
+D, [2021-01-18T14:59:09.698495 #2185] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-18T14:59:09.699033 #2185] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::Publish
+D, [2021-01-18T15:15:39.800404 #2722] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-18T15:15:39.800644 #2722] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-18T15:24:19.434218 #2812] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-18T15:24:19.434538 #2812] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-18T15:41:24.418055 #3094] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-18T15:41:24.418256 #3094] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-18T15:41:24.515548 #3094] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-18T15:41:24.515781 #3094] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-18T15:41:24.517076 #3094] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-18T15:41:24.518100 #3094] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-18T15:41:24.519044 #3094] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-18T15:41:24.522067 #3094] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-18T15:41:24.526385 #3094] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-18T15:41:24.527523 #3094] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/1/0/%7B%22action%22%3A%22timtim%20khan%20posted%20a%20new%20comment%20on%20your%20event%20%27Test%20event%20with%20new%20time%20new%20childs%202%27.%22%2C%22avatar%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F5%2F55ab1508-cade-4bd1-bb83-48d308ac3648.png%22%7D%2C%22time%22%3A%22less%20than%20a%20minute%22%2C%22notification_url%22%3A%22%2Fadmin%2Fevents%2F179%22%7D?ortt=%7B%22t%22%3A16109664845158586%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=484d619d-4940-4f53-9955-6dd444ce71e6
+D, [2021-01-18T15:41:43.584615 #3129] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-18T15:41:43.584795 #3129] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-18T15:44:02.689245 #3191] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-18T15:44:02.689450 #3191] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-18T15:44:02.774483 #3191] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-18T15:44:02.774725 #3191] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-18T15:44:02.775530 #3191] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-18T15:44:02.783407 #3191] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-18T15:44:02.784004 #3191] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-18T15:44:02.785924 #3191] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-18T15:44:02.789609 #3191] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-18T15:44:02.790719 #3191] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/3/0/%7B%22action%22%3A%22timtim%20khan%20is%20interested%20in%20your%20competition%20%27new%20competition%27.%22%2C%22avatar%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F5%2F55ab1508-cade-4bd1-bb83-48d308ac3648.png%22%7D%2C%22time%22%3A%22less%20than%20a%20minute%22%2C%22notification_url%22%3A%22%2Fadmin%2Fcompetitions%2F1%22%7D?ortt=%7B%22t%22%3A16109666427748086%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=e28edbe4-da0c-4fff-8f6e-1a342907e143
+D, [2021-01-18T15:51:36.035668 #3255] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-18T15:51:36.035826 #3255] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-18T15:51:36.142739 #3255] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-18T15:51:36.142953 #3255] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-18T15:51:36.143716 #3255] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-18T15:51:36.150838 #3255] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-18T15:51:36.151417 #3255] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-18T15:51:36.153265 #3255] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-18T15:51:36.157394 #3255] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-18T15:51:36.158494 #3255] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/3/0/%7B%22action%22%3A%22timtim%20khan%20is%20interested%20in%20your%20competition%20%27new%20competition%27.%22%2C%22avatar%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F5%2F55ab1508-cade-4bd1-bb83-48d308ac3648.png%22%7D%2C%22time%22%3A%22less%20than%20a%20minute%22%2C%22notification_url%22%3A%22%2Fadmin%2Fcompetitions%2F1%22%7D?ortt=%7B%22t%22%3A16109670961430222%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=daabbe53-a9ef-44d9-b603-a01119444fca
+D, [2021-01-18T15:59:14.975246 #3544] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-18T15:59:14.975694 #3544] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-18T15:59:15.244614 #3544] DEBUG -- Pubnub::Telemetry: Fetching telemetry for 
+D, [2021-01-18T15:59:15.244900 #3544] DEBUG -- Pubnub::Event: Initialized Pubnub::AddChannelsToPush
+D, [2021-01-18T15:59:15.245188 #3544] DEBUG -- Pubnub::Event: Fired event Pubnub::AddChannelsToPush
+D, [2021-01-18T15:59:15.245274 #3544] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-18T15:59:15.245341 #3544] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-18T15:59:15.245410 #3544] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-18T15:59:15.254133 #3544] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-18T15:59:15.254450 #3544] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/v1/push/sub-key/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/devices/Secret@123?add=Secret%40123&pnsdk=PubNub-Ruby%2F4.2.7&push_token=Secret%40123&type=gcm&uuid=066259c2-cd8e-4834-b2bb-8a026eff998c
+D, [2021-01-18T15:59:15.420441 #3544] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-18T15:59:15.420782 #3544] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::AddChannelsToPush
+D, [2021-01-18T15:59:15.426668 #3544] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-18T15:59:15.426970 #3544] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-18T15:59:15.436274 #3544] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-18T15:59:15.436481 #3544] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-18T15:59:15.436582 #3544] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-18T15:59:15.436669 #3544] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-18T15:59:15.436872 #3544] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-18T15:59:15.438551 #3544] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/Secret%40123/0/%7B%22pn_gcm%22%3A%7B%22notification%22%3A%7B%22title%22%3A%22timtim%20khan%22%2C%22body%22%3A%22timtim%20khan%20has%20forwarded%20you%20and%20event.%22%7D%2C%22data%22%3A%7B%22id%22%3A1%2C%22event_id%22%3A195%2C%22friend_name%22%3A%22timtim%20khan%22%2C%22friend_id%22%3A5%2C%22event_name%22%3A%22Test%20event%20with%20datec%20check%22%2C%22event_start_date%22%3A%222021-01-18T00%3A00%3A00.000Z%22%2C%22event_location%22%3A%22Dublin%22%2C%22actor_image%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F5%2F55ab1508-cade-4bd1-bb83-48d308ac3648.png%22%7D%2C%22notifiable_id%22%3A195%2C%22notifiable_type%22%3A%22ChildEvent%22%2C%22action%22%3A%22timtim%20khan%20has%20forwarded%20you%20and%20event.%22%2C%22action_type%22%3A%22event_forwarded%22%2C%22created_at%22%3A%222021-01-18T10%3A59%3A15.240Z%22%2C%22is_read%22%3Afalse%7D%7D%7D?ortt=%7B%22t%22%3A16109675554270964%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=066259c2-cd8e-4834-b2bb-8a026eff998c
+D, [2021-01-18T15:59:15.470183 #3544] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-18T15:59:15.470354 #3544] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-18T15:59:15.673697 #3544] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-18T15:59:15.674877 #3544] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::Publish

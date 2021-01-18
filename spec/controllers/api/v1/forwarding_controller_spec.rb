@@ -28,7 +28,7 @@ RSpec.describe Api::V1::ForwardingController, type: :controller do
     end
 
     it "should forward event" do
-      post :forward_event, params: {event_id: Event.last.id, user_ids: User.app_users.last.id}
+      post :forward_event, params: {event_id: ChildEvent.last.id, user_ids: User.app_users.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
@@ -37,7 +37,7 @@ RSpec.describe Api::V1::ForwardingController, type: :controller do
       post :share_event, params: {
         event_shared: "true",
         sender_token: ENV["APP_LOGIN_TOKEN"],
-        event_id: Event.last.id
+        event_id: ChildEvent.last.id
       }
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)

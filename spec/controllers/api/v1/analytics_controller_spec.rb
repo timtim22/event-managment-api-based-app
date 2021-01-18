@@ -17,13 +17,21 @@ RSpec.describe Api::V1::AnalyticsController, type: :controller do
     end
 
     it "should return special offers stats" do
-      post :get_offer_stats, params: { special_offer_id: SpecialOffer.last.id, time_slot_dates: '2020-11-30,2020-11-28' }
+      post :get_offer_stats, params: { 
+        offer_id: SpecialOffer.last.id, 
+        frequency: 'daily', 
+        date: '2021-02-11' 
+      }
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
 
     it "should return competitiion stats" do
-      post :get_competition_stats, params: { competitiion_id: Competition.last.id, time_slot_dates: '2020-11-30,2020-11-28' }
+      post :get_competition_stats, params: { 
+        competition_id: Competition.last.id, 
+        frequency: 'daily', 
+        date: '2021-02-11' 
+      }
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end

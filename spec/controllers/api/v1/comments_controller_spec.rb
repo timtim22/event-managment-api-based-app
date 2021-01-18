@@ -12,13 +12,13 @@ RSpec.describe Api::V1::CommentsController, type: :controller do
 
     it "should create comments" do
       boolean = ['true','false']
-      post :create, params: {event_id: Event.first.id, comment: "foo", is_reply: boolean.sample}
+      post :create, params: {event_id: ChildEvent.first.id, comment: "foo", is_reply: false}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
 
     it "should return event comments" do
-      post :comments, params: {event_id: Event.first.id}
+      post :comments, params: {event_id: ChildEvent.first.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
@@ -30,13 +30,13 @@ RSpec.describe Api::V1::CommentsController, type: :controller do
     end
 
     it "should delete event comments" do
-      post :delete_event_comments, params: {event_id: Event.last.id}
+      post :delete_event_comments, params: {event_id: ChildEvent.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
 
     it "should mark the comment as read" do
-      post :mark_as_read, params: {event_id: Event.last.id}
+      post :mark_as_read, params: {event_id: ChildEvent.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
