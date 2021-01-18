@@ -123,54 +123,6 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
    end
    end
 
-  # def new
-  #   @pass = Pass.new
-  # end
-
-  # def edit
-  #   @pass = Pass.find(params[:id])
-  # end
-
-  # def update
-  #   @pass = Pass.find(params[:id])
-  # end
-
-  # def create
-  #   @pass = Pass.new #instantiated to avoid undefine error in case of form errors
-  #   ids = params['event_ids']
-  #   success = false
-  #   if !ids.blank?
-  #   ids.each do |id|
-  #     @pass = Pass.new
-  #     @pass.title = params[:title]
-  #     @pass.description = params[:description]
-  #     @pass.event_id = id
-  #     @pass.user_id = current_user.id,
-  #     @pass.redeem_code = params[:redeem_code]
-  #     @pass.validity = params[:validity]
-  #     if @pass.save
-  #       success = true
-  #     else
-  #       success = false
-  #     end
-  #   end #each
-
-  #   if success
-  #     flash[:notice] = "Pass created successfully."
-  #     redirect_to admin_passes_path
-  #   else
-  #       render :new
-  #   end
-  # else
-  #   flash.now[:alert_danger] = "No event is selected."
-  #   render :new
-  # end
-
-  # end
-
-  # def destroy
-  #   @pass = Pass.find(params[:id])
-  # end
   api :POST, '/api/v1/event/redeem-pass', 'To redeem an event'
   param :pass_id, :number, :desc => "Event ID", :required => true
   param :redeem_code, :number, :desc => "Redeem Code", :required => true

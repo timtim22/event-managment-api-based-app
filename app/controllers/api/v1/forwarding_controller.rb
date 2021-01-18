@@ -327,7 +327,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
        @channel = "event"
        if ids_array.kind_of?(Array)
        ids_array.each do |id|
-       @check = EventForwarding.where(event_id: @event.id).where(recipient_id: id).where(user_id: request_user.id).first
+       @check = EventForwarding.where(child_event_id: @event.id).where(recipient_id: id).where(user_id: request_user.id).first
         @recipient = User.find(id)
        if @check.blank?
 
@@ -436,7 +436,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
           )
 
           @recipient = request_user
-          @event_share = EventShare.create!(user_id: @sender.id, recipient_id: request_user.id, event_id: params[:event_id])
+          @event_share = EventShare.create!(user_id: @sender.id, recipient_id: request_user.id, child_event_id: params[:event_id])
 
 
           if notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " shared an event with you.", notifiable: @event, resource: @event_share, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: "event_shared")
@@ -465,7 +465,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
                 "location": location,
                 "created_at": notification.created_at,
                 "is_read": !notification.read_at.nil?,
-                "business_name": User.get_full_name(notification.resource.event.user),
+                "business_name": User.get_full_name(notification.resource.child_event.user),
                 "event_name": notification.resource.event.name,
                 "event_id": notification.resource.event.id,
                 "event_location": notification.resource.event.location,

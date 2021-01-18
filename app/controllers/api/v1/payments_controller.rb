@@ -26,7 +26,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
           }
           return
         end
-        @event = ChildEvent.find(params[:event_id])
+        @event = Event.find(params[:event_id])
       if params[:ticket_type] == 'buy'
         if !params[:status].blank? && !params[:stripe_response].blank? && !params[:transaction_id].blank?
 
