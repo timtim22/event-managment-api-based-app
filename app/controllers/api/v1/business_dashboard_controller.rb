@@ -14,14 +14,9 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
       "avatar" => business.avatar,
       "about" => business.business_profile.about,
       "unread_messages_count" => business.incoming_messages.unread.size,
-      "address" => business.business_profile.address,
-      # # "location" => {
-      # #   "name" => business.business_profile.location,
-      # #   "geometry" => {
-      # #     "lat" => business.business_profile.lat,
-      # #     "lng" => business.business_profile.lng
-      # #   }
-      # },
+      "address" => business.business_profile.address["city"] + ", " + business.business_profile.address["country"],
+      "lat" => business.business_profile.address["geometry"]["lat"],
+      "lng" => business.business_profile.address["geometry"]["lng"],
       "social" => {
         "youtube" => business.business_profile.youtube,
         "instagram" => business.business_profile.instagram,
@@ -60,7 +55,9 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         'start_time' => e.start_time,
         'end_time' => e.end_time,
         'image' => e.image,
-        'location' => e.location,
+           'location' => eval(e.location)["city"] + ", " + eval(e.location)["country"],
+           'lat' => eval(e.location)["geometry"]["lat"],
+           'lng' => eval(e.location)["geometry"]["lng"],
         'price' => get_price(e.event),
         'price_type' => e.event.price_type,
         'has_passes' => has_passes?(e.event)
@@ -250,9 +247,9 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
             'price_type' => e.event.price_type,
             'event_type' => e.event_type,
             'additional_media' => e.event.event_attachments,
-            'location' => insert_space_after_comma(e.location),
-            'lat' => e.lat,
-            'lng' => e.lng,
+           'location' => eval(e.location)["city"] + ", " + eval(e.location)["country"],
+           'lat' => eval(e.location)["geometry"]["lat"],
+           'lng' => eval(e.location)["geometry"]["lng"],
             'image' => e.image,
             'is_interested' => is_interested?(e),
             'is_going' => is_attending?(e),

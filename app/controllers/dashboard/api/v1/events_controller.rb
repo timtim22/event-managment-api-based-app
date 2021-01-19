@@ -31,19 +31,11 @@
    e = Event.find(params[:id])
    sponsors = []
    additional_media = []
-   # location = {
-   #   "name" => e.location,
-   #   "geometry" => {
-   #     "lat" => e.lat,
-   #     'lng' => e.lng
-   #   }
-   # }
 
    admission_resources = {
      "ticketes" => e.tickets,
      "passes" => e.passes
    }
-
    if !e.sponsors.blank?
      e.sponsors.each do |sponsor|
      sponsors << {
@@ -72,7 +64,7 @@
      'start_time' => e.start_time,
      'end_time' => e.end_time,
      'image' => e.image.url,
-     'location' => e.location,
+     'location' => eval(e.location),
      'description' => e.description,
      'categories' => e.categories,
      "allow_chat" => e.allow_chat,
@@ -378,9 +370,7 @@
             terms_conditions: params[:terms_conditions],
             allow_chat: params[:allow_chat],
             event_forwarding: params[:event_forwarding],
-            location: params[:location][:name],
-            lat: params[:location][:geometry][:lat],
-            lng: params[:location][:geometry][:lng],
+            location: params[:location],
             event_type: params[:event_type],
             price_type: params[:price_type],
             price: params[:price]
@@ -599,11 +589,8 @@
     @event.description = params[:description]
     @event.allow_chat = params[:allow_chat]
     @event.event_forwarding = params[:event_forwarding]
-    if !params[:location].blank?
-    @event.location = params[:location][:name]
-    @event.lat = params[:location][:geometry][:lat]
-    @event.lng = params[:location][:geometry][:lng]
-    end
+    
+    @event.location = params[:location]
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
@@ -632,9 +619,7 @@
               terms_conditions: params[:terms_conditions],
               allow_chat: params[:allow_chat],
               event_forwarding: params[:event_forwarding],
-              location: params[:location][:name],
-              lat: params[:location][:geometry][:lat],
-              lng: params[:location][:geometry][:lng],
+              location: params[:location],
               event_type: params[:event_type],
               price_type: params[:price_type],
               price: params[:price]
@@ -653,9 +638,7 @@
               terms_conditions: params[:terms_conditions],
               allow_chat: params[:allow_chat],
               event_forwarding: params[:event_forwarding],
-              location: params[:location][:name],
-              lat: params[:location][:geometry][:lat],
-              lng: params[:location][:geometry][:lng],
+              location: params[:location],
               event_type: params[:event_type],
               price_type: params[:price_type],
               price: params[:price]
