@@ -55,7 +55,9 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         'start_time' => e.start_time,
         'end_time' => e.end_time,
         'image' => e.image,
-        'location' => e.location,
+           'location' => eval(e.location)["city"] + ", " + eval(e.location)["country"],
+           'lat' => eval(e.location)["geometry"]["lat"],
+           'lng' => eval(e.location)["geometry"]["lng"],
         'price' => get_price(e.event),
         'price_type' => e.event.price_type,
         'has_passes' => has_passes?(e.event)
