@@ -138,7 +138,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "event_name": notification.resource.child_event.name,
             "event_id": notification.resource.child_event.id,
             "event_start_date": notification.resource.child_event.start_date,
-            "event_location": notification.resource.child_event.location,
+            "event_location": eval(notification.resource.child_event.location)["city"] + ", " + eval(notification.resource.child_event.location)["country"],
             "actor_id": notification.actor_id,
             "actor_image": notification.actor.avatar,
             "notifiable_id": notification.notifiable_id,
