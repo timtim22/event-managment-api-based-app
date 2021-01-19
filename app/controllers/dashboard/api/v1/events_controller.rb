@@ -31,13 +31,13 @@
    e = Event.find(params[:id])
    sponsors = []
    additional_media = []
-   location = {
-     "name" => e.location,
-     "geometry" => {
-       "lat" => e.lat,
-       'lng' => e.lng
-     }
-   }
+   # location = {
+   #   "name" => e.location,
+   #   "geometry" => {
+   #     "lat" => e.lat,
+   #     'lng' => e.lng
+   #   }
+   # }
 
    admission_resources = {
      "ticketes" => e.tickets,
@@ -72,7 +72,7 @@
      'start_time' => e.start_time,
      'end_time' => e.end_time,
      'image' => e.image.url,
-     'location' => location,
+     'location' => e.location,
      'description' => e.description,
      'categories' => e.categories,
      "allow_chat" => e.allow_chat,
@@ -350,11 +350,7 @@
     @event.description = params[:description]
     @event.allow_chat = params[:allow_chat]
     @event.event_forwarding = params[:event_forwarding]
-    if !params[:location].blank?
-    @event.location = params[:location][:name]
-    @event.lat = params[:location][:geometry][:lat]
-    @event.lng = params[:location][:geometry][:lng]
-    end
+    @event.location = params[:location]
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
@@ -457,7 +453,7 @@
           success: true,
           message: 'Event successfully created.',
           data: {
-             event: get_event_object(@event)
+             event: (@event)
           }
         }
       else
@@ -904,6 +900,11 @@ end
 
   private
 
+ def get_date_time(date, time)
+    d = date.strftime("%Y-%b-%d")
+    t = time.strftime("%H-%M-%S")
+    datetime = d + " " + t
+ end
 
 
   def setCategories

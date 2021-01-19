@@ -52,7 +52,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "competition_name": notification.resource.title,
             "business_name": User.get_full_name(notification.resource.user),
             "draw_date": notification.resource.validity.strftime(get_time_format),
-            "is_added_to_wallet": added_to_wallet?(request_user, notification.resource)
+            "is_added_to_wallet": added_to_wallet?(request_user, notification.resource.offer)
 
           }
         when "create_offer"
@@ -70,7 +70,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "location": location,
             "created_at": notification.created_at,
             "is_read": !notification.read_at.nil?,
-            "is_added_to_wallet": added_to_wallet?(request_user, notification.resource)
+            "is_added_to_wallet": added_to_wallet?(request_user, notification.resource.offer)
           }
 
         # when "update_special_offer"
@@ -107,7 +107,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "location": location,
             "created_at": notification.created_at,
             "is_read": !notification.read_at.nil?,
-          "is_added_to_wallet": added_to_wallet?(request_user, notification.resource)
+          "is_added_to_wallet": added_to_wallet?(request_user, notification.resource.offer)
 
           }
         when "create_interest"
@@ -210,7 +210,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "action_type": notification.action_type,
           "created_at": notification.created_at,
           "is_read": !notification.read_at.nil?,
-          "is_added_to_wallet": added_to_wallet?(request_user, notification.resource)
+          "is_added_to_wallet": added_to_wallet?(request_user, notification.resource.offer)
         }
 
         when "add_Pass_to_wallet"
@@ -230,7 +230,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "action_type": notification.action_type,
             "created_at": notification.created_at,
             "is_read": !notification.read_at.nil?,
-            "is_added_to_wallet": added_to_wallet?(request_user, notification.resource)
+            "is_added_to_wallet": added_to_wallet?(request_user, notification.resource.offer)
           }
 
         when "add_SpecialOffer_to_wallet"
@@ -298,8 +298,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "action": notification.action,
           "action_type": notification.action_type,
           "created_at": notification.created_at,
-          "is_read": !notification.read_at.nil?,
-          "is_added_to_wallet": added_to_wallet?(request_user,notification.resource.event)
+          "is_read": !notification.read_at.nil?
         }
 
       when "ask_location"

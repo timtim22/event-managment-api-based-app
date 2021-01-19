@@ -199,54 +199,6 @@ end
     }
   end
 
-#   def accept_request
-#      fr = Follow.where(user_id: params[:user_id]).where(following_id: request_user.id).first
-#      if fr.update(:status => true)
-#       fr.follow_request.destroy
-#       if @notification = Notification.create(recipient: fr.follower, actor: request_user, action: get_full_name(request_user) + " accepted your follow request", notifiable: fr, url: '/admin/follow-requests', notification_type: 'mobile')
-#         @pubnub = Pubnub.new(
-#         publish_key: ENV['PUBLISH_KEY'],
-#         subscribe_key: ENV['SUBSCRIBE_KEY']
-#         )
-
-#         @current_push_token = @pubnub.add_channels_to_push(
-#           push_token: fr.follower.profile.device_token,
-#           type: 'gcm',
-#           add: fr.follower.profile.device_token
-#           ).value
-
-#         payload = {
-#         "pn_gcm":{
-#           "notification":{
-#             "title": @notification.action
-#           },
-#           "type": @notification.notifiable_type
-#         }
-#       }
-
-#         @pubnub.publish(
-#          channel: [fr.follower.profile.device_token],
-#          message: payload
-#           ) do |envelope|
-#             puts envelope.status
-#         end
-#       end ##notification create
-#      render json: {
-#         code: 200,
-#         success:true,
-#         message: "Accepted successfully.",
-#         data: nil
-#       }
-#      else
-#        render json: {
-#         code: 400,
-#         success:false,
-#         message: "Accept failed.",
-#         data: nil
-#        }
-#       end
-# end # func
-
   api :GET, '/api/v1/event/follow/requests', 'Get follow requests list - Token is required'
    def requests_list
      follow_requests = request_user.follow_requests

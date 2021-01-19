@@ -11,7 +11,7 @@ RSpec.describe Api::V1::PaymentsController, type: :controller do
     end
 
     it "should purchase ticket" do
-      post :purchase_ticket, params: {ticket_id: Ticket.last.id, ticket_type: Ticket.last.ticket_type, quantity: 1}
+      post :purchase_ticket, params: {ticket_id: Ticket.last.id, ticket_type: Ticket.last.ticket_type, quantity: 1, event_id: Event.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end

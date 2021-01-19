@@ -424,7 +424,7 @@ class ApplicationController < ActionController::Base
       "description" => event.description,
       "terms_conditions" => event.terms_conditions,
       "categories" => event.categories,
-      "location" => location,
+      "location" => event.location,
       "admission_resources" => admission_resources,
       "event_attachments" => event.event_attachments,
       "sponsors" => event.sponsors,

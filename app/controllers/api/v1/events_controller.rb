@@ -232,54 +232,6 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 		@event = Event.new
 	end
 
-  # def create
-  #   @event = Event.new(event_params)
-  #   # Notify all mygo user about event creation
-  #   @pubnub = Pubnub.new(
-  #     publish_key: ENV['PUBLISH_KEY'],
-  #     subscribe_key: ENV['SUBSCRIBE_KEY']
-  #   )
-  #   (User.all - [request_user]).each do |user|
-
-  #     if @notification = Notification.create(recipient: user, actor: request_user, action: get_full_name(request_user) + " posted a new event.", notifiable: @event, resource: @event, url: '/admin/events', notification_type: 'web')
-  #       @current_push_token = @pubnub.add_channels_to_push(
-  #         push_token: user.profile.device_token,
-  #         type: 'gcm',
-  #         add: user.profile.device_token
-  #         ).value
-
-  #       payload = {
-  #       "pn_gcm":{
-  #         "notification":{
-  #           "title": @notification.action,
-  #         },
-  #         "type": @notification.notifiable_type,
-  #         "event_id": @event.id
-  #       }
-  #     }
-
-  #       @pubnub.publish(
-  #        channel: [user.profile.device_token],
-  #        message: payload
-  #         ) do |envelope|
-  #           puts envelope.status
-  #       end
-  #     end ##notification create
-  #   end #each
-	# 	if @event.save
-	# 		render json: {
-	# 			status: true,
-	# 			message: "Event successfully created."
-	# 		}
-
-	# 	else
-	# 	    render json: {
-	# 	    	status: false,
-	# 	    	message: @event.errors.full_messages
-	# 	    }
-	# 	end
-  # end
-
   api :POST, '/api/v1/event/report-event', 'To repot an event'
   param :event_id, :number, :desc => "Event ID", :required => true
   param :reason, String, :desc => "Reason for reporting an event", :required => true
