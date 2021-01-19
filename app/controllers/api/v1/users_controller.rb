@@ -354,7 +354,7 @@ end
        resource['id'] = log.resource_id
        resource['name'] = log.resource.name
        resource['host_name'] = get_full_name(log.resource.user)
-       resource['location'] = log.resource.location
+       resource['location'] = eval(log.resource.location)["city"] + ", " + eval(log.resource.location)["country"]
        resource['start_date'] = log.resource.start_date
        resource['interested_people_count'] = log.resource.interest_levels.size
 
@@ -374,21 +374,21 @@ end
       when 'Pass'
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
-        resource['location'] = log.resource.event.location
+        resource['location'] = eval(log.resource.location)["city"] + ", " + eval(log.resource.location)["country"]
         resource['start_date'] = log.resource.event.start_date
         resource['grabbers_counts'] = log.resource.wallets.size
 
       when 'SpecialOffer'
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
-        resource['location'] = log.resource.location
+        resource['location'] = eval(log.resource.location)["city"] + ", " + eval(log.resource.location)["country"]
         resource['start_date'] = log.resource.date
         resource['grabbers_counts'] = log.resource.wallets.size
 
       when 'Competition'
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
-        resource['location'] = log.resource.location
+        resource['location'] = eval(log.resource.location)["city"] + ", " + eval(log.resource.location)["country"]
         resource['validity'] = log.resource.validity_time
 
       when 'OfferForwarding'
