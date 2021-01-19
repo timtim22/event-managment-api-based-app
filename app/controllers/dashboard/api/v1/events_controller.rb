@@ -31,13 +31,13 @@
    e = Event.find(params[:id])
    sponsors = []
    additional_media = []
-   # location = {
-   #   "name" => e.location,
-   #   "geometry" => {
-   #     "lat" => e.lat,
-   #     'lng' => e.lng
-   #   }
-   # }
+   location = {
+     "name" => e.location,
+     "geometry" => {
+       "lat" => e.lat,
+       'lng' => e.lng
+     }
+   }
 
    admission_resources = {
      "ticketes" => e.tickets,
@@ -72,7 +72,7 @@
      'start_time' => e.start_time,
      'end_time' => e.end_time,
      'image' => e.image.url,
-     'location' => e.location,
+     'location' => location,
      'description' => e.description,
      'categories' => e.categories,
      "allow_chat" => e.allow_chat,
@@ -352,6 +352,8 @@
     @event.event_forwarding = params[:event_forwarding]
     if !params[:location].blank?
     @event.location = params[:location][:name]
+    @event.location = params[:location][:city]
+    @event.location = params[:location][:country]
     @event.lat = params[:location][:geometry][:lat]
     @event.lng = params[:location][:geometry][:lng]
     end
@@ -457,7 +459,7 @@
           success: true,
           message: 'Event successfully created.',
           data: {
-             event: get_event_object(@event)
+             event: (@event)
           }
         }
       else
@@ -605,6 +607,8 @@
     @event.event_forwarding = params[:event_forwarding]
     if !params[:location].blank?
     @event.location = params[:location][:name]
+    @event.location = params[:location][:city]
+    @event.location = params[:location][:country]
     @event.lat = params[:location][:geometry][:lat]
     @event.lng = params[:location][:geometry][:lng]
     end
