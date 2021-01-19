@@ -300,13 +300,13 @@ class ApplicationController < ActionController::Base
 
 
   def get_event_object(event)
-     location = {
-       "name" => event.location,
-       "geometry" => {
-          "lat" => event.lat,
-          "lng" => event.lng
-       }
-     }
+     # location = {
+     #   "name" => event.location,
+     #   "geometry" => {
+     #      "lat" => event.lat,
+     #      "lng" => event.lng
+     #   }
+     # }
 
      admission_resources = []
      #free tickets
@@ -417,7 +417,7 @@ class ApplicationController < ActionController::Base
       "description" => event.description,
       "terms_conditions" => event.terms_conditions,
       "categories" => event.categories,
-      "location" => location,
+      "location" => event.location,
       "admission_resources" => admission_resources,
       "event_attachments" => event.event_attachments,
       "sponsors" => event.sponsors,

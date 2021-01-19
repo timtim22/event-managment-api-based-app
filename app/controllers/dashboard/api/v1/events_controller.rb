@@ -31,13 +31,13 @@
    e = Event.find(params[:id])
    sponsors = []
    additional_media = []
-   location = {
-     "name" => e.location,
-     "geometry" => {
-       "lat" => e.lat,
-       'lng' => e.lng
-     }
-   }
+   # location = {
+   #   "name" => e.location,
+   #   "geometry" => {
+   #     "lat" => e.lat,
+   #     'lng' => e.lng
+   #   }
+   # }
 
    admission_resources = {
      "ticketes" => e.tickets,
@@ -72,7 +72,7 @@
      'start_time' => e.start_time,
      'end_time' => e.end_time,
      'image' => e.image.url,
-     'location' => location,
+     'location' => e.location,
      'description' => e.description,
      'categories' => e.categories,
      "allow_chat" => e.allow_chat,
