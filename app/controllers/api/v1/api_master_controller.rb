@@ -277,7 +277,6 @@ class Api::V1::ApiMasterController < ApplicationController
 
 
    def create_impression
-
     
     if params[:resource_id].present? && params[:resource_type].present?
        resource = params[:resource_type].constantize

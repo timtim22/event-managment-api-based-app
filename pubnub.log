@@ -325,3 +325,187 @@ D, [2021-01-18T16:54:33.340053 #4387] DEBUG -- Pubnub::Event: #send_request got 
 D, [2021-01-18T16:54:33.341622 #4387] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/Secret%40123/0/%7B%22pn_gcm%22%3A%7B%22notification%22%3A%7B%22title%22%3A%22Ticket%20you%20just%20purchased%20has%20been%20added%20to%20your%20wallet.%22%7D%2C%22data%22%3A%7B%22id%22%3A1%2C%22actor_id%22%3A1%2C%22actor_image%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F1%2F6ce207e2-0509-4cbd-bfa7-3daf571f0ae5.png%22%7D%2C%22notifiable_id%22%3A452%2C%22notifiable_type%22%3A%22Ticket%22%2C%22action%22%3A%22Ticket%20you%20just%20purchased%20has%20been%20added%20to%20your%20wallet.%22%2C%22action_type%22%3A%22add_to_wallet%22%2C%22created_at%22%3A%222021-01-18T11%3A54%3A33.101Z%22%2C%22body%22%3A%22%22%7D%7D%7D?ortt=%7B%22t%22%3A16109708733330428%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=8151778a-8ad5-48fb-a860-544be4318022
 D, [2021-01-18T17:01:17.610222 #4556] DEBUG -- Pubnub::Telementry: Initialized Telemetry
 D, [2021-01-18T17:01:17.610443 #4556] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-19T13:22:00.756151 #11116] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-19T13:22:00.756448 #11116] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-19T13:22:00.876951 #11116] DEBUG -- Pubnub::Telemetry: Fetching telemetry for 
+D, [2021-01-19T13:22:00.878420 #11116] DEBUG -- Pubnub::Event: Initialized Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:00.879483 #11116] DEBUG -- Pubnub::Event: Fired event Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:00.879625 #11116] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-19T13:22:00.879672 #11116] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-19T13:22:00.879728 #11116] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-19T13:22:00.883414 #11116] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-19T13:22:00.883808 #11116] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/v1/push/sub-key/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/devices/d9pSBdPfuUz6lQHvwOCzmi:APA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz?add=d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz&pnsdk=PubNub-Ruby%2F4.2.7&push_token=d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz&type=gcm&uuid=0a060ae0-7616-48a1-9004-b36de2672790
+D, [2021-01-19T13:22:01.037604 #11116] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-19T13:22:01.038561 #11116] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:01.043855 #11116] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-19T13:22:01.044398 #11116] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-19T13:22:01.060361 #11116] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-19T13:22:01.060747 #11116] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-19T13:22:01.093643 #11116] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-19T13:22:01.095224 #11116] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-19T13:22:01.097523 #11116] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-19T13:22:01.101380 #11116] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz/0/%7B%22pn_gcm%22%3A%7B%22notification%22%3A%7B%22title%22%3A%22taimoor%22%2C%22body%22%3A%22taimoor%20has%20approved%20you%20as%20an%20ambassador.%22%7D%2C%22data%22%3A%7B%22id%22%3A47%2C%22business_name%22%3A%22taimoor%22%2C%22actor_image%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F16%2Fcc8a9785-fd97-4b72-a987-1116a13f7d13.png%22%7D%2C%22notifiable_id%22%3A6%2C%22notifiable_type%22%3A%22AmbassadorRequest%22%2C%22action%22%3A%22taimoor%20has%20approved%20you%20as%20an%20ambassador.%22%2C%22action_type%22%3A%22become_ambassador%22%2C%22created_at%22%3A%222021-01-19T08%3A22%3A00.869Z%22%2C%22is_read%22%3Afalse%2C%22location%22%3Anull%7D%7D%7D?ortt=%7B%22t%22%3A16110445210446156%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=0a060ae0-7616-48a1-9004-b36de2672790
+D, [2021-01-19T13:22:01.115373 #11116] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-19T13:22:01.115563 #11116] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-19T13:22:01.141451 #11116] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-19T13:22:01.141804 #11116] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-19T13:22:01.143547 #11116] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-19T13:22:01.146955 #11116] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-19T13:22:01.150464 #11116] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-19T13:22:01.150816 #11116] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-19T13:22:01.152837 #11116] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-19T13:22:01.155226 #11116] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/16/0/%7B%22action%22%3A%22landline%20kokomo%20sent%20you%20ambassador%20request%22%2C%22avatar%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F12%2Fba89c6da-70bb-4e81-8ec3-c7f8ad2311f6.png%22%7D%2C%22time%22%3A%22less%20than%20a%20minute%22%2C%22notification_url%22%3A%22%2Fadmin%2Fambassadors%22%7D?ortt=%7B%22t%22%3A16110445211418860%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=e901dc10-8164-4dca-b6dd-c234410c9062
+D, [2021-01-19T13:22:01.186046 #11116] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-19T13:22:01.190637 #11116] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::Publish
+D, [2021-01-19T13:22:01.346173 #11116] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-19T13:22:01.348070 #11116] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::Publish
+D, [2021-01-19T13:22:02.324219 #11116] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-19T13:22:02.324391 #11116] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-19T13:22:02.387487 #11116] DEBUG -- Pubnub::Telemetry: Fetching telemetry for 
+D, [2021-01-19T13:22:02.387902 #11116] DEBUG -- Pubnub::Event: Initialized Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:02.388399 #11116] DEBUG -- Pubnub::Event: Fired event Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:02.388515 #11116] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-19T13:22:02.388560 #11116] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-19T13:22:02.388614 #11116] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-19T13:22:02.388998 #11116] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-19T13:22:02.389289 #11116] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/v1/push/sub-key/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/devices/d9pSBdPfuUz6lQHvwOCzmi:APA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz?add=d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz&pnsdk=PubNub-Ruby%2F4.2.7&push_token=d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz&type=gcm&uuid=467c0deb-6e45-4a75-8b6a-7511af3a1a2c
+D, [2021-01-19T13:22:02.527480 #11116] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-19T13:22:02.527950 #11116] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:02.560728 #11116] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-19T13:22:02.560978 #11116] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-19T13:22:02.562933 #11116] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-19T13:22:02.565691 #11116] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-19T13:22:02.568442 #11116] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-19T13:22:02.569715 #11116] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-19T13:22:02.572237 #11116] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-19T13:22:02.575242 #11116] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz/0/%7B%22pn_gcm%22%3A%7B%22notification%22%3A%7B%22title%22%3A%22landline%20kokomo%22%2C%22body%22%3A%22foo%22%7D%2C%22data%22%3A%7B%22id%22%3A3%2C%22actor_id%22%3A12%2C%22actor_image%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F12%2Fba89c6da-70bb-4e81-8ec3-c7f8ad2311f6.png%22%7D%2C%22sender_name%22%3A%22landline%20kokomo%22%2C%22notifiable_id%22%3A%22%22%2C%22notifiable_type%22%3A%22chat%22%2C%22action%22%3A%22%22%2C%22action_type%22%3A%22chat%22%2C%22created_at%22%3A%222021-01-19T08%3A22%3A02.384Z%22%2C%22body%22%3A%22foo%22%2C%22last_message%22%3A%7B%22id%22%3A3%2C%22recipient_id%22%3A2%2C%22message%22%3A%22foo%22%2C%22read_at%22%3Anull%2C%22user_id%22%3A12%2C%22created_at%22%3A%222021-01-19T08%3A22%3A02.384Z%22%2C%22updated_at%22%3A%222021-01-19T08%3A22%3A02.384Z%22%2C%22from%22%3A%22landline%20kokomo%22%2C%22user_avatar%22%3A%22%2Fuploads%2Fuser%2Favatar%2F12%2Fba89c6da-70bb-4e81-8ec3-c7f8ad2311f6.png%22%7D%7D%7D%7D?ortt=%7B%22t%22%3A16110445225610380%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=467c0deb-6e45-4a75-8b6a-7511af3a1a2c
+D, [2021-01-19T13:22:02.654165 #11116] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-19T13:22:02.659020 #11116] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::Publish
+D, [2021-01-19T13:22:02.769304 #11116] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-19T13:22:02.769537 #11116] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-19T13:22:02.965071 #11116] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-19T13:22:02.965288 #11116] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-19T13:22:02.982956 #11116] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-19T13:22:02.983340 #11116] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-19T13:22:02.985047 #11116] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-19T13:22:02.988162 #11116] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-19T13:22:02.989750 #11116] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-19T13:22:02.991732 #11116] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-19T13:22:02.993022 #11116] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-19T13:22:02.995266 #11116] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/15/0/%7B%22action%22%3A%22landline%20kokomo%20is%20interested%20in%20your%20competition%20%27Running%20Competition%27.%22%2C%22avatar%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F12%2Fba89c6da-70bb-4e81-8ec3-c7f8ad2311f6.png%22%7D%2C%22time%22%3A%22less%20than%20a%20minute%22%2C%22notification_url%22%3A%22%2Fadmin%2Fcompetitions%2F25%22%7D?ortt=%7B%22t%22%3A16110445229835094%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=b563bcf6-5dea-4197-8c83-80f943c897a0
+D, [2021-01-19T13:22:03.157004 #11116] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-19T13:22:03.159135 #11116] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::Publish
+D, [2021-01-19T13:22:03.539533 #11116] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-19T13:22:03.539691 #11116] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-19T13:22:03.565451 #11116] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-19T13:22:03.565629 #11116] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-19T13:22:03.607791 #11116] DEBUG -- Pubnub::Telemetry: Fetching telemetry for 
+D, [2021-01-19T13:22:03.608173 #11116] DEBUG -- Pubnub::Event: Initialized Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:03.608574 #11116] DEBUG -- Pubnub::Event: Fired event Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:03.608740 #11116] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-19T13:22:03.608787 #11116] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-19T13:22:03.608840 #11116] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-19T13:22:03.609276 #11116] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-19T13:22:03.609622 #11116] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/v1/push/sub-key/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/devices/d9pSBdPfuUz6lQHvwOCzmi:APA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz?add=d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz&pnsdk=PubNub-Ruby%2F4.2.7&push_token=d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz&type=gcm&uuid=19ad22e8-a0df-4c59-a1e2-434244fd63dd
+D, [2021-01-19T13:22:03.752781 #11116] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-19T13:22:03.753499 #11116] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:03.769559 #11116] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-19T13:22:03.770049 #11116] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-19T13:22:03.771460 #11116] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-19T13:22:03.773350 #11116] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-19T13:22:03.774157 #11116] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-19T13:22:03.775651 #11116] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-19T13:22:03.778300 #11116] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-19T13:22:03.782011 #11116] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz/0/%7B%22pn_gcm%22%3A%7B%22notification%22%3A%7B%22title%22%3A%22landline%20kokomo%22%2C%22body%22%3A%22landline%20kokomo%20has%20shared%20with%20you%20a%20Competition%20Kamran%20test%20compet%22%7D%2C%22data%22%3A%7B%22id%22%3A47%2C%22competition_id%22%3A24%2C%22competition_name%22%3A%22Kamran%20test%20compet%22%2C%22friend_name%22%3A%22landline%20kokomo%22%2C%22actor_image%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F12%2Fba89c6da-70bb-4e81-8ec3-c7f8ad2311f6.png%22%7D%2C%22business_name%22%3A%22Mygo%20Islambad%22%2C%22notifiable_id%22%3A24%2C%22notifiable_type%22%3A%22Competition%22%2C%22action%22%3A%22landline%20kokomo%20has%20shared%20with%20you%20a%20Competition%20Kamran%20test%20compet%22%2C%22action_type%22%3A%22competition_shared%22%2C%22created_at%22%3A%222021-01-19T08%3A22%3A03.602Z%22%2C%22is_read%22%3Afalse%7D%7D%7D?ortt=%7B%22t%22%3A16110445237702206%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=19ad22e8-a0df-4c59-a1e2-434244fd63dd
+D, [2021-01-19T13:22:03.878019 #11116] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-19T13:22:03.879890 #11116] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::Publish
+D, [2021-01-19T13:22:03.922159 #11116] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-19T13:22:03.922326 #11116] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-19T13:22:03.924915 #11116] DEBUG -- Pubnub::Telemetry: Fetching telemetry for 
+D, [2021-01-19T13:22:03.925276 #11116] DEBUG -- Pubnub::Event: Initialized Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:03.925686 #11116] DEBUG -- Pubnub::Event: Fired event Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:03.925832 #11116] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-19T13:22:03.925898 #11116] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-19T13:22:03.925969 #11116] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-19T13:22:03.926415 #11116] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-19T13:22:03.926815 #11116] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/v1/push/sub-key/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/devices/d9pSBdPfuUz6lQHvwOCzmi:APA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz?add=d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz&pnsdk=PubNub-Ruby%2F4.2.7&push_token=d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz&type=gcm&uuid=cdb6b03a-6792-4433-9d14-f7265e99b7d6
+D, [2021-01-19T13:22:04.062629 #11116] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-19T13:22:04.063461 #11116] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:04.078009 #11116] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-19T13:22:04.078616 #11116] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-19T13:22:04.080383 #11116] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-19T13:22:04.080719 #11116] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-19T13:22:04.083452 #11116] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-19T13:22:04.085268 #11116] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-19T13:22:04.089328 #11116] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-19T13:22:04.094552 #11116] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz/0/%7B%22pn_gcm%22%3A%7B%22notification%22%3A%7B%22title%22%3A%22john%20doe%22%2C%22body%22%3A%22landline%20kokomo%20sent%20you%20a%20friend%20request%22%7D%2C%22data%22%3A%7B%22id%22%3A47%2C%22friend_name%22%3A%22landline%20kokomo%22%2C%22friend_id%22%3A12%2C%22request_id%22%3A3%2C%22mutual_friends_count%22%3A0%2C%22actor_image%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F12%2Fba89c6da-70bb-4e81-8ec3-c7f8ad2311f6.png%22%7D%2C%22notifiable_id%22%3A3%2C%22notifiable_type%22%3A%22FriendRequest%22%2C%22action%22%3A%22landline%20kokomo%20sent%20you%20a%20friend%20request%22%2C%22action_type%22%3A%22send_request%22%2C%22created_at%22%3A%222021-01-19T08%3A22%3A03.918Z%22%2C%22is_read%22%3Afalse%7D%7D%7D?ortt=%7B%22t%22%3A16110445240788490%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=cdb6b03a-6792-4433-9d14-f7265e99b7d6
+D, [2021-01-19T13:22:04.126967 #11116] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-19T13:22:04.127152 #11116] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-19T13:22:04.130861 #11116] DEBUG -- Pubnub::Telemetry: Fetching telemetry for 
+D, [2021-01-19T13:22:04.131573 #11116] DEBUG -- Pubnub::Event: Initialized Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:04.132187 #11116] DEBUG -- Pubnub::Event: Fired event Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:04.132355 #11116] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-19T13:22:04.132429 #11116] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-19T13:22:04.132497 #11116] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-19T13:22:04.133086 #11116] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-19T13:22:04.133683 #11116] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/v1/push/sub-key/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/devices/d9pSBdPfuUz6lQHvwOCzmi:APA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz?add=d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz&pnsdk=PubNub-Ruby%2F4.2.7&push_token=d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz&type=gcm&uuid=b05da764-aa88-49f3-90be-88e1ce066097
+D, [2021-01-19T13:22:04.166700 #11116] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-19T13:22:04.167428 #11116] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::Publish
+D, [2021-01-19T13:22:04.263272 #11116] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-19T13:22:04.263798 #11116] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:04.274605 #11116] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-19T13:22:04.274948 #11116] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-19T13:22:04.276564 #11116] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-19T13:22:04.278310 #11116] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-19T13:22:04.279180 #11116] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-19T13:22:04.280301 #11116] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-19T13:22:04.283410 #11116] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-19T13:22:04.286724 #11116] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz/0/%7B%22pn_gcm%22%3A%7B%22notification%22%3A%7B%22title%22%3A%22john%20doe%22%2C%22body%22%3A%22landline%20kokomo%20sent%20you%20a%20friend%20request%22%7D%2C%22data%22%3A%7B%22id%22%3A47%2C%22friend_name%22%3A%22landline%20kokomo%22%2C%22friend_id%22%3A12%2C%22request_id%22%3A3%2C%22mutual_friends_count%22%3A0%2C%22actor_image%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F12%2Fba89c6da-70bb-4e81-8ec3-c7f8ad2311f6.png%22%7D%2C%22notifiable_id%22%3A3%2C%22notifiable_type%22%3A%22FriendRequest%22%2C%22action%22%3A%22landline%20kokomo%20sent%20you%20a%20friend%20request%22%2C%22action_type%22%3A%22send_request%22%2C%22created_at%22%3A%222021-01-19T08%3A22%3A04.123Z%22%2C%22is_read%22%3Afalse%7D%7D%7D?ortt=%7B%22t%22%3A16110445242751116%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=b05da764-aa88-49f3-90be-88e1ce066097
+D, [2021-01-19T13:22:04.375201 #11116] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-19T13:22:04.376173 #11116] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::Publish
+D, [2021-01-19T13:22:04.389046 #11116] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-19T13:22:04.389278 #11116] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-19T13:22:04.392067 #11116] DEBUG -- Pubnub::Telemetry: Fetching telemetry for 
+D, [2021-01-19T13:22:04.392416 #11116] DEBUG -- Pubnub::Event: Initialized Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:04.392934 #11116] DEBUG -- Pubnub::Event: Fired event Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:04.393054 #11116] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-19T13:22:04.393101 #11116] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-19T13:22:04.393154 #11116] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-19T13:22:04.393513 #11116] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-19T13:22:04.393871 #11116] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/v1/push/sub-key/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/devices/d9pSBdPfuUz6lQHvwOCzmi:APA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz?add=d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz&pnsdk=PubNub-Ruby%2F4.2.7&push_token=d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz&type=gcm&uuid=328c2870-e540-42d5-8b5f-54d9b4a5dfaf
+D, [2021-01-19T13:22:04.520832 #11116] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-19T13:22:04.521344 #11116] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:04.540290 #11116] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-19T13:22:04.540704 #11116] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-19T13:22:04.542808 #11116] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-19T13:22:04.545403 #11116] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-19T13:22:04.547633 #11116] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-19T13:22:04.549410 #11116] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-19T13:22:04.550964 #11116] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-19T13:22:04.552461 #11116] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz/0/%7B%22pn_gcm%22%3A%7B%22notification%22%3A%7B%22title%22%3A%22landline%20kokomo%22%2C%22body%22%3A%22landline%20kokomo%20accepted%20your%20friend%20request%22%7D%2C%22data%22%3A%7B%22id%22%3A47%2C%22friend_name%22%3A%22landline%20kokomo%22%2C%22friend_id%22%3A12%2C%22mutual_friends_count%22%3A1%2C%22actor_image%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F12%2Fba89c6da-70bb-4e81-8ec3-c7f8ad2311f6.png%22%7D%2C%22notifiable_id%22%3A2%2C%22notifiable_type%22%3A%22FriendRequest%22%2C%22action%22%3A%22landline%20kokomo%20accepted%20your%20friend%20request%22%2C%22action_type%22%3A%22accept_request%22%2C%22created_at%22%3A%222021-01-19T08%3A22%3A04.385Z%22%2C%22is_read%22%3Afalse%7D%7D%7D?ortt=%7B%22t%22%3A16110445245408876%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=328c2870-e540-42d5-8b5f-54d9b4a5dfaf
+D, [2021-01-19T13:22:04.634408 #11116] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-19T13:22:04.636857 #11116] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::Publish
+D, [2021-01-19T13:22:04.983772 #11116] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-19T13:22:04.984007 #11116] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-19T13:22:05.014641 #11116] DEBUG -- Pubnub::Telemetry: Fetching telemetry for 
+D, [2021-01-19T13:22:05.014915 #11116] DEBUG -- Pubnub::Event: Initialized Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:05.015128 #11116] DEBUG -- Pubnub::Event: Fired event Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:05.015178 #11116] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-19T13:22:05.015222 #11116] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-19T13:22:05.015272 #11116] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-19T13:22:05.015610 #11116] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-19T13:22:05.015915 #11116] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/v1/push/sub-key/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/devices/d9pSBdPfuUz6lQHvwOCzmi:APA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz?add=d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz&pnsdk=PubNub-Ruby%2F4.2.7&push_token=d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz&type=gcm&uuid=58e24e11-b538-491d-a98e-9e81c6975eda
+D, [2021-01-19T13:22:05.172567 #11116] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-19T13:22:05.173345 #11116] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::AddChannelsToPush
+D, [2021-01-19T13:22:05.185282 #11116] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-19T13:22:05.185860 #11116] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-19T13:22:05.187542 #11116] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-19T13:22:05.189528 #11116] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-19T13:22:05.190189 #11116] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-19T13:22:05.191688 #11116] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-19T13:22:05.195216 #11116] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-19T13:22:05.199338 #11116] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/d9pSBdPfuUz6lQHvwOCzmi%3AAPA91bHCExWp2TW4ww9TSb1gNguYgfcASA-_cNs9Y4O2UoFokOUzCnSDSUuNcPWdsLu5ive9aoKdUuJ_pu5di0dm3sZhLhAsZlI8F_6QtGnT0xTzQJB3QObq2lpazxcUtQPjuLSMCPlz/0/%7B%22pn_gcm%22%3A%7B%22notification%22%3A%7B%22title%22%3A%22landline%20kokomo%22%2C%22body%22%3A%22landline%20kokomo%20is%20asking%20for%20your%20current%20location.%22%7D%2C%22data%22%3A%7B%22id%22%3A47%2C%22friend_name%22%3A%22landline%20kokomo%22%2C%22friend_id%22%3A12%2C%22actor_image%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F12%2Fba89c6da-70bb-4e81-8ec3-c7f8ad2311f6.png%22%7D%2C%22notifiable_id%22%3A12%2C%22notifiable_type%22%3A%22User%22%2C%22action%22%3A%22landline%20kokomo%20is%20asking%20for%20your%20current%20location.%22%2C%22action_type%22%3A%22ask_location%22%2C%22created_at%22%3A%222021-01-19T08%3A22%3A04.995Z%22%2C%22is_read%22%3Afalse%7D%7D%7D?ortt=%7B%22t%22%3A16110445251860806%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=58e24e11-b538-491d-a98e-9e81c6975eda
+D, [2021-01-19T13:22:05.278179 #11116] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-19T13:22:05.281084 #11116] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::Publish
+D, [2021-01-19T13:22:08.931353 #11116] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-19T13:22:08.931552 #11116] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7

@@ -1,8 +1,6 @@
 class Api::V1::AnalyticsController < Api::V1::ApiMasterController
   before_action :authorize_request
 
-
-
   def get_event_stats
     if !params[:event_id].blank? && !params[:frequency].blank? && !params[:date].blank?
           valid_frequencies = ['daily', 'weekly','overall']
@@ -27,13 +25,13 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                 @current_time_slot_dates = generate_date_range(start_date, end_date)
                 @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
               when "weekly"
-                start_date = Date.parse(params[:date]) - 7.days
+                start_date = Date.parse(params[:date]).tomorrow - 7.days
                 start_date_to_string = start_date.to_s
                 end_date = params[:date]
                 @current_time_slot_dates = generate_date_range(start_date_to_string, end_date)
-                before_start_date = Date.parse(params[:date]) - 14.days
+                before_start_date = Date.parse(params[:date]).tomorrow - 14.days
                 before_start_date_to_string = before_start_date.to_s
-                before_end_date = Date.parse(params[:date]) - 7.days
+                before_end_date = Date.parse(params[:date]).tomorrow - 7.days
                 before_end_date_to_string = before_end_date.to_s
                 @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
               when  "overall"
@@ -1576,7 +1574,7 @@ def get_time_slot_event_paid_checked_in(time_slot_dates, event)
   @paid_checked_in = 0
   dates_array.each do |date|
      p_date = Date.parse(date)
-      paid_checked_in = event.tickets.where(ticket_type: 'buy').map {|t| ticket.redemptions.size }.sum
+      paid_checked_in = event.tickets.where(ticket_type: 'buy').map {|t| t.redemptions.size }.sum
      if !paid_checked_in.blank?
       @paid_checked_in += paid_checked_in
      end #if !blank?
@@ -1614,6 +1612,16 @@ def get_time_slot_movement(current_time_slot_dates, before_current_time_slot_dat
 
       movement_percent
     
+end
+
+
+def get_dates_from_range(date)
+  date = Date.parse(date)
+  tomorrow = date.tomorrow
+  start_date = tomorrow - 7.days
+  start_date_to_string = start_date.to_s
+  end_date = params[:date]
+  @current_time_slot_dates = generate_date_range(start_date_to_string, end_date)
 end
 
 
