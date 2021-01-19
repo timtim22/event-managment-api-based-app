@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_18_111114) do
+ActiveRecord::Schema.define(version: 2021_01_19_073355) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -117,7 +117,6 @@ ActiveRecord::Schema.define(version: 2021_01_18_111114) do
     t.string "name", default: ""
     t.datetime "start_date"
     t.datetime "end_date"
-    t.datetime "terms_conditions"
     t.datetime "start_time"
     t.datetime "end_time"
     t.text "description", default: ""
@@ -237,6 +236,8 @@ ActiveRecord::Schema.define(version: 2021_01_18_111114) do
     t.string "name", default: ""
     t.datetime "start_date"
     t.datetime "end_date"
+    t.datetime "start_time"
+    t.datetime "end_time"
     t.text "description", default: ""
     t.string "host", default: ""
     t.string "location", default: ""
@@ -267,10 +268,9 @@ ActiveRecord::Schema.define(version: 2021_01_18_111114) do
     t.string "status", default: "active"
     t.boolean "is_repetive", default: false
     t.string "frequency", default: "daily"
+    t.boolean "is_private", default: false
     t.integer "max_attendees", default: 1
     t.integer "quantity"
-    t.time "start_time"
-    t.time "end_time"
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
@@ -680,7 +680,7 @@ ActiveRecord::Schema.define(version: 2021_01_18_111114) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "location_enabled"
+    t.boolean "location_enabled", default: true
     t.boolean "is_subscribed"
   end
 
@@ -691,13 +691,12 @@ ActiveRecord::Schema.define(version: 2021_01_18_111114) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "business_id"
-    t.integer "child_event_id"
     t.index ["resource_id", "resource_type"], name: "index_views_on_resource_id_and_resource_type"
+    t.index ["user_id"], name: "index_views_on_competition_id_and_user_id"
+    t.index ["user_id"], name: "index_views_on_event_id_and_user_id"
+    t.index ["user_id"], name: "index_views_on_pass_id_and_user_id"
+    t.index ["user_id"], name: "index_views_on_special_offer_id_and_user_id"
     t.index ["user_id"], name: "index_views_on_user_id"
-    t.index [nil, "user_id"], name: "index_views_on_competition_id_and_user_id"
-    t.index [nil, "user_id"], name: "index_views_on_event_id_and_user_id"
-    t.index [nil, "user_id"], name: "index_views_on_pass_id_and_user_id"
-    t.index [nil, "user_id"], name: "index_views_on_special_offer_id_and_user_id"
   end
 
   create_table "vip_pass_shares", force: :cascade do |t|

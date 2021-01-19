@@ -177,6 +177,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
             event_name: pass.event.name,
             event_id: pass.event.id,
             event_image: pass.event.image,
+            pass_type: pass.pass_type,
             event_location: pass.event.location,
             event_start_time: get_date_time(pass.event.start_date, pass.event.start_time),
             event_end_time: get_date_time(pass.event.end_date, pass.event.end_time),

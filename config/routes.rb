@@ -53,8 +53,9 @@ Rails.application.routes.draw do
        get '/event/follow/requests' => "follows#requests_list"
        post '/event/create-interest' => "interest_levels#create_interest"
        post '/event/create-going' => "interest_levels#create_going"
+       post "create-impression" => "api_master#create_impression"
        post '/event/redeem-pass' => "passes#redeem_it"
-       post '/events/create-view' => 'events#create_view'
+       post '/events/create-impression' => 'events#create_impression'
        post '/redeem-special-offer' => "special_offers#redeem_it"
        post '/event/redeem-ticket' => "tickets#redeem_it"
        get '/competitions' => "competitions#index"

@@ -275,8 +275,46 @@ class Api::V1::ApiMasterController < ApplicationController
    end
 
 
-    private
 
+   def create_impression
+
+    
+    if params[:resource_id].present? && params[:resource_type].present?
+       resource = params[:resource_type].constantize
+       resource_obj = resource.find(params[:resource_id])
+       business = resource_obj.user
+       view = request_user.views.create!(resource: resource_obj, business: business)
+
+      
+       if view
+        render json: {
+          code: 200,
+          success: true,
+          message: "View successfully created.",
+          data: nil
+        }
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "View creation failed.",
+        data: @resource
+      }
+    end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "resource_id and resource_type are requried field."
+      }
+    end
+   end
+
+
+
+
+
+    private
     def check_if_app_user?
       if request_user && request_user.app_user != true && params["controller"] != "api/v1/analytics" && params["controller"] != "api/v1/business_dashboard"
          render json: {
