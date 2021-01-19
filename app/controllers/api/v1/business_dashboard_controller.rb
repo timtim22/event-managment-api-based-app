@@ -14,14 +14,9 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
       "avatar" => business.avatar,
       "about" => business.business_profile.about,
       "unread_messages_count" => business.incoming_messages.unread.size,
-      "address" => business.business_profile.address,
-      # # "location" => {
-      # #   "name" => business.business_profile.location,
-      # #   "geometry" => {
-      # #     "lat" => business.business_profile.lat,
-      # #     "lng" => business.business_profile.lng
-      # #   }
-      # },
+      "address" => business.business_profile.address["city"] + ", " + business.business_profile.address["country"],
+      "lat" => business.business_profile.address["geometry"]["lat"],
+      "lng" => business.business_profile.address["geometry"]["lng"],
       "social" => {
         "youtube" => business.business_profile.youtube,
         "instagram" => business.business_profile.instagram,
