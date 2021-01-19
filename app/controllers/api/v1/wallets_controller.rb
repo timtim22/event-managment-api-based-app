@@ -150,7 +150,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
             event_image: pass.event.image,
             event_location: pass.event.location,  
             event_start_time: get_date_time(pass.event.start_date, pass.event.start_time),
-            event_end_time: pass.event.end_time,
+            event_end_time: get_date_time(pass.event.end_date, pass.event.end_time),
             event_date: pass.event.start_date,
             distributed_by: distributed_by(pass),
             validity: pass.valid_to.strftime(get_time_format),
@@ -785,9 +785,9 @@ end
  private
 
  def get_date_time(date, time)
-    d = date.strftime("%y-%b-%d")
-    t = time.strftime("%H-%M-%S")
-    datetime = d + " " + t
+    d = date.strftime("%Y-%m-%d")
+    t = time.strftime("%H:%M:%S")
+    datetime = d + "T" + t + ".000Z"
  end
 
  def is_added_to_wallet?(pass_id)
