@@ -180,6 +180,13 @@ class ApplicationController < ActionController::Base
   def string_to_array_of_integers(string, delimeter)
     string.split(delimeter).map {|s| s.to_i }
   end
+  
+
+  def string_to_object_name(string)
+   name = Object.const_get(string)
+  end
+
+
 
   def is_business?(user)
     role_ids = user.roles.map {|role| role.id }
