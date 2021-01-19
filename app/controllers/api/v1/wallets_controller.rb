@@ -148,16 +148,9 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
             event_name: pass.event.name,
             event_id: pass.event.id,
             event_image: pass.event.image,
-<<<<<<< HEAD
-            event_location: pass.event.location,
-            pass_type: pass.pass_type,
-            event_start_time: pass.event.start_time,
-            event_end_time: pass.event.end_time,
-=======
             event_location: pass.event.location,  
             event_start_time: get_date_time(pass.event.start_date, pass.event.start_time),
             event_end_time: get_date_time(pass.event.end_date, pass.event.end_time),
->>>>>>> 2dc18093ec1614e6bb920e9a614fdb47ea07e26d
             event_date: pass.event.start_date,
             distributed_by: distributed_by(pass),
             validity: pass.valid_to.strftime(get_time_format),
