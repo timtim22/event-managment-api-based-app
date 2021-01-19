@@ -351,9 +351,7 @@
     @event.allow_chat = params[:allow_chat]
     @event.event_forwarding = params[:event_forwarding]
     if !params[:location].blank?
-    @event.location = params[:location][:name]
-    @event.location = params[:location][:city]
-    @event.location = params[:location][:country]
+    @event.location = params[:location]
     @event.lat = params[:location][:geometry][:lat]
     @event.lng = params[:location][:geometry][:lng]
     end
@@ -607,8 +605,6 @@
     @event.event_forwarding = params[:event_forwarding]
     if !params[:location].blank?
     @event.location = params[:location][:name]
-    @event.location = params[:location][:city]
-    @event.location = params[:location][:country]
     @event.lat = params[:location][:geometry][:lat]
     @event.lng = params[:location][:geometry][:lng]
     end
