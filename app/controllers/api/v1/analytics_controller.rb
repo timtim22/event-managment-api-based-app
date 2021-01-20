@@ -35,8 +35,8 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                 before_end_date_to_string = before_end_date.to_s
                 @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
               when  "overall"
-                start_date = event.event.start_date.to_date.to_s
-                end_date = event.event.end_date.to_date.to_s
+                 start_date = event.created_at.to_date.to_s
+                 end_date = event.end_date.to_date.to_s
                  @current_time_slot_dates = generate_date_range(start_date, end_date)
                  # in case of overall there should be no comparison between time slots
                  @before_current_time_slot_dates = generate_date_range(start_date, end_date)
@@ -84,42 +84,44 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
               }
         
               @event_stats = {
-                "event_id" => event.id,
-                "name" => event.name,
-                "start_date" => event.start_date,
-                "end_date" => event.end_date,
-                "start_time" => event.start_time,
-                "end_time" => event.end_time,
-                "location" => eval(event.location)["city"] + ", " + eval(event.location)["country"],
-                "lat" => eval(event.location)["geometry"]["lat"],
-                "lng" => eval(event.location)["geometry"]["lng"],
-                "event_type" => event.event_type,
-                "image" => event.image,
-                "price_type" => event.event.price_type,
-                "price" => event.event.price,
-                "additional_media" => event.event.event_attachments,
-                "created_at" => event.created_at,
-                "updated_at" => event.updated_at,
-                "stats" => stats,
+                  "event_id" => event.id,
+                  "name" => event.name,
+                  "start_date" => event.start_date,
+                  "end_date" => event.end_date,
+                  "start_time" => event.start_time,
+                  "end_time" => event.end_time,
+                  "location" => eval(event.location)["city"] + ", " + eval(event.location)["country"],
+                  "lat" => eval(event.location)["geometry"]["lat"],
+                  "lng" => eval(event.location)["geometry"]["lng"],
+                  "event_type" => event.event_type,
+                  "image" => event.image,
+                  "price_type" => event.event.price_type,
+                  "price" => event.event.price,
+                  "additional_media" => event.event.event_attachments,
+                  "created_at" => event.created_at,
+                  "updated_at" => event.updated_at,
+                  "stats" => stats,
                 }
     
-     render json: {
-       code: 200,
-       success: true,
-       message: '',
-       data: {
-         event: @event_stats
-       }
-     }
-    else
-      render json: {
-        code: 400,
-        success: true,
-        message: 'event_id, date and frequency are required.',
-        data: nil
-      }
-    end
-  end
+                render json: {
+                  code: 200,
+                  success: true,
+                  message: '',
+                  data: {
+                    event: @event_stats
+                  }
+                }
+                else
+                  render json: {
+                    code: 400,
+                    success: true,
+                    message: 'event_id, date and frequency are required.',
+                    data: nil
+                  }
+                end
+              end
+
+
 
 
 
@@ -158,7 +160,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         before_end_date_to_string = before_end_date.to_s
         @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
       when  "overall"
-            start_date = offer.date.to_date.to_s
+          start_date = offer.created_at.to_date.to_s
           end_date = offer.end_time.to_date.to_s
          @current_time_slot_dates = generate_date_range(start_date, end_date)
          # in case of overall there should be no comparison between time slots
@@ -255,7 +257,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         before_end_date_to_string = before_end_date.to_s
         @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
       when  "overall"
-          start_date = competition.start_date.to_date.to_s
+          start_date = competition.created_at.to_date.to_s
           end_date = competition.end_date.to_date.to_s
          @current_time_slot_dates = generate_date_range(start_date, end_date)
          # in case of overall there should be no comparison between time slots
@@ -1236,16 +1238,8 @@ end
 
 
 def get_time_slot_total_offer_shares(current_time_slot_dates, offer)
-  @total_shares = []
-  current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
-  current_dates_array.each do |date|
-    p_date = Date.parse(date)
-    @shares = offer.offer_shares.where(created_at: p_date.midnight..p_date.end_of_day)
-    if !@shares.blank?
-      @total_shares.push(@shares.size)
-    end
-    end #each
-     get_sum_of_array_elements(@total_shares)
+    dates_array = get_dates_array(current_time_slot_dates)
+    offer.offer_shares.where(created_at: dates_array).size
  end
 
 
@@ -1364,58 +1358,27 @@ end
 ##################################### New stats functions ##########################33
 
 def get_time_slot_total_redemptions(special_offer, time_slot)
-   dates_array = time_slot.split(',').map {|s| s.to_s }
-   @redemptions = []
-   dates_array.each do |date|
-      p_date = Date.parse(date)
-      redemption = special_offer.redemptions.where(created_at: p_date.midnight..p_date.end_of_day)
-      if !redemption.blank?
-        @redemptions.push(redemption)
-   end #if !blank?
-   end #each
-   @redemptions.size
+ dates_array = get_dates_array(time_slot)     
+ special_offer.redemptions.where(created_at: dates_array).size  
 end
 
 
 def get_time_slot_total_offer_impresssions(special_offer, time_slot)
-  dates_array = time_slot.split(',').map {|s| s.to_s }
-  @views = []
-  dates_array.each do |date|
-     p_date = Date.parse(date)
-     view = special_offer.views.where(created_at: p_date.midnight..p_date.end_of_day)
-     if !view.blank?
-       @views.push(view)
-  end #if !blank?
-  end #each
-  @views.size
+     dates_array = get_dates_array(time_slot)
+     view = special_offer.views.where(created_at: dates_array).size
 end
 
 
 def get_time_slot_total_entries(competition, time_slot)
-  dates_array = time_slot.split(',').map {|s| s.to_s }
-  @entries = []
-  dates_array.each do |date|
-     p_date = Date.parse(date)
-     entry = competition.registrations.where(created_at: p_date.midnight..p_date.end_of_day)
-     if !entry.blank?
-       @entries.push(entry)
-  end #if !blank?
-  end #each
-  @entries.size
+  dates_array = get_dates_array(time_slot)
+  competition.registrations.where(created_at: dates_array).size  
 end
 
 
 def get_time_slot_total_competition_impresssions(competition, time_slot)
-  dates_array = time_slot.split(',').map {|s| s.to_s }
-  @views = []
-  dates_array.each do |date|
-     p_date = Date.parse(date)
-     view = competition.views.where(created_at: p_date.midnight..p_date.end_of_day)
-     if !view.blank?
-       @views.push(view)
-  end #if !blank?
-  end #each
-  @views.size
+  dates_array = get_dates_array(time_slot)
+  competition.views.where(created_at: dates_array).size
+   
 end
 
 
@@ -1522,16 +1485,8 @@ def validate_frequency(frequency,valid_frequencies)
 end
 
 def get_time_slot_offer_in_wallet(time_slot_dates, offer)
-  dates_array = time_slot_dates.split(',').map {|s| s.to_s }
-  @in_wallet = 0
-  dates_array.each do |date|
-     p_date = Date.parse(date)
-     in_wallet = offer.wallets.where(created_at: p_date.midnight..p_date.end_of_day).size
-     if !in_wallet.blank?
-      @in_wallet += in_wallet
-     end #if !blank?
-  end #each
-   @in_wallet
+     dates_array = get_dates_array(time_slot_dates)
+     in_wallet = offer.wallets.where(created_at: dates_array).size
 end
 
 
