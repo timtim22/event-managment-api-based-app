@@ -90,7 +90,6 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
       @profile.user = @user
       @profile.first_name = params[:first_name]
       @profile.last_name = params[:last_name]
-      @profile.device_token = params[:device_token]
       @profile.gender = params[:gender]
       if !params[:location].blank?
       @profile.location = params[:location]
