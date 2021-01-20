@@ -729,7 +729,7 @@ end
 
   def update_device_token
     if !params[:device_token].blank?
-    if update = request_user.profile.update!(device_token: params[:device_token])
+    if update = request_user.update!(device_token: params[:device_token])
       render json: {
         code: 200,
         success: true,
