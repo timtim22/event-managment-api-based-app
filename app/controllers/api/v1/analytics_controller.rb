@@ -540,16 +540,8 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
 
 
    def get_time_slot_total_attendees(current_time_slot_dates, event)
-      @total_registrations = []
-       dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
-      dates_array.each do |date|
-      p_date = Date.parse(date)
-      @attendees = event.going_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day)
-      if !@attendees.blank?
-        @total_registrations.push(@attendees.size)
-      end
-     end
-       get_sum_of_array_elements(@total_registrations)
+    dates_array = get_dates_array(current_time_slot_dates) 
+    event.going_interest_levels.where(created_at: dates_array).size
    end
 
 
@@ -609,17 +601,11 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
    ########################## views ##############################
 
    def get_time_slot_total_views(current_time_slot_dates, event)
-    @total_views = []
-    current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
-    current_dates_array.each do |date|
-      p_date = Date.parse(date)
-      @views = event.views.where(created_at: p_date.midnight..p_date.end_of_day)
-      if !@views.blank?
-        @total_views.push(@views.size)
-      end
-      end #each
-      get_sum_of_array_elements(@total_views)
+     dates_array = get_dates_array(current_time_slot_dates) 
+     event.views.where(created_at: dates_array).size
    end
+
+
 
 
 
@@ -767,17 +753,13 @@ end
   ################################## interested #####################################
 
   def get_time_slot_total_interested_people(current_time_slot_dates, event)
-    @interested_people = []
-    current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
-    current_dates_array.each do |date|
-      p_date = Date.parse(date)
-      @interested = event.interested_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day)
-      if !@interested.blank?
-        @interested_people.push(@interested.size)
-      end
-      end #each
-      get_sum_of_array_elements(@interested_people)
+    dates_array = get_dates_array(current_time_slot_dates) 
+    @interested = event.interested_interest_levels.where(created_at: dates_array).size
   end
+
+
+
+
 
   def get_time_slot_interested_increment_decrement(current_time_slot_dates, before_current_time_slot_dates, event)
     @current_time_slot_interested = []
@@ -1018,17 +1000,9 @@ def get_time_slot_special_offers_increment_decrement(current_time_slot_dates,   
 
    #################################### event sharing #####################################
       def get_time_slot_total_shared_events(current_time_slot_dates, event)
-        @total_shared_events = []
-        current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
-        current_dates_array.each do |date|
-          p_date = Date.parse(date)
-          @shares = event.event_shares.where(created_at: p_date.midnight..p_date.end_of_day)
-          if !@shares.blank?
-            @total_shared_events.push(@shares.size)
-          end
-          end #each
-          get_sum_of_array_elements(@total_shared_events)
-      end
+          dates_array = get_dates_array(current_time_slot_dates)
+          @shares = event.event_shares.where(created_at: dates_array).size
+     end
 
 
 
@@ -1531,16 +1505,8 @@ pass_checked_in
 end
 
 def get_time_slot_total_pass_checked_in(time_slot_dates, event)
-  dates_array = time_slot_dates.split(',').map {|s| s.to_s }
-  @checked_in = 0
-  dates_array.each do |date|
-     p_date = Date.parse(date)
-     checked_in = event.passes.map{|p| p.redemptions.where(created_at: p_date.midnight..p_date.end_of_day).size }.sum
-     if !checked_in.blank?
-      @checked_in += checked_in
-  end #if !blank?
-  end #each
-   @checked_in
+     dates_array = get_dates_array(time_slot_dates)
+     checked_in = event.passes.map{|p| p.redemptions.where(created_at: dates_array).size }.sum
 end
 
 
@@ -1615,13 +1581,9 @@ def get_time_slot_movement(current_time_slot_dates, before_current_time_slot_dat
 end
 
 
-def get_dates_from_range(date)
-  date = Date.parse(date)
-  tomorrow = date.tomorrow
-  start_date = tomorrow - 7.days
-  start_date_to_string = start_date.to_s
-  end_date = params[:date]
-  @current_time_slot_dates = generate_date_range(start_date_to_string, end_date)
+def get_dates_array(current_time_slot_dates)
+  dates = current_time_slot_dates.map {|date| Date.parse(date) }
+  dates_array = dates.map {|d| d.midnight..d.end_of_day }
 end
 
 
