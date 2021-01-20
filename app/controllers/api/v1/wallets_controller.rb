@@ -429,6 +429,11 @@ end
     if check == nil 
     @wallet  = request_user.wallets.new(offer_id: params[:offer_id], offer_type: params[:offer_type],quantity: quantity)
     if @wallet.save
+       if param[:offer_type] == "Ticket"
+          ticket = Ticket.find(params[:offer_id])
+          event = ticket.event
+          event.going_interest_levels.create!(user: request_user)
+       end
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
