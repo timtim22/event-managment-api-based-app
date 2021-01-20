@@ -202,9 +202,9 @@ end
               if @notification = Notification.create(recipient: user, actor: request_user, action: get_full_name(request_user) + " has sent you a VIP pass to join their event.", notifiable: @wallet.offer, resource: @wallet, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_pass_to_wallet')
 
               @current_push_token = @pubnub.add_channels_to_push(
-                 push_token: user.profile.device_token,
+                 push_token: user.device_token,
                  type: 'gcm',
-                 add: user.profile.device_token
+                 add: user.device_token
                  ).value
 
                payload = {
@@ -227,7 +227,7 @@ end
                 }
                }
                @pubnub.publish(
-                channel: user.profile.device_token,
+                channel: user.device_token,
                 message: payload
                 ) do |envelope|
                     puts envelope.status

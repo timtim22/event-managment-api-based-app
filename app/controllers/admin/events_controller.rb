@@ -170,9 +170,9 @@ class Admin::EventsController < Admin::AdminMasterController
         if follower.all_chat_notifications_setting.is_on == true && follower.event_notifications_setting.is_on == true
         if notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event')
           @current_push_token = @pubnub.add_channels_to_push(
-          push_token: follower.profile.device_token,
+          push_token: follower.device_token,
           type: 'gcm',
-          add: follower.profile.device_token
+          add: follower.device_token
           ).value
 
           payload = {
@@ -202,7 +202,7 @@ class Admin::EventsController < Admin::AdminMasterController
           }
 
         @pubnub.publish(
-          channel: follower.profile.device_token,
+          channel: follower.device_token,
           message: payload
           ) do |envelope|
               puts envelope.status
@@ -342,9 +342,9 @@ class Admin::EventsController < Admin::AdminMasterController
       if follower.all_chat_notifications_setting.is_on == true && follower.event_notifications_setting.is_on == true
       if notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event')
         @current_push_token = @pubnub.add_channels_to_push(
-         push_token: follower.profile.device_token,
+         push_token: follower.device_token,
          type: 'gcm',
-         add: follower.profile.device_token
+         add: follower.device_token
          ).value
 
          payload = {
@@ -375,7 +375,7 @@ class Admin::EventsController < Admin::AdminMasterController
 
 
        @pubnub.publish(
-         channel: follower.profile.device_token,
+         channel: follower.device_token,
          message: payload
          ) do |envelope|
              puts envelope.status

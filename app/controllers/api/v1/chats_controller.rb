@@ -29,11 +29,11 @@ def send_message
       push_token: @chat_channel.push_token,
       type: 'gcm'
       ).value
-    @chat_channel.push_token = @recipient.profile.device_token
+    @chat_channel.push_token = @recipient.device_token
     @chat_channel.save
     @channel = @has_mutual_channel.first.name
   else
-  @chat_channel = @sender.chat_channels.new(name: @sender.profile.device_token, recipient_id: @recipient.id,push_token: @recipient.profile.device_token)
+  @chat_channel = @sender.chat_channels.new(name: @sender.device_token, recipient_id: @recipient.id,push_token: @recipient.device_token)
   @chat_channel.save
   @channel = @chat_channel.name
   end
@@ -43,9 +43,9 @@ def send_message
 if @message.save
 
  @current_push_token = @pubnub.add_channels_to_push(
-   push_token: @recipient.profile.device_token,
+   push_token: @recipient.device_token,
    type: 'gcm',
-   add: @recipient.profile.device_token
+   add: @recipient.device_token
    ).value
 
 payload = {
@@ -73,7 +73,7 @@ payload = {
 
 if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipient, request_user)
   @pubnub.publish(
-    channel: @recipient.profile.device_token,
+    channel: @recipient.device_token,
     message: payload
     ) do |envelope|
         puts envelope.status

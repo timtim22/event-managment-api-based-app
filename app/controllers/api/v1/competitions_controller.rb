@@ -168,9 +168,9 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                  if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has entered in competition '#{@registration.event.title}'.", notifiable: @registration.event, resource: @registration, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile', action_type: 'enter_in_competition')
                  @push_channel = "event" #encrypt later
                  @current_push_token = @pubnub.add_channels_to_push(
-                    push_token: friend.profile.device_token,
+                    push_token: friend.device_token,
                     type: 'gcm',
-                    add: friend.profile.device_token
+                    add: friend.device_token
                     ).value
 
                   payload = {
@@ -199,7 +199,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                    }
                   }
                   @pubnub.publish(
-                   channel: friend.profile.device_token,
+                   channel: friend.device_token,
                    message: payload
                    ) do |envelope|
                        puts envelope.status
@@ -253,9 +253,9 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
               if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has entered in competition '#{@registration.event.title}'.", notifiable: @registration.event, resource: @registration, url: "/admin/competitions/#{@registration.event.id}", notification_type: 'mobile', action_type: 'enter_in_competition')
               @push_channel = "event" #encrypt later
               @current_push_token = @pubnub.add_channels_to_push(
-                 push_token: friend.profile.device_token,
+                 push_token: friend.device_token,
                  type: 'gcm',
-                 add: friend.profile.device_token
+                 add: friend.device_token
                  ).value
 
                payload = {
@@ -284,7 +284,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                 }
                }
                @pubnub.publish(
-                channel: friend.profile.device_token,
+                channel: friend.device_token,
                 message: payload
                 ) do |envelope|
                     puts envelope.status
@@ -352,9 +352,9 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                     end
 
                     @current_push_token = @pubnub.add_channels_to_push(
-                       push_token: participant.profile.device_token,
+                       push_token: participant.device_token,
                        type: 'gcm',
-                       add: participant.profile.device_token
+                       add: participant.device_token
                        ).value
 
                      payload = {
@@ -385,7 +385,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                       }
                      }
                      @pubnub.publish(
-                      channel: participant.profile.device_token,
+                      channel: participant.device_token,
                       message: payload
                       ) do |envelope|
                           puts envelope.status

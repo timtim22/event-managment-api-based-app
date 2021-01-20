@@ -49,9 +49,9 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
           if @notification = Notification.create(recipient: friend, actor: request_user, action: "Your friend " + get_full_name(request_user) + " followed #{get_full_name(@following)}.", notifiable: fr, resource: fr,url: "#", notification_type: 'mobile', action_type: 'add_to_wallet')
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
-               push_token: friend.profile.device_token,
+               push_token: friend.device_token,
                type: 'gcm',
-               add: friend.profile.device_token
+               add: friend.device_token
                ).value
 
              payload = {
@@ -74,7 +74,7 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
               }
              }
              @pubnub.publish(
-              channel: friend.profile.device_token,
+              channel: friend.device_token,
               message: payload
               ) do |envelope|
                   puts envelope.status

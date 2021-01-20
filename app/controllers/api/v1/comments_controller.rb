@@ -70,9 +70,9 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
          if !event_chat_muted?(comment_user, @event) && !comment_user.all_chat_notifications_setting.blank?  && comment_user.all_chat_notifications_setting.is_on == true && !comment_user.event_notifications_setting.blank? && comment_user.event_notifications_setting.is_on == true
 
           @current_push_token = @pubnub.add_channels_to_push(
-             push_token: comment_user.profile.device_token,
+             push_token: comment_user.device_token,
              type: 'gcm',
-             add: comment_user.profile.device_token
+             add: comment_user.device_token
              ).value
 
 
@@ -105,7 +105,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
             }
            }
            @pubnub.publish(
-            channel: comment_user.profile.device_token,
+            channel: comment_user.device_token,
             message: payload
             ) do |envelope|
                 puts envelope.status
@@ -176,9 +176,9 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
           if !event_chat_muted?(@comment.user, @event) && !@comment.user.all_chat_notifications_setting.blank?  && @comment.user.all_chat_notifications_setting.is_on == true && !@comment.user.event_notifications_setting.blank? && @comment.user.event_notifications_setting.is_on == true
 
            @current_push_token = @pubnub.add_channels_to_push(
-              push_token: @comment.user.profile.device_token,
+              push_token: @comment.user.device_token,
               type: 'gcm',
-              add: @comment.user.profile.device_token
+              add: @comment.user.device_token
               ).value
 
             payload = {
@@ -211,7 +211,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
              }
             }
             @pubnub.publish(
-             channel: @comment.user.profile.device_token,
+             channel: @comment.user.device_token,
              message: payload
              ) do |envelope|
                  puts envelope.status

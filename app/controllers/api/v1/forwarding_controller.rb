@@ -49,9 +49,9 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
        # create_activity(request_user, "forwarded '#{if params[:offer_type] == 'SpecialOffer' then 'special offer' else 'pass' end} '", @offer_forward, 'OfferForwarding', '', '', 'post', "forwarded_#{params[:offer_type]}")
 
          @current_push_token = @pubnub.add_channels_to_push(
-           push_token: @recipient.profile.device_token,
+           push_token: @recipient.device_token,
            type: 'gcm',
-           add: @recipient.profile.device_token
+           add: @recipient.device_token
            ).value
 
             data = {}
@@ -115,7 +115,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         }
 
           @pubnub.publish(
-            channel: [@recipient.profile.device_token],
+            channel: [@recipient.device_token],
             message: payload
              ) do |envelope|
                puts envelope.status
@@ -206,9 +206,9 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
 
 
             @current_push_token = @pubnub.add_channels_to_push(
-              push_token: @recipient.profile.device_token,
+              push_token: @recipient.device_token,
               type: 'gcm',
-              add: @recipient.profile.device_token
+              add: @recipient.device_token
               ).value
 
 
@@ -273,7 +273,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
            }
 
              @pubnub.publish(
-               channel: [@recipient.profile.device_token],
+               channel: [@recipient.device_token],
                message: payload
                 ) do |envelope|
                   puts envelope.status
@@ -340,9 +340,9 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         #create_activity(request_user, "forwarded event", @event_forward, 'EventForwarding', '', '', 'post','forward_event')
 
          @current_push_token = @pubnub.add_channels_to_push(
-           push_token: @recipient.profile.device_token,
+           push_token: @recipient.device_token,
            type: 'gcm',
-           add: @recipient.profile.device_token
+           add: @recipient.device_token
            ).value
 
           payload = {
@@ -371,7 +371,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
         }
 
           @pubnub.publish(
-            channel: [@recipient.profile.device_token],
+            channel: [@recipient.device_token],
             message: payload
              ) do |envelope|
                puts envelope.status
@@ -443,9 +443,9 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
 
 
             @current_push_token = @pubnub.add_channels_to_push(
-              push_token: @recipient.profile.device_token,
+              push_token: @recipient.device_token,
               type: 'gcm',
-              add: @recipient.profile.device_token
+              add: @recipient.device_token
               ).value
 
              payload = {
@@ -476,7 +476,7 @@ class Api::V1::ForwardingController < Api::V1::ApiMasterController
            }
 
              @pubnub.publish(
-               channel: [@recipient.profile.device_token],
+               channel: [@recipient.device_token],
                message: payload
                 ) do |envelope|
                   puts envelope.status

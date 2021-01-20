@@ -269,7 +269,7 @@ class ApplicationController < ActionController::Base
       "location" => user.profile.location,
       "lat" => user.profile.lat,
       "lng" => user.profile.lng,
-      "device_token" => user.profile.device_token,
+      "device_token" => user.device_token,
       "ranking" => user.profile.ranking,
       "gender" => user.profile.gender,
       "dob" => user.profile.dob.to_date,
@@ -940,9 +940,9 @@ end
     if notification = Notification.create!(recipient: request.user, actor: user, action: get_full_name(user) + " has approved you as an ambassador.", notifiable: request, url: "/admin/users/#{request.user.id}", resource: request, notification_type: 'mobile',action_type: 'become_ambassador')
 
       @current_push_token = @pubnub.add_channels_to_push(
-        push_token: request.user.profile.device_token,
+        push_token: request.user.device_token,
         type: 'gcm',
-        add: request.user.profile.device_token
+        add: request.user.device_token
         ).value
 
         payload = {
@@ -967,7 +967,7 @@ end
         }
 
         @pubnub.publish(
-          channel: [request.user.profile.device_token],
+          channel: [request.user.device_token],
           message: payload
            ) do |envelope|
              puts envelope.status
@@ -983,9 +983,9 @@ end
             if notification = Notification.create(recipient: friend, actor: request.user, action: get_full_name(request.user) + " has become ambassador of #{User.get_full_name(request.business)}", notifiable: request, resource: request,  url: "/admin/users/#{request.user.id}", notification_type: 'mobile', action_type: "friend_become_ambassador")
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
-               push_token: friend.profile.device_token,
+               push_token: friend.device_token,
                type: 'gcm',
-               add: friend.profile.device_token
+               add: friend.device_token
                ).value
 
              payload = {
@@ -1012,7 +1012,7 @@ end
               }
              }
              @pubnub.publish(
-              channel: friend.profile.device_token,
+              channel: friend.device_token,
               message: payload
               ) do |envelope|
                   puts envelope.status

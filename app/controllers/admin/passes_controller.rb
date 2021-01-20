@@ -94,9 +94,9 @@ class Admin::PassesController < Admin::AdminMasterController
         if @notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new pass '#{@pass.title}'.", notifiable: @pass, resource: @pass, url: "/admin/passes/#{@pass.id}", notification_type: 'mobile', action_type: 'create_pass')
 
           @current_push_token = @pubnub.add_channels_to_push(
-           push_token: follower.profile.device_token,
+           push_token: follower.device_token,
            type: 'gcm',
-           add: follower.profile.device_token
+           add: follower.device_token
            ).value
 
            payload = {
@@ -121,7 +121,7 @@ class Admin::PassesController < Admin::AdminMasterController
            }
 
          @pubnub.publish(
-           channel: follower.profile.device_token,
+           channel: follower.device_token,
            message: payload
            ) do |envelope|
                puts envelope.status
@@ -199,9 +199,9 @@ class Admin::PassesController < Admin::AdminMasterController
   #             if @notification = Notification.create(recipient: user, actor: current_user, action: get_full_name(current_user) + " has sent you a VIP pass to join their event.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
 
   #             @current_push_token = @pubnub.add_channels_to_push(
-  #                push_token: user.profile.device_token,
+  #                push_token: user.device_token,
   #                type: 'gcm',
-  #                add: user.profile.device_token
+  #                add: user.device_token
   #                ).value
 
   #              payload = {
@@ -224,7 +224,7 @@ class Admin::PassesController < Admin::AdminMasterController
   #               }
   #              }
   #              @pubnub.publish(
-  #               channel: user.profile.device_token,
+  #               channel: user.device_token,
   #               message: payload
   #               ) do |envelope|
   #                   puts envelope.status

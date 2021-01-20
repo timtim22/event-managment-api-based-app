@@ -22,9 +22,6 @@ class Dashboard::Api::V1::AuthenticationController < Dashboard::Api::V1::ApiMast
     else
       @user = User.authenticate(params[:email], params[:password])
     if @user
-
-
-
           profile = {
               "user_id" => @user.id,
               "email" =>  @user.email,

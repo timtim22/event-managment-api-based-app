@@ -7,58 +7,56 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
     param :id, :number, :desc => "The ID of the user", :required => true
     param :device_token, String, :desc => "pass any string ", :required => true
 
-   def login
-    @empty = {}
 
-    if params[:id].blank? == true
+
+   def login
+     if params[:id].present? && params[:device_token].present?
+        user = User.find(params[:id])
+        if user
+          token = get_token_from_user(user)
+          if user.app_user
+            @profile_data = get_user_simple_object(user)
+           elsif user.web_user
+            @profile_data = get_business_simple_object(user)
+           end
+          if update = user.update!(device_token: params[:device_token])
+            render json: {
+              code: 200,
+              success: true,
+              message: 'Login is successful.',
+              data: {
+                token: token,
+                user:  @profile_data
+              }
+            }
+          else
+            render json: {
+              code: 400,
+              success: false,
+              message: update.errors.full_messages,
+              data: nil
+            }
+          end
+        else
+          render json: {
+            code: 400,
+            success: false,
+            message: "Wrong user id.",
+            data: nil
+          }
+        end
+     else
       render json: {
         code: 400,
         success: false,
-        message: "id number is required.",
+        message: "id and device_token is required field.",
         data: nil
-       }
-
-      elsif params[:device_token].blank? == true || params[:device_token].nil?
-        render json: {
-          code: 400,
-          success: false,
-          message: "Device token is required.",
-          data: nil
-         }
-    else
-    @user = User.find(params[:id])
-    if @user
-       if @user.app_user
-        @profile_data = get_user_simple_object(@user)
-        @user.profile.update!(device_token: params[:device_token])
-       elsif @user.web_user
-        @profile_data = get_business_simple_object(@user)
-       end
-      # create_activity creates login issue regarding jwt auth token requirements
-      #create_activity('logged in.', @user, 'User', '', '', 'post')
-      token = encode(user_id: @user.id)
-      time = Time.now + 24.hours.to_i
-
-      render json: {
-            code: 200,
-            success: true,
-            message: "Login is successful.",
-            data: {
-              token: token,
-              user: @profile_data
-            }
-          }
-     else
-      render json: {
-        code: 401,
-        success: false,
-        message: "Email/password is incorrect.",
-        data: @empty
       }
-    end
-  end
+     end
+   end
 
-  end
+
+
 
   api :POST, '/api/v1/get-accounts', 'To get user account list'
   param :phone_number, String, :desc => "Phone Number", :required => true
@@ -92,7 +90,6 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
           }
          business_accounts.push(obj)
         else account.app_user
-         account.profile.update!(device_token: params[:device_token])
          app_account =  {
           "id" => account.id,
           "first_name" => account.profile.first_name,
@@ -140,9 +137,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
 
 
   def logout
-
-    if  update = request_user.profile.update!(device_token: "token_removed")
-
+    if  update = request_user.update!(device_token: "token_removed")
       render json: {
         code: 200,
         success: true,

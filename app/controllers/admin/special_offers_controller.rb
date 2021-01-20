@@ -45,9 +45,9 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
         if notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_offer')
           @channel = "event" #encrypt later
           @current_push_token = @pubnub.add_channels_to_push(
-           push_token: follower.profile.device_token,
+           push_token: follower.device_token,
            type: 'gcm',
-           add: follower.profile.device_token
+           add: follower.device_token
            ).value
 
            payload = {
@@ -76,7 +76,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
            }
 
          @pubnub.publish(
-           channel: follower.profile.device_token,
+           channel: follower.device_token,
            message: payload
            ) do |envelope|
                puts envelope.status
@@ -127,9 +127,9 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
           uuid: @username
           )
         @current_push_token = @pubnub.add_channels_to_push(
-         push_token: follower.profile.device_token,
+         push_token: follower.device_token,
          type: 'gcm',
-         add: follower.profile.device_token
+         add: follower.device_token
          ).value
 
          payload = {
@@ -157,7 +157,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
          }
 
        @pubnub.publish(
-         channel: follower.profile.device_token,
+         channel: follower.device_token,
          message: payload
          ) do |envelope|
              puts envelope.status
