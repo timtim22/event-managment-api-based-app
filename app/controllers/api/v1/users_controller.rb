@@ -63,7 +63,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
 
   # POST /users
   def create
-    required_fields = ['first_name', 'last_name','dob', 'device_token', 'gender','is_email_subscribed', 'type']
+    required_fields = ['first_name', 'last_name','dob', 'gender','is_email_subscribed', 'type']
     errors = []
     required_fields.each do |field|
       if params[field.to_sym].blank?
@@ -90,7 +90,6 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
       @profile.user = @user
       @profile.first_name = params[:first_name]
       @profile.last_name = params[:last_name]
-      @profile.device_token = params[:device_token]
       @profile.gender = params[:gender]
       if !params[:location].blank?
       @profile.location = params[:location]
@@ -374,7 +373,7 @@ end
       when 'Pass'
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
-        resource['location'] = eval(log.resource.location)["city"] + ", " + eval(log.resource.location)["country"]
+        resource['location'] = eval(log.resource.event.location)["city"] + ", " + eval(log.resource.event.location)["country"]
         resource['start_date'] = log.resource.event.start_date
         resource['grabbers_counts'] = log.resource.wallets.size
 

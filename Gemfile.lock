@@ -150,6 +150,8 @@ GEM
     eventbrite_sdk (3.6.0)
       rest-client (~> 2.0)
     execjs (2.7.0)
+    faker (1.9.6)
+      i18n (>= 0.7)
     faraday (1.1.0)
       multipart-post (>= 1.2, < 3)
       ruby2_keywords
@@ -242,6 +244,8 @@ GEM
     nokogiri (1.10.10-x86-mingw32)
       mini_portile2 (~> 2.4.0)
     pg (1.2.3)
+    pg (1.2.3-x64-mingw32)
+    pg (1.2.3-x86-mingw32)
     popper_js (1.16.0)
     pry (0.13.1)
       coderay (~> 1.1)
@@ -368,6 +372,9 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
+    seed-fu (2.3.9)
+      activerecord (>= 3.1)
+      activesupport (>= 3.1)
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
@@ -435,6 +442,7 @@ DEPENDENCIES
   dotenv-rails
   eventbrite_sdk
   execjs
+  faker (~> 1.6, >= 1.6.6)
   file_validators
   font-awesome-sass (~> 5.11.2)
   gon
@@ -463,6 +471,7 @@ DEPENDENCIES
   rspec-rails (~> 3.4, >= 3.4.2)
   ruby-graphviz
   sass-rails (~> 5.0)
+  seed-fu
   selenium-webdriver
   sqlite3
   stripe
@@ -477,4 +486,4 @@ RUBY VERSION
    ruby 2.6.5p114
 
 BUNDLED WITH
-   2.1.4
+   2.2.4
