@@ -44,9 +44,9 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
       if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " is interested in event '#{@event.name}'.", notifiable: @interest_level, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_interest')
         @push_channel = "event" #encrypt later
         @current_push_token = @pubnub.add_channels_to_push(
-           push_token: friend.profile.device_token,
+           push_token: friend.device_token,
            type: 'gcm',
-           add: friend.profile.device_token
+           add: friend.device_token
     
            ).value
 
@@ -78,7 +78,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
           }
          }
          @pubnub.publish(
-          channel: friend.profile.device_token,
+          channel: friend.device_token,
           message: payload
           ) do |envelope|
               puts envelope.status
@@ -155,7 +155,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
         if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " is going to attend event '#{@event.name}'.", notifiable: @interest_level, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_going')
           @push_channel = "event" #encrypt later
           @current_push_token = @pubnub.add_channels_to_push(
-             push_token: friend.profile.device_token,
+             push_token: friend.device_token,
              type: 'gcm',
              add: @push_channel
              ).value

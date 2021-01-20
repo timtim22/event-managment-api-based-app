@@ -454,9 +454,9 @@ end
             if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has grabbed #{@wallet.offer.class.name} '#{@wallet.offer.title}'.", notifiable: @wallet.offer, resource: @wallet,  url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: "add_#{@wallet.offer.class.name}_to_wallet")
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
-               push_token: friend.profile.device_token,
+               push_token: friend.device_token,
                type: 'gcm',
-               add: friend.profile.device_token
+               add: friend.device_token
                ).value
 
 
@@ -532,7 +532,7 @@ end
               }
 
              @pubnub.publish(
-              channel: friend.profile.device_token,
+              channel: friend.device_token,
               message: payload
               ) do |envelope|
                   puts envelope.status
@@ -584,9 +584,9 @@ end
             if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " has grabbed #{@wallet.offer.class.name} '#{@wallet.offer.title}'.", notifiable: @wallet.offer, resource: @wallet,  url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: "add_#{@wallet.offer.class.name}_to_wallet")
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
-               push_token: friend.profile.device_token,
+               push_token: friend.device_token,
                type: 'gcm',
-               add: friend.profile.device_token
+               add: friend.device_token
                ).value
 
 
@@ -662,7 +662,7 @@ end
               }
 
              @pubnub.publish(
-              channel: friend.profile.device_token,
+              channel: friend.device_token,
               message: payload
               ) do |envelope|
                   puts envelope.status

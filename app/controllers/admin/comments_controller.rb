@@ -31,9 +31,9 @@ class Admin::CommentsController < Admin::AdminMasterController
           if @notification = Notification.create(recipient: user, actor: current_user, action: get_full_name(current_user) + " posted a new comment on event '#{@event.name}'.", notifiable: @comment, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'post_comment_web')
 
           @current_push_token = @pubnub.add_channels_to_push(
-           push_token: user.profile.device_token,
+           push_token: user.device_token,
            type: 'gcm',
-           add: user.profile.device_token
+           add: user.device_token
            ).value
 
            payload = {
@@ -57,7 +57,7 @@ class Admin::CommentsController < Admin::AdminMasterController
            }
 
          @pubnub.publish(
-           channel: user.profile.device_token,
+           channel: user.device_token,
            message: payload
            ) do |envelope|
                puts envelope.status

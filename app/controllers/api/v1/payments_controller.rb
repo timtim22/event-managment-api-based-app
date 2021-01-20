@@ -55,9 +55,9 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
               if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, resource: @purchase, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
 
                 @current_push_token = @pubnub.add_channels_to_push(
-                  push_token: request_user.profile.device_token,
+                  push_token: request_user.device_token,
                   type: 'gcm',
-                  add: request_user.profile.device_token
+                  add: request_user.device_token
                   ).value
 
                 payload = {
@@ -79,7 +79,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
                   }
                 }
                 @pubnub.publish(
-                  channel: request_user.profile.device_token,
+                  channel: request_user.device_token,
                   message: payload
                   ) do |envelope|
                       puts envelope.status
@@ -124,9 +124,9 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
         if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, resource: @purchase, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
 
           @current_push_token = @pubnub.add_channels_to_push(
-            push_token: request_user.profile.device_token,
+            push_token: request_user.device_token,
             type: 'gcm',
-            add: request_user.profile.device_token
+            add: request_user.device_token
             ).value
 
           payload = {
@@ -148,7 +148,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
             }
           }
           @pubnub.publish(
-            channel: request_user.profile.device_token,
+            channel: request_user.device_token,
             message: payload
             ) do |envelope|
                 puts envelope.status
@@ -211,9 +211,9 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
           if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, resource: @purchase,  url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
 
             @current_push_token = @pubnub.add_channels_to_push(
-               push_token: request_user.profile.device_token,
+               push_token: request_user.device_token,
                type: 'gcm',
-               add: request_user.profile.device_token
+               add: request_user.device_token
                ).value
 
              payload = {
@@ -235,7 +235,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
               }
              }
              @pubnub.publish(
-              channel: request_user.profile.device_token,
+              channel: request_user.device_token,
               message: payload
               ) do |envelope|
                   puts envelope.status
@@ -278,9 +278,9 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
         if @notification = Notification.create!(recipient: request_user, actor: @purchase.ticket.user, action:  "Ticket you just purchased has been added to your wallet.", notifiable: @wallet.offer, url: "/admin/#{@wallet.offer.class.name.downcase}s/#{@wallet.offer.id}", notification_type: 'mobile', action_type: 'add_to_wallet')
 
           @current_push_token = @pubnub.add_channels_to_push(
-            push_token: request_user.profile.device_token,
+            push_token: request_user.device_token,
             type: 'gcm',
-            add: request_user.profile.device_token
+            add: request_user.device_token
             ).value
 
           payload = {
@@ -302,7 +302,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
             }
           }
           @pubnub.publish(
-            channel: request_user.profile.device_token,
+            channel: request_user.device_token,
             message: payload
             ) do |envelope|
                 puts envelope.status

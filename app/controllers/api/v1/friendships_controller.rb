@@ -31,9 +31,9 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
         )
 
         @current_push_token = @pubnub.add_channels_to_push(
-          push_token: @friend.profile.device_token,
+          push_token: @friend.device_token,
           type: 'gcm',
-          add: @friend.profile.device_token
+          add: @friend.device_token
           ).value
 
         payload = {
@@ -61,7 +61,7 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
       }
 
         @pubnub.publish(
-         channel: [@friend.profile.device_token],
+         channel: [@friend.device_token],
          message: payload
           ) do |envelope|
             puts envelope.status
@@ -173,9 +173,9 @@ def accept_request
           subscribe_key: ENV['SUBSCRIBE_KEY']
         )
         @current_push_token = @pubnub.add_channels_to_push(
-          push_token: request.user.profile.device_token,
+          push_token: request.user.device_token,
           type: 'gcm',
-          add: request.user.profile.device_token
+          add: request.user.device_token
           ).value
 
           payload = {
@@ -201,7 +201,7 @@ def accept_request
           }
 
         @pubnub.publish(
-         channel: [request.user.profile.device_token],
+         channel: [request.user.device_token],
          message: payload
           ) do |envelope|
             puts envelope.status

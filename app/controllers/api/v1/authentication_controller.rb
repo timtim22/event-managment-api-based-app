@@ -14,7 +14,11 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
         user = User.find(params[:id])
         if user
           token = get_token_from_user(user)
-          @profile_data = get_user_simple_object(@user)
+          if user.app_user
+            @profile_data = get_user_simple_object(user)
+           elsif user.web_user
+            @profile_data = get_business_simple_object(user)
+           end
           if update = user.update!(device_token: params[:device_token])
             render json: {
               code: 200,
@@ -22,7 +26,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
               message: 'Login is successful.',
               data: {
                 token: token,
-                profile_data:  @profile_data
+                user:  @profile_data
               }
             }
           else
@@ -53,7 +57,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
 
 
 
-   
+
   api :POST, '/api/v1/get-accounts', 'To get user account list'
   param :phone_number, String, :desc => "Phone Number", :required => true
 
@@ -86,7 +90,6 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
           }
          business_accounts.push(obj)
         else account.app_user
-         account.profile.update!(device_token: params[:device_token])
          app_account =  {
           "id" => account.id,
           "first_name" => account.profile.first_name,
