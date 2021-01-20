@@ -63,7 +63,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
 
   # POST /users
   def create
-    required_fields = ['first_name', 'last_name','dob', 'device_token', 'gender','is_email_subscribed', 'type']
+    required_fields = ['first_name', 'last_name','dob', 'gender','is_email_subscribed', 'type']
     errors = []
     required_fields.each do |field|
       if params[field.to_sym].blank?
