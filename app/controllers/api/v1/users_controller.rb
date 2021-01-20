@@ -374,7 +374,7 @@ end
       when 'Pass'
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
-        resource['location'] = eval(log.resource.location)["city"] + ", " + eval(log.resource.location)["country"]
+        resource['location'] = eval(log.resource.event.location)["city"] + ", " + eval(log.resource.event.location)["country"]
         resource['start_date'] = log.resource.event.start_date
         resource['grabbers_counts'] = log.resource.wallets.size
 

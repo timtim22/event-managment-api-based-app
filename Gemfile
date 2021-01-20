@@ -97,3 +97,5 @@ gem 'selenium-webdriver'
 gem 'webdrivers', '~> 4.0', require: false
 gem 'rspec-console'
 gem 'dotenv-rails'
+gem 'seed-fu'
+gem 'faker', '~> 1.6', '>= 1.6.6'
