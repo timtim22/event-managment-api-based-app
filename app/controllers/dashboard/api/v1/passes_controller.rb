@@ -127,12 +127,68 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
   end
   end
 
+def user_search
+    @profiles = []
+      if !params[:search_term].blank?
+            profile = Profile.ransack(first_name_or_last_name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").each do |profile|
+              @profiles << {
+                id: profile.user.id,
+                first_name: profile.first_name,
+                last_name: profile.last_name,
+                email: profile.user.email,
+                avatar: profile.user.avatar,
+                phone_number: profile.user.phone_number,
+                app_user: profile.user.app_user,
+                is_email_verified: profile.user.is_email_verified,
+                web_user: profile.user.web_user,
+                about: profile.about,
+                facebook: profile.facebook,
+                twitter: profile.twitter,
+                snapchat: profile.snapchat,
+                instagram: profile.instagram,
+                linkedin: profile.linkedin,
+                youtube: profile.youtube,
+                is_email_subscribed: profile.is_email_subscribed,
+                is_ambassador: profile.is_ambassador,
+                earning: profile.earning,
+                location: profile.location,
+                lat: profile.lat,
+                lng: profile.lng,
+                device_token: profile.device_token,
+                ranking: profile.ranking,
+                dob: profile.dob,
+                gender: profile.gender,
+                is_request_sent: request_status(request_user, profile.user)['status'],
+                role: 5,
+                is_my_following: false,
+                is_my_friend: is_my_friend?(profile.user),
+                mutual_friends_count: get_mutual_friends(request_user, profile.user).size,
+                location_enabled: profile.user.location_enabled
+              }
+            end
 
+              render json: {
+              code: 200,
+              success: true,
+              message: '',
+              data:  {
+                users: @profiles
+              }
+            }
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: 'search_term is required params',
+          data: nil
+        }
+  end
+end
 
   def send_vip_pass
-    if !params[:recipient_id].blank?
-      vip = Pass.where(pass_type: 'vip').first
-      user = User.find(params[:recipient_id]);
+    if !params[:recipient_id].blank? && !params[:pass_id].blank?
+      vip = Pass.find(params[:pass_id])
+      user = User.find(params[:recipient_id])
       check  = user.wallets.where(offer_id: vip.id).where(offer_type: 'Pass').first
       if check == nil
        @wallet  = user.wallets.new(offer_id: vip.id, offer_type: 'Pass')
@@ -205,7 +261,7 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
       render json: {
         code: 400,
         success: false,
-        message: 'recipient_id is requried.',
+        message: 'recipient_id and pass_id are requried.',
         data: nil
       }
     end

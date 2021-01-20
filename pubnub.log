@@ -325,3 +325,25 @@ D, [2021-01-18T16:54:33.340053 #4387] DEBUG -- Pubnub::Event: #send_request got 
 D, [2021-01-18T16:54:33.341622 #4387] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/Secret%40123/0/%7B%22pn_gcm%22%3A%7B%22notification%22%3A%7B%22title%22%3A%22Ticket%20you%20just%20purchased%20has%20been%20added%20to%20your%20wallet.%22%7D%2C%22data%22%3A%7B%22id%22%3A1%2C%22actor_id%22%3A1%2C%22actor_image%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F1%2F6ce207e2-0509-4cbd-bfa7-3daf571f0ae5.png%22%7D%2C%22notifiable_id%22%3A452%2C%22notifiable_type%22%3A%22Ticket%22%2C%22action%22%3A%22Ticket%20you%20just%20purchased%20has%20been%20added%20to%20your%20wallet.%22%2C%22action_type%22%3A%22add_to_wallet%22%2C%22created_at%22%3A%222021-01-18T11%3A54%3A33.101Z%22%2C%22body%22%3A%22%22%7D%7D%7D?ortt=%7B%22t%22%3A16109708733330428%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=8151778a-8ad5-48fb-a860-544be4318022
 D, [2021-01-18T17:01:17.610222 #4556] DEBUG -- Pubnub::Telementry: Initialized Telemetry
 D, [2021-01-18T17:01:17.610443 #4556] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-20T11:38:33.562751 #182] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-01-20T11:38:33.563403 #182] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-01-20T11:38:33.781771 #182] DEBUG -- Pubnub::Telemetry: Fetching telemetry for 
+D, [2021-01-20T11:38:33.782172 #182] DEBUG -- Pubnub::Event: Initialized Pubnub::AddChannelsToPush
+D, [2021-01-20T11:38:33.783138 #182] DEBUG -- Pubnub::Event: Fired event Pubnub::AddChannelsToPush
+D, [2021-01-20T11:38:33.783298 #182] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-20T11:38:33.783400 #182] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-20T11:38:33.783933 #182] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-20T11:38:33.789658 #182] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-20T11:38:33.790238 #182] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/v1/push/sub-key/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/devices/Secret@123?add=Secret%40123&pnsdk=PubNub-Ruby%2F4.2.7&push_token=Secret%40123&type=gcm&uuid=e3c6744b-8313-424f-9500-bafafa0dd692
+D, [2021-01-20T11:38:33.985893 #182] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-20T11:38:33.986233 #182] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::AddChannelsToPush
+D, [2021-01-20T11:38:33.986980 #182] DEBUG -- Pubnub::Telemetry: Fetching telemetry for l_pub
+D, [2021-01-20T11:38:33.987151 #182] DEBUG -- Pubnub::Event: Initialized Pubnub::Publish
+D, [2021-01-20T11:38:33.988225 #182] DEBUG -- Pubnub::Publish: Fired event Pubnub::Publish
+D, [2021-01-20T11:38:33.988333 #182] DEBUG -- Pubnub::Event: #send_request called
+D, [2021-01-20T11:38:33.988412 #182] DEBUG -- Pubnub::SingleEvent: #request_dispatcher called
+D, [2021-01-20T11:38:33.988490 #182] DEBUG -- Pubnub::Client: Looking for requester for async single_event
+D, [2021-01-20T11:38:33.988563 #182] DEBUG -- Pubnub::Event: #send_request got sender
+D, [2021-01-20T11:38:33.989255 #182] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/Secret%40123/0/%7B%22pn_gcm%22%3A%7B%22notification%22%3A%7B%22title%22%3A%22vip%20pass%22%2C%22body%22%3A%22timtim%20khan%20has%20sent%20you%20a%20VIP%20pass%20to%20join%20their%20event.%22%7D%2C%22data%22%3A%7B%22id%22%3A1%2C%22actor_id%22%3A5%2C%22actor_image%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F5%2F55ab1508-cade-4bd1-bb83-48d308ac3648.png%22%7D%2C%22notifiable_id%22%3A1%2C%22notifiable_type%22%3A%22Pass%22%2C%22action%22%3A%22timtim%20khan%20has%20sent%20you%20a%20VIP%20pass%20to%20join%20their%20event.%22%2C%22action_type%22%3A%22add_pass_to_wallet%22%2C%22created_at%22%3A%222021-01-20T06%3A38%3A33.756Z%22%2C%22body%22%3A%22%22%7D%7D%7D?ortt=%7B%22t%22%3A16111247139872466%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=e3c6744b-8313-424f-9500-bafafa0dd692
+D, [2021-01-20T11:38:34.075373 #182] DEBUG -- Pubnub::Event: Event#handle
+D, [2021-01-20T11:38:34.075725 #182] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::Publish
