@@ -77,7 +77,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
            'location' => eval(e.location)["city"] + ", " + eval(e.location)["country"],
            'lat' => eval(e.location)["geometry"]["lat"],
            'lng' => eval(e.location)["geometry"]["lng"],
-            'image' => e.image,
+            'image' => e.event.image,
             'is_interested' => is_interested?(e),
             'is_going' => is_attending?(e),
             'is_followed' => is_followed(e.user),
