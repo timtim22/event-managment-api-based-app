@@ -602,7 +602,7 @@
 
     if @event.save
       
-      @event.child_events.where.not(start_date: params[:event_dates]).destroy_all
+    @event.child_events.where.not(start_date: params[:event_dates]).destroy_all
       params[:event_dates].each do |date|
         ch = @event.child_events.where(start_date: date).first
         if ch.blank?

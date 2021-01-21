@@ -193,6 +193,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
 
       stats = {
         offer_start_date: offer.date.strftime(get_time_format),
+        offer_creation_date: offer.created_at, 
         offer_end_date: offer.validity.strftime(get_time_format),
         max_redemptions: offer.quantity,
         total_redeem_count: offer.redemptions.size,
@@ -296,9 +297,10 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         }},
         draw_date: competition.end_date,
         start_date: competition.start_date,
+        creation_date: competition.created_at,
         end_date: competition.end_date,
         total_entries_count: competition.registrations.size,
-        movement_percentage: get_time_slot_competitions_increment_decrement(@current_time_slot_dates, @before_current_time_slot_dates, competition),
+        movement_percentage: get_time_slot_movement_in_competition_entries(@current_time_slot_dates, @before_current_time_slot_dates, competition),
         "demographics" =>  get_competition_demographics(competition),
         graph_stats: {
           total_impression_count: get_time_slot_total_competition_impresssions(competition, @current_time_slot_dates),
@@ -963,42 +965,31 @@ def get_time_slot_special_offers_increment_decrement(current_time_slot_dates,   
           get_sum_of_array_elements(@taken)
       end
 
-      def get_time_slot_competitions_increment_decrement(current_time_slot_dates,    before_current_time_slot_dates, competition)
 
-        @current_time_slot_competitions = []
-        @before_current_time_slot_competitions = []
 
-        @increment_decreament_in_competitions = {}
 
-        current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
-
-        current_dates_array.each do |date|
-          p_date = Date.parse(date)
-          @competitions = competition.registrations.where(created_at: p_date.midnight..p_date.end_of_day)
-          if !@competitions.blank?
-            @current_time_slot_competitions.push(@competitions.size)
-          end
-          end #each
-
-          before_current_dates_array = before_current_time_slot_dates.split(',').map {|s| s.to_s }
-          before_current_dates_array.each do |date|
-            p_date = Date.parse(date)
-            @competitions = competition.registrations.where(created_at: p_date.midnight..p_date.end_of_day)
-            if !@competitions.blank?
-              @before_current_time_slot_competitions.push(@competitions.size)
-            end
-            end #each
-
-         @current_competitions = get_sum_of_array_elements(@current_time_slot_competitions)
-         @before_competitions = get_sum_of_array_elements(@before_current_time_slot_competitions)
-         @diff = @current_competitions - @before_competitions
-
-         @increment_decreament_in_competitions['before_competitions'] = @before_competitions
-         @increment_decreament_in_competitions['current_competitions'] = @current_competitions
-         @increment_decreament_in_competitions['difference'] = @diff
-
-         @increment_decreament_in_competitions
+      def get_time_slot_movement_in_competition_entries(current_time_slot_dates,    before_current_time_slot_dates, competition)
+        current_dates_array = get_dates_array(current_time_slot_dates)
+        before_dates_array = get_dates_array(before_current_time_slot_dates)
+    
+        current_size = 0
+        before_size = 0
+        movement_percent = 0
+      
+        current_size += competition.registrations.where(created_at: current_dates_array).size
+        before_size += competition.registrations.where(created_at: before_dates_array).size
+        difference = before_size - current_size
+      
+        if difference != 0
+          movement_percent = get_percent_of(difference, before_size)
+        end
+    
+          movement_percent 
+     
       end
+
+
+
 
       def get_time_slot_competitions_date_wise(time_slot_dates, competition)
         dates_array = time_slot_dates.split(',').map {|s| s.to_s }
@@ -1144,37 +1135,26 @@ end
       @time_slot_views = get_sum_of_array_elements(@total_views)
    end
 
+
+
    def get_time_slot_increment_decrement_in_offer_views(current_time_slot_dates, before_current_time_slot_dates, offer)
 
-    @current_time_slot_views = []
-    @before_current_time_slot_views = []
+    current_dates_array = get_dates_array(current_time_slot_dates)
+    before_dates_array = get_dates_array(before_current_time_slot_dates)
 
-    @increment_decreament_in_views = {}
+    current_size = 0
+    before_size = 0
+    movement_percent = 0
+  
+    current_size += offer.views.where(created_at: current_dates_array).size
+    before_size += offer.views.where(created_at: before_dates_array).size
+    difference = before_size - current_size
+  
+    if difference != 0
+      movement_percent = get_percent_of(difference, before_size)
+    end
 
-    current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
-    current_dates_array.each do |date|
-      p_date = Date.parse(date)
-      @views = offer.views.where(created_at: p_date.midnight..p_date.end_of_day)
-      if !@views.blank?
-        @current_time_slot_views.push(@views.size)
-      end
-      end #each
-      before_current_dates_array = before_current_time_slot_dates.split(',').map {|s| s.to_s }
-      before_current_dates_array.each do |date|
-        p_date = Date.parse(date)
-        @views = offer.views.where(created_at: p_date.midnight..p_date.end_of_day)
-        if !@views.blank?
-          @before_current_time_slot_views.push(@views.size)
-        end
-        end #each
-
-     @current_views = get_sum_of_array_elements(@current_time_slot_views)
-     @before_views = get_sum_of_array_elements(@before_current_time_slot_views)
-
-     @increment_decreament_in_views['before_views'] = @before_views
-     @increment_decreament_in_views['current_views'] = @current_views
-     @increment_decreament_in_views['difference'] = @current_views - @before_views
-     @increment_decreament_in_views
+      movement_percent   
  end
 
  def get_time_slot_views_date_wise(time_slot_dates, offer)

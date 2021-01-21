@@ -99,7 +99,8 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         creator_name: get_full_name(offer.user), 
         creator_image: offer.user.avatar, 
         start_time: offer.time,
-        creation_date: offer.created_at, 
+        creation_date: offer.created_at,
+        end_date: offer.validity, 
         end_time: offer.end_time,
         quantity: offer.quantity,
         redeem_count: get_redeem_count(offer)
