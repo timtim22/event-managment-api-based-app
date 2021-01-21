@@ -174,7 +174,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                 location: profile.location,
                 lat: profile.lat,
                 lng: profile.lng,
-                device_token: profile.device_token,
+                device_token: profile.user.device_token,
                 ranking: profile.ranking,
                 dob: profile.dob,
                 gender: profile.gender,
