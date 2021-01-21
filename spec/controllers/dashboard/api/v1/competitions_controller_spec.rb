@@ -74,7 +74,7 @@ RSpec.describe Dashboard::Api::V1::CompetitionsController, type: :controller do
     end
 
     it "should destroy the competition" do
-      delete :destroy, params: {id: 1}
+      delete :destroy, params: {id: Competition.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
