@@ -82,11 +82,6 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                     "dates" =>  dates
                 }
               }
-                if event.location.include? "\"=>\""
-                    location =  eval(event.location)["city"] + ", " + eval(event.location)["country"]
-                else
-                      location = event.location
-                end  
 
               @event_stats = {
                   "event_id" => event.id,
@@ -95,10 +90,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                   "end_date" => event.end_date,
                   "start_time" => event.start_time,
                   "end_time" => event.end_time,
-                  # "location" => eval(event.location)["city"] + ", " + eval(event.location)["country"],
-                  # "lat" => eval(event.location)["geometry"]["lat"],
-                  # "lng" => eval(event.location)["geometry"]["lng"],
-                  "location" => location,
+                  "location" => eval(event.location),
                   "event_type" => event.event_type,
                   "image" => event.image,
                   "price_type" => event.event.price_type,

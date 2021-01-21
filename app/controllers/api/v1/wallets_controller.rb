@@ -432,8 +432,9 @@ end
        if params[:offer_type] == "Ticket"
           ticket = Ticket.find(params[:offer_id])
           child_event = params[:event_id]
-          event = ticket.event
-          event.going_interest_levels.create!(user: request_user, child_event: child_event)
+          # event = ticket.event
+          # event.going_interest_levels.create!(user: request_user, child_event: child_event)
+          child_event.going_interest_levels.create!(user: request_user)
        end
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
