@@ -1503,48 +1503,28 @@ end
 
 
 def get_time_slot_event_paid_checked_in(time_slot_dates, event)
-  dates_array = time_slot_dates.split(',').map {|s| s.to_s }
-  @paid_checked_in = 0
-  dates_array.each do |date|
-     p_date = Date.parse(date)
-      paid_checked_in = event.tickets.where(ticket_type: 'buy').map {|t| t.redemptions.size }.sum
-     if !paid_checked_in.blank?
-      @paid_checked_in += paid_checked_in
-     end #if !blank?
-  end #each
-   @paid_checked_in
+      dates_array = get_dates_array(time_slot_dates)
+      paid_checked_in = event.tickets.where(ticket_type: 'buy').map {|t| t.redemptions.where(created_at: dates_array).size }.sum   
 end
 
 
 def get_time_slot_movement(current_time_slot_dates, before_current_time_slot_dates, event)
+    current_dates_array = get_dates_array(current_time_slot_dates)
+    before_dates_array = get_dates_array(before_current_time_slot_dates)
 
     current_size = 0
     before_size = 0
     movement_percent = 0
   
+    current_size += event.going_interest_levels.where(created_at: current_dates_array).size
+    before_size += event.going_interest_levels.where(created_at:before_dates_array).size
+    difference = before_size - current_size
+  
+    if difference != 0
+      movement_percent = get_percent_of(difference, before_size)
+    end
 
-  current_dates_array = current_time_slot_dates.split(',').map {|s| s.to_s }
-  current_dates_array.each do |date|
-    p_date = Date.parse(date)
-    attendees = event.going_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day)
-    current_size += attendees.size
-    end #each
-
-    before_current_dates_array = before_current_time_slot_dates.split(',').map {|s| s.to_s }
-    current_dates_array.each do |date|
-      p_date = Date.parse(date)
-      attendees = event.going_interest_levels.where(created_at: p_date.midnight..p_date.end_of_day)
-      before_size += attendees.size
-      end #each
-
-       difference = before_size - current_size
-     
-      if difference != 0
-        movement_percent = get_percent_of(difference, before_size)
-      end
-
-      movement_percent
-    
+      movement_percent   
 end
 
 

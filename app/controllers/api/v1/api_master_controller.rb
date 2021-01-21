@@ -72,6 +72,8 @@ class Api::V1::ApiMasterController < ApplicationController
       end
 
 
+     
+     
       def get_demographics(event)
         males = []
         females = []
@@ -90,13 +92,34 @@ class Api::V1::ApiMasterController < ApplicationController
               'No users'
             end
          end #each
-
-          demographics['males_percentage'] = if males.size > 0 then (males.uniq.size.to_f / total_count.to_f * 100.0).round(2) else 0 end
-
-          demographics['females_percentage'] = if females.size > 0 then (females.uniq.size.to_f / total_count.to_f * 100.0).round(2)  else 0 end
-
-          demographics['gays_percentage'] = if gays.size > 0 then (gays.uniq.size.to_f / total_count.to_f * 100.0).round(2) else 0 end
-
+  
+         if males.size > 0 
+            percentage = males.uniq.size.to_f / total_count.to_f * 100.0 
+            males_percentage = percentage.round(2)
+          else 
+            males_percentage = 0 
+          end
+  
+         if females.size > 0  
+            percentage = females.uniq.size.to_f / total_count.to_f * 100.0
+            female_percentage = percentage.round(2)  
+          else
+            female_percentage = 0 
+           end
+  
+          if gays.size > 0 
+             percentage = gays.uniq.size.to_f / total_count.to_f * 100.0  
+             gays_percentage = percentage.round(2) 
+            else
+             gays_percentage = 0 
+            end
+  
+          demographics['males_percentage'] = males_percentage
+  
+          demographics['females_percentage'] = female_percentage
+  
+          demographics['gays_percentage'] = gays_percentage
+  
           demographics
      end
 
