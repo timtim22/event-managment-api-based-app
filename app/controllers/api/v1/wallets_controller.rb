@@ -413,11 +413,11 @@ end
  def add_to_wallet
   if !params[:offer_id].blank? && !params[:offer_type].blank?
        quantity = 1
-      if params[:offer_type] == "Ticket" && params[:quantity].blank?
+      if params[:offer_type] == "Ticket" && params[:quantity].blank? || params[:offer_type] == "Ticket" && params[:event_id].blank?
          render json: {
            code: 400,
            success: false,
-           message: "quantity is required field.",
+           message: "quantity, event_id is required field.",
            data: nil
          }
         return
@@ -431,8 +431,9 @@ end
     if @wallet.save
        if param[:offer_type] == "Ticket"
           ticket = Ticket.find(params[:offer_id])
+          child_event = params[:event_id]
           event = ticket.event
-          event.going_interest_levels.create!(user: request_user)
+          event.going_interest_levels.create!(user: request_user, child_event: child_event)
        end
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],

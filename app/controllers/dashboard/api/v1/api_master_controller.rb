@@ -70,8 +70,8 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
       females = []
       gays = []
       demographics = {}
-      total_count = event.interest_levels.size
-      event.interest_levels.each do |level|
+      total_count = event.going_interest_levels.size
+      event.going_interest_levels.each do |level|
        case level.user.profile.gender
          when 'male'
            males.push(level.user)
