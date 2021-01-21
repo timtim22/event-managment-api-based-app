@@ -1,6 +1,5 @@
 require 'rails_helper'
 require "spec_helper"
-require 'spec_authentication'
 
 RSpec.describe Dashboard::Api::V1::UsersController, type: :controller do
   describe "User API" do

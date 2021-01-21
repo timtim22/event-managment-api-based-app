@@ -1,6 +1,6 @@
 require 'rails_helper'
 require "spec_helper"
-require "spec_authentication"
+ 
 
 
 RSpec.describe Api::V1::TicketsController, type: :controller do

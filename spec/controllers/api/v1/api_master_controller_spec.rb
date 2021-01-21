@@ -1,6 +1,5 @@
 require 'rails_helper'
 require "spec_helper"
-require "spec_authentication"
 
 RSpec.describe Api::V1::ApiMasterController, type: :controller do
   describe "Mobile - Api master controller - " do

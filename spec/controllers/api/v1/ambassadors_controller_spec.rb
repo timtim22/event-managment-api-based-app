@@ -1,6 +1,5 @@
 require 'rails_helper'
 require "spec_helper"
-require "spec_authentication"
 
 RSpec.describe Api::V1::AmbassadorsController, type: :controller do
   describe "Mobile - Ambassadors API - " do
