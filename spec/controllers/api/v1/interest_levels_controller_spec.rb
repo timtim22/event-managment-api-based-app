@@ -11,13 +11,13 @@ RSpec.describe Api::V1::InterestLevelsController, type: :controller do
     end
 
     it "should create interest for an event" do
-      post :create_interest, params: {event_id: Event.last.id }
+      post :create_interest, params: {event_id: ChildEvent.last.id }
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
 
     it "should create going for an event" do
-      post :create_going, params: {event_id: Event.last.id }
+      post :create_going, params: {event_id: ChildEvent.last.id }
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end

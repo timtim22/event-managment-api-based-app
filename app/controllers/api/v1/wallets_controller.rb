@@ -429,7 +429,7 @@ end
     if check == nil 
     @wallet  = request_user.wallets.new(offer_id: params[:offer_id], offer_type: params[:offer_type],quantity: quantity)
     if @wallet.save
-       if param[:offer_type] == "Ticket"
+       if params[:offer_type] == "Ticket"
           ticket = Ticket.find(params[:offer_id])
           event = ticket.event
           event.going_interest_levels.create!(user: request_user)

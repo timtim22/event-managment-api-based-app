@@ -1,4 +1,4 @@
-class Api::V1::UsersController < Api::V1::ApiMasterController
+fclass Api::V1::UsersController < Api::V1::ApiMasterController
   before_action :authorize_request, except: :create
   before_action :checkout_logout, except: :create
   require 'action_view'
@@ -506,7 +506,7 @@ end
      when 'FriendRequest'
      resource["friend_name"] = get_full_name(log.resource.user)
      resource['friends_count'] = log.resource.user.friends.size
-     resource['mutual_friends_count'] = get_mutual_friends(request_user,resource.user).size
+     resource['mutual_friends_count'] = get_mutual_friends(request_user.resource.user).size
 
      when 'Follow'
      resource['name'] = get_full_name(log.resource.following)
