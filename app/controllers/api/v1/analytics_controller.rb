@@ -1529,7 +1529,7 @@ end
 
 
 def get_dates_array(current_time_slot_dates)
-  dates = current_time_slot_dates.split(',').map {|date| Date.parse(date) }
+  dates = current_time_slot_dates.map {|date| Date.parse(date) }
   dates_array = dates.map {|d| d.midnight..d.end_of_day }
 end
 
