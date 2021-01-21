@@ -77,8 +77,8 @@ class Api::V1::ApiMasterController < ApplicationController
         females = []
         gays = []
         demographics = {}
-        total_count = event.interest_levels.size
-        event.interest_levels.each do |level|
+        total_count = event.going_interest_levels.size
+        event.going_interest_levels.each do |level|
          case level.user.profile.gender
            when 'male'
              males.push(level.user)
@@ -91,11 +91,11 @@ class Api::V1::ApiMasterController < ApplicationController
             end
          end #each
 
-          demographics['males_percentage'] = if males.size > 0 then males.uniq.size.to_f / total_count.to_f * 100.0 else 0 end
+          demographics['males_percentage'] = if males.size > 0 then (males.uniq.size.to_f / total_count.to_f * 100.0).round(2) else 0 end
 
-          demographics['females_percentage'] = if females.size > 0 then females.uniq.size.to_f / total_count.to_f * 100.0  else 0 end
+          demographics['females_percentage'] = if females.size > 0 then (females.uniq.size.to_f / total_count.to_f * 100.0).round(2)  else 0 end
 
-          demographics['gays_percentage'] = if gays.size > 0 then gays.uniq.size.to_f / total_count.to_f * 100.0  else 0 end
+          demographics['gays_percentage'] = if gays.size > 0 then (gays.uniq.size.to_f / total_count.to_f * 100.0).round(2) else 0 end
 
           demographics
      end

@@ -11,7 +11,7 @@ RSpec.describe Api::V1::AnalyticsController, type: :controller do
     end
 
     it "should return business stats" do
-      post :get_dashboard, params: {business_id: User.web_users.last, resource: "events", current_time_slot_dates: "11-12-2020", before_current_time_slot_dates: "12-12-2020"}
+      post :get_dashboard, params: {business_id: User.web_users.last, resource: "events", current_time_slot_dates: "2020-11-11", before_current_time_slot_dates: "2020-12-12"}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
