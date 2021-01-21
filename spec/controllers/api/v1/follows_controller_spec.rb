@@ -11,7 +11,7 @@ RSpec.describe Api::V1::FollowsController, type: :controller do
     end
 
     it "should follow" do
-      post :follow, params: {following_id: Follow.last.id}
+      post :follow, params: {following_id: Follow.last.following_id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end

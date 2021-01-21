@@ -82,7 +82,12 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                     "dates" =>  dates
                 }
               }
-        
+                if event.location.include? "\"=>\""
+                    location =  eval(event.location)["city"] + ", " + eval(event.location)["country"]
+                else
+                      location = event.location
+                end  
+
               @event_stats = {
                   "event_id" => event.id,
                   "name" => event.name,
@@ -90,10 +95,10 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                   "end_date" => event.end_date,
                   "start_time" => event.start_time,
                   "end_time" => event.end_time,
-                  "location" => event.location,
                   # "location" => eval(event.location)["city"] + ", " + eval(event.location)["country"],
                   # "lat" => eval(event.location)["geometry"]["lat"],
                   # "lng" => eval(event.location)["geometry"]["lng"],
+                  "location" => location,
                   "event_type" => event.event_type,
                   "image" => event.image,
                   "price_type" => event.event.price_type,
@@ -365,6 +370,11 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
   #         "time_slot_comments_date_wise" => get_time_slot_comments_date_wise(params[:current_time_slot_dates],event)
   #       }
 
+  #         if event.location.include? "\"=>\""
+  #             location =  eval(event.location)["city"] + ", " + eval(event.location)["country"]
+  #         else
+  #               location = event.location
+  #         end  
 
   #       events << {
   #         "event_id" => event.id,
@@ -373,9 +383,10 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
   #         "end_date" => event.end_date,
   #         "start_time" => event.start_time,
   #         "end_time" => event.end_time,
-  #         "location" => eval(event.location)["city"] + ", " + eval(event.location)["country"],
-  #         "lat" => eval(event.location)["geometry"]["lat"],
-  #         "lng" => eval(event.location)["geometry"]["lng"],
+  #         "location" => location,
+  #         # "location" => eval(event.location)["city"] + ", " + eval(event.location)["country"],
+  #         # "lat" => eval(event.location)["geometry"]["lat"],
+  #         # "lng" => eval(event.location)["geometry"]["lng"],
   #         "event_type" => event.event_type,
   #         "image" => event.image,
   #         "price_type" => event.price_type,
@@ -1518,7 +1529,7 @@ end
 
 
 def get_dates_array(current_time_slot_dates)
-  dates = current_time_slot_dates.map {|date| Date.parse(date) }
+  dates = current_time_slot_dates.split(',').map {|date| Date.parse(date) }
   dates_array = dates.map {|d| d.midnight..d.end_of_day }
 end
 

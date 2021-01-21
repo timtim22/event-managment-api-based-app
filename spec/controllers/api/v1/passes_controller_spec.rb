@@ -11,7 +11,7 @@ RSpec.describe Api::V1::PassesController, type: :controller do
     end
 
     it "should return all passes" do
-      get :index, params: {event_id: Event.last.id}
+      get :index, params: {event_id: ChildEvent.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
