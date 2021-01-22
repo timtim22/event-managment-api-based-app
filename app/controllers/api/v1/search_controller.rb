@@ -20,7 +20,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                   "image" => event.image,
                   "name" => event.name,
                   "description" => event.description,
-                  "location" => insert_space_after_comma(event.location),
+                  "location" => eval(event.location),
                   "start_date" => event.end_date,
                   "end_date" => event.end_date,
                   "start_time" => event.start_time,

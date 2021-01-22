@@ -704,21 +704,26 @@
     #save attachement if there is any
     if !params[:event_attachments].blank?
       params[:event_attachments].each do |attachment|
-        @event_attachment = @event.event_attachments.find(attachment[:id]).update!(:media => attachment[:media], media_type: 'image')
+        if attachment.include? "id"
+          @event_attachment = @event.event_attachments.find(attachment[:id]).update!(:media => attachment[:media], media_type: 'image')
+        else
+          @event_attachment = @event.event_attachments.create!(:media => attachment[:media], media_type: 'image')
+        end
        end
       end #if
 
       #save sponsers if there is any
       if !params[:sponsors].blank?
         params[:sponsors].each do |sponsor|
-        @event_sponsor = @event.sponsors.find(sponsor[:id]).update!(:external_url => sponsor[:external_url],:sponsor_image => sponsor[:sponsor_image])
+          if sponsor.include? "id"
+            @event_sponsor = @event.sponsors.find(sponsor[:id]).update!(:external_url => sponsor[:external_url],:sponsor_image => sponsor[:sponsor_image])
+          else
+            @event_sponsor = @event.sponsors.create!(:external_url => sponsor[:external_url],:sponsor_image => sponsor[:sponsor_image])
+          end
         end #each
       end#if
 
     end#if
-
-    @event["id"] = 
-
 
      if success
         render json:  {
