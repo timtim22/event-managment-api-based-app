@@ -982,7 +982,7 @@ def get_time_slot_special_offers_increment_decrement(current_time_slot_dates,   
         movement_percent_now =   get_percent_of(current_size, competition.registrations.size)
     
         differenct_in_movement_percent =  movement_percent_now - movement_percent_before 
-        differenct_in_movement_percent.rount(2)
+        differenct_in_movement_percent.round(2)
      
       end
 
