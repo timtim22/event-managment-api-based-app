@@ -148,13 +148,13 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         @current_time_slot_dates = generate_date_range(start_date, end_date)
         @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
       when "weekly"
-        start_date = Date.parse(params[:date]).tomorrow - 7.days
+        start_date = Date.parse(params[:date]) - 7.days
         start_date_to_string = start_date.to_s
         end_date = params[:date]
         @current_time_slot_dates = generate_date_range(start_date_to_string, end_date)
-        before_start_date = Date.parse(params[:date]).tomorrow - 14.days
+        before_start_date = Date.parse(params[:date]) - 14.days
         before_start_date_to_string = before_start_date.to_s
-        before_end_date = Date.parse(params[:date]).tomorrow - 7.days
+        before_end_date = Date.parse(params[:date]) - 7.days
         before_end_date_to_string = before_end_date.to_s
         @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
       when  "overall"
@@ -193,7 +193,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         "demographics" => get_offer_demographics(offer),
         graph_stats: {
           total_impression_count: get_time_slot_total_offer_impresssions(offer, @current_time_slot_dates),
-          total_in_wallet_count: (@current_time_slot_dates, offer),
+          total_in_wallet_count: get_time_slot_offer_in_wallet(@current_time_slot_dates, offer),
           total_redeemed_count: get_time_slot_total_redemptions(offer, @current_time_slot_dates),
           total_shared_count: get_time_slot_total_offer_shares(@current_time_slot_dates, offer),
           dates: dates
@@ -292,7 +292,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         creation_date: competition.created_at,
         end_date: competition.end_date,
         total_entries_count: competition.registrations.size,
-        movement_percentage: 0,#get_time_slot_movement_in_competition_entries(@current_time_slot_dates, @before_current_time_slot_dates, competition),
+        movement_percentage: get_time_slot_movement_in_competition_entries(@current_time_slot_dates, @before_current_time_slot_dates, competition),
         "demographics" =>  get_competition_demographics(competition),
         graph_stats: {
           total_impression_count: get_time_slot_total_competition_impresssions(competition, @current_time_slot_dates),
@@ -982,7 +982,7 @@ def get_time_slot_special_offers_increment_decrement(current_time_slot_dates,   
         movement_percent_now =   get_percent_of(current_size, competition.registrations.size)
     
         differenct_in_movement_percent =  movement_percent_now - movement_percent_before 
-        differenct_in_movement_percent.round(2)
+        differenct_in_movement_percent.rount(2)
      
       end
 
@@ -1504,7 +1504,6 @@ def get_time_slot_movement_in_event_attendees(current_time_slot_dates, before_cu
     movement_percent_now =   get_percent_of(current_size, event.event.max_attendees)
 
     differenct_in_movement_percent =  movement_percent_now - movement_percent_before 
-    differenct_in_movement_percent.round(2)
 
 end
 
