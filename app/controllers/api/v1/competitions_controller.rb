@@ -18,7 +18,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        location: competition.location,
+        location: eval(competition.location),
         start_date: competition.start_date,
         end_date: competition.end_date,
         start_time: competition.start_time,
@@ -46,7 +46,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
       id: competition.id,
       title: competition.title,
       description: competition.description,
-      location: competition.location,
+      location: eval(competition.location),
       start_date: competition.start_date,
       end_date: competition.end_date,
       start_time: competition.start_time,
@@ -89,7 +89,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        location: competition.location,
+        location: eval(competition.location),
         start_date: competition.start_date,
         end_date: competition.end_date,
         start_time: competition.start_time,
@@ -378,7 +378,7 @@ class Api::V1::CompetitionsController < Api::V1::ApiMasterController
                         "action_type": notification.action_type,
                         "created_at": notification.created_at,
                         "is_read": !notification.read_at.nil?,
-                        "location": location,
+                        "location": eval(notification.resource.location),
                          "competition_id": notification.resource.id
                        }
 
