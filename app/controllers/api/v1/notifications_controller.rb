@@ -899,7 +899,25 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                  ).value
 
                  case event.price_type
-                  when "free"
+                  when "free_event"
+                    data = {
+                      "id": notification.id,
+                      "event_name": notification.resource.name,
+                      "event_id": notification.resource.id,
+                      "event_location": notification.resource.location,
+                      "event_start_date": notification.resource.start_date,
+                      "event_start_time": notification.resource.start_time,
+                      "event_end_time": notification.resource.end_time,
+                      "event_type": notification.resource.event_type,
+                      "actor_image": notification.actor.avatar,
+                      "notifiable_id": notification.notifiable_id,
+                      "notifiable_type": notification.notifiable_type,
+                      "action": notification.action,
+                      "action_type": notification.action_type,
+                      "created_at": notification.created_at,
+                      "is_read": !notification.read_at.nil?
+                    }
+                  when "free_ticketed_event"
                     data = {
                       "id": notification.id,
                       "event_name": notification.resource.name,

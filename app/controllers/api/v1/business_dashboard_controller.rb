@@ -52,10 +52,8 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         'end_date' => e.end_date,
         'start_time' => e.start_time,
         'end_time' => e.end_time,
-        'image' => e.image,
-           'location' => eval(e.location),
-           # 'lat' => eval(e.location)["geometry"]["lat"],
-           # 'lng' => eval(e.location)["geometry"]["lng"],
+        'image' => e.event.image,
+        'location' => eval(e.location),
         'price' => get_price(e.event),
         'price_type' => e.event.price_type,
         'has_passes' => has_passes?(e.event)
@@ -78,18 +76,11 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
     @special_offers = business.special_offers.page(params[:page]).per(20).order(id: 'DESC')
     @offers = []
     @special_offers.each do |offer|
-      location = {
-        name: offer.location,
-        geometry: {
-          lat: offer.lat,
-          lng: offer.lng
-        }
-      }
       @offers << {
         id: offer.id,
         title: offer.title,
         image: offer.image,
-        location: location,
+        location: eval(offer.location),
         validity: offer.validity.strftime(get_time_format),
         description: offer.description,
         ambassador_rate: offer.ambassador_rate,
@@ -118,18 +109,11 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
   def competitions
     @competitions = []
     business.competitions.page(params[:page]).per(30).each do |competition|
-      location = {
-        name: competition.location,
-        geometry: {
-          lat: competition.lat,
-          lng: competition.lng
-        }
-      }
       @competitions <<  {
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        location: location,
+        location: eval(competition.location),
         image: competition.image,
         start_date: competition.start_date,
         creation_date: competition.created_at, 
@@ -196,7 +180,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
             host_image: e.user.avatar,
             event_name: e.name,
             event_image: e.image,
-            event_location: e.location,
+            event_location: eval(e.location),
             event_start_time: e.start_time,
             event_end_time: e.end_time,
             event_date: e.start_date,
@@ -221,7 +205,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
           host_image: e.user.avatar,
           event_name: e.name,
           event_image: e.image,
-          event_location: e.location,
+          event_location: eval(e.location),
           event_start_time: e.start_time,
           event_end_time: e.end_time,
           event_date: e.start_date,
@@ -249,9 +233,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
             'price_type' => e.event.price_type,
             'event_type' => e.event_type,
             'additional_media' => e.event.event_attachments,
-           'location' => eval(e.location),
-           # 'lat' => eval(e.location)["geometry"]["lat"],
-           # 'lng' => eval(e.location)["geometry"]["lng"],
+            'location' => eval(e.location),
             'image' => e.image,
             'is_interested' => is_interested?(e),
             'is_going' => is_attending?(e),
