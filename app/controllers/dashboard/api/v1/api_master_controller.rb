@@ -224,7 +224,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
     "image" => event.event.image,
     "event_type"  => event.event_type,
     "price_type"  => event.price_type,
-    "location"  => event.location,
+    "location"  => eval(event.location),
     "start_date"  => event.start_date,
     "end_date"  => event.end_date,
     "start_time"  => event.start_time,
