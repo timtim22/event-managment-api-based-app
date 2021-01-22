@@ -224,7 +224,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
     "image" => event.event.image,
     "event_type"  => event.event_type,
     "price_type"  => event.price_type,
-    "location"  => event.location,
+    "location"  => eval(event.location),
     "start_date"  => event.start_date,
     "end_date"  => event.end_date,
     "start_time"  => event.start_time,
@@ -235,7 +235,8 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
     "event_status" => event.event.status,
     "parent_event_id" => event.event.id,
     "price" => get_price(event.event),
-    "status" => status
+    "status" => status,
+    "redeem_code" => qr
     
   }
 

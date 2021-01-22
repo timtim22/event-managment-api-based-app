@@ -566,16 +566,16 @@
       end #each
      end #blank
 
-     if !params[:event_attachments].blank?
-      required_fields = ['media']
-      params[:event_attachments].each do |attachment|
-        required_fields.each do |field|
-          if attachment[field.to_sym].blank?
-            @error_messages.push("In event attachements " + field + ' is required.')
-          end #if
-         end #each
-      end #each
-     end #blank
+     # if !params[:event_attachments].blank?
+     #  required_fields = ['media']
+     #  params[:event_attachments].each do |attachment|
+     #    required_fields.each do |field|
+     #      if attachment[field.to_sym].blank?
+     #        @error_messages.push("In event attachements " + field + ' is required.')
+     #      end #if
+     #     end #each
+     #  end #each
+     # end #blank
 
   if @error_messages.blank?
     @event = Event.find(params[:id])

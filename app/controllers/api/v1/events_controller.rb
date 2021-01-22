@@ -356,7 +356,8 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
       "price_type" => event.event.price_type,
       "max_price" => get_max_price(event.event),
       "has_passes" => has_passes?(event.event),
-      "categories" => event.event.categories
+      "categories" => event.event.categories,
+      "location" => eval(event.location)
     }
  end
 
