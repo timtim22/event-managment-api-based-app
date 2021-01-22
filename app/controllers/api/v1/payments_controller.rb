@@ -26,7 +26,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
           }
           return
         end
-        @event = Event.find(params[:event_id])
+        @event = ChildEvent.find(params[:event_id])
       if params[:ticket_type] == 'buy'
         if !params[:status].blank? && !params[:stripe_response].blank? && !params[:transaction_id].blank?
 
@@ -36,9 +36,9 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
           if(params[:status] == 'successful') #while tikcet_type ==  'buy' 'can_purchase' is already inmpleted  to 'get_secret' api which is the first step of stripe payment, so doesn't need here
             request_user.going_interest_levels.create!(child_event: @event)
 
-              @check = TicketPurchase.where(ticket_id: params[:ticket_id]).where(user_id: request_user.id, price: @ticket.price)
+              @check = TicketPurchase.where(ticket_id: params[:ticket_id]).where(user_id: request_user.id)
           if @check.blank?
-            if @purchase = request_user.ticket_purchases.create!(ticket_id: params[:ticket_id], quantity: params[:quantity])
+            if @purchase = request_user.ticket_purchases.create!(ticket_id: params[:ticket_id], quantity: params[:quantity], price: @ticket.price)
               #update total quantity
               @ticket.quantity = @ticket.quantity - params[:quantity].to_i
               @ticket.save
@@ -196,7 +196,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
         if can_purchase?(@ticket, params[:quantity])
           @check = TicketPurchase.where(ticket_id: params[:ticket_id]).where(user_id: request_user.id)
         if @check.blank?
-        if @purchase = request_user.ticket_purchases.create!(ticket_id: params[:ticket_id], quantity: params[:quantity])
+        if @purchase = request_user.ticket_purchases.create!(ticket_id: params[:ticket_id], quantity: params[:quantity], price: @ticket.price)
           #update total quantity
           @ticket.quantity = @ticket.quantity - params[:quantity].to_i
           @ticket.save
