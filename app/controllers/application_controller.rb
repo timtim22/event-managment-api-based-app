@@ -585,7 +585,7 @@ class ApplicationController < ActionController::Base
           host_image: business.avatar,
           event_name: pass.event.name,
           event_image: pass.event.image,
-          event_location: pass.event.location,
+          event_location: eval(pass.event.location),
           event_start_time: pass.event.start_time,
           event_end_time: pass.event.end_time,
           event_date: pass.event.start_date,
