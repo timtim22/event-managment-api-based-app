@@ -431,6 +431,7 @@ class ApplicationController < ActionController::Base
       "quantity" => event.quantity,
       "price_type" => event.price_type,
       "frequency" => event.frequency,
+      "max_attendees" => event.max_attendees,
       "event_dates" => event.child_events.map {|ch| 
         {
           id: ch.id,

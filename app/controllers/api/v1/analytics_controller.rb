@@ -88,8 +88,8 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                   "name" => event.name,
                   "start_date" => event.start_date,
                   "end_date" => event.end_date,
-                  "start_time" => event.start_time,
-                  "end_time" => event.end_time,
+                  "start_time" => get_date_time(event.start_date, event.start_time),
+                  "end_time" => get_date_time(event.end_date, event.end_time),
                   "location" => eval(event.location),
                   "event_type" => event.event_type,
                   "image" => event.image,
@@ -545,6 +545,12 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
   private
 
   ##################### attendess #######################
+
+ def get_date_time(date, time)
+    d = date.strftime("%Y-%m-%d")
+    t = time.strftime("%H:%M:%S")
+    datetime = d + "T" + t + ".000Z"
+ end
 
 
    def get_time_slot_total_attendees(current_time_slot_dates, event)
