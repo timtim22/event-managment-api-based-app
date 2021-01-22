@@ -17,7 +17,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
             e = ChildEvent.ransack(name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC").each do |event|
               @event << {
                   "id" => event.id,
-                  "image" => event.image,
+                  "image" => event.event.image,
                   "name" => event.name,
                   "description" => event.description,
                   "location" => eval(event.location),
