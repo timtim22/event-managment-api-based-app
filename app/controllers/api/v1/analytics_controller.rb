@@ -972,17 +972,16 @@ def get_time_slot_special_offers_increment_decrement(current_time_slot_dates,   
     
         current_size = 0
         before_size = 0
-        movement_percent = 0
+
       
         current_size += competition.registrations.where(created_at: current_dates_array).size
         before_size += competition.registrations.where(created_at: before_dates_array).size
         difference = before_size - current_size
       
-        if difference != 0
-          movement_percent = get_percent_of(difference, before_size)
-        end
+        movement_percent_before = get_percent_of(before_size, event.event.max_attendees)
+        movement_percent_now =   get_percent_of(current_size, event.event.max_attendees)
     
-          movement_percent 
+        differenct_in_movement_percent =  movement_percent_now - movement_percent_before 
      
       end
 
@@ -1493,20 +1492,18 @@ end
 def get_time_slot_movement_in_event_attendees(current_time_slot_dates, before_current_time_slot_dates, event)
     current_dates_array = get_dates_array(current_time_slot_dates)
     before_dates_array = get_dates_array(before_current_time_slot_dates)
-
+    
     current_size = 0
     before_size = 0
-    movement_percent = 0
-  
+
     current_size += event.going_interest_levels.where(created_at: current_dates_array).size
     before_size += event.going_interest_levels.where(created_at:before_dates_array).size
-    difference = before_size - current_size
   
-    if difference != 0
-      movement_percent = get_percent_of(difference, before_size)
-    end
+    movement_percent_before = get_percent_of(before_size, event.event.max_attendees)
+    movement_percent_now =   get_percent_of(current_size, event.event.max_attendees)
 
-      movement_percent   
+    differenct_in_movement_percent =  movement_percent_now - movement_percent_before 
+
 end
 
 

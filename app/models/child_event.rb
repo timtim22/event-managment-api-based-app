@@ -19,4 +19,5 @@ class ChildEvent < ApplicationRecord
  has_many :viewers, through: :views, source: :user
  has_many :event_shares, dependent: :destroy
  has_many :event_forwardings, dependent: :destroy
+ has_many :reminders, dependent: :destroy
 end

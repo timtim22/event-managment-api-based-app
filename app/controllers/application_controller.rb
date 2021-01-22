@@ -741,14 +741,10 @@ end
 
   def is_attending?(event)
     if request_user
-     if request_user.events_to_attend.include? event
-       true
+      request_user.events_to_attend.include? event
      else
-       false
+      false
      end
-   else
-     false
-   end
    end
 
    def is_interested?(event)
