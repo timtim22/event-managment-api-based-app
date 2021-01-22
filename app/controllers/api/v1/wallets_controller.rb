@@ -410,6 +410,8 @@ end
   param :offer_id, :number, :desc => "Offer ID", :required => true
   #param :offer_type, ['pass', 'special offer'], :desc => "Offer Type (SpecialOffer, Pass)", :required => true
 
+
+
  def add_to_wallet
   if !params[:offer_id].blank? && !params[:offer_type].blank?
        quantity = 1
@@ -431,7 +433,7 @@ end
     if @wallet.save
        if params[:offer_type] == "Ticket"
           ticket = Ticket.find(params[:offer_id])
-          child_event = params[:event_id]
+          child_event = ChildEvent.find(params[:event_id])
           # event = ticket.event
           # event.going_interest_levels.create!(user: request_user, child_event: child_event)
           child_event.going_interest_levels.create!(user: request_user)
