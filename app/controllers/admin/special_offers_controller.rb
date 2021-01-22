@@ -70,7 +70,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
               "location": location,
               "created_at": notification.created_at,
               "is_read": !notification.read_at.nil?,
-            "is_added_to_wallet": added_to_wallet?(request_user, notification.resource)
+             "is_added_to_wallet": is_added_to_wallet?(notification.resource)
              }
             }
            }
