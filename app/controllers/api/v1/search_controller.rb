@@ -21,10 +21,10 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                   "name" => event.name,
                   "description" => event.description,
                   "location" => eval(event.location),
-                  "start_date" => event.end_date,
+                  "start_date" => event.start_date,
                   "end_date" => event.end_date,
-                  "start_time" => event.start_time,
-                  "end_time" => event.end_time,
+                  "start_time" => get_date_time(event.start_date, event.start_time),
+                  "end_time" => get_date_time(event.end_date, event.end_time),
                   "over_18" => event.over_18,
                   "price_type" => event.price_type,
                   "price" => get_price(event.event),
@@ -349,6 +349,12 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
 
 
   private
+
+ def get_date_time(date, time)
+    d = date.strftime("%Y-%m-%d")
+    t = time.strftime("%H:%M:%S")
+    datetime = d + "T" + t + ".000Z"
+ end
    def force_json
      request.format = :json
    end

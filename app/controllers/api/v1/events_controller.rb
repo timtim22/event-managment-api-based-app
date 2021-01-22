@@ -68,15 +68,13 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
             'description' => e.description,
             'start_date' => e.start_date,
             'end_date' => e.end_date,
-            'start_time' => e.start_time,
-            'end_time' => e.end_time,
+            'start_time' => get_date_time(e.start_date, e.start_time),
+            'end_time' => get_date_time(e.end_date, e.end_time),
             'price' => get_price(e.event), # check for price if it is zero
             'price_type' => e.event.price_type,
             'event_type' => e.event_type,
             'additional_media' => e.event.event_attachments,
-           'location' => eval(e.location),
-           # 'lat' => eval(e.location)["geometry"]["lat"],
-           # 'lng' => eval(e.location)["geometry"]["lng"],
+            'location' => eval(e.location),
             'image' => e.event.image,
             'is_interested' => is_interested?(e),
             'is_going' => is_attending?(e),
@@ -349,6 +347,13 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
 
   private
 
+ def get_date_time(date, time)
+    d = date.strftime("%Y-%m-%d")
+    t = time.strftime("%H:%M:%S")
+    datetime = d + "T" + t + ".000Z"
+ end
+
+
 
  def get_map_event_object(event)
     event = {
@@ -375,10 +380,10 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         "location" => eval(child_event.location),
         # "lat" => eval(child_event.location)["geometry"]["lat"],
         # "lng" => eval(child_event.location)["geometry"]["lng"],
-        "start_date" => child_event.end_date,
+        "start_date" => child_event.start_date,
         "end_date" => child_event.end_date,
-        "start_time" => child_event.start_time,
-        "end_time" => child_event.end_time,
+        "start_time" => get_date_time(child_event.start_date, child_event.start_time),
+        "end_time" => get_date_time(child_event.end_date, child_event.end_time),
         "over_18" => child_event.event.over_18,
         "price_type" => child_event.event.price_type,
         "price" => get_price(child_event.event).to_s,
