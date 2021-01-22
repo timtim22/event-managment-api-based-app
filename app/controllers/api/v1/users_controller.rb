@@ -91,11 +91,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
       @profile.first_name = params[:first_name]
       @profile.last_name = params[:last_name]
       @profile.gender = params[:gender]
-      if !params[:location].blank?
       @profile.location = params[:location]
-      @profile.lat = params[:lat]
-      @profile.lng = params[:lng]
-      end
       @profile.is_email_subscribed = params[:is_email_subscribed]
       @profile.save
       @profile_data = {}
@@ -579,7 +575,7 @@ def my_attending
        "end_date" => event.end_date,
        "start_time" => event.start_time,
        "end_time" => event.end_time,
-       "location" => event.location,
+       "location" => eval(event.location),
        "lat" => event.lat,
        "lng" => event.lng,
        "event_type" => event.event_type,
@@ -644,7 +640,7 @@ end
       profile['last_name'] = ''
       profile['avatar'] = user.avatar
       profile['about'] = user.business_profile.about
-      profile['address'] = user.business_profile.address["formatted_address"]
+      profile['address'] = user.business_profile.address
       profile['followers_count'] = user.followers.size
       profile['events_count'] = user.events.size
       profile['competitions_count'] = user.competitions.size
@@ -675,7 +671,7 @@ end
   profile['first_name'] = user.business_profile.profile_name
   profile['last_name'] = ''
   profile['avatar'] = user.avatar
-  profile['address'] = eval(user.business_profile.address)
+  profile['address'] = user.business_profile.address
   profile['about'] = user.business_profile.about
   profile['facebook'] = user.business_profile.facebook
   profile['twitter'] = user.business_profile.twitter

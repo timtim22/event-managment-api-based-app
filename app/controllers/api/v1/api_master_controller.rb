@@ -203,7 +203,7 @@ class Api::V1::ApiMasterController < ApplicationController
         end
       e = {
         "id" => event.id,
-        "image" => event.image,
+        "image" => event.event.image,
         "name" => event.name,
         "description" => event.description,
          'location' => eval(event.location),

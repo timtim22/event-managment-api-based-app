@@ -431,6 +431,7 @@ class ApplicationController < ActionController::Base
       "quantity" => event.quantity,
       "price_type" => event.price_type,
       "frequency" => event.frequency,
+      "max_attendees" => event.max_attendees,
       "event_dates" => event.child_events.map {|ch| 
         {
           id: ch.id,
@@ -585,7 +586,7 @@ class ApplicationController < ActionController::Base
           host_image: business.avatar,
           event_name: pass.event.name,
           event_image: pass.event.image,
-          event_location: pass.event.location,
+          event_location: eval(pass.event.location),
           event_start_time: pass.event.start_time,
           event_end_time: pass.event.end_time,
           event_date: pass.event.start_date,
