@@ -998,7 +998,7 @@ def get_time_slot_special_offers_increment_decrement(current_time_slot_dates,   
    #################################### event sharing #####################################
       def get_time_slot_total_shared_events(current_time_slot_dates, event)
           dates_array = get_dates_array(current_time_slot_dates)
-          @forwarding = event.event_forwarding.where(created_at: dates_array).size
+          @forwarding = event.event_forwardings.where(created_at: dates_array).size
           @shares = event.event_shares.where(created_at: dates_array).size
           total = @forwarding + @shares
      end
@@ -1225,7 +1225,7 @@ end
 
 def get_time_slot_total_offer_shares(current_time_slot_dates, offer)
     dates_array = get_dates_array(current_time_slot_dates)
-     @forwarding = offer.offer_shares.where(created_at: dates_array).size
+     @forwarding = offer.offer_forwardings.where(created_at: dates_array).size
      @shares = offer.offer_shares.where(created_at: dates_array).size
     total = @forwarding + @shares
  end
