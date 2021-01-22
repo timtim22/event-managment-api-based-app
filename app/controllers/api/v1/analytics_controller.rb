@@ -71,7 +71,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                 "total_earning" => get_total_event_earning(event.event),
                 "total_attendees" => event.going_interest_levels.size,
                 "time_slot_total_attendees" => get_time_slot_total_attendees(@current_time_slot_dates, event),
-                "time_slot_movement" => get_time_slot_movement(@current_time_slot_dates, @before_current_time_slot_dates, event),
+                "time_slot_movement" => get_time_slot_movement_in_event_attendees(@current_time_slot_dates, @before_current_time_slot_dates, event),
                 "demographics" => get_demographics(event),
                  "graph_stats" => {
                     "time_slot_total_impressions" => get_time_slot_total_views(@current_time_slot_dates, event),
@@ -1437,7 +1437,7 @@ end
 
 def get_total_event_earning(event)
   @total_amount = 0
-  event.tickets.map {|ticket| ticket.ticket_purchases.map {|p| @total_amount += p.price } }
+  event.tickets.map {|ticket| ticket.ticket_purchases.map {|p| @total_amount += p.price.to_i } }
   @total_amount.round(2)
 end
 
@@ -1484,7 +1484,7 @@ def get_time_slot_event_paid_checked_in(time_slot_dates, event)
 end
 
 
-def get_time_slot_movement(current_time_slot_dates, before_current_time_slot_dates, event)
+def get_time_slot_movement_in_event_attendees(current_time_slot_dates, before_current_time_slot_dates, event)
     current_dates_array = get_dates_array(current_time_slot_dates)
     before_dates_array = get_dates_array(before_current_time_slot_dates)
 
