@@ -116,7 +116,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                     id: offer.id,
                     title: offer.title,
                     offer_total_count: offer.quantity,
-                    offer_remaining_count: offer.quantity - offer.wallets.size,
+                    offer_remaining_count: get_offer_remaining_quantity(offer),
                     image: offer.image.url,
                     host_image: offer.user.avatar,
                     validity: offer.validity.strftime(get_time_format),
@@ -131,7 +131,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                     id: offer.id,
                     title: offer.title,
                     offer_total_count: offer.quantity,
-                    offer_remaining_count: offer.quantity - offer.wallets.size,
+                    offer_remaining_count: get_offer_remaining_quantity(offer),
                     image: offer.image.url,
                     host_image: offer.user.avatar,
                     validity: offer.validity.strftime(get_time_format),
@@ -380,6 +380,11 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
 
   def has__child_event_passes?(event)
     !event.event.passes.blank?
+  end
+
+
+  def get_offer_remaining_quantity(offer)
+    if offer.quantity > offer.wallets.size then  offer.quantity - offer.wallets.size else 0 end
   end
 
 
