@@ -50,8 +50,8 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
         'name' => e.name,
         'start_date' => e.start_date,
         'end_date' => e.end_date,
-        'start_time' => e.start_time,
-        'end_time' => e.end_time,
+        'start_time' => get_date_time(e.start_date, e.start_time),
+        'end_time' => get_date_time(e.end_date, e.end_time),
         'image' => e.event.image,
         'location' => eval(e.location),
         'price' => get_price(e.event),
@@ -281,6 +281,12 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
 
 
   private
+
+ def get_date_time(date, time)
+    d = date.strftime("%Y-%m-%d")
+    t = time.strftime("%H:%M:%S")
+    datetime = d + "T" + t + ".000Z"
+ end
 
    def business
    business = request_user
