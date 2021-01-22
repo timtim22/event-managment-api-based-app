@@ -1437,8 +1437,8 @@ end
 
 def get_total_event_earning(event)
   @total_amount = 0
-  event.tickets.map {|ticket| ticket.ticket_purchases.map {|p| total_amount += p.price } }
-  @total_amount
+  event.tickets.map {|ticket| ticket.ticket_purchases.map {|p| @total_amount += p.price } }
+  @total_amount.round(2)
 end
 
 def get_total_event_checked_in(event)
