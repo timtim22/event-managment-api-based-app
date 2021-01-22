@@ -125,9 +125,9 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
    end
    end
 
-  api :POST, '/api/v1/event/redeem-pass', 'To redeem an event'
-  param :pass_id, :number, :desc => "Event ID", :required => true
-  param :redeem_code, :number, :desc => "Redeem Code", :required => true
+  # api :POST, '/api/v1/event/redeem-pass', 'To redeem an event'
+  # param :pass_id, :number, :desc => "Event ID", :required => true
+  # param :redeem_code, :number, :desc => "Redeem Code", :required => true
 
   def redeem_it
     if !params[:redeem_code].blank? && !params[:pass_id].blank?

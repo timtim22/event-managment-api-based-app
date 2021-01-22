@@ -887,7 +887,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         start_date_yesterday = (start_date - 1.day).to_date
         now = Time.now.to_date
         if now  ==  start_date_yesterday
-         check = request_user.reminders.where(event_id: event.id).where(level: 'interested')
+         check = request_user.reminders.where(child_event: event).where(level: 'interested')
          if check.blank?
           if @reminder = request_user.reminders.create!(event_id: event.id, level: 'interested')
             if notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are interested in event '#{event.name}' which is happening tomorrow. ", notifiable: event, resource: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "#{event.price_type}_event_reminder")
