@@ -836,12 +836,14 @@ def redeem_time(offer_id, offer_type,user_id)
 end
 
 def getPurchaseQuantity(ticket_id,user)
-  p = TicketPurchase.where(user_id: request_user.id).where(ticket_id: ticket_id)
-  if !p.blank?
-    p.first.quantity + user.wallets.where(offer_type: "Ticket").where(offer_ticket: ticket_id).size
-  else
-    0
-  end
+  purchase_quantity = 0
+    if user
+       purchases = TicketPurchase.where(user_id: request_user.id).where(ticket_id: ticket_id)
+      purchase_quantity += purchases.map {|p| p.ticket.quantity }.sum
+      purchase_quantity += user.wallets.where(offer_type: "Ticket").where(offer_id: ticket_id).size
+     
+    end
+    purchase_quantity
 end
 
 

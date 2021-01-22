@@ -1504,6 +1504,7 @@ def get_time_slot_movement_in_event_attendees(current_time_slot_dates, before_cu
     movement_percent_now =   get_percent_of(current_size, event.event.max_attendees)
 
     differenct_in_movement_percent =  movement_percent_now - movement_percent_before 
+    differenct_in_movement_percent.round(2)
 
 end
 
