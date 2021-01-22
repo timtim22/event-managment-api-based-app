@@ -166,7 +166,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
       end
     e = {
       "id" => event.id,
-      "image" => event.image,
+      "image" => event.event.image,
       "name" => event.name,
       "description" => event.description,
       "location" => insert_space_after_comma(event.location),
