@@ -224,8 +224,6 @@ class ApplicationController < ActionController::Base
       "vat_number" => user.business_profile.vat_number,
       "charity_number" => user.business_profile.charity_number,
       "address" => user.business_profile.address,
-      "lat" => user.business_profile.address["geometry"]["lat"],
-      "lng" => user.business_profile.address["geometry"]["lng"],
       "about" => user.business_profile.about,
       "twitter" => user.business_profile.twitter,
       "facebook" => user.business_profile.facebook,
