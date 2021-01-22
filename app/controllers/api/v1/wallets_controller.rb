@@ -350,7 +350,7 @@ def get_tickets
     event_date: wallet.offer.event.start_date,
     price: get_formated_price(wallet.offer.price),
     quantity: wallet.offer.quantity,
-    purchased_quantity: getPurchaseQuantity(wallet.offer.id),
+    purchased_quantity: getPurchaseQuantity(wallet.offer.id, request_user),
     per_head: wallet.offer.per_head,
     is_redeemed: is_redeemed(wallet.offer.id, "Ticket", request_user.id),
     redeem_time: redeem_time(wallet.offer.id, "Ticket", request_user.id),
@@ -436,7 +436,8 @@ end
           child_event = ChildEvent.find(params[:event_id])
           # event = ticket.event
           # event.going_interest_levels.create!(user: request_user, child_event: child_event)
-          child_event.going_interest_levels.create!(user: request_user)
+         level =  child_event.going_interest_levels.create!(user: request_user)
+       
        end
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
@@ -568,6 +569,13 @@ end
     @wallet  = request_user.wallets.new(offer_id: params[:offer_id], offer_type: params[:offer_type],quantity: quantity)
   
     if @wallet.save
+    
+        ticket = Ticket.find(params[:offer_id])
+        child_event = ChildEvent.find(params[:event_id])
+        # event = ticket.event
+        # event.going_interest_levels.create!(user: request_user, child_event: child_event)
+        level =  child_event.going_interest_levels.create!(user: request_user)
+  
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -827,10 +835,10 @@ def redeem_time(offer_id, offer_type,user_id)
   end
 end
 
-def getPurchaseQuantity(ticket_id)
+def getPurchaseQuantity(ticket_id,user)
   p = TicketPurchase.where(user_id: request_user.id).where(ticket_id: ticket_id)
   if !p.blank?
-    p.first.quantity
+    p.first.quantity + user.wallets.where(offer_type: "Ticket").where(offer_ticket: ticket_id).size
   else
     0
   end
