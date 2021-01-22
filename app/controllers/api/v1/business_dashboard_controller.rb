@@ -234,7 +234,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
             'event_type' => e.event_type,
             'additional_media' => e.event.event_attachments,
             'location' => eval(e.location),
-            'image' => e.image,
+            'image' => e.event.image,
             'is_interested' => is_interested?(e),
             'is_going' => is_attending?(e),
             'is_followed' => is_followed(e.user),
