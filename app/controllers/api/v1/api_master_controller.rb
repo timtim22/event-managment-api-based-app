@@ -86,7 +86,7 @@ class Api::V1::ApiMasterController < ApplicationController
              males.push(level.user)
            when 'female'
              females.push(level.user)
-           when 'gay'
+           when 'other'
              gays.push(level.user)
            else
               'No users'
@@ -247,18 +247,34 @@ class Api::V1::ApiMasterController < ApplicationController
              males.push(wallet.user)
            when 'female'
              females.push(wallet.user)
-           when 'gay'
+           when 'other'
              gays.push(wallet.user)
            else
               'No users'
             end
          end #each
 
-          demographics['males_percentage'] = if males.size > 0 then males.uniq.size.to_f / total_count.to_f * 100.0 else 0 end
+         if males.size > 0 
+          percentage = males.uniq.size.to_f / total_count.to_f * 100.0 
+          males_percentage = percentage.round(2)
+        else 
+          males_percentage = 0 
+        end
 
-          demographics['females_percentage'] = if females.size > 0 then females.uniq.size.to_f / total_count.to_f * 100.0  else 0 end
+       if females.size > 0  
+          percentage = females.uniq.size.to_f / total_count.to_f * 100.0
+          female_percentage = percentage.round(2)  
+        else
+          female_percentage = 0 
+         end
 
-          demographics['gays_percentage'] = if gays.size > 0 then gays.uniq.size.to_f / total_count.to_f * 100.0  else 0 end
+        if gays.size > 0 
+           percentage = gays.uniq.size.to_f / total_count.to_f * 100.0  
+           gays_percentage = percentage.round(2) 
+          else
+           gays_percentage = 0 
+          end
+
 
           demographics
 
@@ -277,18 +293,33 @@ class Api::V1::ApiMasterController < ApplicationController
            males.push(reg.user)
          when 'female'
            females.push(reg.user)
-         when 'gay'
+         when 'other'
            gays.push(reg.user)
          else
             'No users'
           end
        end #each
 
-        demographics['males_percentage'] = if males.size > 0 then males.uniq.size.to_f / total_count.to_f * 100.0 else 0 end
+       if males.size > 0 
+        percentage = males.uniq.size.to_f / total_count.to_f * 100.0 
+        males_percentage = percentage.round(2)
+      else 
+        males_percentage = 0 
+      end
 
-        demographics['females_percentage'] = if females.size > 0 then females.uniq.size.to_f / total_count.to_f * 100.0  else 0 end
+     if females.size > 0  
+        percentage = females.uniq.size.to_f / total_count.to_f * 100.0
+        female_percentage = percentage.round(2)  
+      else
+        female_percentage = 0 
+       end
 
-        demographics['gays_percentage'] = if gays.size > 0 then gays.uniq.size.to_f / total_count.to_f * 100.0  else 0 end
+      if gays.size > 0 
+         percentage = gays.uniq.size.to_f / total_count.to_f * 100.0  
+         gays_percentage = percentage.round(2) 
+        else
+         gays_percentage = 0 
+        end
 
         demographics
 
