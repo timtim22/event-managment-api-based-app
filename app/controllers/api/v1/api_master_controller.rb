@@ -240,15 +240,15 @@ class Api::V1::ApiMasterController < ApplicationController
         females = []
         gays = []
         demographics = {}
-        total_count = offer.redemptions.size
-        offer.redemptions.each do |redeem|
-         case redeem.user.profile.gender
+        total_count = offer.wallets.size
+        offer.wallets.each do |wallet|
+         case wallet.user.profile.gender
            when 'male'
-             males.push(redeem.user)
+             males.push(wallet.user)
            when 'female'
-             females.push(redeem.user)
+             females.push(wallet.user)
            when 'gay'
-             gays.push(redeem.user)
+             gays.push(wallet.user)
            else
               'No users'
             end
