@@ -17,6 +17,14 @@ class Admin::CompetitionsController < Admin::AdminMasterController
   end
 
   def create
+    location = {
+      "short_address": params[:location],
+      "full_address": "",
+      "geometry": {
+        "lat": params[:lat],
+        "lng": params[:lng]
+      }
+    }
       @competition = current_user.own_competitions.new
       @competition.title = params[:title]
       @competition.description = params[:description]
@@ -29,11 +37,9 @@ class Admin::CompetitionsController < Admin::AdminMasterController
       @competition.validity = params[:validity]
       @competition.host = params[:host]
       @competition.validity_time = params[:end_time]
-      @competition.location = params[:location]
       @competition.terms_conditions = params[:terms_conditions]
-
-      @competition.lat = params[:lat]
-      @competition.lng = params[:lng]
+      @competition.location = location
+      
     if @competition.save
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
@@ -98,6 +104,14 @@ class Admin::CompetitionsController < Admin::AdminMasterController
   end
 
   def update
+      location = {
+        "short_address": params[:location],
+        "full_address": "",
+        "geometry": {
+          "lat": params[:lat],
+          "lng": params[:lng]
+        }
+      }
         @competition = Competition.find(params[:id])
         @competition.title = params[:title]
         @competition.description = params[:description]
@@ -111,9 +125,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
         @competition.host = params[:host]
         @competition.validity_time = params[:end_time]
         @competition.terms_conditions = params[:terms_conditions]
-        @competition.location = params[:location]
-        @competition.lat = params[:lat]
-        @competition.lng = params[:lng]
+        @competition.location = location
     if @competition.save
       #create_activity("updated competition", @competition, "Competition", admin_competition_path(@competition),@competition.title, 'patch')
       redirect_to admin_competitions_path, notice: "Competition updated successfully."
