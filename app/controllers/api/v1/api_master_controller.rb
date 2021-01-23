@@ -275,6 +275,14 @@ class Api::V1::ApiMasterController < ApplicationController
            gays_percentage = 0 
           end
 
+          
+          demographics['males_percentage'] = males_percentage
+  
+          demographics['females_percentage'] = female_percentage
+  
+          demographics['gays_percentage'] = gays_percentage
+  
+
 
           demographics
 
@@ -320,6 +328,14 @@ class Api::V1::ApiMasterController < ApplicationController
         else
          gays_percentage = 0 
         end
+
+        demographics['males_percentage'] = males_percentage
+  
+        demographics['females_percentage'] = female_percentage
+
+        demographics['gays_percentage'] = gays_percentage
+
+
 
         demographics
 

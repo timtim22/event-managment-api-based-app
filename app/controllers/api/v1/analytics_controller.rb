@@ -983,6 +983,9 @@ def get_time_slot_special_offers_increment_decrement(current_time_slot_dates,   
     
         differenct_in_movement_percent =  movement_percent_now - movement_percent_before 
         differenct_in_movement_percent.round(2)
+        #later to remove requirements not clear
+        movement = 0
+
      
       end
 
