@@ -134,9 +134,29 @@ def get_child_event_attendees_stats
               attendees:  e.going_interest_levels.map { |going| {
               user:  get_full_name(going.user),
               confirmation_date:  going.created_at.to_date,
-              ticket_title:  "free event without ticket",
-              quantity:  "free event without ticket",
-              paid:  "free event without ticket",
+              ticket_title:  "free ticketed event",
+              quantity:  "free ticketed event",
+              paid:  "free ticketed event",
+              is_ambassador:  going.user.profile.is_ambassador
+            }}}
+          elsif e.price_type == "pay_at_door"
+            @attendees << {
+              attendees:  e.going_interest_levels.map { |going| {
+              user:  get_full_name(going.user),
+              confirmation_date:  going.created_at.to_date,
+              ticket_title:  "Pay to door ticket",
+              quantity:  "Pay to door ticket",
+              paid:  "Pay to door ticket",
+              is_ambassador:  going.user.profile.is_ambassador
+            }}}
+          elsif e.price_type == "free_ticketed_event" 
+            @attendees << {
+              attendees:  e.going_interest_levels.map { |going| {
+              user:  get_full_name(going.user),
+              confirmation_date:  going.created_at.to_date,
+              ticket_title:  "free ticketed event",
+              quantity:  "free ticketed event",
+              paid:  "free ticketed event",
               is_ambassador:  going.user.profile.is_ambassador
             }}}
           else
@@ -173,6 +193,26 @@ def get_child_event_attendees_stats
               ticket_title:  "free event without ticket",
               quantity:  "free event without ticket",
               paid:  "free event without ticket",
+              is_ambassador:  going.user.profile.is_ambassador
+            }}}
+          elsif e.price_type == "pay_at_door"
+            @attendees << {
+              attendees:  e.going_interest_levels.map { |going| {
+              user:  get_full_name(going.user),
+              confirmation_date:  going.created_at.to_date,
+              ticket_title:  "Pay to door ticket",
+              quantity:  "Pay to door ticket",
+              paid:  "Pay to door ticket",
+              is_ambassador:  going.user.profile.is_ambassador
+            }}}
+          elsif e.price_type == "free_ticketed_event" 
+            @attendees << {
+              attendees:  e.going_interest_levels.map { |going| {
+              user:  get_full_name(going.user),
+              confirmation_date:  going.created_at.to_date,
+              ticket_title:  "free ticketed event",
+              quantity:  "free ticketed event",
+              paid:  "free ticketed event",
               is_ambassador:  going.user.profile.is_ambassador
             }}}
           else
