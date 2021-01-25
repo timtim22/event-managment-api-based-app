@@ -53,7 +53,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
                     "attending_count" =>  event.going_interest_levels.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
                     "maybe_count" => event.interested_interest_levels.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
                     "passes_check_in_count" => event.event.passes.map{|p| p.redemptions.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size }.sum,
-                    "shared_count" =>  event.event_shares.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size
+                    "shared_count" =>  event.event_shares.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size + event.event_forwardings.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size
                   }
                  dt[date.to_date.strftime("%a %d")] = data
                  dates << dt
@@ -176,7 +176,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
           impression_count: offer.views.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
           in_wallet_count: offer.wallets.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
           redeemed_count: offer.redemptions.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
-          shared_count: offer.offer_shares.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
+          shared_count: offer.offer_shares.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size + offer.offer_forwardings.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
           }
          dt[date.to_date.strftime("%a %d")] = data
          dates << dt
@@ -274,7 +274,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         data =  {
           impression_count: competition.views.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
           entries_count: competition.registrations.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
-          shared_count: competition.offer_shares.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
+          shared_count: competition.offer_shares.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size + competition.offer_forwardings.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
           }
          dt[date.to_date.strftime("%a %d")] = data
          dates << dt
