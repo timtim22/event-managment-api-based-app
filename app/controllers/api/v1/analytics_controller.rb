@@ -176,7 +176,7 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
           impression_count: offer.views.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
           in_wallet_count: offer.wallets.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
           redeemed_count: offer.redemptions.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
-          shared_count: offer.offer_shares.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
+          shared_count: offer.offer_shares.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size + offer.offer_forwardings.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
           }
          dt[date.to_date.strftime("%a %d")] = data
          dates << dt
