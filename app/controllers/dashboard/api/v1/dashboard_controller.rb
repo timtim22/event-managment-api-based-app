@@ -187,7 +187,7 @@ def get_child_event_attendees_stats
             }}}}
           end
         @event << {
-          time_remaning: "Live Now"
+          time_remaning: "Live Now",
           location: eval(e.location),
           date: e.start_date,
           going: e.going_interest_levels.size,
