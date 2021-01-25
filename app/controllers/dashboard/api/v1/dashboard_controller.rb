@@ -128,60 +128,76 @@ def get_child_event_attendees_stats
         
         case
         when e.start_time.to_date != DateTime.now
-          @attendees << {
-          attendees: TicketPurchase.where(ticket_id: e.event.tickets.first.id).map { |e| {
-            user:  e.user_id,
-            confirmation_date:  e.created_at.to_date,
-            ticket_title:  e.ticket.title,
-            quantity:  e.quantity,
-            paid:  e.price,
-            is_ambassador:  
-            if @amb = !e.user.ambassador_requests.where(business_id: e.ticket.user_id).first.blank?
-               @amb
-            else
-                false
-            end
-          }}}
+
+          if e.price_type == "free_event"
+            @attendees << {
+              attendees:  e.going_interest_levels.map { |going| {
+              user:  get_full_name(going.user),
+              confirmation_date:  going.created_at.to_date,
+              ticket_title:  "free event without ticket",
+              quantity:  "free event without ticket",
+              paid:  "free event without ticket",
+              is_ambassador:  going.user.profile.is_ambassador
+            }}}
+          else
+          tickets = TicketPurchase.all.map { |e| e.ticket}.select {|m| m.event_id == e.event.id}
+            @attendees << {
+              attendees:  tickets.map {|m| m.ticket_purchases.map {|going| {
+              user:  get_full_name(going.user),
+              confirmation_date:  going.created_at.to_date,
+              ticket_title:  going.ticket.title,
+              quantity:  going.ticket.quantity,
+              paid:  going.ticket.price            
+            }}}}
+          end
+              
         @event << {
           time_remaning: (e.start_date.to_date - Date.today).to_i.to_s + " days remaning",
-          location: e.location,
+          location: eval(e.location),
           date: e.start_date,
           going: e.going_interest_levels.size,
           passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
           vip_pass: e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum,
-          tickets: e.event.tickets.first.ticket_purchases.map {|e| e.quantity}.sum.to_s + " of " + e.event.tickets.first.wallets.size.to_s,
+          tickets: e.event.tickets.map { |e|  e.ticket_purchases.map {|e| e.quantity}}.sum.to_s + " of " + e.event.tickets.map { |e|  e.wallets}.size.to_s,
           guest_passes: e.event.passes.where(pass_type: "ordinary").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "ordinary").map {|e| e.wallets}.size.to_s,
           vip_passes: e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "vip").map {|e| e.wallets}.size.to_s,
           attendees: @attendees 
         }
 
         when e.start_time.to_date == DateTime.now
-          @attendees << {
-          attendees: TicketPurchase.where(ticket_id: e.event.tickets.first.id).map { |e| {
-            user:  e.user_id,
-            confirmation_date:  e.created_at.to_date,
-            ticket_title:  e.ticket.title,
-            quantity:  e.quantity,
-            paid:  e.price,
-            is_ambassador:  
-            if @amb = !e.user.ambassador_requests.where(business_id: e.ticket.user_id).first.blank?
-               @amb
-            else
-                false
-            end
-          }}}
+          if e.price_type == "free_event"
+            @attendees << {
+              attendees:  e.going_interest_levels.map { |going| {
+              user:  get_full_name(going.user),
+              confirmation_date:  going.created_at.to_date,
+              ticket_title:  "free event without ticket",
+              quantity:  "free event without ticket",
+              paid:  "free event without ticket",
+              is_ambassador:  going.user.profile.is_ambassador
+            }}}
+          else
+          tickets = TicketPurchase.all.map { |e| e.ticket}.select {|m| m.event_id == e.event.id}
+            @attendees << {
+              attendees:  tickets.map {|m| m.ticket_purchases.map {|going| {
+              user:  get_full_name(going.user),
+              confirmation_date:  going.created_at.to_date,
+              ticket_title:  going.ticket.title,
+              quantity:  going.ticket.quantity,
+              paid:  going.ticket.price            
+            }}}}
+          end
         @event << {
-          location: e.location,
+          time_remaning: "Live Now"
+          location: eval(e.location),
           date: e.start_date,
           going: e.going_interest_levels.size,
           passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
           vip_pass: e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum,
-          tickets: e.event.tickets.first.ticket_purchases.map {|e| e.quantity}.sum.to_s + " of " + e.event.tickets.first.wallets.size.to_s,
+          tickets: e.event.tickets.map { |e|  e.ticket_purchases.map {|e| e.quantity}}.sum.to_s + " of " + e.event.tickets.map { |e|  e.wallets}.size.to_s,
           guest_passes: e.event.passes.where(pass_type: "ordinary").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "ordinary").map {|e| e.wallets}.size.to_s,
           vip_passes: e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "vip").map {|e| e.wallets}.size.to_s,
           attendees: @attendees 
         }
-
         end
       
       render json: {
