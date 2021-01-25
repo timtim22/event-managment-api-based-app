@@ -17,14 +17,20 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
   end
 
   def create
+   location = {
+      "short_address": params[:location],
+      "full_address": "",
+      "geometry": {
+        "lat": params[:lat],
+        "lng": params[:lng]
+      }
+    }
       @special_offer = SpecialOffer.new
       @special_offer.title = params[:title]
       @special_offer.description = params[:description]
       @special_offer.user = current_user
       @special_offer.sub_title = params[:sub_title]
-      @special_offer.location = params[:location]
-      @special_offer.lat = params[:lat]
-      @special_offer.lng = params[:lng]
+      @special_offer.location = location
       @special_offer.date = params[:date]
       @special_offer.time = params[:time]
       @special_offer.end_time = params[:validity_time]
@@ -70,7 +76,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
               "location": location,
               "created_at": notification.created_at,
               "is_read": !notification.read_at.nil?,
-            "is_added_to_wallet": added_to_wallet?(request_user, notification.resource)
+              "is_added_to_wallet": is_added_to_wallet?(notification.resource)
              }
             }
            }
@@ -99,14 +105,20 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
 
 
   def update
+    location = {
+      "short_address": params[:location],
+      "full_address": "",
+      "geometry": {
+        "lat": params[:lat],
+        "lng": params[:lng]
+      }
+    }
      @special_offer = SpecialOffer.find(params[:id])
      @special_offer.title = params[:title]
      @special_offer.description = params[:description]
      @special_offer.user = current_user
      @special_offer.sub_title = params[:sub_title]
-     @special_offer.location = params[:location]
-     @special_offer.lat = params[:lat]
-     @special_offer.lng = params[:lng]
+     @special_offer.location = location
      @special_offer.date = params[:date]
      @special_offer.time = params[:time]
      @special_offer.end_time = params[:validity_time]

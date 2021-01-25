@@ -148,18 +148,18 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         @current_time_slot_dates = generate_date_range(start_date, end_date)
         @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
       when "weekly"
-        start_date = Date.parse(params[:date]) - 7.days
+        start_date = Date.parse(params[:date]) - 6.days
         start_date_to_string = start_date.to_s
         end_date = params[:date]
         @current_time_slot_dates = generate_date_range(start_date_to_string, end_date)
         before_start_date = Date.parse(params[:date]) - 14.days
         before_start_date_to_string = before_start_date.to_s
-        before_end_date = Date.parse(params[:date]) - 7.days
+        before_end_date = Date.parse(params[:date]) - 6.days
         before_end_date_to_string = before_end_date.to_s
         @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
       when  "overall"
           start_date = offer.created_at.to_date.to_s
-          end_date = offer.end_time.to_date.to_s
+          end_date = offer.validity.to_date.to_s
          @current_time_slot_dates = generate_date_range(start_date, end_date)
          # in case of overall there should be no comparison between time slots
          @before_current_time_slot_dates = generate_date_range(start_date, end_date)
@@ -246,13 +246,13 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
         @current_time_slot_dates = generate_date_range(start_date, end_date)
         @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
       when "weekly"
-        start_date = Date.parse(params[:date]) - 7.days
+        start_date = Date.parse(params[:date]) - 6.days
         start_date_to_string = start_date.to_s
         end_date = params[:date]
         @current_time_slot_dates = generate_date_range(start_date_to_string, end_date)
         before_start_date = Date.parse(params[:date]) - 14.days
         before_start_date_to_string = before_start_date.to_s
-        before_end_date = Date.parse(params[:date]) - 7.days
+        before_end_date = Date.parse(params[:date]) - 6.days
         before_end_date_to_string = before_end_date.to_s
         @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
       when  "overall"
@@ -978,11 +978,14 @@ def get_time_slot_special_offers_increment_decrement(current_time_slot_dates,   
         before_size += competition.registrations.where(created_at: before_dates_array).size
         difference = before_size - current_size
       
-        movement_percent_before = get_percent_of(before_size, event.event.max_attendees)
-        movement_percent_now =   get_percent_of(current_size, event.event.max_attendees)
+        movement_percent_before = get_percent_of(before_size, competition.registrations.size)
+        movement_percent_now =   get_percent_of(current_size, competition.registrations.size)
     
         differenct_in_movement_percent =  movement_percent_now - movement_percent_before 
         differenct_in_movement_percent.round(2)
+        #later to remove requirements not clear
+        movement = 0
+
      
       end
 
@@ -1504,6 +1507,7 @@ def get_time_slot_movement_in_event_attendees(current_time_slot_dates, before_cu
     movement_percent_now =   get_percent_of(current_size, event.event.max_attendees)
 
     differenct_in_movement_percent =  movement_percent_now - movement_percent_before 
+    differenct_in_movement_percent.round(2)
 
 end
 
