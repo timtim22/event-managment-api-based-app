@@ -133,7 +133,7 @@ def get_child_event_attendees_stats
             @attendees << {
               attendees:  e.going_interest_levels.map { |going| {
               user:  get_full_name(going.user),
-              avatar:  going.avatar,
+              avatar:  going.user.avatar,
               confirmation_date:  going.created_at.to_date,
               ticket_title:  "without ticket event",
               quantity:  "without ticket event",
@@ -147,7 +147,7 @@ def get_child_event_attendees_stats
             @attendees << {
               attendees:  tickets.map {|m| m.ticket_purchases.map {|going| {
               user:  get_full_name(going.user),
-              avatar:  going.avatar,
+              avatar:  going.user.avatar,
               confirmation_date:  going.created_at.to_date,
               ticket_title:  going.ticket.title,
               quantity:  going.ticket.quantity,
@@ -176,7 +176,7 @@ def get_child_event_attendees_stats
             @attendees << {
               attendees:  e.going_interest_levels.map { |going| {
               user:  get_full_name(going.user),
-              avatar:  going.avatar,
+              avatar:  going.user.avatar,
               confirmation_date:  going.created_at.to_date,
               ticket_title:  "free event without ticket",
               quantity:  "free event without ticket",
@@ -190,7 +190,7 @@ def get_child_event_attendees_stats
             @attendees << {
               attendees:  tickets.map {|m| m.ticket_purchases.map {|going| {
               user:  get_full_name(going.user),
-              avatar:  going.avatar,
+              avatar:  going.user.avatar,
               confirmation_date:  going.created_at.to_date,
               ticket_title:  going.ticket.title,
               quantity:  going.ticket.quantity,
@@ -217,7 +217,7 @@ def get_child_event_attendees_stats
             @attendees << {
               attendees:  e.going_interest_levels.map { |going| {
               user:  get_full_name(going.user),
-              avatar:  going.avatar,
+              avatar:  going.user.avatar,
               confirmation_date:  going.created_at.to_date,
               ticket_title:  "free event without ticket",
               quantity:  "free event without ticket",
@@ -231,7 +231,7 @@ def get_child_event_attendees_stats
             @attendees << {
               attendees:  tickets.map {|m| m.ticket_purchases.map {|going| {
               user:  get_full_name(going.user),
-              avatar:  going.avatar,
+              avatar:  going.user.avatar,
               confirmation_date:  going.created_at.to_date,
               ticket_title:  going.ticket.title,
               quantity:  going.ticket.quantity,
