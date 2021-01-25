@@ -582,7 +582,7 @@ def my_attending
        "image" => event.image,
        "price_type" => event.price_type,
        "price" => event.price,
-       "additional_media" => event.event_attachments,
+       "additional_media" => event.event.event_attachments,
        "created_at" => event.created_at,
        "updated_at" => event.updated_at,
        "host" => event.host,

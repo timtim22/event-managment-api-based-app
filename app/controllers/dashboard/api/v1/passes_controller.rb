@@ -186,7 +186,7 @@ def user_search
 end
 
   def send_vip_pass
-    if !params[:recipient_id].blank? && !params[:pass_id].blank?
+    if !params[:recipient_id].blank? && !params[:pass_id].blank? && !params[:quantity].blank?
       vip = Pass.find(params[:pass_id])
       user = User.find(params[:recipient_id])
       check  = user.wallets.where(offer_id: vip.id).where(offer_type: 'Pass').first
@@ -194,6 +194,7 @@ end
        @wallet  = user.wallets.new(offer_id: vip.id, offer_type: 'Pass')
       if @wallet.save
          share = vip.vip_pass_shares.create!(user: user)
+         # vip.update(quantity:)
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -261,7 +262,7 @@ end
       render json: {
         code: 400,
         success: false,
-        message: 'recipient_id and pass_id are requried.',
+        message: 'recipient_id, pass_id and quantity are requried.',
         data: nil
       }
     end
