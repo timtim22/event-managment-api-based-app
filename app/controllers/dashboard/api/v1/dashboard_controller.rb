@@ -130,7 +130,7 @@ def get_child_event_attendees_stats
         when e.start_time.to_date < DateTime.now
 
           if e.price_type == "free_event" || e.price_type == "pay_at_door" || e.price_type == "free_ticketed_event" 
-            @attendees << {
+            @event << {
               attendees:  e.going_interest_levels.map { |going| {
               user:  get_full_name(going.user),
               avatar:  going.user.avatar,
