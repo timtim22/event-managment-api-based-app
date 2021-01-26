@@ -8,6 +8,7 @@ class Ticket < ApplicationRecord
   has_many :transactions, dependent: :destroy
   has_many :refund_requests, dependent: :destroy
   has_many :redemptions, dependent: :destroy, as: :offer
+  has_many :going_interest_levels, -> { where(level: 'going') }, foreign_key: :ticket_id, class_name: 'InterestLevel', dependent: :destroy
 
   
 

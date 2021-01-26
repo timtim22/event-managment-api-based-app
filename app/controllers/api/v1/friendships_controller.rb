@@ -22,8 +22,10 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
     @friend_request.status = "pending"
     if @friend_request.save
       #create_activity("sent friend request to #{get_full_name(@friend)}", @friend_request, 'FriendRequest', '', '', 'post', 'send_friend_request')
-
+     
       if notification = Notification.create(recipient: @friend, actor: @sender, action: get_full_name(@sender) + " sent you a friend request", notifiable: @friend_request, resource: @friend_request, url: '/admin/friend-requests', notification_type: 'mobile', action_type: 'send_request')
+
+      if !mute_push_notification?(@friend)
 
         @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
@@ -66,6 +68,7 @@ class Api::V1::FriendshipsController < Api::V1::ApiMasterController
           ) do |envelope|
             puts envelope.status
         end
+      end #setting
       end ##notification create
       render json:  {
         code: 200,
@@ -168,6 +171,9 @@ def accept_request
 
 
       if notification = Notification.create(recipient: request.user, actor: request_user, action: get_full_name(request_user) + " accepted your friend request", notifiable: request, resource: request, url: '/admin/my-friends', notification_type: 'mobile', action_type: 'accept_request')
+       
+     if !mute_push_notification?(request.user)
+
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -206,6 +212,7 @@ def accept_request
           ) do |envelope|
             puts envelope.status
         end
+      end #setting
       end ##notification create
      render json: {
        code: 200,

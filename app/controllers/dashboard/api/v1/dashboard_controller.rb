@@ -122,10 +122,38 @@ end
 
 def get_child_event_attendees_stats
     if !params[:event_id].blank? 
-      @event = []
       e = ChildEvent.find(params[:event_id])
         @attendees = []
-        
+        #extract attendees from ticket purchases
+        e.event.tickets.map {|ticket| ticket.ticket_purchases.map { |purchase| {
+          attendees << {
+            user:  get_full_name(purchase.user),
+            avatar:  purchase.user.avatar,
+            confirmation_date:  purchase.created_at.to_date,
+            ticket_title:  purchase.ticket.title,
+            quantity:  purchase.quantity,
+            paid:  purchase.price,
+            is_ambassador:  purchase.user.profile.is_ambassador,
+            check_in_way:  "",
+            check_in_time:  ""
+          } 
+        }
+      }
+      # extract attendess from going interest levels
+     e.going_interest_levels.map {|level| 
+          attendees << {
+          user:  get_full_name(level.user),
+          avatar:  level.user.avatar,
+          confirmation_date:  level.created_at.to_date,
+          ticket_title:  level.ticket.title,
+          quantity:  level.quantity,
+          paid:  level.price,
+          is_ambassador:  level.user.profile.is_ambassador,
+          check_in_way:  "",
+          check_in_time:  ""
+       }
+     }
+       
         case
         when e.start_time.to_date < DateTime.now
 
@@ -289,7 +317,11 @@ def get_child_event_attendees_stats
           data: nil
         }
       end #if
-end
+ end
+
+
+
+
 
 def get_child_event_full_analytics
     if !params[:event_id].blank? 
