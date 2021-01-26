@@ -144,32 +144,35 @@ def get_child_event_attendees_stats
             }}}
           else
           tickets = TicketPurchase.all.map { |e| e.ticket}.select {|m| m.event_id == e.event.id}
-            @attendees << {
+            @event << {
               attendees:  tickets.map {|m| m.ticket_purchases.map {|going| {
               user:  get_full_name(going.user),
               avatar:  going.user.avatar,
               confirmation_date:  going.created_at.to_date,
               ticket_title:  going.ticket.title,
-              quantity:  going.ticket.quantity,
-              paid:  going.ticket.price,
+              quantity:  going.quantity,
+              paid:  going.price,
               is_ambassador:  going.user.profile.is_ambassador,
               check_in_way:  "",
               check_in_time:  ""
             }}}}
           end
               
-        @event << {
-          time_remaning: (e.start_date.to_date - Date.today).to_i.to_s + " days remaning",
-          location: eval(e.location),
-          date: e.start_date,
-          going: e.going_interest_levels.size,
-          passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
-          vip_pass: e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum,
-          tickets: e.event.tickets.map { |e|  e.ticket_purchases.map {|e| e.quantity}.sum}.to_sentence + " of " + e.event.tickets.map { |e|  e.wallets}.size.to_s,
-          guest_passes: e.event.passes.where(pass_type: "ordinary").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "ordinary").map {|e| e.wallets}.size.to_s,
-          vip_passes: e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "vip").map {|e| e.wallets}.size.to_s,
-          attendees: @attendees 
-        }
+          @event << {
+            time_remaning: (e.start_date.to_date - Date.today).to_i.to_s + " days remaning",
+            location: eval(e.location),
+            date: e.start_date,
+            going: e.going_interest_levels.size,
+            passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
+            vip_pass: e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum,
+            tickets: e.event.tickets.map { |e|  e.ticket_purchases.map {|e| e.quantity}}.sum.to_sentence + " of " + e.event.tickets.map { |e|  e.quantity}.sum.to_s,
+            tickets_percentage: (e.event.tickets.map { |e|  e.ticket_purchases.map {|e| e.quantity}}.sum.to_sentence.to_i/(e.event.tickets.map { |e|  e.quantity}.sum.to_i.to_f.nonzero? || 1) * 100).to_i.to_s + "%", 
+            guest_passes: e.event.passes.where(pass_type: "ordinary").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "ordinary").size.to_s,
+            guest_passes_percentage: (e.event.passes.where(pass_type: "ordinary").map {|e| e.redemptions}.size.to_i.to_f/(e.event.passes.where(pass_type: "ordinary").size.to_i.nonzero? || 1) * 100).to_i.to_s + "%", 
+            vip_passes: e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "vip").size.to_s,
+            vip_passes_percentage: (e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_i/(e.event.passes.where(pass_type: "vip").size.to_i.nonzero? || 1) * 100).to_i.to_s + "%"
+            # attendees: @attendees 
+          }
 
         when e.start_time.to_date == DateTime.now
           if e.price_type == "free_event" || e.price_type == "pay_at_door" || e.price_type == "free_ticketed_event" 
@@ -193,25 +196,28 @@ def get_child_event_attendees_stats
               avatar:  going.user.avatar,
               confirmation_date:  going.created_at.to_date,
               ticket_title:  going.ticket.title,
-              quantity:  going.ticket.quantity,
-              paid:  going.ticket.price,
+              quantity:  going.quantity,
+              paid:  going.price,
               is_ambassador:  going.user.profile.is_ambassador,
               check_in_way:  "",
               check_in_time:  ""
             }}}}
           end
-        @event << {
-          time_remaning: "Live Now",
-          location: eval(e.location),
-          date: e.start_date,
-          going: e.going_interest_levels.size,
-          passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
-          vip_pass: e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum,
-          tickets: e.event.tickets.map { |e|  e.ticket_purchases.map {|e| e.quantity}.sum}.to_sentence + " of " + e.event.tickets.map { |e|  e.wallets}.size.to_s,
-          guest_passes: e.event.passes.where(pass_type: "ordinary").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "ordinary").map {|e| e.wallets}.size.to_s,
-          vip_passes: e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "vip").map {|e| e.wallets}.size.to_s,
-          attendees: @attendees 
-        }
+          @event << {
+            time_remaning: "Live Now",
+            location: eval(e.location),
+            date: e.start_date,
+            going: e.going_interest_levels.size,
+            passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
+            vip_pass: e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum,
+            tickets: e.event.tickets.map { |e|  e.ticket_purchases.map {|e| e.quantity}.sum}.to_sentence + " of " + e.event.tickets.map { |e|  e.wallets}.size.to_s,
+            tickets_percentage: (e.event.tickets.map { |e|  e.ticket_purchases.map {|e| e.quantity}}.sum.to_sentence.to_i/(e.event.tickets.map { |e|  e.quantity}.sum.to_i.to_f.nonzero? || 1) * 100).to_i.to_s + "%", 
+            guest_passes: e.event.passes.where(pass_type: "ordinary").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "ordinary").size.to_s,
+            guest_passes_percentage: (e.event.passes.where(pass_type: "ordinary").map {|e| e.redemptions}.size.to_i.to_f/(e.event.passes.where(pass_type: "ordinary").size.to_i.nonzero? || 1) * 100).to_i.to_s + "%",
+            vip_passes: e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "vip").size.to_s,
+            vip_passes_percentage: (e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_i/(e.event.passes.where(pass_type: "vip").size.to_i.nonzero? || 1) * 100).to_i.to_s + "%",
+            attendees: @attendees 
+          }
         when e.start_time.to_date > DateTime.now
           if e.price_type == "free_event" || e.price_type == "pay_at_door" || e.price_type == "free_ticketed_event" 
             @attendees << {
@@ -249,8 +255,11 @@ def get_child_event_attendees_stats
           passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
           vip_pass: e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum,
           tickets: e.event.tickets.map { |e|  e.ticket_purchases.map {|e| e.quantity}.sum}.to_sentence + " of " + e.event.tickets.map { |e|  e.wallets}.size.to_s,
-          guest_passes: e.event.passes.where(pass_type: "ordinary").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "ordinary").map {|e| e.wallets}.size.to_s,
-          vip_passes: e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "vip").map {|e| e.wallets}.size.to_s,
+          tickets_percentage: (e.event.tickets.map { |e|  e.ticket_purchases.map {|e| e.quantity}}.sum.to_sentence.to_i/(e.event.tickets.map { |e|  e.quantity}.sum.to_i.to_f.nonzero? || 1) * 100).to_i.to_s + "%",
+          guest_passes: e.event.passes.where(pass_type: "ordinary").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "ordinary").size.to_s,
+          guest_passes_percentage: (e.event.passes.where(pass_type: "ordinary").map {|e| e.redemptions}.size.to_i.to_f/(e.event.passes.where(pass_type: "ordinary").size.to_i.nonzero? || 1) * 100).to_i.to_s + "%",
+          vip_passes: e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "vip").size.to_s,
+          vip_passes_percentage: (e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_i/(e.event.passes.where(pass_type: "vip").size.to_i.nonzero? || 1) * 100).to_i.to_s + "%",
           attendees: @attendees 
         }
       end
