@@ -13,6 +13,8 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
     if !params[:event_id].blank?
     user = request_user
     @event = ChildEvent.find(params[:event_id])
+  
+   
     check = @event.interest_levels.where(user_id: user.id).where(level: 'interested').first
     if check.blank?
     if @interest_level = @event.interest_levels.create!(user_id: user.id, level: 'interested')
@@ -43,7 +45,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
 
       if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " is interested in event '#{@event.name}'.", notifiable: @interest_level, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_interest')
 
-        if !mute_push_notification?(friend) && !mute_event_notifications?(friend, @event)
+        if !mute_push_notification?(user) && !mute_event_notifications?(user, @event)
 
         @current_push_token = @pubnub.add_channels_to_push(
            push_token: friend.device_token,
@@ -165,7 +167,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
         if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " is going to attend event '#{@event.name}'.", notifiable: @interest_level, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_going')
          
           if !mute_push_notification?(user) && !mute_event_notifications?(user, @event)
-            
+
           @current_push_token = @pubnub.add_channels_to_push(
              push_token: friend.device_token,
              type: 'gcm',
@@ -199,7 +201,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
             }
            }
            @pubnub.publish(
-            channel: @push_channel,
+            channel: @event.user.id.to_s,
             message: payload
             ) do |envelope|
                 puts envelope.status
