@@ -1137,7 +1137,7 @@ end
 
 
 def mute_push_notification?(user, event)
-   user.all_chat_notifications_setting.blank? && user.all_chat_notifications_setting.is_on && 
+   user.all_chat_notifications_setting.blank? && user.all_chat_notifications_setting.is_on
 end
 
 def mute_event_notifications?(user, event)
