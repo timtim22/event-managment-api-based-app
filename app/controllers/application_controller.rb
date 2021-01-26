@@ -1136,8 +1136,8 @@ def friend_request_sent?(request_user, user)
 end
 
 
-def mute_push_notification?(user, event)
-   user.all_chat_notifications_setting.blank? && user.all_chat_notifications_setting.is_on && 
+def mute_push_notification?(user)
+   user.all_chat_notifications_setting.blank? && user.all_chat_notifications_setting.is_on 
 end
 
 def mute_event_notifications?(user, event)
