@@ -471,7 +471,7 @@ class ApplicationController < ActionController::Base
       id: offer.id,
       title: offer.title,
       sub_title: offer.sub_title,
-      location: offer.location,
+      location: eval(offer.location),
       date: offer.date,
       time: offer.time,
       lat: offer.lat,
