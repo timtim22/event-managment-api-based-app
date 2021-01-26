@@ -129,15 +129,15 @@ def get_child_event_attendees_stats
         case
         when e.start_time.to_date < DateTime.now
 
-          if e.price_type == "free_event" || e.price_type == "pay_at_door" || e.price_type == "free_ticketed_event" 
+          if e.price_type == "free_event" || e.price_type == "pay_at_door"
             @event << {
               attendees:  e.going_interest_levels.map { |going| {
               user:  get_full_name(going.user),
               avatar:  going.user.avatar,
               confirmation_date:  going.created_at.to_date,
-              ticket_title:  "without ticket event",
-              quantity:  "without ticket event",
-              paid:  "without ticket event",
+              ticket_title:  " ",
+              quantity:  "",
+              paid:  " ",
               is_ambassador:  going.user.profile.is_ambassador,
               check_in_way:  "",
               check_in_time:  ""

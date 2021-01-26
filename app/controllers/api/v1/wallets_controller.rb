@@ -437,6 +437,9 @@ end
           # event = ticket.event
           # event.going_interest_levels.create!(user: request_user, child_event: child_event)
          level =  child_event.going_interest_levels.create!(user: request_user)
+         purchase_ticket = request_user.ticket_purchases.create!(user: request_user, ticket_id: ticket.id, quantity: params[:quantity], price: 0)
+              ticket.quantity = ticket.quantity - params[:quantity].to_i
+              ticket.save
        
        end
       @pubnub = Pubnub.new(
