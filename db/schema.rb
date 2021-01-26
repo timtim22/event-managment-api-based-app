@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_22_135336) do
+ActiveRecord::Schema.define(version: 2021_01_26_070835) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -117,7 +117,6 @@ ActiveRecord::Schema.define(version: 2021_01_22_135336) do
     t.string "name", default: ""
     t.datetime "start_date"
     t.datetime "end_date"
-    t.datetime "terms_conditions"
     t.datetime "start_time"
     t.datetime "end_time"
     t.text "description", default: ""
@@ -237,6 +236,8 @@ ActiveRecord::Schema.define(version: 2021_01_22_135336) do
     t.string "name", default: ""
     t.datetime "start_date"
     t.datetime "end_date"
+    t.datetime "start_time"
+    t.datetime "end_time"
     t.text "description", default: ""
     t.string "host", default: ""
     t.string "location", default: ""
@@ -267,10 +268,9 @@ ActiveRecord::Schema.define(version: 2021_01_22_135336) do
     t.string "status", default: "active"
     t.boolean "is_repetive", default: false
     t.string "frequency", default: "daily"
+    t.boolean "is_private", default: false
     t.integer "max_attendees", default: 1
     t.integer "quantity"
-    t.time "start_time"
-    t.time "end_time"
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
@@ -323,6 +323,7 @@ ActiveRecord::Schema.define(version: 2021_01_22_135336) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "child_event_id"
+    t.integer "ticket_id"
     t.index ["event_id", "user_id"], name: "index_interest_levels_on_event_id_and_user_id"
     t.index ["event_id"], name: "index_interest_levels_on_event_id"
     t.index ["user_id"], name: "index_interest_levels_on_user_id"
@@ -680,7 +681,7 @@ ActiveRecord::Schema.define(version: 2021_01_22_135336) do
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "location_enabled"
+    t.boolean "location_enabled", default: true
     t.boolean "is_subscribed"
     t.string "device_token", default: "no_token"
   end
