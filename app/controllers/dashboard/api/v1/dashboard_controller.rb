@@ -157,15 +157,15 @@ def get_child_event_attendees_stats
         case
         when e.start_time.to_date < DateTime.now
 
-          if e.price_type == "free_event" || e.price_type == "pay_at_door" || e.price_type == "free_ticketed_event" 
+          if e.price_type == "free_event" || e.price_type == "pay_at_door"
             @event << {
               attendees:  e.going_interest_levels.map { |going| {
               user:  get_full_name(going.user),
               avatar:  going.user.avatar,
               confirmation_date:  going.created_at.to_date,
-              ticket_title:  "without ticket event",
-              quantity:  "without ticket event",
-              paid:  "without ticket event",
+              ticket_title:  " ",
+              quantity:  "",
+              paid:  " ",
               is_ambassador:  going.user.profile.is_ambassador,
               check_in_way:  "",
               check_in_time:  ""
@@ -199,7 +199,7 @@ def get_child_event_attendees_stats
             guest_passes_percentage: (e.event.passes.where(pass_type: "ordinary").map {|e| e.redemptions}.size.to_i.to_f/(e.event.passes.where(pass_type: "ordinary").size.to_i.nonzero? || 1) * 100).to_i.to_s, 
             vip_passes: e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "vip").size.to_s,
             vip_passes_percentage: (e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_i/(e.event.passes.where(pass_type: "vip").size.to_i.nonzero? || 1) * 100).to_i.to_s
-            # attendees: @attendees 
+            attendees: @attendees 
           }
 
         when e.start_time.to_date == DateTime.now
