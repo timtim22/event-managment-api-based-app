@@ -437,7 +437,7 @@ end
           # event = ticket.event
           # event.going_interest_levels.create!(user: request_user, child_event: child_event)
          level =  child_event.going_interest_levels.create!(user: request_user)
-       
+         
        end
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],

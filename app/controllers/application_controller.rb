@@ -1136,6 +1136,14 @@ def friend_request_sent?(request_user, user)
 end
 
 
+def mute_push_notification?(user, event)
+   user.all_chat_notifications_setting.blank? && user.all_chat_notifications_setting.is_on && 
+end
+
+def mute_event_notifications?(user, event)
+    event_chat_muted?(user, event) && user.event_notifications_setting.blank? && user.event_notifications_setting.is_on
+end
+
 def get_percent_of(number, total)
   number.to_f / total.to_f * 100.0
 end

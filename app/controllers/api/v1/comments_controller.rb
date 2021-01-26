@@ -38,12 +38,15 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
         "reader_id" => @comment.reader_id,
         "is_host" => is_host?(@comment.user, @event)
        }
+     
+
+     if @notification = Notification.create(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')
+
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
        )
-
-     if @notification = Notification.create(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')
+      
         @pubnub.publish(
           channel: [@event.user.id.to_s],
           message: {
@@ -67,7 +70,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
 
         if notification = Notification.create(recipient: comment_user, actor: request_user, action: get_full_name(request_user) + " commented on event '#{@event.name}'.", notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')
 
-         if !event_chat_muted?(comment_user, @event) && !comment_user.all_chat_notifications_setting.blank?  && comment_user.all_chat_notifications_setting.is_on == true && !comment_user.event_notifications_setting.blank? && comment_user.event_notifications_setting.is_on == true
+          if !mute_push_notification?(comment_user) && !mute_event_notifications?(comment_user, @event)
 
           @current_push_token = @pubnub.add_channels_to_push(
              push_token: comment_user.device_token,
@@ -151,12 +154,16 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
        action_arg = "commented on event '#{@event.name}'";
       # create_activity(action_arg, @event, 'Event', admin_event_path(@event), @event.name, 'post')
        # Notify the event owner as well
-       @pubnub = Pubnub.new(
-         publish_key: ENV['PUBLISH_KEY'],
-         subscribe_key: ENV['SUBSCRIBE_KEY']
-        )
+     
+   
 
       if @notification = Notification.create!(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')
+
+        @pubnub = Pubnub.new(
+          publish_key: ENV['PUBLISH_KEY'],
+          subscribe_key: ENV['SUBSCRIBE_KEY']
+         )
+
          @pubnub.publish(
            channel: [@event.user.id.to_s],
            message: {
@@ -173,7 +180,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
         if @comment.user != request_user
         if notification = Notification.create!(recipient: @comment.user, actor: request_user, action: "#{User.get_full_name(request_user)}  replied to your comemnt on the event '#{@event.name}'.", notifiable: @reply, resource: @reply, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'reply_comment')
 
-          if !event_chat_muted?(@comment.user, @event) && !@comment.user.all_chat_notifications_setting.blank?  && @comment.user.all_chat_notifications_setting.is_on == true && !@comment.user.event_notifications_setting.blank? && @comment.user.event_notifications_setting.is_on == true
+         if !mute_push_notification?(@comment.user, @event) && !mute_event_notifications?(@comment.user, @event)
 
            @current_push_token = @pubnub.add_channels_to_push(
               push_token: @comment.user.device_token,
@@ -266,9 +273,6 @@ end
 
   api :POST, '/api/v1/event/comments', 'Get list of event based comments'
   param :event_id, :number, :desc => "Event ID", :required => true
-
-
-
 
 
    def comments
