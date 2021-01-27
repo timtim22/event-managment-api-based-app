@@ -502,7 +502,7 @@ end
 
 def get_redem_price(going)
   if going.offer_type == "Ticket"
-    going.offer.ticket_purchases.price
+    going.offer.ticket_purchases.where(ticket_id: going.offer_id).first.price
   end
 end
 
