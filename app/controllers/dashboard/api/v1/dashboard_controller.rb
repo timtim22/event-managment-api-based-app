@@ -120,6 +120,83 @@ end
    # def total_events
 end
 
+
+def get_live_event_data
+  if !params[:event_id].blank?
+    e = ChildEvent.find(params[:event_id])
+    @attendees = []
+    @event = []
+    if e.start_date.to_date == Date.today
+      if e.price_type == "free_event" || e.price_type == "pay_at_door"
+        e.going_interest_levels.each do |going|
+        @attendees << {
+          user:  get_full_name(going.user),
+          avatar:  going.user.avatar,
+          confirmation_date:  going.created_at.to_date,
+          ticket_title:  "",
+          quantity:  "",
+          paid:  "",
+          is_ambassador:  going.user.profile.is_ambassador,
+          type:  "",
+          check_in_way:  "",
+          check_in_time:  ""
+        }
+        end
+      else
+        tickets = e.event.tickets.pluck :id
+        passes = e.event.passes.pluck :id
+        ids = tickets + passes
+        Redemption.where(offer_id: ids).each do |going|
+        @attendees << {
+          user:  get_full_name(going.user),
+          avatar:  going.user.avatar,
+          confirmation_date:  going.created_at.to_date,
+          ticket_title:  going.offer.title,
+          quantity:  going.user.redemptions.size,
+          paid:  get_redem_price(going),
+          is_ambassador:  going.user.profile.is_ambassador,
+          type:  get_redemption_type(going),
+          check_in_way:  "QR",
+          check_in_time:  goin.created_at
+        }
+        end
+      end
+          @event << {
+            time_remaning: "Live Now",
+            location: eval(e.location),
+            date: e.start_date,
+            going: e.going_interest_levels.size,
+            passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
+            vip_pass: e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum,
+            tickets: e.event.tickets.map { |e|  e.ticket_purchases.map {|e| e.quantity}.sum}.sum.to_s + " of " + e.event.tickets.map { |e|  e.quantity}.sum.to_s,
+            tickets_percentage: (e.event.tickets.map { |e|  e.ticket_purchases.map {|e| e.quantity}.sum}.sum.to_i/(e.event.tickets.map { |e|  e.quantity}.sum.to_i.to_f.nonzero? || 1) * 100).to_i.to_s, 
+            guest_passes: e.event.passes.where(pass_type: "ordinary").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "ordinary").size.to_s,
+            guest_passes_percentage: (e.event.passes.where(pass_type: "ordinary").map {|e| e.redemptions}.size.to_i.to_f/(e.event.passes.where(pass_type: "ordinary").size.to_i.nonzero? || 1) * 100).to_i.to_s, 
+            vip_passes: e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "vip").size.to_s,
+            vip_passes_percentage: (e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_i/(e.event.passes.where(pass_type: "vip").size.to_i.nonzero? || 1) * 100).to_i.to_s,
+            attendees: @attendees 
+          }
+    end
+      render json: {
+        code: 200,
+        success: true,
+        message: 'Child Event Stats',
+        data: {
+          stats: @event
+        }
+          }
+
+  else
+      render json: {
+        code: 400,
+        success: false,
+        message: 'event_id',
+        data: nil
+      }
+  end #if
+
+end
+
 def get_child_event_attendees_stats
     if !params[:event_id].blank? 
       e = ChildEvent.find(params[:event_id])
@@ -127,7 +204,7 @@ def get_child_event_attendees_stats
         @event = []
         #extract attendees from ticket purchases       
         case
-        when e.start_time.to_date < Date.today
+        when e.start_date.to_date < Date.today
 
           if e.price_type == "free_event" || e.price_type == "pay_at_door"
             e.going_interest_levels.each do |going|
@@ -155,14 +232,14 @@ def get_child_event_attendees_stats
               quantity:  going.quantity,
               paid:  going.price,
               is_ambassador:  going.user.profile.is_ambassador,
-              type:  going.user.redemptions.where(offer_id: m.event_id),
+              type:  "",
               check_in_way:  "",
               check_in_time:  ""
             }
           end
         }
           end
-              
+
           @event << {
             time_remaning: (e.start_date.to_date - Date.today).to_i.to_s + " days remaning",
             location: eval(e.location),
@@ -178,7 +255,7 @@ def get_child_event_attendees_stats
             vip_passes_percentage: (e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_i/(e.event.passes.where(pass_type: "vip").size.to_i.nonzero? || 1) * 100).to_i.to_s,
             attendees: @attendees 
           }
-        when e.start_time.to_date == Date.today
+        when e.start_date.to_date == Date.today
           if e.price_type == "free_event" || e.price_type == "pay_at_door"
             e.going_interest_levels.each do |going|
             @attendees << {
@@ -189,6 +266,7 @@ def get_child_event_attendees_stats
               quantity:  "",
               paid:  "",
               is_ambassador:  going.user.profile.is_ambassador,
+              type:  "",
               check_in_way:  "",
               check_in_time:  ""
             }
@@ -204,6 +282,7 @@ def get_child_event_attendees_stats
               quantity:  going.quantity,
               paid:  going.price,
               is_ambassador:  going.user.profile.is_ambassador,
+              type:  "",
               check_in_way:  "",
               check_in_time:  ""
             }
@@ -225,7 +304,7 @@ def get_child_event_attendees_stats
             vip_passes_percentage: (e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_i/(e.event.passes.where(pass_type: "vip").size.to_i.nonzero? || 1) * 100).to_i.to_s,
             attendees: @attendees 
           }
-        when e.start_time.to_date > Date.today
+        when e.start_date.to_date > Date.today
           if e.price_type == "free_event" || e.price_type == "pay_at_door"
             e.going_interest_levels.each do |going|
             @attendees << {
@@ -251,6 +330,7 @@ def get_child_event_attendees_stats
               quantity:  going.quantity,
               paid:  going.price,
               is_ambassador:  going.user.profile.is_ambassador,
+              type:  "",
               check_in_way:  "",
               check_in_time:  ""
             }
@@ -419,6 +499,28 @@ def get_child_event_full_analytics
 end
 
   private
+
+def get_redem_price(going)
+  if going.offer_type == "Ticket"
+    going.offer.ticket_purchases.price
+  end
+end
+
+  def get_redemption_type(going)
+      if going.offer_type == "Ticket"
+        if going.offer.event.price_type == "free_ticketed_event"
+          "Free Ticket"
+        else
+          "Paid Ticker"
+        end    
+      elsif going.offer_type == "Pass"
+        if going.offer.pass_type == "vip"
+          "VIP Gues Pass"
+          else
+            "Guest Pass"
+          end
+      end
+  end
 
    def get_time_slot_child_total_going(current_time_slot_dates, event)
     @total_views = []
