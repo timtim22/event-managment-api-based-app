@@ -95,10 +95,19 @@
      "maybe" => e.interested_interest_levels.size,
      "get_demographics" => get_demographics(e),
      'repeatEndDate' => e.child_events.maximum('start_date'),
-      "event_dates" => e.child_events.map {|ch| 
+     "event_dates" => e.child_events.map {|ch| 
         {
           id: ch.id,
           date: ch.start_date.to_date
+        }
+
+      },
+     "child_events" => e.child_events.map {|child_event| 
+        {
+          id: child_event.id,
+          going: child_event.going_interest_levels.size,
+          maybe: child_event.interested_interest_levels.size,
+          get_demographics: get_demographics(child_event)
         }
 
       }
