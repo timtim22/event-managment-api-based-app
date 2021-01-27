@@ -136,8 +136,20 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
   end
 
 
+
   def logout
-    if  update = request_user.update!(device_token: "token_removed")
+    if params[:phone_number].present?
+        accounts = User.where(phone_number: params[:phone_number])
+        errors = []
+        accounts.each do |acc|
+          if update = acc.update!(device_token: "token_removed")
+             "OK"
+          else
+            errors = update.errors.full_messages
+          end
+        end #each
+      
+    if  errors.blank?
       render json: {
         code: 200,
         success: true,
@@ -148,10 +160,18 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
     render json: {
         code: 400,
         success: false,
-        message: update.errors.full_messages,
+        message: errors,
         data: nil 
     }
    end
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "phone_number is required field.",
+      data: nil
+    }
+  end
   end
 
   # def send_verification_email
