@@ -148,9 +148,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
     end
   end
 
-  api :POST, '/api/v1/redeem-special-offer', 'Redeen a special offer'
-  param :offer_id, :number, :desc => "Offer ID", :required => true
-  param :redeem_code, String, :desc => "Redeem Code", :required => true
+
 
   def redeem_it
     if !params[:redeem_code].blank? && !params[:offer_id].blank?
@@ -179,7 +177,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
           end
           @ambassador = @share.user
           if @ambassador.profile.is_ambassador ==  true #if user is an ambassador
-          @ambassador.profile.update!(earning: @ambassador.profile.earning + @special_offer.ambassador_rate.to_i)
+          @ambassador.profile.update!(earning: @ambassador.profile.earning.to_i + @special_offer.ambassador_rate)
           end
         end
 

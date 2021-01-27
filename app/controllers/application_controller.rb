@@ -603,7 +603,8 @@ class ApplicationController < ActionController::Base
           redeem_count: get_redeem_count(pass),
           quantity: pass.quantity,
           issued_by: get_full_name(pass.user),
-          business: get_business_object(business)
+          business: get_business_object(business),
+        
 
         }
         end #each
@@ -644,6 +645,7 @@ class ApplicationController < ActionController::Base
         end #each
       end #not empty
     end #each
+    @offers["distribution_count"] = user.offer_shares.size + user.offer_forwardings
     @offers
 end
 
