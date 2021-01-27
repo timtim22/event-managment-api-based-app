@@ -88,7 +88,7 @@
      "price" => get_price(e),
      'is_repetive' => e.is_repetive,
      'frequency' => e.frequency,
-     "redeem_code" => qr
+     "redeem_code" => qr,
      'max_attendees' => e.max_attendees,
      "get_demographics" => get_demographics(e),
      "going" => e.going_interest_levels.size,

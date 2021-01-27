@@ -155,7 +155,7 @@ def get_child_event_attendees_stats
               quantity:  going.quantity,
               paid:  going.price,
               is_ambassador:  going.user.profile.is_ambassador,
-              type:  going.user.redemptions.where(offer_id: m.event_id).first.offer_type,
+              type:  going.user.redemptions.where(offer_id: m.event_id),
               check_in_way:  "",
               check_in_time:  ""
             }
