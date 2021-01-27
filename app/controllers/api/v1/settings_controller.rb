@@ -143,6 +143,9 @@ class Api::V1::SettingsController < Api::V1::ApiMasterController
         end
 
 
+        
+
+
         def change_location_status
           if !params[:status].blank?
             if request_user.update!(location_enabled: params[:status])

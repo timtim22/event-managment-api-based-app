@@ -156,10 +156,10 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
           if @share.blank?
            @share = OfferShare.find_by(offer_id: @pass.id)
           end
+          
           @ambassador = @share.user
           if @ambassador.profile.is_ambassador ==  true #if user is an ambassador
-          @ambassador.profile.update!(earning:  @ambassador.profile.earning + @pass.ambassador_rate.to_i)
-
+           @ambassador.profile.update!(earning:  @ambassador.profile.earning + @pass.ambassador_rate.to_i)
           end
         end
 
