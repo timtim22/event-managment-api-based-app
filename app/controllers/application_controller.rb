@@ -604,7 +604,7 @@ class ApplicationController < ActionController::Base
           quantity: pass.quantity,
           issued_by: get_full_name(pass.user),
           business: get_business_object(business),
-        
+          distribution_count: pass.offer_shares.where(user: user).size + pass.offer_forwardings.where(user: user).size
 
         }
         end #each
@@ -640,12 +640,12 @@ class ApplicationController < ActionController::Base
           quantity: offer.quantity,
           terms_and_conditions: offer.terms_conditions,
           business: get_business_object(business),
-
+          distribution_count: offer.offer_shares.where(user: user).size + offer.offer_forwardings.where(user: user).size
         }
         end #each
       end #not empty
     end #each
-    @offers["distribution_count"] = user.offer_shares.size + user.offer_forwardings
+ 
     @offers
 end
 

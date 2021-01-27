@@ -30,7 +30,8 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                   "price" => get_price(event.event),
                   "has_passes" => has__child_event_passes?(event),
                   "created_at" => event.created_at,
-                  "categories" => event.event.categories
+                  "categories" => event.event.categories,
+                 "all_passes_added_to_wallet" => all_passes_added_to_wallet?(request_user, event.event.passes)
                   }
             end
               render json: {
