@@ -84,6 +84,7 @@
      'is_repetive' => e.is_repetive,
      'frequency' => e.frequency,
      'max_attendees' => e.max_attendees,
+     "get_demographics" => get_demographics(e),
      'repeatEndDate' => e.child_events.maximum('start_date'),
       "event_dates" => e.child_events.map {|ch| 
         {
