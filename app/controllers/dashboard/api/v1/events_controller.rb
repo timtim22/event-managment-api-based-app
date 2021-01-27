@@ -55,6 +55,10 @@
      }
     end#each
    end
+    qr = []
+     if !e.passes.blank?
+       e.passes.map {|p| qr.push(p.redeem_code) }
+     end
 
    @event = {
      'id' => e.id,
@@ -81,9 +85,14 @@
      'over_18' => e.over_18,
      'quantity' => e.quantity,
      'price_type' => e.price_type,
+     "price" => get_price(e),
      'is_repetive' => e.is_repetive,
      'frequency' => e.frequency,
+     "redeem_code" => qr
      'max_attendees' => e.max_attendees,
+     "get_demographics" => get_demographics(e),
+     "going" => e.going_interest_levels.size,
+     "maybe" => e.interested_interest_levels.size,
      "get_demographics" => get_demographics(e),
      'repeatEndDate' => e.child_events.maximum('start_date'),
       "event_dates" => e.child_events.map {|ch| 

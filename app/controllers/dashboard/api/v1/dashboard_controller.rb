@@ -135,10 +135,11 @@ def get_child_event_attendees_stats
               user:  get_full_name(going.user),
               avatar:  going.user.avatar,
               confirmation_date:  going.created_at.to_date,
-              ticket_title:  " ",
+              ticket_title:  "",
               quantity:  "",
-              paid:  " ",
+              paid:  "",
               is_ambassador:  going.user.profile.is_ambassador,
+              type:  "",
               check_in_way:  "",
               check_in_time:  ""
             }
@@ -154,6 +155,7 @@ def get_child_event_attendees_stats
               quantity:  going.quantity,
               paid:  going.price,
               is_ambassador:  going.user.profile.is_ambassador,
+              type:  going.user.redemptions.where(offer_id: m.event_id).first.offer_type,
               check_in_way:  "",
               check_in_time:  ""
             }
@@ -230,9 +232,9 @@ def get_child_event_attendees_stats
               user:  get_full_name(going.user),
               avatar:  going.user.avatar,
               confirmation_date:  going.created_at.to_date,
-              ticket_title:  " ",
+              ticket_title:  "",
               quantity:  "",
-              paid:  " ",
+              paid:  "",
               is_ambassador:  going.user.profile.is_ambassador,
               check_in_way:  "",
               check_in_time:  ""
