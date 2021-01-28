@@ -105,6 +105,7 @@
      "maybe" => e.interested_interest_levels.size,
      "status" => status,
      'repeatEndDate' => e.child_events.maximum('start_date'),
+     'pass_id' => e.passes.first.id,
      "event_dates" => e.child_events.map {|ch| 
         {
           id: ch.id,

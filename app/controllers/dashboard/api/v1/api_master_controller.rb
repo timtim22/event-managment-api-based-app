@@ -236,8 +236,8 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
     "parent_event_id" => event.event.id,
     "price" => get_price(event.event),
     "status" => status,
-    "redeem_code" => qr
-    
+    "redeem_code" => qr,
+    "pass_id" => event.event.passes.first.id
   }
 
 
