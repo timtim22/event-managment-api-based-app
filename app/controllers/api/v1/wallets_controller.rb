@@ -379,11 +379,8 @@ end
 def remove_offer
  all_is_well = !params[:offer_id].blank? && !params[:offer_type].blank?
  if all_is_well
-    errors = []
-    @wallets = request_user.wallets.where(offer_id: params[:offer_id]).where(offer_type: params[:offer_type])
-    if !wallet.blank?
-      @wallets.map {|w| if w.update!(is_removed: true) then "all_is_well" else errors.push(w.errors.full_messages) }
-    if errors.empty?
+    @wallet = request_user.wallets.where(offer_id: params[:offer_id]).where(offer_type: params[:offer_type]).first
+    if @wallet.update!(is_removed: true)
       render json:  {
       code: 200,
       success: true,
@@ -394,7 +391,7 @@ def remove_offer
       render json:  {
         code: 400,
         success: false,
-        message: errors
+        message: @wallet.errors.full_messages,
         data: nil
       }
     end
