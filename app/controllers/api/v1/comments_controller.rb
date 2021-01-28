@@ -140,7 +140,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
 
          @comment = Comment.find(params[:comment_id])
 
-      if @reply = @comment.replies.create!(user: request_user, msg: params[:comment])
+      if @reply = @comment.replies.create!(user: request_user, msg: params[:comment], child_event: @event)
         reply_hash = {
           "id" =>  @reply.id,
           "comment" => @reply.msg,
