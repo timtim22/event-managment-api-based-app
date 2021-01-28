@@ -262,6 +262,7 @@ Rails.application.routes.draw do
         post '/attendees-live-stats' => 'dashboard#get_live_event_data'
         post '/vip-pass-users' => 'passes#vip_pass_users'
         post '/search-users' => 'passes#search_users'
+        post '/delete-vip-pass' => 'passes#delete_vip_pass'
 
       end
     end

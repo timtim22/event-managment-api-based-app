@@ -128,13 +128,13 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
   end
 
 def vip_pass_users
-    @profiles = []
       if !params[:event_id].blank?
         e = Event.find(params[:event_id])
         vip = e.passes.first
          @invitees = []
          Wallet.where(offer_id: vip.id).where(offer_type: 'Pass').each do |offer|
           @invitees << {
+            avatar: offer.user.avatar,
             user: get_full_name(offer.user),
             Invited: offer.created_at.to_date,
             quantity: offer.quantity,
@@ -158,6 +158,31 @@ def vip_pass_users
           data: nil
         }
   end
+end
+
+def delete_vip_pass
+  if !params[:pass_id].blank? && !params[:user_id].blank?
+    vip = Pass.find(params[:pass_id])
+    user = User.find(params[:user_id])
+    quantity = user.wallets.where(offer_id: vip.id).where(offer_type: 'Pass').first.quantity
+      user.wallets.where(offer_id: vip.id).where(offer_type: 'Pass').first.destroy
+      vip.update(quantity: vip.quantity + quantity)
+      render json:  {
+        code: 400,
+        success: false,
+        message: "VIP pass has been deleted successfully",
+        data: nil
+      }
+          
+  else
+      render json: {
+        code: 400,
+        success: false,
+        message: 'Pass ID and User ID are required',
+        data: nil
+      }
+  end
+      
 end
 
 def search_users
@@ -201,18 +226,6 @@ end
 
          vip.quantity = vip.quantity - params[:quantity].to_i
          vip.save
-
-         User.where.not(offer_id: vip.id).where(offer_type: 'Pass').each do |profile|
-          @profile << {
-            id: profile.user_id,
-            user: get_full_name(profile.user),
-            invited: "",
-            quantity: "",
-            Issued_by: "",
-            Invite: false
-          }
-           
-         end
          # vip.update(quantity:)
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
