@@ -155,7 +155,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         @events = ChildEvent.not_expired
 
         #location based events 2
-        @events = ChildEvent.ransack(location_cont: location).result(distinct: true) if !params[:location].blank?
+        @events = ChildEvent.where("location like ?", "%#{params[:location]}%") if !params[:location].blank?
        
         # price based events 3
          @events =  ChildEvent.where("price #{operator} ?", params[:price]).where("start_price < ?", 1).where("end_price < ?", 1).or(ChildEvent.where("price < ?", 1).where("start_price #{operator} ?", params[:price]).or(ChildEvent.where("price < ?", 1).where("end_price #{operator} ?", params[:price]))) if !params[:price].blank?
@@ -167,7 +167,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
          @events = ChildEvent.where(pass: 'true') if !params[:pass].blank?
 
          #location && price 5
-         @events = ChildEvent.where("price #{operator} ?", params[:price]).where("start_price < ?", 1).where("end_price < ?", 1).or(ChildEvent.where("price < ?", 1).where("start_price #{operator} ?", params[:price]).or(ChildEvent.where("price < ?", 1).where("end_price #{operator} ?", params[:price]))).ransack(location_cont: location).result(distinct: true)  if !params[:location].blank? && !params[:price].blank?
+         @events = ChildEvent.where("price #{operator} ?", params[:price]).where("start_price < ?", 1).where("end_price < ?", 1).or(ChildEvent.where("price < ?", 1).where("start_price #{operator} ?", params[:price]).or(ChildEvent.where("price < ?", 1).where("end_price #{operator} ?", params[:price]))).where("location like ?", "%#{params[:location]}%")  if !params[:location].blank? && !params[:price].blank?
 
          # locatiion && categories 6
           @events = ChildEvent.where(first_cat_id: cats_ids).ransack(location_cont: location).result(distinct: true) if !params[:location].blank? && !params[:categories].blank?
@@ -185,7 +185,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
             @events = ChildEvent.where(pass: 'true').where(first_cat_id: cats_ids) if !params[:categories].blank? && !params[:pass].blank?
 
              #location ,categories, price 11
-             @events = ChildEvent.where(first_cat_id: cats_ids).where("price #{operator} ?", params[:price]).where("start_price < ?", 1).where("end_price < ?", 1).or(ChildEvent.where(first_cat_id: cats_ids).where("price < ?", 1).where("start_price #{operator} ?", params[:price]).or(ChildEvent.where(first_cat_id: cats_ids).where("price < ?", 1).where("end_price #{operator} ?", params[:price]))).ransack(location_cont: location).result(distinct: true) if !params[:location].blank? && !params[:categories].blank? && !params[:price].blank?
+             @events = ChildEvent.where(first_cat_id: cats_ids).where("price #{operator} ?", params[:price]).where("start_price < ?", 1).where("end_price < ?", 1).or(ChildEvent.where(first_cat_id: cats_ids).where("price < ?", 1).where("start_price #{operator} ?", params[:price]).or(ChildEvent.where(first_cat_id: cats_ids).where("price < ?", 1).where("end_price #{operator} ?", params[:price]))).where("location like ?", "%#{params[:location]}%") if !params[:location].blank? && !params[:categories].blank? && !params[:price].blank?
 
               #location ,pass, price 12
               @events = ChildEvent.where("price #{operator} ?", params[:price]).where("start_price < ?", 1).where("end_price < ?", 1).where(pass: 'true').or(ChildEvent.where(pass: "true").where("price < ?", 1).where("start_price #{operator} ?", params[:price]).or(ChildEvent.where(pass: "true").where("price < ?", 1).where("end_price #{operator} ?", params[:price]))).ransack(location_cont: location).result(distinct: true) if !params[:price].blank? && !params[:pass].blank? && !params[:location].blank?
@@ -194,7 +194,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
               @events = ChildEvent.where(pass: 'true').where(first_cat_id: cats_ids).ransack(location_cont: location).result(distinct: true) if !params[:categories].blank? && !params[:pass].blank? && !params[:categories].blank?
 
               #location ,pass, categories, price 14
-              @events = ChildEvent.where("price #{operator} ?", params[:price]).where("start_price < ?", 1).where("end_price < ?", 1).where(pass: 'true').where(first_cat_id: cats_ids).or(ChildEvent.where(pass: "true").where(first_cat_id: cats_ids).where("price < ?", 1).where("start_price #{operator} ?", params[:price]).or(ChildEvent.where(pass: "true").where(first_cat_id: cats_ids).where("price < ?", 1).where("end_price #{operator} ?", params[:price]))).ransack(location_cont: location).result(distinct: true) if !params[:price].blank? && !params[:pass].blank? && !params[:location].blank? && !params[:categories].blank?
+              @events = ChildEvent.where("price #{operator} ?", params[:price]).where("start_price < ?", 1).where("end_price < ?", 1).where(pass: 'true').where(first_cat_id: cats_ids).or(ChildEvent.where(pass: "true").where(first_cat_id: cats_ids).where("price < ?", 1).where("start_price #{operator} ?", params[:price]).or(ChildEvent.where(pass: "true").where(first_cat_id: cats_ids).where("price < ?", 1).where("end_price #{operator} ?", params[:price]))).where("location like ?", "%#{params[:location]}%") if !params[:price].blank? && !params[:pass].blank? && !params[:location].blank? && !params[:categories].blank?
 
               @response = @events.sort_by_date.page(params[:page]).per(75).map {|event| get_simple_child_event_object(event) }
               render json: {
@@ -359,7 +359,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
     event = {
       "id" => event.id,
       "price_type" => event.event.price_type,
-      "max_price" => get_max_price(event.event),
+      "max_price" => get_price(event.event),
       "has_passes" => has_passes?(event.event),
       "categories" => event.event.categories,
       "location" => eval(event.location)
