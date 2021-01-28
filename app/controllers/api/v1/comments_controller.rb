@@ -180,7 +180,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
         if @comment.user != request_user
         if notification = Notification.create!(recipient: @comment.user, actor: request_user, action: "#{User.get_full_name(request_user)}  replied to your comemnt on the event '#{@event.name}'.", notifiable: @reply, resource: @reply, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'reply_comment')
 
-         if !mute_push_notification?(@comment.user, @event) && !mute_event_notifications?(@comment.user, @event)
+         if !mute_push_notification?(@comment.user) && !mute_event_notifications?(@comment.user, @event)
 
            @current_push_token = @pubnub.add_channels_to_push(
               push_token: @comment.user.device_token,
