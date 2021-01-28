@@ -157,7 +157,7 @@ def get_live_event_data
           is_ambassador:  going.user.profile.is_ambassador,
           type:  get_redemption_type(going),
           check_in_way:  "QR",
-          check_in_time:  goin.created_at
+          check_in_time:  going.created_at
         }
         end
       end

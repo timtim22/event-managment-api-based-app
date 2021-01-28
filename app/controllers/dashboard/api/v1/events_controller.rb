@@ -59,6 +59,16 @@
      if !e.passes.blank?
        e.passes.map {|p| qr.push(p.redeem_code) }
      end
+  case
+  when event.start_date.to_date == Date.today
+  status =  "Now On"
+  when event.start_date.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door" || event.price_type == "free_event"
+    status =  event.going_interest_levels.size.to_s + " Going"  
+  when event.start_date.to_date > Date.today && event.price_type == "buy"
+    status =  event.event.tickets.first.wallets.size.to_s + " Tickets Gone"
+  when event.start_date.to_date < Date.today
+   status = "Event Over"
+  end
 
    @event = {
      'id' => e.id,
@@ -93,7 +103,7 @@
      "get_demographics" => get_demographics(e),
      "going" => e.going_interest_levels.size,
      "maybe" => e.interested_interest_levels.size,
-     "get_demographics" => get_demographics(e),
+     "status" => status,
      'repeatEndDate' => e.child_events.maximum('start_date'),
      "event_dates" => e.child_events.map {|ch| 
         {
