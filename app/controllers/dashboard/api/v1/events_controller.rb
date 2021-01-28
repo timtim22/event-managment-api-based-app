@@ -434,8 +434,8 @@
              end
             end #each
              if tickets_done
-             @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00, price_type: "buy", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
-             @event.child_events.map { |e| e.update!(price_type: "buy", price: get_price(@event), start_price: 0.00, end_price: 0.00) }
+             @event.update!(price: prices.max, start_price: 0.00, end_price: 0.00, price_type: "buy", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
+             @event.child_events.map { |e| e.update!(price_type: "buy", price: prices.max, start_price: 0.00, end_price: 0.00) }
              end
           when 'pay_at_door'
             resource[:fields].each do |f|
@@ -445,12 +445,18 @@
             @event.child_events.map { |e| e.update!(price_type: "pay_at_door", price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"]) }
 
           when 'pass'
+            passes_done = false
             resource[:fields].each do |f|
-            @pass =@event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], terms_conditions: f[:terms_conditions], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+           if @event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], terms_conditions: f[:terms_conditions], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+             passes_done = true
+           else
+            passes_done = false
+           end  
+          end #each
+          if passes_done 
             @event.update!(pass: 'true')
-            @event.child_events.map {|ch| ch.update!(pass: 'true')}
-            end #each
-
+            @event.child_events.map {|ch| ch.update!(pass: 'true') }
+          end
           else
             @error_messages.push('invalid resource type is submitted.')
           end
@@ -704,6 +710,7 @@
                     @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free_ticketed_event", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
                     @event.child_events.map { |e| e.update!(price_type: "free_ticketed_event", price: 0.00, start_price: 0.00, end_price: 0.00,) }
              when 'buy'
+                prices = []
                 tickets_done = false
                 resource[:fields].each do |f|
                   if f.include? "id"
@@ -719,10 +726,11 @@
                       tickets_done = false
                     end               
                   end
+                  prices.push(f[:price])
                 end #each
                   if tickets_done
-                     @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00, price_type: "buy", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
-                     @event.child_events.map { |e| e.update!(price_type: "buy", price: get_price(@event), start_price: 0.00, end_price: 0.00) }
+                     @event.update!(price: prices.max, start_price: 0.00, end_price: 0.00, price_type: "buy", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
+                     @event.child_events.map { |e| e.update!(price_type: "buy", price: prices.max, start_price: 0.00, end_price: 0.00) }
                   end 
               when 'pay_at_door'
                 resource[:fields].each do |f|
@@ -735,13 +743,25 @@
                   @event.update!(price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"], price_type: "pay_at_door", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
                   @event.child_events.map { |e| e.update!(price_type: "pay_at_door", price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"]) }   
               when 'pass'
+                passes_done = false
                 resource[:fields].each do |f|
                   if f.include? "id"
-                    @pass = @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], terms_conditions: f[:terms_conditions],  ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+                    if @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], terms_conditions: f[:terms_conditions],  ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+                      passes_done = true
+                    else
+                      passes_done = false
+                    end
                 else
-                      @pass = @event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], terms_conditions: f[:terms_conditions],  ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+                      if @event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], terms_conditions: f[:terms_conditions],  ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+                        passes_done = true
+                      else
+                        passes_done = false
+                      end
                   end
-                  @event.update!(pass: 'true')
+                  if passes_done 
+                       @event.update!(pass: 'true')
+                       @event.child_events.map {|ch| ch.update!(pass: 'true') }
+                  end
                 end #each
 
 
