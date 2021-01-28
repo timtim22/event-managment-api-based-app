@@ -140,7 +140,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
 
          @comment = Comment.find(params[:comment_id])
 
-      if @reply = @comment.replies.create!(user: request_user, msg: params[:comment])
+      if @reply = @comment.replies.create!(user: request_user, msg: params[:comment], child_event: @event)
         reply_hash = {
           "id" =>  @reply.id,
           "comment" => @reply.msg,
@@ -180,7 +180,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
         if @comment.user != request_user
         if notification = Notification.create!(recipient: @comment.user, actor: request_user, action: "#{User.get_full_name(request_user)}  replied to your comemnt on the event '#{@event.name}'.", notifiable: @reply, resource: @reply, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'reply_comment')
 
-         if !mute_push_notification?(@comment.user, @event) && !mute_event_notifications?(@comment.user, @event)
+         if !mute_push_notification?(@comment.user) && !mute_event_notifications?(@comment.user, @event)
 
            @current_push_token = @pubnub.add_channels_to_push(
               push_token: @comment.user.device_token,
@@ -197,8 +197,8 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
               data: {
 
                 "id": notification.id,
-                "event_id": notification.resource.comment.event.id,
-                "event_name": notification.resource.comment.event.name,
+                "event_id": notification.resource.child_event.id,
+                "event_name": notification.resource.child_event.name,
                 "replier_id": notification.resource.user.id,
                 "replier_name": User.get_full_name(notification.resource.user),
                 "comment_id": notification.resource.comment.id,

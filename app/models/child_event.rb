@@ -7,7 +7,8 @@ class ChildEvent < ApplicationRecord
  mount_base64_uploader :image, ImageUploader
  validates :image, file_size: { less_than: 3.megabytes }
 
- has_many :comments, dependent: :destroy, foreign_key: :child_event_id, table_name: "Comment"
+ has_many :comments, dependent: :destroy
+ has_many :replies, dependent: :destroy
  has_many :activity_logs, dependent: :destroy, as: :resource
  has_many :users, through: :comments
  has_many :interest_levels, dependent: :destroy, foreign_key: :child_event_id, table_name: "InterestLevel"
