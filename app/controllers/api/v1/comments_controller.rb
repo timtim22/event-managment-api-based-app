@@ -197,8 +197,8 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
               data: {
 
                 "id": notification.id,
-                "event_id": notification.resource.comment.event.id,
-                "event_name": notification.resource.comment.event.name,
+                "event_id": notification.resource.child_event.id,
+                "event_name": notification.resource.child_event.name,
                 "replier_id": notification.resource.user.id,
                 "replier_name": User.get_full_name(notification.resource.user),
                 "comment_id": notification.resource.comment.id,

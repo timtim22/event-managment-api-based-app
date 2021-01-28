@@ -423,10 +423,12 @@
             @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free_ticketed_event", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
             @event.child_events.map { |e| e.update!(price_type: "free_ticketed_event", price: 0.00, start_price: 0.00, end_price: 0.00,) }
          when 'buy'
+            prices = []
             resource[:fields].each do |f|
              @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
+             prices.push(f[:price])
             end #each
-             @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00, price_type: "buy", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
+             @event.update!(price: prices.max, start_price: 0.00, end_price: 0.00, price_type: "buy", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
              @event.child_events.map { |e| e.update!(price_type: "buy", price: get_price(@event), start_price: 0.00, end_price: 0.00) }
           when 'pay_at_door'
             resource[:fields].each do |f|
@@ -695,14 +697,16 @@
                     @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free_ticketed_event", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
                     @event.child_events.map { |e| e.update!(price_type: "free_ticketed_event", price: 0.00, start_price: 0.00, end_price: 0.00,) }
              when 'buy'
+                prices = []
                 resource[:fields].each do |f|
                   if f.include? "id"
                     @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
                   else
                     @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'buy')                 
                   end
+                  prices.push(f[:price])
                 end #each
-                     @event.update!(price: get_price(@event), start_price: 0.00, end_price: 0.00, price_type: "buy", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
+                     @event.update!(price: prices.max, start_price: 0.00, end_price: 0.00, price_type: "buy", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
                      @event.child_events.map { |e| e.update!(price_type: "buy", price: get_price(@event), start_price: 0.00, end_price: 0.00) } 
               when 'pay_at_door'
                 resource[:fields].each do |f|
