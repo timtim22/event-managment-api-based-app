@@ -60,13 +60,13 @@
        e.passes.map {|p| qr.push(p.redeem_code) }
      end
   case
-  when event.start_date.to_date == Date.today
+  when e.start_date.to_date == Date.today
   status =  "Now On"
-  when event.start_date.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door" || event.price_type == "free_event"
-    status =  event.going_interest_levels.size.to_s + " Going"  
-  when event.start_date.to_date > Date.today && event.price_type == "buy"
-    status =  event.event.tickets.first.wallets.size.to_s + " Tickets Gone"
-  when event.start_date.to_date < Date.today
+  when e.start_date.to_date > Date.today && e.price_type == "free_ticketed_event" || e.price_type == "pay_at_door" || e.price_type == "free_event"
+    status =  e.going_interest_levels.size.to_s + " Going"  
+  when e.start_date.to_date > Date.today && e.price_type == "buy"
+    status =  e.event.tickets.map { |e| e.wallets}.size.to_s + " Tickets Gone"
+  when e.start_date.to_date < Date.today
    status = "Event Over"
   end
 
@@ -394,6 +394,7 @@
             start_time: params["start_time"],
             end_time: params["end_time"],
             over_18: params[:over_18],
+            first_cat_id: params[:category_ids].first,
             description: params[:description],
             terms_conditions: params[:terms_conditions],
             allow_chat: params[:allow_chat],
@@ -644,6 +645,7 @@
               end_time: params['end_time'],
               over_18: params[:over_18],
               description: params[:description],
+              first_cat_id: params[:category_ids].first,
               terms_conditions: params[:terms_conditions],
               allow_chat: params[:allow_chat],
               event_forwarding: params[:event_forwarding],
