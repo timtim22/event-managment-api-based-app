@@ -237,7 +237,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
     "price" => get_price(event.event),
     "status" => status,
     "redeem_code" => qr,
-    "pass_id" => event.event.passes.first.id
+    "pass_id" => event.event.passes.map { |e| e.id}.to_sentence
   }
 
 
