@@ -303,7 +303,7 @@ def get_child_event_attendees_stats
             vip_passes: e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_s + " of " + e.event.passes.where(pass_type: "vip").size.to_s,
             vip_passes_percentage: (e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_i/(e.event.passes.where(pass_type: "vip").size.to_i.nonzero? || 1) * 100).to_i.to_s,
             attendees: @attendees
-            end
+          
           }
 
         when e.start_date.to_date < Date.today
