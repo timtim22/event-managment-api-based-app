@@ -65,7 +65,7 @@
   when e.start_date.to_date > Date.today && e.price_type == "free_ticketed_event" || e.price_type == "pay_at_door" || e.price_type == "free_event"
     status =  e.going_interest_levels.size.to_s + " Going"  
   when e.start_date.to_date > Date.today && e.price_type == "buy"
-    status =  e.event.tickets.map { |e| e.wallets}.size.to_s + " Tickets Gone"
+    status =  e.tickets.map { |e| e.wallets}.size.to_s + " Tickets Gone"
   when e.start_date.to_date < Date.today
    status = "Event Over"
   end

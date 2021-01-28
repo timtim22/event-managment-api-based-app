@@ -127,62 +127,66 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
   end
   end
 
-def user_search
+def vip_pass_users
     @profiles = []
-      if !params[:search_term].blank?
-            profile = Profile.ransack(first_name_or_last_name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").each do |profile|
-              @profiles << {
-                id: profile.user.id,
-                first_name: profile.first_name,
-                last_name: profile.last_name,
-                email: profile.user.email,
-                avatar: profile.user.avatar,
-                phone_number: profile.user.phone_number,
-                app_user: profile.user.app_user,
-                is_email_verified: profile.user.is_email_verified,
-                web_user: profile.user.web_user,
-                about: profile.about,
-                facebook: profile.facebook,
-                twitter: profile.twitter,
-                snapchat: profile.snapchat,
-                instagram: profile.instagram,
-                linkedin: profile.linkedin,
-                youtube: profile.youtube,
-                is_email_subscribed: profile.is_email_subscribed,
-                is_ambassador: profile.is_ambassador,
-                earning: profile.earning,
-                location: profile.location,
-                lat: profile.lat,
-                lng: profile.lng,
-                device_token: profile.device_token,
-                ranking: profile.ranking,
-                dob: profile.dob,
-                gender: profile.gender,
-                is_request_sent: request_status(request_user, profile.user)['status'],
-                role: 5,
-                is_my_following: false,
-                is_my_friend: is_my_friend?(profile.user),
-                mutual_friends_count: get_mutual_friends(request_user, profile.user).size,
-                location_enabled: profile.user.location_enabled
-              }
-            end
-
+      if !params[:event_id].blank?
+        e = Event.find(params[:event_id])
+        vip = e.passes.first
+         @invitees = []
+         Wallet.where(offer_id: vip.id).where(offer_type: 'Pass').each do |offer|
+          @invitees << {
+            user: get_full_name(offer.user),
+            Invited: offer.created_at.to_date,
+            quantity: offer.quantity,
+            Issued_by: get_full_name(request_user),
+            Invite: !offer.nil?
+            }
+          end
               render json: {
               code: 200,
               success: true,
               message: '',
               data:  {
-                users: @profiles
+                Invited: @invitees
               }
             }
       else
         render json: {
           code: 400,
           success: false,
-          message: 'search_term is required params',
+          message: 'Event ID is required',
           data: nil
         }
   end
+end
+
+def search_users
+      @user = []
+         profile = Profile.ransack(first_name_or_last_name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC").each do |profile|
+          @user << {
+              id: profile.user_id,
+              user: get_full_name(profile.user),
+              invited: "",
+              quantity: "",
+              Issued_by: "",
+              Invite: check_invitation(profile, params[:pass_id])
+          }
+         end
+        render json: {
+          code: 200,
+          success: true,
+          message: 'users',
+          data: @user
+        }
+
+end
+
+def check_invitation(profile, pass_id)
+    if profile.user.wallets.where(offer_id: pass_id).where(offer_type: 'Pass').first.blank?
+        false
+    else
+        true
+    end
 end
 
   def send_vip_pass
@@ -191,9 +195,24 @@ end
       user = User.find(params[:recipient_id])
       check  = user.wallets.where(offer_id: vip.id).where(offer_type: 'Pass').first
       if check == nil
-       @wallet  = user.wallets.new(offer_id: vip.id, offer_type: 'Pass')
+       @wallet  = user.wallets.new(offer_id: vip.id, offer_type: 'Pass', quantity: params[:quantity])
       if @wallet.save
          share = vip.vip_pass_shares.create!(user: user)
+
+         vip.quantity = vip.quantity - params[:quantity].to_i
+         vip.save
+
+         User.where.not(offer_id: vip.id).where(offer_type: 'Pass').each do |profile|
+          @profile << {
+            id: profile.user_id,
+            user: get_full_name(profile.user),
+            invited: "",
+            quantity: "",
+            Issued_by: "",
+            Invite: false
+          }
+           
+         end
          # vip.update(quantity:)
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
@@ -240,7 +259,7 @@ end
           code: 200,
           success: true,
           message: 'VIP pass sent and added to wallet successfully.',
-          data: @wallet
+          data: @profile
         }
       else
         render json: {
@@ -255,7 +274,7 @@ end
         code: 400,
         success: false,
         message: "Offer is already added.",
-        data: check
+        data: nil
       }
     end
     else
