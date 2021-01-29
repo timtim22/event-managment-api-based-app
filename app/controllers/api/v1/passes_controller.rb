@@ -24,7 +24,7 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
               event_end_time:@event.end_time,
               event_date:@event.start_date,
               is_added_to_wallet: is_added_to_wallet?(pass.id),
-              validity: pass.validity.strftime(get_time_format),
+              validity: get_date_time(@event.start_date, @event.end_time),
               terms_and_conditions: pass.terms_conditions,
               grabbers_count: pass.wallets.size,
               description: pass.description,
@@ -48,7 +48,7 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
             event_end_time:@event.end_time,
             event_date:@event.start_date,
             is_added_to_wallet: is_added_to_wallet?(pass.id),
-            validity: pass.validity.strftime(get_time_format),
+            validity: get_date_time(@event.start_date, @event.end_time),
             terms_and_conditions: pass.terms_conditions,
             grabbers_count: pass.wallets.size,
             description: pass.description,
@@ -98,7 +98,7 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
         event_end_time: pass.event.end_time,
         event_date:pass.event.start_date,
         is_added_to_wallet: is_added_to_wallet?(pass.id),
-        validity: pass.validity.strftime(get_time_format),
+        validity: get_date_time(@event.start_date, @event.end_time),
         terms_and_conditions: pass.terms_conditions,
         grabbers_count: pass.wallets.size,
         description: pass.description,
@@ -237,6 +237,11 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
 
   private
 
+ def get_date_time(date, time)
+    d = date.strftime("%Y-%m-%d")
+    t = time.strftime("%H:%M:%S")
+    datetime = d + "T" + t + ".000Z"
+ end
 
   #  def pass_params
   #   params.permit(:title,:description, :validity)
