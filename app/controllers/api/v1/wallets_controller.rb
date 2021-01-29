@@ -19,9 +19,9 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
     sort_by_date_offers = SpecialOffer.where(id: offer_ids).sort_by_date.page(params[:page]).per(get_per_page).map {|offer| @sorted_offers.push(offer) }
 
-    sort_by_redemption_offers = request_user.redemptions.sort_by_date.where(offer_type: 'SpecialOffer').page(params[:page]).per(get_per_page).map {|redemption| @sorted_offers.push(redemption.offer) }
+    # sort_by_redemption_offers = request_user.redemptions.sort_by_date.where(offer_type: 'SpecialOffer').page(params[:page]).per(get_per_page).map {|redemption| @sorted_offers.push(redemption.offer) }
 
-    @sorted_offers.uniq.each do |offer|
+    @sort_by_date_offers.uniq.each do |offer|
      if !is_removed_offer?(request_user, offer)
       if is_redeemed(offer.id, 'SpecialOffer', request_user.id)
        @redeemed_offers << {
