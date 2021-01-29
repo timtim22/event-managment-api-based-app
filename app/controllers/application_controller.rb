@@ -150,6 +150,15 @@ class ApplicationController < ActionController::Base
     end
   end
 
+
+  def is_removed_ticket?(request_user, ticket)
+    setting = request_user.remove_tickets.where(resource: ticket).first
+    removed = false
+    removed = setting.is_on if setting
+    removed
+  end
+
+
   def is_followed(user)
     if request_user
      request_user.followings.include? user

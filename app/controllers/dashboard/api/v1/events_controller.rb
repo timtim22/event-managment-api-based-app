@@ -374,6 +374,7 @@
     @event.allow_chat = params[:allow_chat]
     @event.event_forwarding = params[:event_forwarding]
     @event.location = params[:location]
+    @event.location_name = params[:location_name]
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
@@ -401,12 +402,13 @@
             allow_chat: params[:allow_chat],
             event_forwarding: params[:event_forwarding],
             location: params[:location],
+            location_name: params[:location_name],
             event_type: params[:event_type],
             price_type: params[:price_type],
             price: params[:price]
           )}
 
-      success = true
+        success = true
 
       if params[:price_type] == "free_event"
           @event.update!(price_type: "free_event", price: 0.00)
@@ -634,8 +636,8 @@
     @event.description = params[:description]
     @event.allow_chat = params[:allow_chat]
     @event.event_forwarding = params[:event_forwarding]
-    
     @event.location = params[:location]
+    @event.location_name = params[:location_name]
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
@@ -666,6 +668,7 @@
               allow_chat: params[:allow_chat],
               event_forwarding: params[:event_forwarding],
               location: params[:location],
+              location_name: params[:location_name],
               event_type: params[:event_type],
               price_type: params[:price_type],
               price: params[:price]

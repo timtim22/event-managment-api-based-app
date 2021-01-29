@@ -870,195 +870,196 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       api :GET, '/api/v1/send_events_reminder', 'Send event reminders to interested participants before ony day'
 
     def send_events_reminder
-      interested_in_events = request_user.interested_in_events
-      #send reminder about interested in events
-       @reminder_sent = false;
-       @pubnub = Pubnub.new(
-        publish_key: ENV['PUBLISH_KEY'],
-        subscribe_key: ENV['SUBSCRIBE_KEY']
-        )
-       interested_in_events.each do |event|
-        start_date = event.start_date
-        start_date_yesterday = (start_date - 1.day).to_date
-        now = Time.now.to_date
-        if now  ==  start_date_yesterday
-         check = request_user.reminders.where(child_event: event).where(level: 'interested')
-         if check.blank?
-          if @reminder = request_user.reminders.create!(event_id: event.id, level: 'interested')
-            if notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are interested in event '#{event.name}' which is happening tomorrow. ", notifiable: event, resource: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "#{event.price_type}_event_reminder")
+      # interested_in_events = request_user.interested_in_events
+      # #send reminder about interested in events
+      #  @reminder_sent = false;
+      #  @pubnub = Pubnub.new(
+      #   publish_key: ENV['PUBLISH_KEY'],
+      #   subscribe_key: ENV['SUBSCRIBE_KEY']
+      #   )
+      #  interested_in_events.each do |event|
+      #   start_date = event.start_date
+      #   start_date_yesterday = (start_date - 1.day).to_date
+      #   now = Time.now.to_date
+      #   if now  ==  start_date_yesterday
+      #    check = request_user.reminders.where(child_event: event).where(level: 'interested')
+      #    if check.blank?
+      #     if @reminder = request_user.reminders.create!(event_id: event.id, level: 'interested')
+      #       if notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are interested in event '#{event.name}' which is happening tomorrow. ", notifiable: event, resource: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "#{event.price_type}_event_reminder")
 
-               @current_push_token = @pubnub.add_channels_to_push(
-                 push_token: request_user.device_token,
-                 type: 'gcm',
-                 add: request_user.device_token
-                 ).value
+      #          @current_push_token = @pubnub.add_channels_to_push(
+      #            push_token: request_user.device_token,
+      #            type: 'gcm',
+      #            add: request_user.device_token
+      #            ).value
 
-                 case event.price_type
-                  when "free_event"
-                    data = {
-                      "id": notification.id,
-                      "event_name": notification.resource.name,
-                      "event_id": notification.resource.id,
-                      "event_location": notification.resource.location,
-                      "event_start_date": notification.resource.start_date,
-                      "event_start_time": notification.resource.start_time,
-                      "event_end_time": notification.resource.end_time,
-                      "event_type": notification.resource.event_type,
-                      "actor_image": notification.actor.avatar,
-                      "notifiable_id": notification.notifiable_id,
-                      "notifiable_type": notification.notifiable_type,
-                      "action": notification.action,
-                      "action_type": notification.action_type,
-                      "created_at": notification.created_at,
-                      "is_read": !notification.read_at.nil?
-                    }
-                  when "free_ticketed_event"
-                    data = {
-                      "id": notification.id,
-                      "event_name": notification.resource.name,
-                      "event_id": notification.resource.id,
-                      "event_location": notification.resource.location,
-                      "event_start_date": notification.resource.start_date,
-                      "event_start_time": notification.resource.start_time,
-                      "event_end_time": notification.resource.end_time,
-                      "event_type": notification.resource.event_type,
-                      "actor_image": notification.actor.avatar,
-                      "notifiable_id": notification.notifiable_id,
-                      "notifiable_type": notification.notifiable_type,
-                      "action": notification.action,
-                      "action_type": notification.action_type,
-                      "created_at": notification.created_at,
-                      "is_read": !notification.read_at.nil?
-                    }
-                  when  "buy"
-                     data ={
-                      "id": notification.id,
-                      "event_name": notification.resource.name,
-                      "event_id": notification.resource.id,
-                      "event_location": notification.resource.location,
-                      "event_start_date": notification.resource.start_date,
-                      "event_start_time": notification.resource.start_time,
-                      "event_end_time": notification.resource.end_time,
-                      "event_type": notification.resource.event_type,
-                      "actor_image": notification.actor.avatar,
-                      "notifiable_id": notification.notifiable_id,
-                      "notifiable_type": notification.notifiable_type,
-                      "action": notification.action,
-                      "action_type": notification.action_type,
-                      "created_at": notification.created_at,
-                      "is_read": !notification.read_at.nil?
-                     }
-                  when  "pay_at_door"
-                    data = {
-                      "id": notification.id,
-                      "event_name": notification.resource.name,
-                      "event_id": notification.resource.id,
-                      "event_location": notification.resource.location,
-                      "event_start_date": notification.resource.start_date,
-                      "event_start_time": notification.resource.start_time,
-                      "event_end_time": notification.resource.end_time,
-                      "event_type": notification.resource.event_type,
-                      "actor_image": notification.actor.avatar,
-                      "notifiable_id": notification.notifiable_id,
-                      "notifiable_type": notification.notifiable_type,
-                      "action": notification.action,
-                      "action_type": notification.action_type,
-                      "created_at": notification.created_at,
-                      "is_read": !notification.read_at.nil?
-                    }
-                  else
-                    "do nothing"
-                  end
+      #            case event.price_type
+      #             when "free_event"
+      #               data = {
+      #                 "id": notification.id,
+      #                 "event_name": notification.resource.name,
+      #                 "event_id": notification.resource.id,
+      #                 "event_location": notification.resource.location,
+      #                 "event_start_date": notification.resource.start_date,
+      #                 "event_start_time": notification.resource.start_time,
+      #                 "event_end_time": notification.resource.end_time,
+      #                 "event_type": notification.resource.event_type,
+      #                 "actor_image": notification.actor.avatar,
+      #                 "notifiable_id": notification.notifiable_id,
+      #                 "notifiable_type": notification.notifiable_type,
+      #                 "action": notification.action,
+      #                 "action_type": notification.action_type,
+      #                 "created_at": notification.created_at,
+      #                 "is_read": !notification.read_at.nil?
+      #               }
+      #             when "free_ticketed_event"
+      #               data = {
+      #                 "id": notification.id,
+      #                 "event_name": notification.resource.name,
+      #                 "event_id": notification.resource.id,
+      #                 "event_location": notification.resource.location,
+      #                 "event_start_date": notification.resource.start_date,
+      #                 "event_start_time": notification.resource.start_time,
+      #                 "event_end_time": notification.resource.end_time,
+      #                 "event_type": notification.resource.event_type,
+      #                 "actor_image": notification.actor.avatar,
+      #                 "notifiable_id": notification.notifiable_id,
+      #                 "notifiable_type": notification.notifiable_type,
+      #                 "action": notification.action,
+      #                 "action_type": notification.action_type,
+      #                 "created_at": notification.created_at,
+      #                 "is_read": !notification.read_at.nil?
+      #               }
+      #             when  "buy"
+      #                data ={
+      #                 "id": notification.id,
+      #                 "event_name": notification.resource.name,
+      #                 "event_id": notification.resource.id,
+      #                 "event_location": notification.resource.location,
+      #                 "event_start_date": notification.resource.start_date,
+      #                 "event_start_time": notification.resource.start_time,
+      #                 "event_end_time": notification.resource.end_time,
+      #                 "event_type": notification.resource.event_type,
+      #                 "actor_image": notification.actor.avatar,
+      #                 "notifiable_id": notification.notifiable_id,
+      #                 "notifiable_type": notification.notifiable_type,
+      #                 "action": notification.action,
+      #                 "action_type": notification.action_type,
+      #                 "created_at": notification.created_at,
+      #                 "is_read": !notification.read_at.nil?
+      #                }
+      #             when  "pay_at_door"
+      #               data = {
+      #                 "id": notification.id,
+      #                 "event_name": notification.resource.name,
+      #                 "event_id": notification.resource.id,
+      #                 "event_location": notification.resource.location,
+      #                 "event_start_date": notification.resource.start_date,
+      #                 "event_start_time": notification.resource.start_time,
+      #                 "event_end_time": notification.resource.end_time,
+      #                 "event_type": notification.resource.event_type,
+      #                 "actor_image": notification.actor.avatar,
+      #                 "notifiable_id": notification.notifiable_id,
+      #                 "notifiable_type": notification.notifiable_type,
+      #                 "action": notification.action,
+      #                 "action_type": notification.action_type,
+      #                 "created_at": notification.created_at,
+      #                 "is_read": !notification.read_at.nil?
+      #               }
+      #             else
+      #               "do nothing"
+      #             end
 
-                payload = {
-                "pn_gcm":{
-                  "notification":{
-                    "title": "Reminder about '#{event.name}'",
-                    "body": notification.action
-                  },
-                  data: data
-                }
-              }
+      #           payload = {
+      #           "pn_gcm":{
+      #             "notification":{
+      #               "title": "Reminder about '#{event.name}'",
+      #               "body": notification.action
+      #             },
+      #             data: data
+      #           }
+      #         }
 
-                @pubnub.publish(
-                  channel: [request_user.device_token],
-                  message: payload
-                   ) do |envelope|
-                     puts envelope.status
-                 end
-                 @reminder_sent = true;
-               end ##notification create
-           end #reminder
-         end #cheak
-        end #time equal
-      end # each
+      #           @pubnub.publish(
+      #             channel: [request_user.device_token],
+      #             message: payload
+      #              ) do |envelope|
+      #                puts envelope.status
+      #            end
+      #            @reminder_sent = true;
+      #          end ##notification create
+      #      end #reminder
+      #    end #cheak
+      #   end #time equal
+      # end # each
 
-      request_user.events_to_attend.each do |event|
-        end_date = event.end_date
-        end_date_yesterday = (end_date - 1.day).to_date
-        now = Time.now.to_date
-        if now  ==  end_date_yesterday
-         check = request_user.reminders.where(event_id: event.id).where(level: 'going')
-         if check.blank?
-          if @reminder = request_user.reminders.create!(event_id: event.id, level: 'going')
-            if @notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are attening an event '#{event.name}' which is happening tomorrow. ", notifiable: event, resource: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "event_reminder")
+      # request_user.events_to_attend.each do |event|
+      #   end_date = event.end_date
+      #   end_date_yesterday = (end_date - 1.day).to_date
+      #   now = Time.now.to_date
+      #   if now  ==  end_date_yesterday
+      #    check = request_user.reminders.where(event_id: event.id).where(level: 'going')
+      #    if check.blank?
+      #     if @reminder = request_user.reminders.create!(event_id: event.id, level: 'going')
+      #       if @notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are attening an event '#{event.name}' which is happening tomorrow. ", notifiable: event, resource: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "event_reminder")
 
-               @current_push_token = @pubnub.add_channels_to_push(
-                 push_token: request_user.device_token,
-                 type: 'gcm',
-                 add: request_user.device_token
-                 ).value
+      #          @current_push_token = @pubnub.add_channels_to_push(
+      #            push_token: request_user.device_token,
+      #            type: 'gcm',
+      #            add: request_user.device_token
+      #            ).value
 
-                payload = {
-                "pn_gcm":{
-                  "notification":{
-                    "title": "Reminder about '#{event.name}'",
-                    "body": @notification.action
-                  },
-                  data: {
-                    "id": @notification.id,
-                    "actor_id": @notification.actor_id,
-                    "actor_image": @notification.actor.avatar,
-                    "notifiable_id": @notification.notifiable_id,
-                    "notifiable_type": @notification.notifiable_type,
-                    "action_type": @notification.action_type,
-                    "location": location,
-                    "action": @notification.action,
-                    "created_at": @notification.created_at,
-                    "body": ''
-                  }
-                }
-              }
+      #           payload = {
+      #           "pn_gcm":{
+      #             "notification":{
+      #               "title": "Reminder about '#{event.name}'",
+      #               "body": @notification.action
+      #             },
+      #             data: {
+      #               "id": @notification.id,
+      #               "actor_id": @notification.actor_id,
+      #               "actor_image": @notification.actor.avatar,
+      #               "notifiable_id": @notification.notifiable_id,
+      #               "notifiable_type": @notification.notifiable_type,
+      #               "action_type": @notification.action_type,
+      #               "location": location,
+      #               "action": @notification.action,
+      #               "created_at": @notification.created_at,
+      #               "body": ''
+      #             }
+      #           }
+      #         }
 
-                @pubnub.publish(
-                  channel: [request_user.device_token],
-                  message: payload
-                   ) do |envelope|
-                     puts envelope.status
-                 end
-                 @reminder_sent = true;
-               end ##notification create
-           end #reminder
-         end #cheak
-        end #time equal
-      end # each
+      #           @pubnub.publish(
+      #             channel: [request_user.device_token],
+      #             message: payload
+      #              ) do |envelope|
+      #                puts envelope.status
+      #            end
+      #            @reminder_sent = true;
+      #          end ##notification create
+      #      end #reminder
+      #    end #cheak
+      #   end #time equal
+      # end # each
 
-        if  @reminder_sent
-          render json: {
-            code: 200,
-            success: true,
-            message: 'Reminder sent successfully.',
-            data: nil
-          }
-        else
-          render json: {
-            code: 400,
-            success: false,
-            message: 'Reminder was not sent.',
-            token: request_user.device_token,
-            data: nil
-          }
-        end
+      #   if  @reminder_sent
+      #     render json: {
+      #       code: 200,
+      #       success: true,
+      #       message: 'Reminder sent successfully.',
+      #       data: nil
+      #     }
+      #   else
+      #     render json: {
+      #       code: 400,
+      #       success: false,
+      #       message: 'Reminder was not sent.',
+      #       token: request_user.device_token,
+      #       data: nil
+      #     }
+      #   end
+     render json: "Do nothing for now. when we will implement crone jobs then will be operational"
     end
 
   api :POST, '/api/v1/notifications/delete-notification', 'Delete a notification'

@@ -22,8 +22,8 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
     sort_by_redemption_offers = request_user.redemptions.sort_by_date.where(offer_type: 'SpecialOffer').page(params[:page]).per(get_per_page).map {|redemption| @sorted_offers.push(redemption.offer) }
 
     @sorted_offers.uniq.each do |offer|
+     if !is_removed_offer?(request_user, offer)
       if is_redeemed(offer.id, 'SpecialOffer', request_user.id)
-
        @redeemed_offers << {
 
         id: offer.id,
@@ -105,9 +105,10 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
 
        }
-      end #if
+        end #if
+       end #is removed
       end #each
-
+     
 
       @final_sorted = custom_sort(@unredeemed_offers, @redeemed_offers)
 
@@ -137,7 +138,8 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
    sort_by_redemption_passes = request_user.redemptions.sort_by_date.where(offer_type: 'Pass').page(params[:page]).per(get_per_page).map {|redemption| @sorted_passes.push(redemption.offer) }
 
 @sorted_passes.uniq.each do |pass|
- if is_redeemed(pass.id, 'Pass', request_user.id)
+  is_removed_pass?(request_user, pass)  
+   if is_redeemed(pass.id, 'Pass', request_user.id)
 
           @redeemed_passes << {
             id: pass.id,
@@ -223,7 +225,8 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
             pass_type: pass.pass_type
 
           }
-         end #if
+           end #if
+          end #remove check
          end #each
 
 
@@ -256,7 +259,8 @@ def get_competitions
   sort_by_date_competitions = Competition.where(id: competition_ids).sort_by_date.page(params[:page]).per(get_per_page).map {|competition| @sorted_competitions.push(competition) }
 
   @sorted_competitions.uniq.each do |competition|
-   if is_expired?(competition)
+  is_removed_competition?(request_user, competition)  
+    if is_expired?(competition)
     @expired_competitions << {
       id: competition.id,
       title: competition.title,
@@ -309,6 +313,7 @@ def get_competitions
         terms_and_conditions: competition.terms_conditions
        }
     end
+   end #remove
   end#each
 
   #push at the end competition that are expired.
@@ -333,6 +338,7 @@ def get_tickets
   @tickets = []
   @wallets = request_user.wallets.where(offer_type: 'Ticket').where(is_removed: false).page(params[:page]).per(get_per_page)
   @wallets.each do |wallet|
+ is_removed_ticket?(request_user, wallet.offer)
   @tickets << {
     id: wallet.offer.id,
     title: wallet.offer.title,
@@ -358,6 +364,7 @@ def get_tickets
     is_expired: event_expired?(wallet.offer.event),
 
   }
+end #remove
 end #each
 
 render json:  {
