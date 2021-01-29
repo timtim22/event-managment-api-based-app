@@ -17,7 +17,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
   end
 
   def create
-    
+
     location = "{\"short_address\"=>\"Galway Ireland\", \"full_address\"=>\"Galway Train Station, Station Rd, Galway, Ireland\", \"geometry\"=>{\"lat\"=>\"53.2740756\", \"lng\"=>\"-9.047697099999999\"}}"
 
       @competition = current_user.own_competitions.new
@@ -73,7 +73,7 @@ class Admin::CompetitionsController < Admin::AdminMasterController
             "competition_name": notification.resource.title,
             "business_name": User.get_full_name(notification.resource.user),
             "draw_date": notification.resource.validity.strftime(get_time_format),
-            "is_added_to_wallet": added_to_wallet?(request_user, notification.resource)
+            "is_added_to_wallet": false
            }
           }
          }
