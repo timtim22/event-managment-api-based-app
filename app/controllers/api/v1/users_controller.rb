@@ -256,8 +256,7 @@ end
           'first_name' => user.profile.first_name,
           'last_name' => user.profile.last_name,
           'avatar' => user.avatar,
-          'lat' => user.profile.lat,
-          'lng' => user.profile.lng,
+          'location' => eval(user.profile.location),
           'about' => user.profile.about,
           'dob' => user.profile.dob.to_date,
           'roles' => user.roles,
@@ -495,7 +494,7 @@ end
       resource['id'] = log.resource_id
       resource['name'] = log.resource.name
       resource['host_name'] = get_full_name(log.resource.user)
-      resource['location'] = log.resource.location
+      resource['location'] = eval(log.resource.location)
       resource['start_date'] = log.resource.start_date
       resource['interested_people_count'] = log.resource.interest_levels.size
 
@@ -515,21 +514,21 @@ end
      when 'Pass'
        resource['title'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
-       resource['location'] = log.resource.event.location
+       resource['location'] = eval(log.resource.event.location)
        resource['start_date'] = log.resource.event.start_date
        resource['grabbers_counts'] = log.resource.wallets.size
 
      when 'SpecialOffer'
        resource['title'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
-       resource['location'] = log.resource.location
+       resource['location'] = eval(log.resource.location)
        resource['start_date'] = log.resource.date
        resource['grabbers_counts'] = log.resource.wallets.size
 
      when 'Competition'
        resource['title'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
-       resource['location'] = log.resource.location
+       resource['location'] = eval(log.resource.location)
        resource['validity'] = log.resource.validity_time
 
      when 'OfferForwarding'
@@ -640,7 +639,7 @@ end
       profile['last_name'] = ''
       profile['avatar'] = user.avatar
       profile['about'] = user.business_profile.about
-      profile['address'] = user.business_profile.address
+      profile['address'] = eval(user.business_profile.address)
       profile['followers_count'] = user.followers.size
       profile['events_count'] = user.events.size
       profile['competitions_count'] = user.competitions.size
@@ -671,7 +670,7 @@ end
   profile['first_name'] = user.business_profile.profile_name
   profile['last_name'] = ''
   profile['avatar'] = user.avatar
-  profile['address'] = user.business_profile.address
+  profile['address'] = eval(user.business_profile.address)
   profile['about'] = user.business_profile.about
   profile['facebook'] = user.business_profile.facebook
   profile['twitter'] = user.business_profile.twitter

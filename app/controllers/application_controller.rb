@@ -237,7 +237,7 @@ class ApplicationController < ActionController::Base
       "web_user" => user.web_user,
       "vat_number" => user.business_profile.vat_number,
       "charity_number" => user.business_profile.charity_number,
-      "address" => user.business_profile.address,
+      "address" => eval(user.business_profile.address),
       "about" => user.business_profile.about,
       "twitter" => user.business_profile.twitter,
       "facebook" => user.business_profile.facebook,
