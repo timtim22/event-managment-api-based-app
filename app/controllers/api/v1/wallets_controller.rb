@@ -19,7 +19,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
     sort_by_date_offers = SpecialOffer.where(id: offer_ids).sort_by_date.page(params[:page]).per(get_per_page).map {|offer| @sorted_offers.push(offer) }
 
-    sort_by_redemption_offers = request_user.redemptions.sort_by_date.where(offer_type: 'SpecialOffer').page(params[:page]).per(get_per_page).map {|redemption| @sorted_offers.push(redemption.offer) }
+    # sort_by_redemption_offers = request_user.redemptions.sort_by_date.where(offer_type: 'SpecialOffer').page(params[:page]).per(get_per_page).map {|redemption| @sorted_offers.push(redemption.offer) }
 
     @sorted_offers.uniq.each do |offer|
     
@@ -49,7 +49,6 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
         issued_by: get_full_name(offer.user),
         redeem_count: get_redeem_count(offer),
         quantity: offer.quantity
-
        }
 
       elsif  is_expired?(offer)
