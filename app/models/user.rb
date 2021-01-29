@@ -70,6 +70,7 @@ class User < ApplicationRecord
   has_many :remove_competitions, -> { where(name: 'remove_competitions', resource_type: 'Competition') },  class_name: 'UserSetting', source_type: :competition, dependent: :destroy
   has_many :remove_offers, -> { where(name: 'remove_offers', resource_type: 'SpecialOffer') }, class_name: 'UserSetting', source_type: :special_offer, dependent: :destroy
   has_many :remove_passes, -> { where(name: 'remove_passes', resource_type: 'Pass') }, class_name: 'UserSetting', source_type: :pass, dependent: :destroy
+  has_many :remove_tickets, -> { where(name: 'remove_ticket', resource_type: 'Ticket') }, class_name: 'UserSetting', source_type: :pass, dependent: :destroy
   has_many :news_feeds, dependent: :destroy
   has_many :invoices, dependent: :destroy
 

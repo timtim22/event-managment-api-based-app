@@ -8,6 +8,7 @@ validates :start_time, presence: true, on: :create
 validates :end_time, presence: true, on: :create
 validates :description, presence: true, on: :create
 validates :location, presence: true, on: :create
+validates :location_name, presence: true, on: :create
 validate  :has_one_category_at_least, on: :create
 validates :image, file_size: { less_than: 3.megabytes }
 

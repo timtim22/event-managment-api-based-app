@@ -70,7 +70,7 @@ class Api::V1::SettingsController < Api::V1::ApiMasterController
 
   def update_user_setting
      #specific setting
-     settings = ['mute_chat','mute_notifications','block', 'remove_offers','remove_competitions','remove_passes']
+     settings = ['mute_chat','mute_notifications','block', 'remove_offers','remove_competitions','remove_passes', 'remove_tickets']
     if !params[:setting_name].blank? && !params[:resource_id].blank? && !params[:resource_type].blank?  && !params[:is_on].blank?
        if settings.include? params[:setting_name]
          #if user doesn't have any setting then create it first (new user)
