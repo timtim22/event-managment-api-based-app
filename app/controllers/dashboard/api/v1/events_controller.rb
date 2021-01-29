@@ -374,7 +374,7 @@
     @event.allow_chat = params[:allow_chat]
     @event.event_forwarding = params[:event_forwarding]
     @event.location = params[:location]
-    @event.location_name = params[:location_name]
+    @event.location_name = params[:location][:full_address]
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
@@ -402,7 +402,7 @@
             allow_chat: params[:allow_chat],
             event_forwarding: params[:event_forwarding],
             location: params[:location],
-            location_name: params[:location_name],
+            location_name: params[:location][:full_address],
             event_type: params[:event_type],
             price_type: params[:price_type],
             price: params[:price]
@@ -637,7 +637,7 @@
     @event.allow_chat = params[:allow_chat]
     @event.event_forwarding = params[:event_forwarding]
     @event.location = params[:location]
-    @event.location_name = params[:location_name]
+    @event.location_name = params[:location][:full_address]
     @event.event_type = params[:event_type]
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
@@ -668,7 +668,7 @@
               allow_chat: params[:allow_chat],
               event_forwarding: params[:event_forwarding],
               location: params[:location],
-              location_name: params[:location_name],
+              location_name: params[:location][:full_address],
               event_type: params[:event_type],
               price_type: params[:price_type],
               price: params[:price]
@@ -688,6 +688,7 @@
               allow_chat: params[:allow_chat],
               event_forwarding: params[:event_forwarding],
               location: params[:location],
+              location_name: params[:location][:full_address],
               event_type: params[:event_type],
               price_type: params[:price_type],
               price: params[:price]
@@ -828,8 +829,6 @@
       }
     end
   end
-
-
 
 
     def get_categories
