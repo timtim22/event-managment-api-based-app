@@ -17,14 +17,9 @@ class Admin::CompetitionsController < Admin::AdminMasterController
   end
 
   def create
-    location = {
-      "short_address": params[:location],
-      "full_address": "",
-      "geometry": {
-        "lat": params[:lat],
-        "lng": params[:lng]
-      }
-    }
+    
+    location = "{\"short_address\"=>\"Galway Ireland\", \"full_address\"=>\"Galway Train Station, Station Rd, Galway, Ireland\", \"geometry\"=>{\"lat\"=>\"53.2740756\", \"lng\"=>\"-9.047697099999999\"}}"
+
       @competition = current_user.own_competitions.new
       @competition.title = params[:title]
       @competition.description = params[:description]
@@ -104,14 +99,9 @@ class Admin::CompetitionsController < Admin::AdminMasterController
   end
 
   def update
-      location = {
-        "short_address": params[:location],
-        "full_address": "",
-        "geometry": {
-          "lat": params[:lat],
-          "lng": params[:lng]
-        }
-      }
+
+       location = "{\"short_address\"=>\"Galway Ireland\", \"full_address\"=>\"Galway Train Station, Station Rd, Galway, Ireland\", \"geometry\"=>{\"lat\"=>\"53.2740756\", \"lng\"=>\"-9.047697099999999\"}}"
+
         @competition = Competition.find(params[:id])
         @competition.title = params[:title]
         @competition.description = params[:description]

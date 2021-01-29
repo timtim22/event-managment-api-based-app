@@ -17,14 +17,8 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
   end
 
   def create
-   location = {
-      "short_address": params[:location],
-      "full_address": "",
-      "geometry": {
-        "lat": params[:lat],
-        "lng": params[:lng]
-      }
-    }
+   location = "{\"short_address\"=>\"Galway Ireland\", \"full_address\"=>\"Galway Train Station, Station Rd, Galway, Ireland\", \"geometry\"=>{\"lat\"=>\"53.2740756\", \"lng\"=>\"-9.047697099999999\"}}"
+   
       @special_offer = SpecialOffer.new
       @special_offer.title = params[:title]
       @special_offer.description = params[:description]
@@ -105,14 +99,9 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
 
 
   def update
-    location = {
-      "short_address": params[:location],
-      "full_address": "",
-      "geometry": {
-        "lat": params[:lat],
-        "lng": params[:lng]
-      }
-    }
+
+    location = "{\"short_address\"=>\"Galway Ireland\", \"full_address\"=>\"Galway Train Station, Station Rd, Galway, Ireland\", \"geometry\"=>{\"lat\"=>\"53.2740756\", \"lng\"=>\"-9.047697099999999\"}}"
+
      @special_offer = SpecialOffer.find(params[:id])
      @special_offer.title = params[:title]
      @special_offer.description = params[:description]
