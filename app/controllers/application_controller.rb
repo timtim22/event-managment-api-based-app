@@ -176,6 +176,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
+
+  def string_to_hash(string)
+    eval(string)
+  end
+
    def get_dummy_avatar
      'https://pickaface.net/gallery/avatar/45425654_200117_1657_v2hx2.png'
    end
