@@ -65,57 +65,6 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
     end
 
 
-    def get_demographics(event)
-      males = []
-      females = []
-      gays = []
-      demographics = {}
-      total_count = event.going_interest_levels.size
-      event.going_interest_levels.each do |level|
-       case level.user.profile.gender
-         when 'male'
-           males.push(level.user)
-         when 'female'
-           females.push(level.user)
-         when 'gay'
-           gays.push(level.user)
-         else
-            'No users'
-          end
-       end #each
-
-       if males.size > 0 
-          percentage = males.uniq.size.to_f / total_count.to_f * 100.0 
-          males_percentage = percentage.round(2)
-        else 
-          males_percentage = 0 
-        end
-
-       if females.size > 0  
-          percentage = females.uniq.size.to_f / total_count.to_f * 100.0
-          female_percentage = percentage.round(2)  
-        else
-          female_percentage = 0 
-         end
-
-        if gays.size > 0 
-           percentage = gays.uniq.size.to_f / total_count.to_f * 100.0  
-           gays_percentage = percentage.round(2) 
-          else
-           gays_percentage = 0 
-          end
-
-        demographics['males_percentage'] = males_percentage
-
-        demographics['females_percentage'] = female_percentage
-
-        demographics['gays_percentage'] = gays_percentage
-
-        demographics
-   end
-
-
-
    def is_my_friend?(user)
     request_user.friends.include?  user
    end
