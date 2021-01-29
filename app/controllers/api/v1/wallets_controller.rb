@@ -351,7 +351,7 @@ def get_tickets
     event_end_time: get_date_time(wallet.offer.event.end_date, wallet.offer.event.end_time),
     event_date: wallet.offer.event.start_date,
     price: get_formated_price(wallet.offer.price),
-    quantity: wallet.offer.quantity,
+    quantity: wallet.quantity,
     purchased_quantity: getPurchaseQuantity(wallet.offer.id, request_user),
     per_head: wallet.offer.per_head,
     is_redeemed: is_redeemed(wallet.offer.id, "Ticket", request_user.id),
