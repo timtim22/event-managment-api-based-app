@@ -68,6 +68,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "location": location,
             "created_at": notification.created_at,
             "is_read": !notification.read_at.nil?
+          }
 
         # when "update_special_offer"
         #   @notifications << {
