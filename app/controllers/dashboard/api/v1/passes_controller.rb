@@ -190,6 +190,7 @@ def search_users
          profile = Profile.ransack(first_name_or_last_name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC").each do |profile|
           @user << {
               id: profile.user_id,
+              avatar: profile.user.avatar,
               user: get_full_name(profile.user),
               invited: "",
               quantity: "",
