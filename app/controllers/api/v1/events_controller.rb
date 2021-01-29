@@ -361,7 +361,7 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
     event = {
       "id" => event.id,
       "price_type" => event.event.price_type,
-      "max_price" => get_price(event.event),
+      "max_price" => get_max_price(event.event),
       "has_passes" => has_passes?(event.event),
       "categories" => event.event.categories,
       "location" => eval(event.location)
@@ -380,8 +380,6 @@ class Api::V1::EventsController < Api::V1::ApiMasterController
         "name" => child_event.event.name,
         "description" => child_event.event.description,
         "location" => eval(child_event.location),
-        # "lat" => eval(child_event.location)["geometry"]["lat"],
-        # "lng" => eval(child_event.location)["geometry"]["lng"],
         "start_date" => child_event.start_date,
         "end_date" => child_event.end_date,
         "start_time" => get_date_time(child_event.start_date, child_event.start_time),
