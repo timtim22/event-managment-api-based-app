@@ -256,7 +256,7 @@ end
           'first_name' => user.profile.first_name,
           'last_name' => user.profile.last_name,
           'avatar' => user.avatar,
-          'location' => user.location,
+          'location' => eval(user.profile.location),
           'about' => user.profile.about,
           'dob' => user.profile.dob.to_date,
           'roles' => user.roles,

@@ -14,7 +14,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
       "avatar" => business.avatar,
       "about" => business.business_profile.about,
       "unread_messages_count" => business.incoming_messages.unread.size,
-      "address" => business.business_profile.address,
+      "address" => eval(business.business_profile.address),
       "social" => {
         "youtube" => business.business_profile.youtube,
         "instagram" => business.business_profile.instagram,
