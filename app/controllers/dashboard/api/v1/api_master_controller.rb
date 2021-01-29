@@ -180,7 +180,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
     "end_time"  => event.end_time,
     "going"  => event.going_interest_levels.size,
     "maybe"  => event.interested_interest_levels.size,
-    "get_demographics" => get_demographics(event.event),
+    "get_demographics" => get_demographics(event),
     "event_status" => event.event.status,
     "parent_event_id" => event.event.id,
     "price" => get_price(event.event),
