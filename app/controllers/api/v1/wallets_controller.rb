@@ -49,7 +49,6 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
         issued_by: get_full_name(offer.user),
         redeem_count: get_redeem_count(offer),
         quantity: offer.quantity
-
        }
 
       elsif  is_expired?(offer)

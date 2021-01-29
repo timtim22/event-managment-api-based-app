@@ -187,7 +187,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                 location_enabled: profile.user.location_enabled
               }
             end
-          business_profile = BusinessProfile.ransack(profile_name_or_contact_name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").each do |profile|
+          business_profile = BusinessProfile.ransack(profile_name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(5).order(created_at: "ASC").each do |profile|
             @business_profiles << {
               id: profile.user.id,
               profile_name: profile.profile_name,
