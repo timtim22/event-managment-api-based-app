@@ -1037,7 +1037,7 @@ end
      price = event.tickets.map {|ticket| ticket.price }
      price = price.max
   elsif !event.tickets.where(ticket_type: 'buy').blank? && event.tickets.size == 1
-     price = event.price
+     price = event.tickets.first.price
   elsif !event.tickets.where(ticket_type: 'pay_at_door').blank?
      price = event.tickets.map {|ticket| ticket.end_price }
      price = price.max
