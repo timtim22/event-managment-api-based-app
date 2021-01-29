@@ -180,7 +180,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
             event_location: eval(pass.event.location),
             event_start_time: get_date_time(pass.event.start_date, pass.event.start_time),
             event_end_time: get_date_time(pass.event.end_date, pass.event.end_time),
-            event_start_date: pass.event.start_date,
+            event_date: pass.event.start_date,
             distributed_by: distributed_by(pass),
             validity: pass.valid_to.strftime(get_time_format),
             is_expired: is_expired?(pass),
