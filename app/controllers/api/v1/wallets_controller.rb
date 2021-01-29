@@ -121,11 +121,11 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
        data: {
          special_offers: @final_sorted }
      }
-
  end
 
-  api :GET, '/api/v1/wallet/get-passes', 'Get Wallet Passes'
 
+
+  api :GET, '/api/v1/wallet/get-passes', 'Get Wallet Passes'
  def get_passes
   @redeemed_passes = []
   @unredeemed_passes = []
@@ -138,7 +138,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
    sort_by_redemption_passes = request_user.redemptions.sort_by_date.where(offer_type: 'Pass').page(params[:page]).per(get_per_page).map {|redemption| @sorted_passes.push(redemption.offer) }
 
 @sorted_passes.uniq.each do |pass|
-  is_removed_pass?(request_user, pass)  
+  if is_removed_pass?(request_user, pass)  
    if is_redeemed(pass.id, 'Pass', request_user.id)
 
           @redeemed_passes << {
@@ -259,7 +259,7 @@ def get_competitions
   sort_by_date_competitions = Competition.where(id: competition_ids).sort_by_date.page(params[:page]).per(get_per_page).map {|competition| @sorted_competitions.push(competition) }
 
   @sorted_competitions.uniq.each do |competition|
-  is_removed_competition?(request_user, competition)  
+  if is_removed_competition?(request_user, competition)  
     if is_expired?(competition)
     @expired_competitions << {
       id: competition.id,
@@ -338,7 +338,7 @@ def get_tickets
   @tickets = []
   @wallets = request_user.wallets.where(offer_type: 'Ticket').where(is_removed: false).page(params[:page]).per(get_per_page)
   @wallets.each do |wallet|
- is_removed_ticket?(request_user, wallet.offer)
+ if is_removed_ticket?(request_user, wallet.offer)
   @tickets << {
     id: wallet.offer.id,
     title: wallet.offer.title,

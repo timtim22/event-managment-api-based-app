@@ -831,8 +831,6 @@
   end
 
 
-
-
     def get_categories
       @categories = Category.all
       render json: {
