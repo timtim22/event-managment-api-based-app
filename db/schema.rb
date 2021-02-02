@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_29_065125) do
+ActiveRecord::Schema.define(version: 2021_02_02_113337) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,24 +66,14 @@ ActiveRecord::Schema.define(version: 2021_01_29_065125) do
     t.string "profile_name", default: ""
     t.string "contact_name", default: ""
     t.string "website", default: ""
-    t.text "about", default: ""
     t.string "vat_number", default: ""
     t.string "charity_number", default: ""
-    t.string "twitter", default: ""
-    t.string "facebook", default: ""
-    t.string "linkedin", default: ""
-    t.string "instagram", default: ""
-    t.string "snapchat", default: ""
-    t.string "youtube", default: ""
-    t.boolean "is_ambassador", default: false
     t.boolean "is_charity", default: false
-    t.string "location", default: ""
-    t.string "lat", default: ""
-    t.string "lng", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "display_name"
-    t.jsonb "address"
+    t.string "stripe_state", default: "rendom_string"
+    t.string "connected_account_id", default: ""
     t.index ["user_id"], name: "index_business_profiles_on_user_id"
   end
 
@@ -467,22 +457,8 @@ ActiveRecord::Schema.define(version: 2021_01_29_065125) do
     t.string "first_name", default: ""
     t.string "last_name", default: ""
     t.datetime "dob"
-    t.text "about", default: ""
     t.string "gender", default: ""
-    t.string "location", default: ""
-    t.string "lat", default: ""
-    t.string "lng", default: ""
     t.boolean "is_email_subscribed", default: false
-    t.decimal "earning", precision: 8, scale: 2, default: "0.0"
-    t.boolean "is_ambassador", default: false
-    t.integer "ranking", default: 0
-    t.boolean "add_social_media_links"
-    t.string "facebook", default: ""
-    t.string "twitter", default: ""
-    t.string "snapchat", default: ""
-    t.string "instagram", default: ""
-    t.string "linkedin", default: ""
-    t.string "youtube", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_profiles_on_user_id"
@@ -677,11 +653,7 @@ ActiveRecord::Schema.define(version: 2021_01_29_065125) do
     t.string "verification_code", default: ""
     t.string "avatar", default: "avatar.png"
     t.string "phone_number", default: ""
-    t.boolean "app_user", default: false
-    t.boolean "web_user", default: false
     t.boolean "phone_verified", default: false
-    t.string "stripe_state", default: ""
-    t.string "connected_account_id", default: ""
     t.boolean "is_email_verified", default: false
     t.string "password_digest"
     t.datetime "created_at", null: false
@@ -689,6 +661,16 @@ ActiveRecord::Schema.define(version: 2021_01_29_065125) do
     t.boolean "location_enabled", default: true
     t.boolean "is_subscribed"
     t.string "device_token", default: "no_token"
+    t.string "dob", default: ""
+    t.string "gender", default: ""
+    t.string "about", default: ""
+    t.string "location", default: ""
+    t.string "facebook", default: ""
+    t.string "twitter", default: ""
+    t.string "snapchat", default: ""
+    t.string "linkedin", default: ""
+    t.string "youtube", default: ""
+    t.string "instagram", default: ""
   end
 
   create_table "views", force: :cascade do |t|
