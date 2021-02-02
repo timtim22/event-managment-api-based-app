@@ -32,16 +32,15 @@ class RefineUserSchema < ActiveRecord::Migration[5.2]
     remove_column :business_profiles, :instagram
     add_column :business_profiles, :stripe_state, :string, default: "rendom_string"
     add_column :business_profiles, :connected_account_id, :string, default: ""
-    add_column    :users, :dob, :string, default: ""
-    add_column    :users, :gender, :string, default: ""
-    add_column   :users, :about, :string, default: ""
-    add_column   :users, :location, :string, default: ""
+    add_column :users, :dob, :string, default: ""
+    add_column :users, :gender, :string, default: ""
+    add_column :users, :about, :string, default: ""
+    add_column :users, :location, :string, default: ""
     add_column :users, :facebook, :string, default: ""
     add_column :users, :twitter, :string, default: ""
     add_column :users, :snapchat, :string, default: ""
     add_column :users, :linkedin, :string, default: ""
     add_column :users, :youtube, :string, default: ""
     add_column :users, :instagram, :string, default: ""
-
   end
 end

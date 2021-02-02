@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_02_113337) do
+ActiveRecord::Schema.define(version: 2021_02_02_131806) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -458,7 +458,6 @@ ActiveRecord::Schema.define(version: 2021_02_02_113337) do
     t.string "last_name", default: ""
     t.datetime "dob"
     t.string "gender", default: ""
-    t.boolean "is_email_subscribed", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_profiles_on_user_id"
@@ -546,6 +545,18 @@ ActiveRecord::Schema.define(version: 2021_02_02_113337) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_settings_on_user_id"
+  end
+
+  create_table "social_media", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "facebook", default: ""
+    t.string "linkedin", default: ""
+    t.string "twitter", default: ""
+    t.string "snapchat", default: ""
+    t.string "instagram", default: ""
+    t.string "youtube", default: ""
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "special_offers", force: :cascade do |t|
@@ -650,27 +661,15 @@ ActiveRecord::Schema.define(version: 2021_02_02_113337) do
 
   create_table "users", force: :cascade do |t|
     t.string "email"
-    t.string "verification_code", default: ""
     t.string "avatar", default: "avatar.png"
     t.string "phone_number", default: ""
-    t.boolean "phone_verified", default: false
-    t.boolean "is_email_verified", default: false
     t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "location_enabled", default: true
     t.boolean "is_subscribed"
     t.string "device_token", default: "no_token"
-    t.string "dob", default: ""
-    t.string "gender", default: ""
     t.string "about", default: ""
     t.string "location", default: ""
-    t.string "facebook", default: ""
-    t.string "twitter", default: ""
-    t.string "snapchat", default: ""
-    t.string "linkedin", default: ""
-    t.string "youtube", default: ""
-    t.string "instagram", default: ""
   end
 
   create_table "views", force: :cascade do |t|
