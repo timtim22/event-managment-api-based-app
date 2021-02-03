@@ -847,6 +847,16 @@ end
   end
 
 
+  def resource_exists?(resource)
+      !resource.blank?
+  end
+
+
+  def resource_key_exists?(resource, key)
+     resource.as_json.keys.include? key 
+  end
+
+
 
 
   def is_ambassador?(user)
