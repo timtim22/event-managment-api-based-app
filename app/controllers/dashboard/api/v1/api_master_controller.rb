@@ -192,9 +192,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
 
  end
 
- def resource_exists?(resource)
-     resource.as_json.map {|hash| hash.keys }[0].include? "id"
- end
+
 
 end
 
