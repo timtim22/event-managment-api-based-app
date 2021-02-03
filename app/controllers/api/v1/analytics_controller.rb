@@ -122,7 +122,6 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
 
 
 
-
   def get_offer_stats
     if !params[:offer_id].blank? && !params[:frequency].blank? && !params[:date].blank?
       valid_frequencies = ['daily', 'weekly','overall']

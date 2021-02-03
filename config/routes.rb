@@ -11,8 +11,26 @@ Rails.application.routes.draw do
    # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
  namespace :api do
      namespace :v1 do
-       resources :users, param: :email
-       resource :passes
+ 
+ #######------Users--------####################################################
+      namespace :users do
+        resources :users, param: :email
+      end #users
+
+ #######------Events--------####################################################
+      namespace :events do
+        resource :passes
+      end #event
+
+#######------Speicial Offers--------####################################################
+      namespace :specia_offers do
+      end #special_offers
+
+#######------Competitions--------####################################################
+     namespace :competitions do
+      end #competition
+      
+    
        #resources :events
        resources :special_offers
        post "/events" => "events#index"
