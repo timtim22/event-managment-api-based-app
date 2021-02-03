@@ -886,10 +886,6 @@ end
     offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }
   end
 
-  def generate_uuid
-    SecureRandom.uuid
-  end
-
 
 
   def get_request_status(business_id)

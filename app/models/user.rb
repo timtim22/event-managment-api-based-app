@@ -89,7 +89,7 @@ class User < ApplicationRecord
 
 
   # validates :is_subscribed, presence: true
-  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }, on: :create, if: :web_user
+  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }, on: :create
 
   validates :phone_number, presence: true, on: :create,
   :length => { :minimum => 10, :maximum => 15 }, format: { with: /(^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0-9\-\s]{10}$)/ }
@@ -98,8 +98,8 @@ class User < ApplicationRecord
                        :confirmation => true,
                        :on => :create,
                        :length => {:within => 8..40},
-                       :format => {message: 'should contain at least one lower character and a special character.', with: /\A(?=.*[a-z])(?=.*[[:^alnum:]]) /x},
-                       :unless => :app_user?
+                       :format => {message: 'should contain at least one lower character and a special character.', with: /\A(?=.*[a-z])(?=.*[[:^alnum:]]) /x}
+                     
 
 
 
@@ -107,8 +107,6 @@ class User < ApplicationRecord
   mount_base64_uploader :avatar, ImageUploader
 
 
-  scope :app_users, -> { where(app_user: true)  }
-  scope :web_users, -> { where(web_user: true) }
 
   #validate :password_for_web
 
