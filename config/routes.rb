@@ -11,35 +11,56 @@ Rails.application.routes.draw do
    # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
  namespace :api do
      namespace :v1 do
-       resources :users, param: :email
-       resource :passes
+ 
+ #######------Users--------####################################################
+      namespace :users do
+          resources :users, param: :email
+          post '/login', to: 'authentication#login'
+          post '/logout', to: 'authentication#logout'
+          get '/verify-code', to: 'authentication#verify_code'
+          post '/update-password', to: 'authentication#update_password'
+          post '/update-profile' => 'users#update_profile'
+          get '/get-profile' => 'users#get_profile'
+          post '/get-other-profile' => "users#get_others_profile"
+          get '/get-business-profile' => "users#get_business_profile"
+          post '/get-other-business-profile' => "users#get_others_business_profile"
+          post '/add-friend' => "friendships#send_request"
+          post '/check-request' => "friendships#check_request"
+          get '/friend-requests' => "friendships#friend_requests"
+          post '/accept-request' => "friendships#accept_request"
+          post '/remove-request' => "friendships#remove_request"
+          post '/remove-friend' => "friendships#remove_friend"
+          get '/my-friends' => "friendships#my_friends"
+      end #users
+
+#######------Events--------####################################################
+      namespace :events do
+        resource :passes
+      end #event
+
+#######------Speicial Offers--------####################################################
+      namespace :specia_offers do
+      end #special_offers
+
+#######------Competitions--------####################################################
+     namespace :competitions do
+      end #competition
+      
+    
        #resources :events
        resources :special_offers
        post "/events" => "events#index"
        get '/categories' => "categories#index"
-       post '/auth/login', to: 'authentication#login'
-       post '/auth/logout', to: 'authentication#logout'
+    
        post '/auth/send-verification-email', to: 'authentication#send_verification_email'
-       get '/auth/verify-code', to: 'authentication#verify_code'
-       post '/auth/update-password', to: 'authentication#update_password'
+   
        post '/chat/send-message', to: 'chats#send_message'
        post '/chat/chat-history', to: 'chats#chat_history'
        get '/chat/chat-people', to: 'chats#chat_people'
        get '/publish', to: 'chat#publish'
        get '/subscribe', to: 'chat#subscribe'
        post '/events-by-date', to: 'events#events_list_by_date'
-       post '/user/update-profile' => 'users#update_profile'
-       get '/user/get-profile' => 'users#get_profile'
-       post '/user/get-others-profile' => "users#get_others_profile"
-       get '/user/get-business-profile' => "users#get_business_profile"
-       post '/user/get-others-business-profile' => "users#get_others_business_profile"
-       post '/add-friend' => "friendships#send_request"
-       post '/check-request' => "friendships#check_request"
-       get '/friend-requests' => "friendships#friend_requests"
-       post '/accept-request' => "friendships#accept_request"
-       post '/remove-request' => "friendships#remove_request"
-       post '/remove-friend' => "friendships#remove_friend"
-       get '/my-friends' => "friendships#my_friends"
+   
        post '/event/post-comment' => "comments#create"
        get '/event/get-commented-events' => "comments#get_commented_events"
        post '/event/comments' => "comments#comments"
