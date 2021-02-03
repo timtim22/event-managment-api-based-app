@@ -10,7 +10,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
 
 
    def login
-     if params[:id].present? && params[:device_token].present?
+     if params[:uuid].present? && params[:device_token].present?
         user = User.find(params[:id])
         if user
           token = get_token_from_user(user)

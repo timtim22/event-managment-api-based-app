@@ -129,7 +129,7 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           validity: offer.validity.strftime(get_time_format),
           grabbers_count: offer.wallets.size,
           is_added_to_wallet: is_added_to_wallet?(offer.id),
-          grabbers_friends_count: offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+          grabbers_friends_count: get_friend_grabbers(request_user, offer).size,
           ambassador_rate: offer.ambassador_rate,
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: offer.created_at,

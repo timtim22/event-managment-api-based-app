@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_02_131806) do
+ActiveRecord::Schema.define(version: 2021_02_03_082044) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,15 +50,6 @@ ActiveRecord::Schema.define(version: 2021_02_02_131806) do
     t.bigint "role_id"
     t.index ["role_id"], name: "index_assignments_on_role_id"
     t.index ["user_id"], name: "index_assignments_on_user_id"
-  end
-
-  create_table "business_details", force: :cascade do |t|
-    t.string "name"
-    t.string "type"
-    t.bigint "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_business_details_on_user_id"
   end
 
   create_table "business_profiles", force: :cascade do |t|
@@ -592,16 +583,6 @@ ActiveRecord::Schema.define(version: 2021_02_02_131806) do
     t.index ["event_id"], name: "index_sponsors_on_event_id"
   end
 
-  create_table "student_details", force: :cascade do |t|
-    t.string "university"
-    t.string "email"
-    t.string "student_id"
-    t.bigint "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_student_details_on_user_id"
-  end
-
   create_table "ticket_purchases", force: :cascade do |t|
     t.integer "user_id"
     t.integer "ticket_id"
@@ -705,7 +686,6 @@ ActiveRecord::Schema.define(version: 2021_02_02_131806) do
     t.index ["user_id"], name: "index_wallets_on_user_id"
   end
 
-  add_foreign_key "business_details", "users"
   add_foreign_key "categorizations", "categories"
   add_foreign_key "categorizations", "events"
   add_foreign_key "chat_channels", "users"
@@ -713,5 +693,4 @@ ActiveRecord::Schema.define(version: 2021_02_02_131806) do
   add_foreign_key "comments", "users"
   add_foreign_key "friend_requests", "users"
   add_foreign_key "messages", "users"
-  add_foreign_key "student_details", "users"
 end
