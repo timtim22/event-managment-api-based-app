@@ -128,7 +128,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
 
 
   def create
-    @competition = Competition.new
+    @competition = request_user.competitions.new
     @competition.title = params[:title]
     @competition.description = params[:description]
     @competition.start_date = params[:start_date]

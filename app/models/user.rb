@@ -107,8 +107,8 @@ class User < ApplicationRecord
   mount_base64_uploader :avatar, ImageUploader
 
 
-  scope :app_users, -> { where(app_user: true)  }
-  scope :web_users, -> { where(web_user: true) }
+  # scope :app_users, -> { where(app_user: true) }
+  # scope :web_users, -> { where(web_user: true) }
 
   #validate :password_for_web
 

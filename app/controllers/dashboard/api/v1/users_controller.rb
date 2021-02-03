@@ -13,22 +13,22 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
 
   api :GET, 'dashboard/api/v1/users', 'Get all users'
   # GET /users
-  def index
+  # def index
 
-    app = User.app_users.page(params[:page]).per(20).map  { |user| get_user_object(user) }
-    business = User.web_users.page(params[:page]).per(20).map { |user| get_business_object(user) }
+  #   app = User.app_users.page(params[:page]).per(20).map  { |user| get_user_object(user) }
+  #   business = User.web_users.page(params[:page]).per(20).map { |user| get_business_object(user) }
 
-    render json: {
-      code: 200,
-      success: true,
-      data: {
-        users: {
-          "businesses" => business,
-          "app_users" => app
-        }
-      }
-    }
-  end
+  #   render json: {
+  #     code: 200,
+  #     success: true,
+  #     data: {
+  #       users: {
+  #         "businesses" => business,
+  #         "app_users" => app
+  #       }
+  #     }
+  #   }
+  # end
 
   # GET /users/{username}
   def show
@@ -42,19 +42,17 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
         "phone_number" =>  @user.phone_number,
         "password" => @user.password,
         "followers_count" => @user.followers.size,
+        "address" => @user.location,
+        "is_subscribed" => @user.is_subscribed,
+        "device_token" => @user.device_token,
+        "about" => @user.about,
         "profile_name" => @user.business_profile.profile_name,
-        "contact_name" =>  @user.business_profile.contact_name,
-        "display_name" =>  @user.business_profile.display_name,
-        "address" => @user.business_profile.address,
+        "contact_name" => @user.business_profile.contact_name,
+        "display_name" => @user.business_profile.display_name,
         "website" => @user.business_profile.website,
-        "about" =>  @user.business_profile.about,
-        "vat_number" =>  @user.business_profile.vat_number,
-        "youtube" => @user.business_profile.youtube,
-        "facebook" => @user.business_profile.facebook,
-        "instagram" => @user.business_profile.instagram,
-        "twitter" => @user.business_profile.twitter,
-        "linkedin" => @user.business_profile.linkedin
-
+        "vat_number" => @user.business_profile.vat_number,
+        "charity_number" => @user.business_profile.charity_number,
+        "is_charity" => @user.business_profile.is_charity
     }
 
     render json: {
@@ -84,7 +82,7 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
   # param :password, String, :desc => "Password"
 
   def create
-    required_fields = ['profile_name', 'contact_name','address', 'display_name', 'phone_number', 'email', 'password','is_charity', 'about']
+    required_fields = ['profile_name', 'contact_name','location', 'display_name', 'phone_number', 'email', 'password','is_charity', 'about']
     errors = []
     required_fields.each do |field|
       if params[field.to_sym].blank?
@@ -102,16 +100,11 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
     end
       @user.phone_number = params[:phone_number]
       @user.email = params[:email]
-      @user.web_user = true
       @user.password = params[:password]
-      @user.verification_code = generate_code
-      @user.stripe_state = generate_code
+      @user.location = params[:location]
+      @user.is_subscribed = params[:is_subscribed]
+      @user.about = params[:about]
 
-      if !params[:charity_number].blank?
-        charity_number = params[:charity_number]
-      else
-        charity_number = ''
-      end
 
       user_and_profile_errors = []
 
@@ -137,26 +130,40 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
         @business.profile_name = params[:profile_name]
         @business.contact_name = params[:contact_name]
         @business.display_name = params[:display_name]
-        @business.address = params[:address]
         @business.website = params[:website]
-        @business.about = params[:about]
         @business.vat_number = params[:vat_number]
-        @business.youtube = params[:youtube]
-        @business.instagram = params[:instagram]
-        @business.twitter = params[:twitter]
-        @business.linkedin = params[:linkedin]
-        @business.facebook = params[:facebook]
+        @business.charity_number = params[:charity_number]
+        @business.is_charity = params[:is_charity]
+        @business.stripe_state = generate_code
 
 
-       if @business.save
-        "do nothing"
-      else
-          @business.errors.full_messages.map { |m| user_and_profile_errors.push(m) }
-      end
+
+        if @business.save
+          "do nothing"
+        else
+            @business.errors.full_messages.map { |m| user_and_profile_errors.push(m) }
+        end
        #Also save default setting
 
+        @social = SocialMedia.new
 
-    if user_and_profile_errors.blank?
+        @social.user = @user
+
+        @social.youtube = params[:youtube]
+        @social.instagram = params[:instagram]
+        @social.twitter = params[:twitter]
+        @social.facebook = params[:facebook]
+        @social.snapchat = params[:snapchat]
+        @social.linkedin = params[:linkedin]
+
+        if @social.save
+          "do nothing"
+        else
+            @social.errors.full_messages.map { |m| user_and_profile_errors.push(m) }
+        end
+
+
+      if user_and_profile_errors.blank?
 
 
       profile = {
@@ -164,19 +171,23 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
         "email" =>  @user.email,
         "avatar" => @user.avatar,
         "phone_number" =>  @user.phone_number,
-        "password" => @user.password,
+        "is_subscribed" => @user.is_subscribed,
+        "device_token" => @user.device_token,
+        "location" => @user.location,
+        "about" => @user.about,
         "profile_name" => @business.profile_name,
         "contact_name" =>  @business.contact_name,
         "display_name" =>  @business.display_name,
-        "address" => @business.address,
         "website" => @business.website,
-        "about" =>  @business.about,
         "vat_number" =>  @business.vat_number,
-        "youtube" =>  @business.youtube,
-        "instagram" =>  @business.instagram,
-        "twitter" =>  @business.twitter,
-        "linkedin" =>  @business.linkedin,
-        "facebook" => @business.facebook,
+        "charity_number" =>  @business.charity_number,
+        "is_charity" =>  @business.is_charity,
+        "youtube" =>  @social.youtube,
+        "instagram" =>  @social.instagram,
+        "twitter" =>  @social.twitter,
+        "linkedin" =>  @social.linkedin,
+        "facebook" => @social.facebook,
+        "snapchat" => @social.snapchat,
         "token" =>   encode(user_id: @user.id)
       }
 
@@ -224,7 +235,7 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
   #param :password, String, :desc => "Password"
 
   def update
-   required_fields = ['profile_name', 'contact_name','address', 'display_name']
+   required_fields = ['profile_name', 'contact_name','location', 'display_name', 'phone_number', 'email', 'password','is_charity', 'about']
     errors = []
     required_fields.each do |field|
       if params[field.to_sym].blank?
@@ -242,16 +253,10 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
     end
       @user.phone_number = params[:phone_number]
       @user.email = params[:email]
-      @user.web_user = true
       @user.password = params[:password]
-      @user.verification_code = generate_code
-      @user.stripe_state = generate_code
-
-      if !params[:charity_number].blank?
-        charity_number = params[:charity_number]
-      else
-        charity_number = ''
-      end
+      @user.location = params[:location]
+      @user.is_subscribed = params[:is_subscribed]
+      @user.about = params[:about]
 
       user_and_profile_errors = []
 
@@ -275,15 +280,11 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
         @business.profile_name = params[:profile_name]
         @business.contact_name = params[:contact_name]
         @business.display_name = params[:display_name]
-        @business.address = params[:address]
         @business.website = params[:website]
-        @business.about = params[:about]
         @business.vat_number = params[:vat_number]
-        @business.youtube = params[:youtube]
-        @business.instagram = params[:instagram]
-        @business.twitter = params[:twitter]
-        @business.linkedin = params[:linkedin]
-        @business.facebook = params[:facebook]
+        @business.charity_number = params[:charity_number]
+        @business.is_charity = params[:is_charity]
+        @business.stripe_state = generate_code
 
 
        if @business.save
@@ -293,6 +294,21 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
       end
        #Also save default setting
 
+        @social = @user.social_media
+
+        @social.youtube = params[:youtube]
+        @social.instagram = params[:instagram]
+        @social.twitter = params[:twitter]
+        @social.facebook = params[:facebook]
+        @social.snapchat = params[:snapchat]
+        @social.linkedin = params[:linkedin]
+
+        if @social.save
+          "do nothing"
+        else
+            @social.errors.full_messages.map { |m| user_and_profile_errors.push(m) }
+        end
+
 
     if user_and_profile_errors.blank?
       profile = {
@@ -300,20 +316,24 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
         "email" =>  @user.email,
         "avatar" => @user.avatar,
         "phone_number" =>  @user.phone_number,
-        "password" => @user.password,
+        "is_subscribed" => @user.is_subscribed,
+        "device_token" => @user.device_token,
+        "location" => @user.location,
+        "about" => @user.about,
         "profile_name" => @business.profile_name,
         "contact_name" =>  @business.contact_name,
         "display_name" =>  @business.display_name,
-        "address" => @business.address,
         "website" => @business.website,
-        "about" =>  @business.about,
         "vat_number" =>  @business.vat_number,
-        "youtube" =>  @business.youtube,
-        "instagram" =>  @business.instagram,
-        "twitter" =>  @business.twitter,
-        "linkedin" =>  @business.linkedin,
-        "facebook" => @business.facebook
-
+        "charity_number" =>  @business.charity_number,
+        "is_charity" =>  @business.is_charity,
+        "youtube" =>  @social.youtube,
+        "instagram" =>  @social.instagram,
+        "twitter" =>  @social.twitter,
+        "linkedin" =>  @social.linkedin,
+        "facebook" => @social.facebook,
+        "snapchat" => @social.snapchat,
+        "token" =>   encode(user_id: @user.id)
       }
 
       render json: {
