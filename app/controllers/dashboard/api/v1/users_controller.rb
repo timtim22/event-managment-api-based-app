@@ -274,7 +274,7 @@ class Dashboard::Api::V1::UsersController < Dashboard::Api::V1::ApiMasterControl
         @user.errors.full_messages.map { |m| user_and_profile_errors.push(m) }
 
       end
-
+ 
       @business = @user.business_profile
 
         @business.profile_name = params[:profile_name]
