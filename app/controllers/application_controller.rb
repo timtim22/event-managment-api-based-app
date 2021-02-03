@@ -255,7 +255,6 @@ class ApplicationController < ActionController::Base
       "phone_number" => user.phone_number,
       "app_user" => user.app_user,
       "is_email_verified" => user.is_email_verified,
-      "web_user" => user.web_user,
       "about" => user.profile.about,
       "twitter" => user.profile.twitter,
       "facebook" => user.profile.facebook,

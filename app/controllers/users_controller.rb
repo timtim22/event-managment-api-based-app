@@ -13,7 +13,6 @@ class UsersController < ApplicationController
       @user = User.new
       @user.phone_number = params[:phone_number]
       @user.email = params[:email]
-      @user.web_user = true
       @user.password = params[:password]
       @user.verification_code = generate_code
       @user.stripe_state = generate_code
