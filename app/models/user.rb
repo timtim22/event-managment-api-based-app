@@ -83,7 +83,7 @@ class User < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :user_settings, dependent: :destroy
   has_one :business_profile, dependent: :destroy
-  has_one :social_medium, dependent: :destroy
+  has_many :social_media, dependent: :destroy
 
 
 

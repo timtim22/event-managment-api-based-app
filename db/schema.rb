@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_02_131806) do
+ActiveRecord::Schema.define(version: 2021_02_03_082044) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 2021_02_02_131806) do
     t.index ["user_id"], name: "index_assignments_on_user_id"
   end
 
+<<<<<<< HEAD
   create_table "business_details", force: :cascade do |t|
     t.string "name"
     t.string "type"
@@ -58,6 +59,8 @@ ActiveRecord::Schema.define(version: 2021_02_02_131806) do
     t.index ["user_id"], name: "index_business_details_on_user_id"
   end
 
+=======
+>>>>>>> a10577ab3733311df2b5b7b29ade9ccfcc5ba5e2
   create_table "business_profiles", force: :cascade do |t|
     t.integer "user_id"
     t.string "profile_name", default: ""
@@ -588,6 +591,7 @@ ActiveRecord::Schema.define(version: 2021_02_02_131806) do
     t.index ["event_id"], name: "index_sponsors_on_event_id"
   end
 
+<<<<<<< HEAD
   create_table "student_details", force: :cascade do |t|
     t.string "university"
     t.string "email"
@@ -598,6 +602,8 @@ ActiveRecord::Schema.define(version: 2021_02_02_131806) do
     t.index ["user_id"], name: "index_student_details_on_user_id"
   end
 
+=======
+>>>>>>> a10577ab3733311df2b5b7b29ade9ccfcc5ba5e2
   create_table "ticket_purchases", force: :cascade do |t|
     t.integer "user_id"
     t.integer "ticket_id"
@@ -707,4 +713,14 @@ ActiveRecord::Schema.define(version: 2021_02_02_131806) do
     t.index [nil, "user_id"], name: "index_wallets_on_special_offer_id_and_user_id"
   end
 
+<<<<<<< HEAD
+=======
+  add_foreign_key "categorizations", "categories"
+  add_foreign_key "categorizations", "events"
+  add_foreign_key "chat_channels", "users"
+  add_foreign_key "comments", "events"
+  add_foreign_key "comments", "users"
+  add_foreign_key "friend_requests", "users"
+  add_foreign_key "messages", "users"
+>>>>>>> a10577ab3733311df2b5b7b29ade9ccfcc5ba5e2
 end

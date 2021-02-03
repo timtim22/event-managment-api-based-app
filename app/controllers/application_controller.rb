@@ -167,14 +167,9 @@ class ApplicationController < ActionController::Base
     end
    end
 
-   def is_friend?(request_user,friend)
-    friend_request = request_user.friend_requests.where(friend_id: friend.id).where(status: 'accepted').first
-    if friend_request
-      true
-    else
-      false
-    end
-  end
+   def is_friend?(request_user, user)
+      request_user.friends.include? user
+   end
 
 
   def string_to_hash(string)
@@ -203,8 +198,7 @@ class ApplicationController < ActionController::Base
 
 
   def is_business?(user)
-    role_ids = user.roles.map {|role| role.id }
-    role_ids.include? 2
+    user.roles.map {|role| role.id }.include? 2
   end
 
   def get_full_name(user)
@@ -232,18 +226,14 @@ class ApplicationController < ActionController::Base
       "email" => user.email,
       "avatar" => user.avatar,
       "phone_number" => user.phone_number,
-      "is_email_verified" => user.is_email_verified,
+      "roles" => get_user_role_names(user), 
       "vat_number" => user.business_profile.vat_number,
       "charity_number" => user.business_profile.charity_number,
       "address" => eval(user.business_profile.address),
-      "about" => user.business_profile.about,
-      "twitter" => user.business_profile.twitter,
-      "facebook" => user.business_profile.facebook,
-      "linkedin" => user.business_profile.linkedin,
-      "website" => user.business_profile.website,
-      "instagram" => user.business_profile.instagram,
+      "about" => user.about,
+      "social_media" => user.social_media,
       "is_charity" => user.business_profile.is_charity,
-      "is_ambassador" => user.business_profile.is_ambassador,
+      "is_ambassador" => false,
       "is_request_sent" => false,
       "is_my_following" => is_my_following?(user),
       "role" => 2,
@@ -813,7 +803,7 @@ end
     distributed_by = 'n/a'
     if !pass.offer_forwardings.blank?
         user = pass.offer_forwardings.first.user
-        if user && user.profile.is_ambassador == true
+        if user && is_ambassador?(user)
           distributed_by = get_full_name(user)
         end
     end
@@ -855,6 +845,40 @@ end
      false
     end
   end
+
+
+
+
+  def is_ambassador?(user)
+      user.roles.map {|role| role.id }.include? 6
+  end
+
+
+
+  def get_roles_ids
+    Role.all.map {|role| role.id }
+  end
+
+
+  def get_role_names(user)
+    Role.all.map {|role| role.name }
+  end
+
+
+
+  def get_user_role_names(user)
+    user.roles.map {|role| role.name }
+  end
+
+
+  def get_friend_grabbers(request_user, offer)
+    offer.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }
+  end
+
+  def generate_uuid
+    SecureRandom.uuid
+  end
+
 
 
   def get_request_status(business_id)
@@ -1216,6 +1240,8 @@ end
 def business_users
   users = Assignment.where(role_id: 2).map {|assignment| assignment.user }
 end
+
+
 
   helper_method :SetJsVariables
   helper_method :is_admin_or_super_admin?

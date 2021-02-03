@@ -31,6 +31,7 @@ Rails.application.routes.draw do
           post '/remove-request' => "friendships#remove_request"
           post '/remove-friend' => "friendships#remove_friend"
           get '/my-friends' => "friendships#my_friends"
+          post '/get-accounts' => 'authentication#get_accounts'
       end #users
 
 #######------Events--------####################################################
@@ -125,7 +126,7 @@ Rails.application.routes.draw do
        get '/get-users-having-common-fields' => 'users#get_users_having_common_fields'
        get '/privacy-policy' => 'users#privacy_policy'
        post '/friendships/get-friends-details' => 'friendships#get_friends_details'
-       post '/get-accounts' => 'authentication#get_accounts'
+      
        get '/get-business-dashbord' => 'business_dashboard#home'
        get '/get-business-events' => 'business_dashboard#events'
        get '/get-business-special-offers' => 'business_dashboard#special_offers'
