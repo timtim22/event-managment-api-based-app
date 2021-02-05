@@ -1,4 +1,4 @@
-class Api::V1::EventsController < Api::V1::ApiMasterController
+class Api::V1::Events::EventsController < Api::V1::ApiMasterController
   before_action :authorize_request, except:  ['events_list_by_date','index','show_event','get_map_events']
 
   api :POST, '/api/v1/events/show', 'To view a specific event'
