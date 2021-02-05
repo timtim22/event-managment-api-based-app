@@ -20,14 +20,14 @@ class Admin::TicketmasterController < Admin::AdminMasterController
          if key != nil || key != false
           event = Event.new
           event.user = current_user
-          event.name = key.name.to_s
+          event.title = key.name.to_s
           event.description = key.name.to_s
           event.remote_image_url = key.images[8].url
           event.start_date = key.dates['start']['localDate']
           event.end_date  = key.dates['start']['localDate']
           event.event_type = 'ticketmaster'
-          event.start_time = key.dates['start']['localTime']
-          event.end_time = "Not specified"
+           = key.dates['start']['localTime']
+           = "Not specified"
           event.host = get_full_name(current_user)
           event.location = key.embedded["venues"][0]["city"]["name"] + "," + key.embedded["venues"][0]["state"]["name"] + "," + key.embedded["venues"][0]["country"]["name"]
           if event.save

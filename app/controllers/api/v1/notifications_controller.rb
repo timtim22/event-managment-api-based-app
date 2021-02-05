@@ -30,7 +30,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           "created_at": notification.created_at,
           "is_read": !notification.read_at.nil?,
           "business_name": User.get_full_name(notification.resource.user),
-          "event_name": notification.resource.name,
+          "event_name": notification.resource.title,
           "event_id": notification.resource.id,
           "event_location": eval(notification.resource.location),
           "event_start_date": notification.resource.start_date
@@ -75,7 +75,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "id": notification.id,
             "pass_id": notification.resource.id,
             "business_name": User.get_full_name(notification.resource.user),
-            "event_name": notification.resource.event.name,
+            "event_name": notification.resource.event.title,
             "event_location": eval(notification.resource.event.location),
             "event_end_date": notification.resource.event.end_date,
             "actor_id": notification.actor_id,
@@ -93,7 +93,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "id": notification.id,
             "business_name": User.get_full_name(notification.resource.child_event.user),
             "friend_name": User.get_full_name(notification.resource.user),
-            "event_name": notification.resource.child_event.name,
+            "event_name": notification.resource.child_event.title,
             "event_id": notification.resource.child_event.id,
             "event_start_date": notification.resource.child_event.start_date,
             "event_location": eval(notification.resource.child_event.location),
@@ -113,7 +113,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "id": notification.id,
             "business_name": User.get_full_name(notification.resource.child_event.user),
             "friend_name": User.get_full_name(notification.resource.user),
-            "event_name": notification.resource.child_event.name,
+            "event_name": notification.resource.child_event.title,
             "event_id": notification.resource.child_event.id,
             "event_start_date": notification.resource.child_event.start_date,
             "event_location": eval(notification.resource.child_event.location), 
@@ -133,7 +133,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
             "id": notification.id,
             "user_name": User.get_full_name(notification.resource.child_event.user),
             "comment": notification.resource.comment,
-            "event_name": notification.resource.child_event.name,
+            "event_name": notification.resource.child_event.title,
             "user_id": notification.resource.user.id,
             "event_id": notification.resource.child_event.id,
             "actor_id": notification.actor_id,
@@ -153,7 +153,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           @notifications << {
             "id": notification.id,
             "event_id": notification.resource.comment.child_event.id,
-            "event_name": notification.resource.comment.child_event.name,
+            "event_name": notification.resource.comment.child_event.title,
             "replier_id": notification.resource.user.id,
             "replier_name": User.get_full_name(notification.resource.user),
             "comment_id": notification.resource.comment.id,
@@ -195,7 +195,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           @notifications << {
             "id": notification.id,
             "friend_name": User.get_full_name(notification.resource.user),
-            "event_name": notification.resource.offer.event.name,
+            "event_name": notification.resource.offer.event.title,
             "event_start_date": notification.resource.offer.event.start_date,
             "pass_id": notification.resource.offer.id,
             "event_location": eval(notification.resource.offer.event.location),
@@ -362,12 +362,12 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         when "free_event_reminder"
           @notifications << {
           "id": notification.id,
-          "event_name": notification.resource.name,
+          "event_name": notification.resource.title,
           "event_id": notification.resource.id,
           "event_location": eval(notification.resource.location),
           "event_start_date": notification.resource.start_date,
-          "event_start_time": notification.resource.start_time,
-          "event_end_time": notification.resource.end_time,
+          "event_start_time": notification.resourc,
+          "event_end_time": notification.resourc,
           "event_type": notification.resource.event_type,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
@@ -381,12 +381,12 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         when "buy_event_reminder"
           @notifications << {
           "id": notification.id,
-          "event_name": notification.resource.name,
+          "event_name": notification.resource.title,
           "event_id": notification.resource.id,
           "event_location": eval(notification.resource.location),
           "event_start_date": notification.resource.start_date,
-          "event_start_time": notification.resource.start_time,
-          "event_end_time": notification.resource.end_time,
+          "event_start_time": notification.resourc,
+          "event_end_time": notification.resourc,
           "event_type": notification.resource.event_type,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
@@ -400,12 +400,12 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
         when "pay_at_door_event_reminder"
           @notifications << {
           "id": notification.id,
-          "event_name": notification.resource.name,
+          "event_name": notification.resource.title,
           "event_id": notification.resource.id,
           "event_location": eval(notification.resource.location),
           "event_start_date": notification.resource.start_date,
-          "event_start_time": notification.resource.start_time,
-          "event_end_time": notification.resource.end_time,
+          "event_start_time": notification.resourc,
+          "event_end_time": notification.resourc,
           "event_type": notification.resource.event_type,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
@@ -420,7 +420,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
           @notifications << {
             "id": notification.id,
             "pass_id": notification.resource.offer.id,
-            "event_name": notification.resource.offer.event.name,
+            "event_name": notification.resource.offer.event.title,
             "friend_name": User.get_full_name(notification.resource.user),
             "business_name": User.get_full_name(notification.resource.offer.user),
             "friend_id": notification.resource.user.id,
@@ -472,7 +472,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                   "event_id": notification.resource.child_event.id,
                   "friend_name": User.get_full_name(notification.resource.user),
                   "friend_id": notification.resource.user.id,
-                  "event_name": notification.resource.child_event.name,
+                  "event_name": notification.resource.child_event.title,
                   "event_start_date": notification.resource.child_event.start_date,
                   "event_location": eval(notification.resource.child_event.location),
                   "actor_image": notification.actor.avatar,
@@ -488,7 +488,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                   @notifications << {
                     "id": notification.id,
                     "pass_id": notification.resource.offer.id,
-                    "event_name": notification.resource.offer.event.name,
+                    "event_name": notification.resource.offer.event.title,
                     "friend_name": User.get_full_name(notification.resource.user),
                     "business_name": User.get_full_name(notification.resource.offer.user),
                     "friend_id": notification.resource.user.id,
@@ -547,7 +547,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
                           "created_at": notification.created_at,
                           "is_read": !notification.read_at.nil?,
                           "business_name": User.get_full_name(notification.resource.child_event.user),
-                          "event_name": notification.resource.child_event.name,
+                          "event_name": notification.resource.child_event.title,
                           "event_id": notification.resource.child_event.id,
                           "event_location": eval(notification.resource.child_event.location),
                           "event_start_date": notification.resource.child_event.start_date,
@@ -868,7 +868,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       #    check = request_user.reminders.where(child_event: event).where(level: 'interested')
       #    if check.blank?
       #     if @reminder = request_user.reminders.create!(event_id: event.id, level: 'interested')
-      #       if notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are interested in event '#{event.name}' which is happening tomorrow. ", notifiable: event, resource: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "#{event.price_type}_event_reminder")
+      #       if notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are interested in event '#{event.title}' which is happening tomorrow. ", notifiable: event, resource: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "#{event.price_type}_event_reminder")
 
       #          @current_push_token = @pubnub.add_channels_to_push(
       #            push_token: request_user.device_token,
@@ -880,12 +880,12 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       #             when "free_event"
       #               data = {
       #                 "id": notification.id,
-      #                 "event_name": notification.resource.name,
+      #                 "event_name": notification.resource.title,
       #                 "event_id": notification.resource.id,
       #                 "event_location": notification.resource.location,
       #                 "event_start_date": notification.resource.start_date,
-      #                 "event_start_time": notification.resource.start_time,
-      #                 "event_end_time": notification.resource.end_time,
+      #                 "event_start_time": notification.resourc,
+      #                 "event_end_time": notification.resourc,
       #                 "event_type": notification.resource.event_type,
       #                 "actor_image": notification.actor.avatar,
       #                 "notifiable_id": notification.notifiable_id,
@@ -898,12 +898,12 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       #             when "free_ticketed_event"
       #               data = {
       #                 "id": notification.id,
-      #                 "event_name": notification.resource.name,
+      #                 "event_name": notification.resource.title,
       #                 "event_id": notification.resource.id,
       #                 "event_location": notification.resource.location,
       #                 "event_start_date": notification.resource.start_date,
-      #                 "event_start_time": notification.resource.start_time,
-      #                 "event_end_time": notification.resource.end_time,
+      #                 "event_start_time": notification.resourc,
+      #                 "event_end_time": notification.resourc,
       #                 "event_type": notification.resource.event_type,
       #                 "actor_image": notification.actor.avatar,
       #                 "notifiable_id": notification.notifiable_id,
@@ -916,12 +916,12 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       #             when  "buy"
       #                data ={
       #                 "id": notification.id,
-      #                 "event_name": notification.resource.name,
+      #                 "event_name": notification.resource.title,
       #                 "event_id": notification.resource.id,
       #                 "event_location": notification.resource.location,
       #                 "event_start_date": notification.resource.start_date,
-      #                 "event_start_time": notification.resource.start_time,
-      #                 "event_end_time": notification.resource.end_time,
+      #                 "event_start_time": notification.resourc,
+      #                 "event_end_time": notification.resourc,
       #                 "event_type": notification.resource.event_type,
       #                 "actor_image": notification.actor.avatar,
       #                 "notifiable_id": notification.notifiable_id,
@@ -934,12 +934,12 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       #             when  "pay_at_door"
       #               data = {
       #                 "id": notification.id,
-      #                 "event_name": notification.resource.name,
+      #                 "event_name": notification.resource.title,
       #                 "event_id": notification.resource.id,
       #                 "event_location": notification.resource.location,
       #                 "event_start_date": notification.resource.start_date,
-      #                 "event_start_time": notification.resource.start_time,
-      #                 "event_end_time": notification.resource.end_time,
+      #                 "event_start_time": notification.resourc,
+      #                 "event_end_time": notification.resourc,
       #                 "event_type": notification.resource.event_type,
       #                 "actor_image": notification.actor.avatar,
       #                 "notifiable_id": notification.notifiable_id,
@@ -956,7 +956,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       #           payload = {
       #           "pn_gcm":{
       #             "notification":{
-      #               "title": "Reminder about '#{event.name}'",
+      #               "title": "Reminder about '#{event.title}'",
       #               "body": notification.action
       #             },
       #             data: data
@@ -984,7 +984,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       #    check = request_user.reminders.where(event_id: event.id).where(level: 'going')
       #    if check.blank?
       #     if @reminder = request_user.reminders.create!(event_id: event.id, level: 'going')
-      #       if @notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are attening an event '#{event.name}' which is happening tomorrow. ", notifiable: event, resource: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "event_reminder")
+      #       if @notification = Notification.create!(recipient: request_user, actor: request_user, action: "You are attening an event '#{event.title}' which is happening tomorrow. ", notifiable: event, resource: event, url: "/admin/events/#{event.id}", notification_type: 'mobile', action_type: "event_reminder")
 
       #          @current_push_token = @pubnub.add_channels_to_push(
       #            push_token: request_user.device_token,
@@ -995,7 +995,7 @@ class Api::V1::NotificationsController < Api::V1::ApiMasterController
       #           payload = {
       #           "pn_gcm":{
       #             "notification":{
-      #               "title": "Reminder about '#{event.name}'",
+      #               "title": "Reminder about '#{event.title}'",
       #               "body": @notification.action
       #             },
       #             data: {

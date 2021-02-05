@@ -18,13 +18,13 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
               @event << {
                   "id" => event.id,
                   "image" => event.event.image,
-                  "name" => event.name,
+                  "name" => event.title,
                   "description" => event.description,
                   "location" => eval(event.location),
                   "start_date" => event.start_date,
                   "end_date" => event.end_date,
-                  "start_time" => get_date_time(event.start_date, event.start_time),
-                  "end_time" => get_date_time(event.end_date, event.end_time),
+                  "start_time" => get_date_time(event.start_date, ),
+                  "end_time" => get_date_time(event.end_date, ),
                   "over_18" => event.over_18,
                   "price_type" => event.price_type,
                   "price" => get_price(event.event),
@@ -69,7 +69,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                         if !is_removed_pass?(request_user, pass)
                           @passes << {
                             id: pass.id,
-                            event_name:pass.event.name,
+                            event_name:pass.event.title,
                             event_name:pass.title,
                             pass_type: pass.pass_type,
                             host_image:pass.event.user.avatar,
@@ -82,7 +82,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                       else
                         @passes << {
                             id: pass.id,
-                            event_name:pass.event.name,
+                            event_name:pass.event.title,
                             pass_type: pass.pass_type,
                             host_image:pass.event.user.avatar,
                             event_image:pass.event.image,

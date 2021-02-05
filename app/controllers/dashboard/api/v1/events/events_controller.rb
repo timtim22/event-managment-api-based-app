@@ -72,11 +72,11 @@
 
    @event = {
      'id' => e.id,
-     'name' => e.name,
+     'name' => e.title,
      'start_date' => e.start_date,
      'end_date' => e.end_date,
-     'start_time' => e.start_time,
-     'end_time' => e.end_time,
+     'start_time' => ,
+     'end_time' => ,
      'image' => e.image.url,
      'location' => eval(e.location),
      'description' => e.description,
@@ -175,11 +175,11 @@
 
       @events << {
         'id' => e.id,
-        'name' => e.name,
+        'name' => e.title,
         'start_date' => e.start_date,
         'end_date' => e.end_date,
-        'start_time' => e.start_time,
-        'end_time' => e.end_time,
+        'start_time' => ,
+        'end_time' => ,
         'image' => e.image.url,
         'location' => location,
         'description' => e.description,
@@ -229,9 +229,9 @@
 
       @events << {
         'id' => e.id,
-        'name' => e.name,
+        'name' => e.title,
         'date' => e.start_date,
-        'time' => e.start_time,
+        'time' => ,
         'image' => e.image.url,
         "terms_conditions" => e.terms_conditions,
         'creator_name' => e.user.business_profile.profile_name,
@@ -363,12 +363,12 @@
 
   if @error_messages.blank?
     @event = request_user.events.new
-    @event.name = params[:name]
+    @event.title = params[:name]
     @event.image = params[:image]
     @event.start_date = params[:start_date]
     @event.end_date = params[:end_date]
-    @event.start_time =  params["start_time"]
-    @event.end_time = params["end_time"]
+    @ =  params["start_time"]
+    @ = params["end_time"]
     @event.over_18 = params[:over_18]
     @event.description = params[:description]
     @event.allow_chat = params[:allow_chat]
@@ -626,12 +626,12 @@
 
   if @error_messages.blank?
     @event = Event.find(params[:id])
-    @event.name = params[:name]
+    @event.title = params[:name]
     @event.image = params[:image]
     @event.start_date = params[:start_date]
     @event.end_date = params[:end_date]
-    @event.start_time = params['start_time']
-    @event.end_time = params['end_time']
+    @ = params['start_time']
+    @ = params['end_time']
     @event.over_18 = params[:over_18]
     @event.description = params[:description]
     @event.allow_chat = params[:allow_chat]

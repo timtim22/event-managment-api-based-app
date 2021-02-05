@@ -42,13 +42,13 @@ class Admin::EventsController < Admin::AdminMasterController
    )
 
    if params[:start_date] == params[:end_date]
-        @event.name = params[:name]
+        @event.title = params[:name]
         @event.start_date = params[:start_date].to_date
         @event.end_date = params[:end_date].to_date
         @event.event_type = params[:event_type]
         @event.price_type = params[:price_type]
-        @event.start_time = params[:start_time]
-        @event.end_time = params[:end_time]
+        @ = params[:start_time]
+        @ = params[:end_time]
         @event.host = params[:host]
         @event.category_ids = params[:category_ids]
         @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
@@ -67,7 +67,7 @@ class Admin::EventsController < Admin::AdminMasterController
         @event.over_18 = params[:over_18]
       if @event.save
         #creating activity log
-        #create_activity("created event", @event, "Event", admin_event_path(@event),@event.name, 'post')
+        #create_activity("created event", @event, "Event", admin_event_path(@event),@event.title, 'post')
 
         if !params[:event_attachments].blank?
 
@@ -168,7 +168,7 @@ class Admin::EventsController < Admin::AdminMasterController
         if !current_user.followers.blank?
           current_user.followers.each do |follower|
         if follower.all_chat_notifications_setting.is_on == true && follower.event_notifications_setting.is_on == true
-        if notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event')
+        if notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.title}'.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event')
           @current_push_token = @pubnub.add_channels_to_push(
           push_token: follower.device_token,
           type: 'gcm',
@@ -193,7 +193,7 @@ class Admin::EventsController < Admin::AdminMasterController
               "created_at": notification.created_at,
               "is_read": !notification.read_at.nil?,
               "business_name": User.get_full_name(notification.resource.user),
-              "event_name": notification.resource.name,
+              "event_name": notification.resource.title,
               "event_id": notification.resource.id,
               "event_location": notification.resource.location,
               "event_start_date": notification.resource.start_date
@@ -220,13 +220,13 @@ class Admin::EventsController < Admin::AdminMasterController
     dates = generate_date_range(params[:start_date], params[:end_date])
     dates.each_with_index do |date, index|
       @event = current_user.events.new
-      @event.name = params[:name]
+      @event.title = params[:name]
       @event.start_date = date.to_date
       @event.end_date = date.to_date
       @event.event_type = params[:event_type]
       @event.price_type = params[:price_type]
-      @event.start_time = params[:start_time]
-      @event.end_time = params[:end_time]
+      @ = params[:start_time]
+      @ = params[:end_time]
       @event.category_ids = params[:category_ids]
       @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
       @event.description = params[:description]
@@ -340,7 +340,7 @@ class Admin::EventsController < Admin::AdminMasterController
        if !current_user.followers.blank?
         current_user.followers.each do |follower|
       if follower.all_chat_notifications_setting.is_on == true && follower.event_notifications_setting.is_on == true
-      if notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.name}'.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event')
+      if notification = Notification.create!(recipient: follower, actor: current_user, action: get_full_name(current_user) + " created a new event '#{@event.title}'.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event')
         @current_push_token = @pubnub.add_channels_to_push(
          push_token: follower.device_token,
          type: 'gcm',
@@ -365,7 +365,7 @@ class Admin::EventsController < Admin::AdminMasterController
             "created_at": notification.created_at,
             "is_read": !notification.read_at.nil?,
             "business_name": User.get_full_name(notification.resource.user),
-            "event_name": notification.resource.name,
+            "event_name": notification.resource.title,
             "event_id": notification.resource.id,
             "event_location": notification.resource.location,
             "event_start_date": notification.resource.start_date
@@ -423,7 +423,7 @@ class Admin::EventsController < Admin::AdminMasterController
    end
 
     @event = Event.find(params[:id])
-    @event.name = params[:name]
+    @event.title = params[:name]
     @event.start_date = params[:start_date].to_date.to_s
     @event.end_date = params[:end_date].to_date.to_s
     @event.price_range = price_range
@@ -432,8 +432,8 @@ class Admin::EventsController < Admin::AdminMasterController
     @event.end_price = end_price
     @event.price_type = params[:price_type]
     @event.event_type = params[:event_type]
-    @event.start_time = params[:start_time]
-    @event.end_time = params[:end_time]
+    @ = params[:start_time]
+    @ = params[:end_time]
     @event.host = params[:host]
     @event.category_ids = params[:category_ids]
     @event.description = params[:description]
@@ -449,7 +449,7 @@ class Admin::EventsController < Admin::AdminMasterController
     @event.allow_additional_media = params[:allow_additional_media]
     @event.over_18 = params[:over_18]
   if @event.save
-      #create_activity("updated event", @event, "Event", admin_event_path(@event),@event.name, 'patch')
+      #create_activity("updated event", @event, "Event", admin_event_path(@event),@event.title, 'patch')
 
        # in case of new attachments
       if !params[:attachments].blank?
@@ -664,7 +664,7 @@ class Admin::EventsController < Admin::AdminMasterController
   def destroy
     @event = Event.find(params[:id])
     if @event.destroy
-     # create_activity("deleted event", @event, "Event",'',@event.name, 'delete')
+     # create_activity("deleted event", @event, "Event",'',@event.title, 'delete')
       flash[:notice] = "Event deleted successfully."
       redirect_to admin_events_path
     else

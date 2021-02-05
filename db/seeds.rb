@@ -44,12 +44,12 @@
 	# )
 
 	# event.child_events.create!(
-	# 	name: event.name,
+	# 	name: event.title,
 	# 	user_id: event.user.id,
 	# 	start_date: event.start_date,
 	#     end_date: event.start_date,
-	#     start_time: event.start_time,
-	#     end_time: event.end_time,
+	#     start_time: ,
+	#     end_time: ,
 	#     terms_conditions: event.terms_conditions,
 	#     event_type: event.event_type,
 	#     price_type: event.price_type,

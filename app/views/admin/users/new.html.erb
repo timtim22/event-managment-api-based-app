@@ -32,7 +32,7 @@
             <select class="form-control" id="type" name="type">
             <option value="0" selected>Select Type</option>
             <% @roles.each do |role| %>
-                <option value="<%= role.id %>"><%= role.name %></option>
+                <option value="<%= role.id %>"><%= role.title %></option>
             <% end %>
             </select>
         </div>

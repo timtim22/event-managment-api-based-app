@@ -153,15 +153,11 @@ class Api::V1::ApiMasterController < ApplicationController
       e = {
         "id" => event.id,
         "image" => event.event.image,
-        "name" => event.name,
+        "title" => event.title,
         "description" => event.description,
-         'location' => eval(event.location),
-         # 'lat' => eval(event.location)["geometry"]["lat"],
-         # 'lng' => eval(event.location)["geometry"]["lng"],
+        'location' => eval(event.location),
         "start_date" => event.end_date,
         "end_date" => event.end_date,
-        "start_time" => event.start_time,
-        "end_time" => event.end_time,
         "over_18" => event.event.over_18,
         "price_type" => event.price_type,
         "price" => get_price(event.event).to_s,
@@ -231,8 +227,6 @@ class Api::V1::ApiMasterController < ApplicationController
   
           demographics['gays_percentage'] = gays_percentage
   
-
-
           demographics
 
     end
@@ -283,8 +277,6 @@ class Api::V1::ApiMasterController < ApplicationController
         demographics['females_percentage'] = female_percentage
 
         demographics['gays_percentage'] = gays_percentage
-
-
 
         demographics
 

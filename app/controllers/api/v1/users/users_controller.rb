@@ -316,7 +316,7 @@ end
       case log.resource_type
       when 'ChildEvent'
        resource['id'] = log.resource_id
-       resource['name'] = log.resource.name
+       resource['name'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
        resource['location'] = eval(log.resource.location)
        resource['start_date'] = log.resource.start_date
@@ -462,7 +462,7 @@ end
      case log.resource_type
      when 'Event'
       resource['id'] = log.resource_id
-      resource['name'] = log.resource.name
+      resource['name'] = log.resource.title
       resource['host_name'] = get_full_name(log.resource.user)
       resource['location'] = eval(log.resource.location)
       resource['start_date'] = log.resource.start_date
@@ -539,11 +539,11 @@ def my_attending
     attendings = user.events_to_attend.page(params[:page]).per(30).each do |event|
      attending << {
        "event_id" => event.id,
-       "name" => event.name,
+       "name" => event.title,
        "start_date" => event.start_date,
        "end_date" => event.end_date,
-       "start_time" => event.start_time,
-       "end_time" => event.end_time,
+       "start_time" => ,
+       "end_time" => ,
        "location" => eval(event.location),
        "event_type" => event.event_type,
        "image" => event.image,

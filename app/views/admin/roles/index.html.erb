@@ -23,7 +23,7 @@
                       <tbody>
                       <% @roles.each do |role| %>
                         <tr>
-                          <td><%= role.name %></td>
+                          <td><%= role.title %></td>
                           <td>Dummy description</td>
                           <td class="text-danger"><%= time_ago_in_words(role.created_at) %><i class="mdi mdi-arrow-down"></i></td>
                         </tr>

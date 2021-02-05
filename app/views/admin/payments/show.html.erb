@@ -7,7 +7,7 @@
 
    <h3><strong>Ticket: </stong><span class="unbold"><%= @transaction.ticket.title %></span></h3>
    <br>
-   <p class="so_p"><strong>Event: </strong><%= link_to @transaction.ticket.event.name, admin_event_path(@transaction.ticket.event) %></p>
+   <p class="so_p"><strong>Event: </strong><%= link_to @transaction.ticket.event.title, admin_event_path(@transaction.ticket.event) %></p>
 
    <p class="so_p"><strong>Ticket price: </strong><%= @transaction.ticket.price %> <i class="fas fa-euro-sign"></i></p>
 

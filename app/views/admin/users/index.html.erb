@@ -29,7 +29,7 @@
             <td><%= u.email %></td>
             <td><%= time_ago_in_words(u.created_at) %></td>
             <% if !u.roles.blank? %>
-            <td><%= u.roles.map {|role| role.name } %></td>
+            <td><%= u.roles.map {|role| role.title } %></td>
             <% else %>
             <td>No role assigned</td>
             <% end %>
