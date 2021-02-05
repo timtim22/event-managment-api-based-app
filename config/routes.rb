@@ -245,8 +245,21 @@ Rails.application.routes.draw do
     namespace :api do
       namespace :v1 do
 
-        resources :users
-        patch 'dashboard/api/v1/users/:id', to: 'user#update'
+#######------Users--------#################################################
+      namespace :users do
+        post '/update-user' => 'users#update_user'
+        post '/create-user' => 'users#create_user'
+        get '/show-all-users' => 'users#show_all_users'
+        post '/get-user' => 'users#get_user'
+        post '/auth/login', to: 'authentication#login'
+      end
+#######------end--------####################################################
+
+
+
+#######------Authentication--------#########################################
+
+#######------end--------####################################################
 
         resources :news_feeds
         resources :invoices
@@ -260,7 +273,6 @@ Rails.application.routes.draw do
         resources :special_offers
         get "/get-my-events" => "events#get_my_events"
         post "/delete-resource" => "events#delete_resource"
-        post '/auth/login', to: 'authentication#login'
         post '/send-verification-code', to: 'users#send_verification_code'
         get  '/get-followers' => 'users#get_followers'
         get '/get-past-events' => 'events#get_past_events'
