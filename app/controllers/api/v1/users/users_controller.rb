@@ -83,6 +83,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     @user.phone_number = params[:phone_number]
     @user.email = params[:email]
     @user.verification_code = generate_code
+    @user.uuid = generate_uuid
     @user.stripe_state = generate_code
     if @user.save
       @profile = Profile.new
