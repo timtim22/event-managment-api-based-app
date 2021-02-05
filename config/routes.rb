@@ -15,23 +15,32 @@ Rails.application.routes.draw do
  #######------Users--------####################################################
       namespace :users do
           resources :users, param: :email
-          post '/login', to: 'authentication#login'
-          post '/logout', to: 'authentication#logout'
-          get '/verify-code', to: 'authentication#verify_code'
-          post '/update-password', to: 'authentication#update_password'
+          
           post '/update-profile' => 'users#update_profile'
           get '/get-profile' => 'users#get_profile'
-          post '/get-other-profile' => "users#get_others_profile"
+          post '/get-profile' => "users#get_others_profile"
           get '/get-business-profile' => "users#get_business_profile"
-          post '/get-other-business-profile' => "users#get_others_business_profile"
-          post '/add-friend' => "friendships#send_request"
-          post '/check-request' => "friendships#check_request"
-          get '/friend-requests' => "friendships#friend_requests"
-          post '/accept-request' => "friendships#accept_request"
-          post '/remove-request' => "friendships#remove_request"
-          post '/remove-friend' => "friendships#remove_friend"
-          get '/my-friends' => "friendships#my_friends"
-          post '/get-accounts' => 'authentication#get_accounts'
+          post '/get-business-profile' => "users#get_others_business_profile"
+         
+        
+          namespace :auth do
+            post '/login', to: 'authentication#login'
+            post '/logout', to: 'authentication#logout'
+            get '/verify-code', to: 'authentication#verify_code'
+            post '/update-password', to: 'authentication#update_password'
+            post '/get-accounts' => 'authentication#get_accounts'
+          end
+
+          namespace :friends do
+            post '/send-request' => "friendships#send_request"
+            # post '/check-request' => "friendships#check_request"
+            get '/friend-requests' => "friendships#friend_requests"
+            post '/accept-request' => "friendships#accept_request"
+            post '/decline-request' => "friendships#remove_request"
+            post '/remove-friend' => "friendships#remove_friend"
+            get '/my-friends' => "friendships#my_friends"
+          end
+
       end #users
 
 #######------Events--------####################################################

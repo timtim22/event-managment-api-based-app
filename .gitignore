@@ -9,6 +9,8 @@ capybara-*.html
 /spec/tmp
 *.orig
 rerun.txt
+erd.pdf
+pubnub.log
 pickle-email-*.html
 /config/database.yml
 /spec/spec_authentication.rb

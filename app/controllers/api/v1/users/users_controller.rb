@@ -10,8 +10,8 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
 
   def index
     all_users = []
-    app = User.app_users.page(params[:page]).per(100).map  { |user| all_users.push(get_user_object(user)) }
-    business = User.web_users.page(params[:page]).per(20).map { |user| all_users.push(get_business_object(user)) }
+    app = mobile_users.page(params[:page]).per(100).map  { |user| all_users.push(get_user_object(user)) }
+    business = business_users.page(params[:page]).per(20).map { |user| all_users.push(get_business_object(user)) }
 
     render json: {
       code: 200,
@@ -33,9 +33,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
       "email" => user.email,
       "avatar" => user.avatar,
       "phone_number" => user.phone_number,
-      "app_user" => user.app_user,
-      "is_email_verified" => user.is_email_verified,
-      "web_user" => user.web_user
+      "roles" => get_user_role_names(user)
      }
     end
 
@@ -63,7 +61,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
 
   # POST /users
   def create
-    required_fields = ['first_name', 'last_name','dob', 'gender','is_email_subscribed', 'type']
+    required_fields = ['first_name', 'last_name','dob', 'gender', 'role_id']
     errors = []
     required_fields.each do |field|
       if params[field.to_sym].blank?
@@ -79,9 +77,9 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
       @user.avatar= params[:avatar]
     end
 
-    @user.app_user = true
     @user.phone_number = params[:phone_number]
     @user.email = params[:email]
+    @user.location = params[:location]
     @user.verification_code = generate_code
     @user.uuid = generate_uuid
     @user.stripe_state = generate_code
@@ -92,8 +90,6 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
       @profile.first_name = params[:first_name]
       @profile.last_name = params[:last_name]
       @profile.gender = params[:gender]
-      @profile.location = params[:location]
-      @profile.is_email_subscribed = params[:is_email_subscribed]
       @profile.save
       @profile_data = {}
       @profile_data['id'] = @user.id
@@ -123,7 +119,7 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
        end
 
        #create role
-       assignment = @user.assignments.create!(role_id: params[:type])
+       assignment = @user.assignments.create!(role_id: params[:role_id])
 
       render json: {
             code: 200,
@@ -186,7 +182,6 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
 
 
   def update_profile
-    params.permit(:avatar)
     user = request_user
     profile = user.profile
     user.profile.first_name = params[:first_name]
@@ -194,39 +189,24 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     user.avatar = params[:avatar]
     user.profile.gender = params[:gender]
     profile.about = params[:about]
-    profile.add_social_media_links = params[:add_social_media_links]
-    profile.facebook = params[:facebook]
-    profile.twitter = params[:twitter]
-    profile.lat = params[:lat]
-    profile.lng = params[:lng]
-    profile.snapchat = params[:snapchat]
-    profile.linkedin = params[:linkedin]
-    profile.youtube = params[:youtube]
-    profile.instagram = params[:instagram]
     user.profile.dob = params[:dob]
     user.phone_number = params[:phone_number]
     user.email = params[:email]
-
+    user.location = params[:location]
   if profile.save && user.save
    # create_activity("updated profile.", profile, "Profile")
    profile_object = {
     'first_name' => user.profile.first_name,
     'last_name' => user.profile.last_name,
     'avatar' => user.avatar,
-    'lat' => user.profile.lat,
-    'lng' => user.profile.lng,
+    'location' => eval(user.location),
     'about' => user.profile.about,
     'dob' => user.profile.dob.to_date,
-    'roles' => user.roles,
+    'roles' => get_user_role_names(user),
     'gender' => user.profile.gender,
     'mobile' => user.phone_number,
     'email' => user.email,
-    'facebook' => user.profile.facebook,
-    'twitter' => user.profile.twitter,
-    'snapchat' => user.profile.snapchat,
-    'instagram' =>  user.profile.instagram,
-    'linkedin' => user.profile.linkedin,
-    'youtube' => user.profile.youtube,
+    'social' => user.social_media
   }
 
     render json: {
@@ -257,19 +237,14 @@ end
           'first_name' => user.profile.first_name,
           'last_name' => user.profile.last_name,
           'avatar' => user.avatar,
-          'location' => eval(user.profile.location),
+          'location' => eval(user.location),
           'about' => user.profile.about,
           'dob' => user.profile.dob.to_date,
-          'roles' => user.roles,
+          'roles' => get_user_role_names(user),
           'gender' => user.profile.gender,
           'mobile' => user.phone_number,
           'email' => user.email,
-          'facebook' => user.profile.facebook,
-          'twitter' => user.profile.twitter,
-          'snapchat' => user.profile.snapchat,
-          'instagram' =>  user.profile.instagram,
-          'linkedin' => user.profile.linkedin,
-          'youtube' => user.profile.youtube,
+          'social' => user.social_media,
           'friends_count' => user.friends.size,
           'follows_count' => user.followings.size,
           'followers_count' => user.followers.size
@@ -300,18 +275,12 @@ end
   profile['avatar'] = user.avatar
   profile['about'] = user.profile.about
   profile['dob'] = user.profile.dob.to_date
-  profile['roles'] = user.roles
+  profile['roles'] = get_user_role_names(user)
   profile['gender'] = user.profile.gender
   profile['mobile'] = user.phone_number
   profile['email'] = user.email
-  profile['lat'] = user.profile.lat
-  profile['lng'] = user.profile.lng
-  profile['facebook'] = user.profile.facebook
-  profile['twitter'] = user.profile.twitter
-  profile['snapchat'] = user.profile.snapchat
-  profile['instagram'] = user.profile.instagram
-  profile['linkedin'] = user.profile.linkedin
-  profile['youtube'] = user.profile.youtube
+  profile['location'] = eval(user.location)
+  profile['social'] = user.social_media
   profile['friends_count'] = user.friends.size
   profile['follows_count'] = user.followings.size
   profile['followers_count'] = user.followers.size
@@ -576,8 +545,6 @@ def my_attending
        "start_time" => event.start_time,
        "end_time" => event.end_time,
        "location" => eval(event.location),
-       "lat" => event.lat,
-       "lng" => event.lng,
        "event_type" => event.event_type,
        "image" => event.image,
        "price_type" => event.price_type,
@@ -585,7 +552,7 @@ def my_attending
        "additional_media" => event.event.event_attachments,
        "created_at" => event.created_at,
        "updated_at" => event.updated_at,
-       "host" => event.host,
+       "host" => get_full_name(event.user),
        "host_image" => event.user.avatar,
        "interest_count" => event.interested_interest_levels.size,
        "going_count" => event.going_interest_levels.size,
@@ -672,13 +639,7 @@ end
   profile['last_name'] = ''
   profile['avatar'] = user.avatar
   profile['address'] = eval(user.business_profile.address)
-  profile['about'] = user.business_profile.about
-  profile['facebook'] = user.business_profile.facebook
-  profile['twitter'] = user.business_profile.twitter
-  profile['snapchat'] = user.business_profile.snapchat
-  profile['instagram'] = user.business_profile.instagram
-  profile['linkedin'] = user.business_profile.linkedin
-  profile['youtube'] = user.business_profile.youtube
+  profile["social"] = user.social_media
   profile['website'] = user.business_profile.website
   profile['followers_count'] = user.followers.size
   profile['events_count'] = user.events.size
@@ -686,7 +647,7 @@ end
   profile['offers_count'] = user.special_offers.size
   profile['news_feeds'] = user.news_feeds
   profile['ambassador_request_status'] = status
-  profile['is_ambassador'] = if get_request_status(user.id) == 'accepted' then true else false end
+  profile['is_ambassador'] = false
   render json: {
     code: 200,
     success: true,
