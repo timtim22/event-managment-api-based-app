@@ -1,4 +1,4 @@
-class Api::V1::Users::AuthenticationController < Api::V1::ApiMasterController
+class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterController
   before_action :authorize_request, only: [:update_password]
   require 'pubnub'
    # POST /auth/login
@@ -81,26 +81,26 @@ class Api::V1::Users::AuthenticationController < Api::V1::ApiMasterController
        accounts_data = {}
     if !@accounts.blank?
       @accounts.each do |account|
-        if account.web_user
+        if account.role_ids.include?(2)
           obj = {
             "id" => account.id,
             "profile_name" => account.business_profile.profile_name,
+            "contact_name" => account.business_profile.contact_name,
+            "display_name" => account.business_profile.display_name,
             "avatar" => account.avatar,
             "phone_number" => account.phone_number,
-            "web_user" => account.web_user,
-            "app_user" => account.app_user,
             "email" => account.email
           }
          business_accounts.push(obj)
-        else account.app_user
+        else account.role_ids.include?(5)
          app_account =  {
           "id" => account.id,
           "first_name" => account.profile.first_name,
           "last_name" => account.profile.last_name,
+          "dob" => account.profile.dob,
+          "gender" => account.profile.gender,
           "avatar" => account.avatar,
           "phone_number" => account.phone_number,
-          "web_user" => account.web_user,
-          "app_user" => account.app_user,
           "email" => account.email
          }
         end
@@ -125,18 +125,18 @@ class Api::V1::Users::AuthenticationController < Api::V1::ApiMasterController
 
 
 
-  def logout_old
-     header = request.headers['Authorization']
-     token = header.split(' ').last if header
-     session[:logout] = token
-     response = {
-       code: 200,
-       success: true,
-       message: "Logout seccessfully.",
-       data: nil
-     }
-     render json: response.to_json
-  end
+  # def logout_old
+  #    header = request.headers['Authorization']
+  #    token = header.split(' ').last if header
+  #    session[:logout] = token
+  #    response = {
+  #      code: 200,
+  #      success: true,
+  #      message: "Logout seccessfully.",
+  #      data: nil
+  #    }
+  #    render json: response.to_json
+  # end
 
 
 
@@ -203,27 +203,27 @@ class Api::V1::Users::AuthenticationController < Api::V1::ApiMasterController
   #   end
   # end
 
-  api :POST, '/api/v1/auth/verify_code', 'Code verification code'
-  param :email, String, :desc => "Email", :required => true
-  param :verification_code, String, :desc => "Verification code", :required => true
+  # api :POST, '/api/v1/auth/verify_code', 'Code verification code'
+  # param :email, String, :desc => "Email", :required => true
+  # param :verification_code, String, :desc => "Verification code", :required => true
 
-  def verify_code
-    @user = User.find_by(email: params[:email])
-    if @user
-    if @user.verification_code == params[:verification_code]
-      @user.update!(is_email_verified: true)
-        flash.now[:notice] = "Email verified successfully. Thanks for the verification."
-          UserMailer.welcome_email(@user).deliver_now
-      render ('user_mailer/verifciation_redirect_page')
-    else
-      flash.now[:alert_danger] = "Verification code didn't match."
-      render :verifciation_redirect_page
-    end
-  else
-    flash.now[:alert_danger] = "We couldn't find user associated with this email."
-    render ('user_mailer/verifciation_redirect_page')
-  end
-  end
+  # def verify_code
+  #   @user = User.find_by(email: params[:email])
+  #   if @user
+  #   if @user.verification_code == params[:verification_code]
+  #     @user.update!(is_email_verified: true)
+  #       flash.now[:notice] = "Email verified successfully. Thanks for the verification."
+  #         UserMailer.welcome_email(@user).deliver_now
+  #     render ('user_mailer/verifciation_redirect_page')
+  #   else
+  #     flash.now[:alert_danger] = "Verification code didn't match."
+  #     render :verifciation_redirect_page
+  #   end
+  # else
+  #   flash.now[:alert_danger] = "We couldn't find user associated with this email."
+  #   render ('user_mailer/verifciation_redirect_page')
+  # end
+  # end
 
   api :POST, '/api/v1/auth/update-password', 'To update password'
   param :email, String, :desc => "Email", :required => true

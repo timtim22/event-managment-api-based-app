@@ -26,7 +26,7 @@ Rails.application.routes.draw do
           namespace :auth do
             post '/login', to: 'authentication#login'
             post '/logout', to: 'authentication#logout'
-            get '/verify-code', to: 'authentication#verify_code'
+            # get '/verify-code', to: 'authentication#verify_code'
             post '/update-password', to: 'authentication#update_password'
             post '/get-accounts' => 'authentication#get_accounts'
           end
