@@ -1,47 +1,50 @@
-class Api::V1::AuthenticationController < Api::V1::ApiMasterController
+class Api::V1::Users::AuthenticationController < Api::V1::ApiMasterController
   before_action :authorize_request, only: [:update_password]
   require 'pubnub'
    # POST /auth/login
 
     api :POST, '/api/v1/auth/login', 'To login and Generate Auhtorization Token'
-    param :id, :number, :desc => "The ID of the user", :required => true
+    param :uuid, :number, :desc => "The ID of the user", :required => true
     param :device_token, String, :desc => "pass any string ", :required => true
 
 
 
    def login
      if params[:uuid].present? && params[:device_token].present?
-        user = User.find(params[:id])
-        if user
-          token = get_token_from_user(user)
-          if user.app_user
-            @profile_data = get_user_simple_object(user)
-           elsif user.web_user
-            @profile_data = get_business_simple_object(user)
-           end
-          if update = user.update!(device_token: params[:device_token])
-            render json: {
-              code: 200,
-              success: true,
-              message: 'Login is successful.',
-              data: {
-                token: token,
-                user:  @profile_data
+        if user = User.where(uuid: params[:uuid]).present?
+          user = User.where(uuid: params[:uuid]).first
+            token = get_token_from_user(user)
+            @profile_data = {
+              id: user.id,
+              email: user.email,
+              avatar: user.avatar,
+              phone_number: user.phone_number,
+              about: user.about
+            }
+
+            if update = user.update!(device_token: params[:device_token])
+              render json: {
+                code: 200,
+                success: true,
+                message: 'Login is successful.',
+                data: {
+                  token: token,
+                  user:  @profile_data
+                }
               }
-            }
-          else
-            render json: {
-              code: 400,
-              success: false,
-              message: update.errors.full_messages,
-              data: nil
-            }
-          end
+            else
+              render json: {
+                code: 400,
+                success: false,
+                message: update.errors.full_messages,
+                data: nil
+              }
+            end
         else
           render json: {
             code: 400,
             success: false,
-            message: "Wrong user id.",
+            message: "Couldnt find user with the id #{params[:uuid]}.",
             data: nil
           }
         end
@@ -49,7 +52,7 @@ class Api::V1::AuthenticationController < Api::V1::ApiMasterController
       render json: {
         code: 400,
         success: false,
-        message: "id and device_token is required field.",
+        message: "uuid and device_token are required field.",
         data: nil
       }
      end

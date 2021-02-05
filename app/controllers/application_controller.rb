@@ -288,8 +288,7 @@ class ApplicationController < ActionController::Base
       "profile_name" => user.business_profile.profile_name,
       "avatar" => user.avatar,
       "phone_number" => user.phone_number,
-      "email" => user.email,
-      "app_user" => user.app_user
+      "email" => user.email
     }
   end
 
@@ -301,8 +300,7 @@ class ApplicationController < ActionController::Base
       "last_name" => user.profile.last_name,
       "avatar" => user.avatar,
       "phone_number" => user.phone_number,
-      "email" => user.email,
-      "app_user" => user.app_user
+      "email" => user.email
     }
   end
 
