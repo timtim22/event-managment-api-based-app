@@ -398,11 +398,11 @@ class ApplicationController < ActionController::Base
 
     object = {
       "id" => event.id,
-      "name" => event.name,
+      "name" => event.title,
       "start_date" => event.start_date,
       "end_date" => event.end_date,
-      "start_time" => event.start_time,
-      "end_time" => event.end_time,
+      "start_time" => ,
+      "end_time" => ,
       "event_type" => event.event_type,
       "allow_chat" => event.allow_chat,
       "status" => event.status,
@@ -437,11 +437,11 @@ class ApplicationController < ActionController::Base
       title: pass.title,
       host_name: get_full_name(pass.event.user),
       host_image: pass.event.user.avatar,
-      event_name: pass.event.name,
+      event_name: pass.event.title,
       event_image: pass.event.image,
       event_location: eval(pass.event.location),
-      event_start_time: pass.event.start_time,
-      event_end_time: pass.event.end_time,
+      event_start_time: pass.,
+      event_end_time: pass.,
       event_date: pass.event.start_date,
       distributed_by: distributed_by(pass),
       is_added_to_wallet: is_added_to_wallet?(pass.id),
@@ -572,11 +572,11 @@ class ApplicationController < ActionController::Base
           description: pass.description,
           host_name: get_full_name(business),
           host_image: business.avatar,
-          event_name: pass.event.name,
+          event_name: pass.event.title,
           event_image: pass.event.image,
           event_location: eval(pass.event.location),
-          event_start_time: pass.event.start_time,
-          event_end_time: pass.event.end_time,
+          event_start_time: pass.,
+          event_end_time: pass.,
           event_date: pass.event.start_date,
           distributed_by: distributed_by(pass),
           is_added_to_wallet: is_added_to_wallet?(pass.id),
@@ -858,13 +858,13 @@ end
 
 
   def get_role_names(user)
-    Role.all.map {|role| role.name }
+    Role.all.map {|role| role.title }
   end
 
 
 
   def get_user_role_names(user)
-    user.roles.map {|role| role.name }
+    user.roles.map {|role| role.title }
   end
 
 

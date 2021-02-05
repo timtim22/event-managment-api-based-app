@@ -15,20 +15,10 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
       "about" => business.business_profile.about,
       "unread_messages_count" => business.incoming_messages.unread.size,
       "address" => eval(business.business_profile.address),
-      "social" => {
-        "youtube" => business.business_profile.youtube,
-        "instagram" => business.business_profile.instagram,
-        "facebook" => business.business_profile.facebook,
-        "linkedin" => business.business_profile.linkedin,
-        "twitter" => business.business_profile.twitter,
-        "website" => business.business_profile.website
-      },
-      
+      "social" => business.social_media,
       "news_feeds" => business.news_feeds,
       "followers_count" =>  business.followers.size
-
     }
-
 
     render json: {
       code: 200,
@@ -47,11 +37,9 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
     business.child_events.page(params[:page]).per(30).each do |e|
       @events << {
         'id' => e.id,
-        'name' => e.name,
+        'name' => e.title,
         'start_date' => e.start_date,
         'end_date' => e.end_date,
-        'start_time' => get_date_time(e.start_date, e.start_time),
-        'end_time' => get_date_time(e.end_date, e.end_time),
         'image' => e.event.image,
         'location' => eval(e.location),
         'price' => get_price(e.event),
@@ -160,7 +148,7 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
   end
 
 
-
+  
   def show_event
     if !params[:event_id].blank?
         child_event = ChildEvent.find(params[:event_id])
@@ -169,7 +157,6 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
           @ticket = []
           all_pass_added = false
           if request_user
-
             all_pass_added = has_passes?(e.event) && all_passes_added_to_wallet?(request_user, e.event.passes)
           e.event.passes.not_expired.map { |pass|
           if !is_removed_pass?(request_user, pass)
@@ -178,11 +165,11 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
             title: pass.title,
             host_name: get_full_name(e.user),
             host_image: e.user.avatar,
-            event_name: e.name,
+            event_name: e.title,
             event_image: e.image,
             event_location: eval(e.location),
-            event_start_time: e.start_time,
-            event_end_time: e.end_time,
+            event_start_time: ,
+            event_end_time: ,
             event_date: e.start_date,
             is_added_to_wallet: is_added_to_wallet?(pass.id),
             validity: pass.validity.strftime(get_time_format),
@@ -203,11 +190,9 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
           description: pass.description,
           host_name: get_full_name(e.user),
           host_image: e.user.avatar,
-          event_name: e.name,
+          event_name: e.title,
           event_image: e.image,
           event_location: eval(e.location),
-          event_start_time: e.start_time,
-          event_end_time: e.end_time,
           event_date: e.start_date,
           is_added_to_wallet: is_added_to_wallet?(pass.id),
           validity: pass.validity.strftime(get_time_format),
@@ -222,13 +207,11 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
 
           @event = {
             'id' => e.id,
-            'name' => e.name,
+            'name' => e.title,
             'description' => e.description,
             'start_date' => e.start_date,
             'creation_date' => e.created_at,
             'end_date' => e.end_date,
-            'start_time' => e.start_time,
-            'end_time' => e.end_time,
             'price' => get_price(e.event), # check for price if it is zero
             'price_type' => e.event.price_type,
             'event_type' => e.event_type,
@@ -268,19 +251,19 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
            }
          }
 
-    else
-      render json: {
-        code: 400,
-        success: false,
-        message: "event_id is required.",
-        data: nil
-      }
-    end
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: "event_id is required.",
+          data: nil
+        }
+      end
   end
 
 
 
-  private
+ private
 
  def get_date_time(date, time)
     d = date.strftime("%Y-%m-%d")
@@ -288,9 +271,8 @@ class Api::V1::BusinessDashboardController < Api::V1::ApiMasterController
     datetime = d + "T" + t + ".000Z"
  end
 
-   def business
-   business = request_user
-   end
-
+def business
+ business = request_user
+end
 
 end

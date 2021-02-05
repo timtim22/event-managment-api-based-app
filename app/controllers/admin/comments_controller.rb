@@ -10,7 +10,7 @@ class Admin::CommentsController < Admin::AdminMasterController
     @comment.comment = params[:comment]
     if @comment.save
       # Shoot notifications to users who commented on an event
-      #create_activity("posted a comment", @comment, "Comment", admin_event_path(@event),@event.name, 'post')
+      #create_activity("posted a comment", @comment, "Comment", admin_event_path(@event),@event.title, 'post')
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
         subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -28,7 +28,7 @@ class Admin::CommentsController < Admin::AdminMasterController
           if user.all_chat_notifications_setting.is_on == true && user.event_notifications_setting.is_on == true && !blocked_event?(user, @event) && !event_chat_muted?(user,@event)
 
 
-          if @notification = Notification.create(recipient: user, actor: current_user, action: get_full_name(current_user) + " posted a new comment on event '#{@event.name}'.", notifiable: @comment, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'post_comment_web')
+          if @notification = Notification.create(recipient: user, actor: current_user, action: get_full_name(current_user) + " posted a new comment on event '#{@event.title}'.", notifiable: @comment, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'post_comment_web')
 
           @current_push_token = @pubnub.add_channels_to_push(
            push_token: user.device_token,
@@ -39,7 +39,7 @@ class Admin::CommentsController < Admin::AdminMasterController
            payload = {
             "pn_gcm":{
              "notification":{
-               "title": @event.name,
+               "title": @event.title,
                "body": @notification.action
              },
              data: {

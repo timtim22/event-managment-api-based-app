@@ -13,7 +13,7 @@
 
    <p class="so_p"><strong>Per Head: </strong><span class="unbold"><%= @ticket.per_head %></span> </p>
 
-   <p class="so_p"><strong>Event: </strong><%= link_to @ticket.event.name, admin_event_path(@ticket.event) %></p>
+   <p class="so_p"><strong>Event: </strong><%= link_to @ticket.event.title, admin_event_path(@ticket.event) %></p>
 
  </div>
   <%=  render 'shared/footer' %>

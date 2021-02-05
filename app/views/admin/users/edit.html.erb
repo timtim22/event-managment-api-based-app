@@ -25,7 +25,7 @@
             <select class="form-control" id="type" name="type">
             <option value="0" selected>Select Type</option>
             <% @roles.each do |role| %>
-                <option value="<%= role.id %>" <%= @user.roles.first.id == role.id ? 'selected' : '' %> > <%= role.name %>
+                <option value="<%= role.id %>" <%= @user.roles.first.id == role.id ? 'selected' : '' %> > <%= role.title %>
                 </option>
             <% end %>
             </select>

@@ -16,7 +16,7 @@
         <label for="categories">Your events</label><br>
         <select class="form-control events_select" data-placeholder="Select an event..." multiple class="chosen-select" name="event_ids[]" id="event_select">
          <% current_user.events.each do |event| %>
-         <option value="<%= event.id %>" <%= event.id == @ticket.event.id ? ' selected' : '' %>><%= event.name[0...30] %></option>
+         <option value="<%= event.id %>" <%= event.id == @ticket.event.id ? ' selected' : '' %>><%= event.title[0...30] %></option>
          <% end %>
          </select>
         </div>

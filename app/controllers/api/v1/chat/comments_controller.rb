@@ -40,7 +40,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
        }
      
 
-     if @notification = Notification.create(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')
+     if @notification = Notification.create(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.title}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.title}'." end, notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')
 
       @pubnub = Pubnub.new(
         publish_key: ENV['PUBLISH_KEY'],
@@ -68,7 +68,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
       if comment_user != request_user
 
 
-        if notification = Notification.create(recipient: comment_user, actor: request_user, action: get_full_name(request_user) + " commented on event '#{@event.name}'.", notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')
+        if notification = Notification.create(recipient: comment_user, actor: request_user, action: get_full_name(request_user) + " commented on event '#{@event.title}'.", notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'comment')
 
           if !mute_push_notification?(comment_user) && !mute_event_notifications?(comment_user, @event)
 
@@ -83,14 +83,14 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
            payload = {
             "pn_gcm":{
              "notification":{
-               "title": @event.name,
+               "title": @event.title,
                "body": notification.action
              },
              data: {
               "id": notification.id,
               "user_name": User.get_full_name(notification.resource.user),
               "comment": notification.resource.comment,
-              "event_name": notification.resource.child_event.name,
+              "event_name": notification.resource.child_event.title,
               "user_id": notification.resource.user.id,
               "event_id": notification.resource.child_event.id,
               "actor_id": notification.actor_id,
@@ -151,13 +151,13 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
           "is_host" => is_host?(@reply.user,  @event)
          }
        # resource should be parent resource in case of api so that event id should be available in order to show event based comment.
-       action_arg = "commented on event '#{@event.name}'";
-      # create_activity(action_arg, @event, 'Event', admin_event_path(@event), @event.name, 'post')
+       action_arg = "commented on event '#{@event.title}'";
+      # create_activity(action_arg, @event, 'Event', admin_event_path(@event), @event.title, 'post')
        # Notify the event owner as well
      
    
 
-      if @notification = Notification.create!(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.name}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.name}'." end, notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')
+      if @notification = Notification.create!(recipient: @event.user, actor: request_user, action: if request_user == @event.user then "You commented on your event '#{@event.title}'" else get_full_name(request_user) + " posted a new comment on your event '#{@event.title}'." end, notifiable: @event, resource: @comment, url: "/admin/events/#{@event.id}", notification_type: 'web',action_type: 'comment')
 
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
@@ -178,7 +178,7 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
        end ##notification create
         #also notify who commented on the event
         if @comment.user != request_user
-        if notification = Notification.create!(recipient: @comment.user, actor: request_user, action: "#{User.get_full_name(request_user)}  replied to your comemnt on the event '#{@event.name}'.", notifiable: @reply, resource: @reply, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'reply_comment')
+        if notification = Notification.create!(recipient: @comment.user, actor: request_user, action: "#{User.get_full_name(request_user)}  replied to your comemnt on the event '#{@event.title}'.", notifiable: @reply, resource: @reply, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'reply_comment')
 
          if !mute_push_notification?(@comment.user) && !mute_event_notifications?(@comment.user, @event)
 
@@ -191,14 +191,14 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
             payload = {
              "pn_gcm":{
               "notification":{
-                "title": @event.name,
+                "title": @event.title,
                 "body": notification.action
               },
               data: {
 
                 "id": notification.id,
                 "event_id": notification.resource.child_event.id,
-                "event_name": notification.resource.child_event.name,
+                "event_name": notification.resource.child_event.title,
                 "replier_id": notification.resource.user.id,
                 "replier_name": User.get_full_name(notification.resource.user),
                 "comment_id": notification.resource.comment.id,
@@ -354,7 +354,7 @@ end
 
       @response << {
         'id' => e.id,
-        'name' => e.name,
+        'name' => e.title,
         'creator_name' => get_full_name(e.user),
         'creator_id' => e.user.id,
         'creator_image' => e.user.avatar,

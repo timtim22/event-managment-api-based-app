@@ -19,9 +19,9 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
     if check.blank?
     if @interest_level = @event.interest_levels.create!(user_id: user.id, level: 'interested')
         # resource should be parent resource in case of api so that event id should be available in order to show event based interest level.
-      create_activity(request_user, "interested in event '#{@event.name}'", @event, 'ChildEvent', admin_event_path(@event), @event.name, 'post', 'interested')
+      create_activity(request_user, "interested in event '#{@event.title}'", @event, 'ChildEvent', admin_event_path(@event), @event.title, 'post', 'interested')
 
-      if @notification = Notification.create(recipient: @event.user, actor: request_user, action: get_full_name(request_user) + " is interested in your event '#{@event.name}'.", notifiable: @event, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_interest')
+      if @notification = Notification.create(recipient: @event.user, actor: request_user, action: get_full_name(request_user) + " is interested in your event '#{@event.title}'.", notifiable: @event, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_interest')
         @pubnub = Pubnub.new(
           publish_key: ENV['PUBLISH_KEY'],
           subscribe_key: ENV['SUBSCRIBE_KEY']
@@ -43,7 +43,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
      if !request_user.friends.blank?
       request_user.friends.each do |friend|
 
-      if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " is interested in event '#{@event.name}'.", notifiable: @interest_level, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_interest')
+      if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " is interested in event '#{@event.title}'.", notifiable: @interest_level, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_interest')
 
         if !mute_push_notification?(user) && !mute_event_notifications?(user, @event)
 
@@ -57,7 +57,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
          payload = {
           "pn_gcm":{
            "notification":{
-             "title": @event.name,
+             "title": @event.title,
              "body": notification.action
            },
            data: {
@@ -65,7 +65,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
             "id": notification.id,
             "business_name": User.get_full_name(notification.resource.child_event.user),
             "friend_name": User.get_full_name(notification.resource.user),
-            "event_name": notification.resource.child_event.name,
+            "event_name": notification.resource.child_event.title,
             "event_id": notification.resource.child_event.id,
             "event_start_date": notification.resource.child_event.start_date,
             "event_location": notification.resource.child_event.location,
@@ -136,8 +136,8 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
   if check.blank?
   if @interest_level = @event.interest_levels.create!(user_id: user.id, level: 'going')
         # resource should be parent resource in case of api so that event id should be available in order to show event based interest level.
-        create_activity(request_user, "going to attend an event", @event, 'ChildEvent', admin_event_path(@event), @event.name, 'post', 'going')
-    if @notification = Notification.create(recipient: @event.user, actor: request_user, action: get_full_name(request_user) + " is going to attend your event '#{@event.name}'.", notifiable: @event, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'web', action_type: 'create_going')
+        create_activity(request_user, "going to attend an event", @event, 'ChildEvent', admin_event_path(@event), @event.title, 'post', 'going')
+    if @notification = Notification.create(recipient: @event.user, actor: request_user, action: get_full_name(request_user) + " is going to attend your event '#{@event.title}'.", notifiable: @event, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'web', action_type: 'create_going')
 
    
 
@@ -164,7 +164,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
       if !request_user.friends.blank?
         request_user.friends.each do |friend|
      
-        if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " is going to attend event '#{@event.name}'.", notifiable: @interest_level, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_going')
+        if notification = Notification.create(recipient: friend, actor: request_user, action: get_full_name(request_user) + " is going to attend event '#{@event.title}'.", notifiable: @interest_level, resource: @interest_level, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web', action_type: 'create_going')
          
           if !mute_push_notification?(user) && !mute_event_notifications?(user, @event)
 
@@ -177,14 +177,14 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
            payload = {
             "pn_gcm":{
              "notification":{
-               "title": @event.name,
+               "title": @event.title,
                "body": notification.action
              },
              data: {
               "id": notification.id,
               "business_name": User.get_full_name(notification.resource.child_event.user),
               "friend_name": User.get_full_name(notification.resource.user),
-              "event_name": notification.resource.child_event.name,
+              "event_name": notification.resource.child_event.title,
               "event_id": notification.resource.child_event.id,
               "event_start_date": notification.resource.child_event.start_date,
               "event_location": notification.resource.child_event.location,

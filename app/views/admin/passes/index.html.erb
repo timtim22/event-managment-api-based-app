@@ -27,7 +27,7 @@
           <td><%= link_to pass.title[0...30], admin_pass_path(pass) %></td>
           <td><%= pass.description[0...39] %></td>
           <td><%= pass.validity %></td>
-          <td><%= link_to pass.event.name[0...25], admin_event_path(pass.event.id) %></td>
+          <td><%= link_to pass.event.title[0...25], admin_event_path(pass.event.id) %></td>
           <td><%= pass.pass_type %></td>
           <td>
           <a href="<%= admin_pass_path(pass.id) %>" data-toggle="tooltip" title="View pass"><i class="fa fa-eye"></i></a>

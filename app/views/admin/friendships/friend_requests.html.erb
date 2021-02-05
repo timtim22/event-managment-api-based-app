@@ -29,7 +29,7 @@
           <td><%= request.user.email %></td>
           <td><%= time_ago_in_words(request.created_at) %></td>
           <% if !request.user.role.blank? %>
-          <td><%= request.user.role.name %></td>
+          <td><%= request.user.role.title %></td>
           <% else %>
           <td>No role assigned</td>
           <% end %>

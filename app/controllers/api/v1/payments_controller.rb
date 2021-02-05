@@ -43,7 +43,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
               @ticket.quantity = @ticket.quantity - params[:quantity].to_i
               @ticket.save
 
-              # create_activity(request_user, "attedning event", @event, 'Event', admin_event_path(@event), @event.name, 'post', 'going')
+              # create_activity(request_user, "attedning event", @event, 'Event', admin_event_path(@event), @event.title, 'post', 'going')
 
             if @wallet  = request_user.wallets.create!(offer_id: params[:ticket_id], offer_type: 'Ticket')
 
@@ -110,7 +110,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
         @ticket.quantity = @ticket.quantity - params[:quantity].to_i
         @ticket.save
 
-        # create_activity(request_user, "attending event", @event, 'Event', admin_event_path(@event), @event.name, 'post', 'going')
+        # create_activity(request_user, "attending event", @event, 'Event', admin_event_path(@event), @event.title, 'post', 'going')
 
          @wallet = request_user.wallets.where(offer_id: @purchase.id).where(offer_type: 'Ticket').first
 
