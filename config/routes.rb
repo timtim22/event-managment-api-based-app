@@ -29,7 +29,7 @@ Rails.application.routes.draw do
             post '/user-activity-logs' => 'users#activity_logs'
             get '/privacy-policy' => 'users#privacy_policy'
             get '/get-phone-numbers' => 'users#get_phone_numbers'
-            get 'my-activity-logs' => 'users#my_activity_logs'
+            get '/my-activity-logs' => 'users#my_activity_logs'
 
           namespace :auth do
             post '/login', to: 'authentication#login'
@@ -69,7 +69,6 @@ Rails.application.routes.draw do
           post '/show' => 'events#show_event'
           get '/search' => 'search#events_live_search'
           
-
           namespace :passes do
             post '/get-list' => 'passes#index'
             post '/create-impression' => "passes#create_view"
@@ -161,8 +160,7 @@ Rails.application.routes.draw do
 
 
    namespace :follows do
-     get '/followers' => "follows#followers"
-     get '/followings' => "follows#followings"
+     get '/my-followings' => "follows#my_followings"
      post '/follow' => "follows#follow"
      post '/unfollow' => "follows#unfollow"
      post '/remove-follow-request' => 'follows#remove_request'
@@ -198,10 +196,8 @@ Rails.application.routes.draw do
    end
 
 
-
-    post "create-impression" => "api_master#create_impression"
+    post "/create-impression" => "api_master#create_impression"
     post "/search/global-search" => "search#global_search"
-
       #  get '/publish', to: 'chat#publish'
       #  get '/subscribe', to: 'chat#subscribe'
       #  post '/events-by-date', to: 'events#events_list_by_date'
@@ -212,7 +208,8 @@ Rails.application.routes.draw do
      end
    end
 
-#===========================================================================================================================================================================================================================================================================================================
+#==================================================================================================
+#==================================================================================================
 
    get 'send-email' => 'contact_form#send_email'
    namespace :admin do
@@ -235,8 +232,6 @@ Rails.application.routes.draw do
     #  get '/ticketmaster/import-events' => "ticketmaster#select_date"
     #  post '/ticketmaster/import-events' => "ticketmaster#import_events"
    
-    
-     
      post '/eventbrite/get-venue' => "eventbrite#get_venue"
      post '/eventbrite/get-category' => "eventbrite#get_category"
      post '/eventbrite/store-imported' => "eventbrite#store_imported"
@@ -271,16 +266,11 @@ Rails.application.routes.draw do
 
    end
 
-
-
-#===========================================================================================================================================================================================================================================================================================================
-
-
+#=======================================================================================================================================================================================================
    namespace :dashboard do
     namespace :api do
       namespace :v1 do
 
-#######------Users--------#################################################
       namespace :users do
         post '/update-user' => 'users#update_user'
         post '/create-user' => 'users#create_user'
@@ -288,13 +278,6 @@ Rails.application.routes.draw do
         post '/get-user' => 'users#get_user'
         post '/auth/login', to: 'authentication#login'
       end
-#######------end--------####################################################
-
-
-
-#######------Authentication--------#########################################
-
-#######------end--------####################################################
 
         resources :news_feeds
         resources :invoices
@@ -332,15 +315,12 @@ Rails.application.routes.draw do
         post '/vip-pass-users' => 'passes#vip_pass_users'
         post '/search-users' => 'passes#search_users'
         post '/delete-vip-pass' => 'passes#delete_vip_pass'
-
       end
     end
    end
 
    namespace :business do
    end
-
-
 
    namespace :college_society do
    end

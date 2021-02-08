@@ -183,7 +183,7 @@ end
   end
 
   api :POST, '/api/v1/event/followings', 'Get Following List - Token is required'
-  def followings
+  def my_followings
     @followings = []
     request_user.followings.each do |following|
       @followings << {
