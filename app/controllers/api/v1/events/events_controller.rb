@@ -205,25 +205,13 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
 
 
 
-  api :POST, '/api/v1/events-by-date', 'Get events by date'
-  param :date, String, :desc => "Date", :required => true
+ #  api :POST, '/api/v1/events-by-date', 'Get events by date'
+ #  param :date, String, :desc => "Date", :required => true
 
-	def events_list_by_date
-		@events = Event.events_by_date(params[:date])
-		render json: @events
-	end
-
-	def show
-		@event = Event.find(params[:event_id])
-		render json: {
-			status: true,
-			event: @event
-		}
-	end
-
-	def new
-		@event = Event.new
-	end
+	# def events_list_by_date
+	# 	@events = Event.events_by_date(params[:date])
+	# 	render json: @events
+	# end
 
   api :POST, '/api/v1/event/report-event', 'To repot an event'
   param :event_id, :number, :desc => "Event ID", :required => true
@@ -350,16 +338,16 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
 
 
 
- def get_map_event_object(event)
-    event = {
-      "id" => event.id,
-      "price_type" => event.event.price_type,
-      "max_price" => get_max_price(event.event),
-      "has_passes" => has_passes?(event.event),
-      "categories" => event.event.categories,
-      "location" => eval(event.location)
-    }
- end
+  def get_map_event_object(event)
+      event = {
+        "id" => event.id,
+        "price_type" => event.event.price_type,
+        "max_price" => get_max_price(event.event),
+        "has_passes" => has_passes?(event.event),
+        "categories" => event.event.categories,
+        "location" => eval(event.location)
+      }
+  end
 
      def get_simple_child_event_object(child_event)
         if request_user

@@ -1,4 +1,4 @@
-class Api::V1::SettingsController < Api::V1::ApiMasterController
+class Api::V1::Users::Setting::SettingsController < Api::V1::ApiMasterController
   before_action :authorize_request
 
   api :POST, '/api/v1/user/settings/update', 'To update a user profile global settings'

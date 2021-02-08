@@ -1,4 +1,4 @@
-class Api::V1::PassesController < Api::V1::ApiMasterController
+class Api::V1::Passes::PassesController < Api::V1::ApiMasterController
 
   def index
     if !params[:event_id].blank?
@@ -16,12 +16,10 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
               description: pass.description,
               host_name: get_full_name(@event.user),
               host_image:@event.user.avatar,
-              event_name:@event.title,
+              event_title:@event.title,
               event_image:@event.image,
               pass_type: pass.pass_type,
               event_location:eval(@event.location),
-              event_start_time:@,
-              event_end_time:@,
               event_date:@event.start_date,
               is_added_to_wallet: is_added_to_wallet?(pass.id),
               validity: pass.validity.strftime(get_time_format),
@@ -40,12 +38,10 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
             description: pass.description,
             host_name:get_full_name(@event.user),
             host_image:@event.user.avatar,
-            event_name:@event.title,
+            event_title:@event.title,
             event_image:@event.image,
             pass_type: pass.pass_type,
             event_location:eval(@event.location),
-            event_start_time:@,
-            event_end_time:@,
             event_date:@event.start_date,
             is_added_to_wallet: is_added_to_wallet?(pass.id),
             validity: pass.validity.strftime(get_time_format),
@@ -91,11 +87,9 @@ class Api::V1::PassesController < Api::V1::ApiMasterController
         description: pass.description,
         host_name:pass.event.user.business_profile.profile_name,
         host_image:pass.event.user.avatar,
-        event_name:pass.event.title,
+        event_title:pass.event.title,
         event_image:pass.event.image,
         event_location:eval(pass.event.location),
-        event_start_time:pass.,
-        event_end_time: pass.,
         event_date:pass.event.start_date,
         is_added_to_wallet: is_added_to_wallet?(pass.id),
         validity: pass.validity.strftime(get_time_format),

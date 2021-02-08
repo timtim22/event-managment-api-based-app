@@ -1,4 +1,4 @@
-class Api::V1::FriendshipsController < Api::V1::ApiMasterController
+class Api::V1::Friendship::FriendshipsController < Api::V1::ApiMasterController
   before_action :authorize_request
   require "pubnub"
   require 'action_view'

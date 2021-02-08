@@ -12,197 +12,213 @@ Rails.application.routes.draw do
  namespace :api do
      namespace :v1 do
  
- #######------Users--------####################################################
       namespace :users do
           resources :users, param: :email
-          
-          post '/update-profile' => 'users#update_profile'
-          post '/create-user' => 'users#create_user'
-          get '/get-profile' => 'users#get_profile'
-          post '/get-other-profile' => "users#get_others_profile"
-          get '/get-business-profile' => "users#get_business_profile"
-          post '/get-other-business-profile' => "users#get_others_business_profile"
-          post '/user-activity-logs' => 'users#activity_logs'
-          post '/user-attending' => 'users#attending'
-          post '/user-gives-away' => 'users#gives_away'
-          get 'my-activity-logs' => 'users#my_activity_logs'
-          get 'my-attending' => 'users#my_attending'
-          get '/my-gives-away' => 'users#my_gives_away'
-          get '/get-activity-logs' => "users#get_activity_logs"
-          post '/update-current-location' => "users#update_current_location"
-          get '/get-phone-numbers' => 'users#get_phone_numbers'
-          post '/update-profile-picture' => 'users#update_profile_pictures'
-          post "/delete-account" => "users#delete_account"
-          get '/wallet/get-offers' => 'wallets#get_offers'
-          get '/wallet/get-passes' => 'wallets#get_passes'
-          get '/wallet/get-competitions' => 'wallets#get_competitions'
-          get 'wallet/get-tickets' => 'wallets#get_tickets'
-          post 'wallet/remove-offer' => 'wallets#remove_offer'
-          post '/add-to-wallet' => 'wallets#add_to_wallet'
-          post '/view-offer' => "wallets#view_offer"
-        
+            post '/update-profile' => 'users#update_profile'
+            get '/get-profile' => 'users#get_profile'
+            post '/get-profile' => "users#get_others_profile"
+            post '/get-latlng' => 'gmap#getLatLong'
+            post "/delete-account" => "users#delete_account"
+            post '/update-device-token' => "users#update_device_token"
+            get '/get-activity-logs' => "users#get_activity_logs"
+            post '/update-current-location' => "users#update_current_location"       
+            post '/update-profile-picture' => 'users#update_profile_pictures'
+            post '/user-activity-logs' => 'users#activity_logs'
+            get '/privacy-policy' => 'users#privacy_policy'
+            get '/get-phone-numbers' => 'users#get_phone_numbers'
+            get 'my-activity-logs' => 'users#my_activity_logs'
+            get '/get-profile' => "users#get_business_profile"
+            post '/get-profile' => "users#get_others_business_profile"
+
+          namespace :settings do
+            post '/update-setting' => 'settings#update_global_setting'
+            post '/update-user-setting' => 'settings#update_user_setting'
+            post "/change-location-status" => "settings#change_location_status"
+          end
+
           namespace :auth do
             post '/login', to: 'authentication#login'
             post '/logout', to: 'authentication#logout'
-            # get '/verify-code', to: 'authentication#verify_code'
             post '/update-password', to: 'authentication#update_password'
             post '/get-accounts' => 'authentication#get_accounts'
-          end
-
-          namespace :friends do
-            post '/send-request' => "friendships#send_request"
-            # post '/check-request' => "friendships#check_request"
-            get '/friend-requests' => "friendships#friend_requests"
-            post '/accept-request' => "friendships#accept_request"
-            post '/decline-request' => "friendships#remove_request"
-            post '/remove-friend' => "friendships#remove_friend"
-            get '/my-friends' => "friendships#my_friends"
           end
 
       end #users
 
 
-      namespace :follows do
-       get '/followers' => "follows#followers"
-       get '/followings' => "follows#followings"
-       post '/follow' => "follows#follow"
-       post '/unfollow' => "follows#unfollow"
-       post '/remove-follow-request' => 'follows#remove_request'
-       post '/remove-follower' => 'follows#remove_follower'
-       post '/follow/accept-request' => "follows#accept_request"
-       get '/follow/requests' => "follows#requests_list"
+      namespace :business do
+        post '/get-offer-stats' => 'business_dashboard#get_offer_stats'
+        post '/get-business-newsfeeds' => 'business_dashboard#get_business_news_feeds'
+        post '/get-competition-stats' => 'business_dashboard#get_competition_stats' 
+        post "/get-event-stats" => "business_dashboard#get_event_stats"
+        post '/events/show' => 'business_dashboard#show_event'
+        get '/get-dashbord' => 'business_dashboard#home'
+        get '/get-events' => 'business_dashboard#events'
+        get '/get-special-offers' => 'business_dashboard#special_offers'
+        get '/get-competitions' => 'business_dashboard#competitions'
       end
-#######------Events--------####################################################
+
+
       namespace :events do
-        resource :passes
+          post "/events" => "events#index"
+          post  "/get-map-events" =>  "events#get_map_events"
+          post '/report-event' =>  "events#report_event"
+          post '/create-event' =>  "events#create_view"
+          post '/get-business-events' =>  "events#get_business_events"
+          get '/map-event-list' => 'events#map_event_list'
+          get '/categories' => "categories#index"
+          post '/show' => 'events#show_event'
+          
+          
+
+          namespace :passes do
+            post '/get-list' => 'passes#index'
+            post '/create-impression' => "passes#create_view"
+            post "/single" => "passes#pass_single"
+            post "/redemm-pass" => "passes#redeem_it"
+          end
+
+          namespace :tickets do
+            post '/redeem' => "tickets#redeem_it"
+            post '/get-tickets' => 'tickets#get_tickets'
+          end
+      
       end #event
 
-#######------Speicial Offers--------####################################################
+
+      namespace :bookings do
+        post '/create-interest' => "interest_levels#create_interest"
+        post '/create-going' => "interest_levels#create_going"
+        post '/purchase-ticket' => 'payments#purchase_ticket'
+        post '/create-payment-intent' => 'payments#create_payment_intent'
+        post '/confirm-payment' => 'payments#confirm_payment'
+        post '/place-refund-request' => 'payments#place_refund_request'
+      end
+
+
       namespace :specia_offers do
+        post '/create-impression' => "special_offers#create_impression"
+        post '/redeem' => "special_offers#redeem_it"
+        post '/show' => "special_offers#show"
+        post "/single" => "special_offers#special_offer_single"
       end #special_offers
 
-#######------Competitions--------####################################################
+
      namespace :competitions do
-      end #competition
-      
-    
-       #resources :events
-       resources :special_offers
-       post "/events" => "events#index"
-       get '/categories' => "categories#index"
-    
-       post '/auth/send-verification-email', to: 'authentication#send_verification_email'
-   
-       post '/chat/send-message', to: 'chats#send_message'
-       post '/chat/chat-history', to: 'chats#chat_history'
-       get '/chat/chat-people', to: 'chats#chat_people'
-       get '/publish', to: 'chat#publish'
-       get '/subscribe', to: 'chat#subscribe'
-       post '/events-by-date', to: 'events#events_list_by_date'
-   
-       post '/event/post-comment' => "comments#create"
-       get '/event/get-commented-events' => "comments#get_commented_events"
-       post '/event/comments' => "comments#comments"
+        get '/get-list' => "competitions#index"
+        post '/enter' => "competitions#register"
+        get '/get-winner' => 'competitions#get_winner_and_notify'
+        post '/create-impression' => "competitions#create_view"
+        post "/single" => "competitions#competition_single"
+     end 
 
-       post '/event/create-interest' => "interest_levels#create_interest"
-       post '/event/create-going' => "interest_levels#create_going"
-       post "create-impression" => "api_master#create_impression"
-       post '/event/redeem-pass' => "passes#redeem_it"
-       post '/events/create-impression' => 'events#create_impression'
-       post '/redeem-special-offer' => "special_offers#redeem_it"
-       post '/event/redeem-ticket' => "tickets#redeem_it"
-       get '/competitions' => "competitions#index"
-       post '/competitions/register' => "competitions#register"
-       
-       get '/get-wallet' => "wallets#get_wallet"
-       
-       post '/ask-location' => "notifications#ask_location"
-       post '/get-location' => "notifications#get_location"
-       post '/send-location' => "notifications#send_location"
-       get '/notifications/get-notifications' => "notifications#index"
-       get '/notifications/mark-as-read' => "notifications#mark_as_read"
-       post '/notifications/delete-notification' => "notifications#delete_notification"
-       post '/chats/mark-as-read' => "chats#mark_as_read"
-       post '/comments/mark-as-read' => "comments#mark_as_read"
-       get '/send-events-reminder' => "notifications#send_events_reminder"
-       post '/update-device-token' => "users#update_device_token"
-       post '/chat/clear-conversation' => 'chats#clear_conversation'
-       post '/chat/clear-chat' => 'chats#clear_chat'
-       post '/comments/delete-event-comments' => 'comments#delete_event_comments'
-       post '/ambassadors/send-request' => "ambassadors#send_request"
-       get '/ambassadors/businesses-list' => "ambassadors#businesses_list"
-       get '/ambassadors/my-businesses' => "ambassadors#my_businesses"
-       
-       post '/forward-offer' => "forwarding#forward_offer"
-       post '/share-offer' => "forwarding#share_offer"
-       
-       post '/events/report-event' =>  "events#report_event"
-       post '/settings/update' => 'settings#update_global_setting'
-       post '/settings/update-user-setting' => 'settings#update_user_setting'
-       post '/events/purchase-ticket' => 'payments#purchase_ticket'
-       post '/payments/get-secret' => 'payments#get_secret'
-       post '/payments/confirm-payment' => 'payments#confirm_payment'
-       post '/payments/place-refund-request' => 'payments#place_refund_request'
-       post '/analytics/get-dashboard' => 'analytics#get_dashboard'
-       post '/analytics/get-offer-stats' => 'analytics#get_offer_stats'
-       post '/analytics/get-competition-stats' => 'analytics#get_competition_stats'
-       post '/events/share' => 'forwarding#share_event'
-       post '/events/forward' => 'forwarding#forward_event'
-       get '/competitions/get-winner' => 'competitions#get_winner_and_notify'
-       get '/friendships/suggest-friends' => 'friendships#suggest_friends'
-       get '/follows/suggest-businesses' => 'follows#suggest_businesses'
-       post '/special_offers/create-view' => "special_offers#create_view"
-       post '/passes/create-view' => "passes#create_view"
-       post '/competitions/create-view' => "competitions#create_view"
-       get '/get-users-having-common-fields' => 'users#get_users_having_common_fields'
-       get '/privacy-policy' => 'users#privacy_policy'
-       post '/friendships/get-friends-details' => 'friendships#get_friends_details'
-      
-       get '/get-business-dashbord' => 'business_dashboard#home'
-       get '/get-business-events' => 'business_dashboard#events'
-       get '/get-business-special-offers' => 'business_dashboard#special_offers'
-       get '/get-business-competitions' => 'business_dashboard#competitions'
-       
-       post '/events/show' => 'events#show_event'
-       post '/business-events/show' => 'business_dashboard#show_event'
-       get '/events/map-event-list' => 'events#map_event_list'
-       get '/events/search' => 'search#events_live_search'
-       post '/events/passes' => 'passes#index'
-       
-       
-       
-       
-       
-       post 'get-business-events' => 'events#get_business_events'
-       post 'get-business-offers' => 'special_offers#get_business_special_offers'
-       post 'get-business-competitions' => 'competitions#get_business_competitions'
-       post 'get-business-news-feeds' => 'business_dashboard#get_business_news_feeds'
-       post 'event/get-tickets' => 'tickets#get_tickets'
-       post 'payments/get-stripe-params' => 'payments#get_stripe_params'
-       
-       
-       
-       
-       
-       
-       
-       post 'special_offers/show' => "special_offers#show"
-       post "special-offers/special-offer-single" => "special_offers#special_offer_single"
-       post "passes/pass-single" => "passes#pass_single"
-       post "competitions/competition-single" => "competitions#competition_single"
-       post "notifications/read" => "notifications#read_notification"
-       post  "events/get-map-events" =>  "events#get_map_events"
-       post "settings/change-location-status" => "settings#change_location_status"
-       
-       post "/search/global-search" => "search#global_search"
-       post "/analytics/get-event-stats" => "analytics#get_event_stats"
-       post "/analytics/get-offer-stats" => "analytics#get_offer_stats"
-       post "/analytics/get-competition-stats" => "analytics#get_competition_stats"
+    namespace :chats do
+      post '/post-comment' => "comments#create"
+      get '/get-commented-events' => "comments#get_commented_events"
+      post '/send-message', to: 'chats#send_message'
+      post '/history', to: 'chats#chat_history'
+      get '/chat-people', to: 'chats#chat_people'
+      post '/mark-as-read' => "chats#mark_as_read"
+      post '/comments/mark-as-read' => "comments#mark_as_read"
+      post '/clear-conversation' => 'chats#clear_conversation'
+      post '/clear-chat' => 'chats#clear_chat'
+      post '/delete-event-comments' => 'comments#delete_event_comments'
+
+      post '/comments' => "comments#comments"
+    end
 
 
+   namespace :notifications do
+     post "/read" => "notifications#read_notification"
+     get '/send-events-reminder' => "notifications#send_events_reminder"
+     get '/get-list' => "notifications#index"
+     get '/mark-as-read' => "notifications#mark_as_read"
+     post '/delete' => "notifications#delete_notification"
+   end
+
+   namespace :friendship do
+      post '/send-request' => "friendships#send_request"
+      # post '/check-request' => "friendships#check_request"
+      get '/friend-requests' => "friendships#friend_requests"
+      post '/accept-request' => "friendships#accept_request"
+      post '/decline-request' => "friendships#remove_request"
+      post '/remove-friend' => "friendships#remove_friend"
+      get '/my-friends' => "friendships#my_friends"
+      get '/suggest-friends' => 'friendships#suggest_friends'
+      post '/get-friends-details' => 'friendships#get_friends_details'
+  end
+
+
+   namespace :ambassadors do
+     get '/get-list' => 'ambassadors#ambassadors_requets'
+     get '/approve' => 'ambassadors#approve'
+     get '/remove' => 'ambassadors#remove'
+     get '/view' => 'ambassadors#view_ambassador'
+     post '/attending' => 'users#attending'
+     post '/gives-away' => 'users#gives_away'
+     get '/my-gives-away' => 'users#my_gives_away'
+     get '/my-attending' => 'users#my_attending'
+     post '/send-request' => "ambassadors#send_request"
+     get '/businesses-list' => "ambassadors#businesses_list"
+     get '/my-businesses' => "ambassadors#my_businesses"
+   end
+
+
+   namespace :follows do
+     get '/followers' => "follows#followers"
+     get '/followings' => "follows#followings"
+     post '/follow' => "follows#follow"
+     post '/unfollow' => "follows#unfollow"
+     post '/remove-follow-request' => 'follows#remove_request'
+     post '/remove-follower' => 'follows#remove_follower'
+     post '/follow/accept-request' => "follows#accept_request"
+     get '/follow/requests' => "follows#requests_list"
+     get '/follow-requests' => "follows#requests_list"
+     get '/accept-request' => "follows#accept_request"
+     get '/my-followers' => "follows#followers"
+     get '/suggest-businesses' => 'follows#suggest_businesses'
+   end
+
+
+   namespace :share do
+     post '/ask-location' => "notifications#ask_location"
+     post '/get-location' => "notifications#get_location"
+     post '/send-location' => "notifications#send_location"
+     post '/forward-offer' => "forwarding#forward_offer"
+     post '/share-offer' => "forwarding#share_offer"
+     post '/events/share' => 'forwarding#share_event'
+     post '/events/forward' => 'forwarding#forward_event'
+   end
+
+
+   namespace :wallets do
+     get '/get-offers' => 'wallets#get_offers'
+     get '/get-passes' => 'wallets#get_passes'
+     get '/get-competitions' => 'wallets#get_competitions'
+     get '/get-tickets' => 'wallets#get_tickets'
+     post '/remove-offer' => 'wallets#remove_offer'
+     post '/add-to-wallet' => 'wallets#add_to_wallet'
+     post '/view-offer' => "wallets#view_offer"
+   end
+
+
+
+    post "create-impression" => "api_master#create_impression"
+    post "/search/global-search" => "search#global_search"
+    get '/search' => 'search#events_live_search'
+
+      #  get '/publish', to: 'chat#publish'
+      #  get '/subscribe', to: 'chat#subscribe'
+      #  post '/events-by-date', to: 'events#events_list_by_date'
+      #  post '/events/create-impression' => 'events#create_impression'
+      #  get '/get-wallet' => "wallets#get_wallet"
+      #  get '/get-users-having-common-fields' => 'users#get_users_having_common_fields'
       # get '/*a', to: 'application#not_found'
      end
    end
+
+#===========================================================================================================================================================================================================================================================================================================
+
    get 'send-email' => 'contact_form#send_email'
    namespace :admin do
      get 'dashboard' => 'dashboard#index'
@@ -216,33 +232,21 @@ Rails.application.routes.draw do
      post '/user/update-info' => 'users#update_info'
      get '/user/search-friends' => 'search#search_friends'
      get '/user/add-friends-page' => 'search#add_friends_page'
-     get '/add-friend' => "friendships#send_request"
-     get '/check-request' => "friendships#check_request"
-     get '/friend-requests' => "friendships#friend_requests"
-     get '/accept-request' => "friendships#accept_request"
-     get '/my-friends' => "friendships#my_friends"
-     get '/eventbrite-authorize' => "eventbrite#authorize_page"
-     get "/import/events" => "eventbrite#import_events"
-     get '/oauth/authorize' => "eventbrite#authorize_user"
+    
+    #  get '/eventbrite-authorize' => "eventbrite#authorize_page"
+    #  get "/import/events" => "eventbrite#import_events"
+    #  get '/oauth/authorize' => "eventbrite#authorize_user"
 
-     get '/ticketmaster/import-events' => "ticketmaster#select_date"
-     post '/ticketmaster/import-events' => "ticketmaster#import_events"
-     get '/get-notificatons' => "notifications#index"
-     get '/get-notifications-count' => "notifications#get_notifications_count"
-     get '/mark-as-read' => "notifications#mark_as_read"
-     get '/clear-notifications' => "notifications#clear_notifications"
-     post '/get-latlng' => 'gmap#getLatLong'
-     get '/follow-requests' => "follows#requests_list"
-     get '/accept-follow-request' => "follows#accept_request"
-     get '/my-followers' => "follows#followers"
+    #  get '/ticketmaster/import-events' => "ticketmaster#select_date"
+    #  post '/ticketmaster/import-events' => "ticketmaster#import_events"
+   
+    
+     
      post '/eventbrite/get-venue' => "eventbrite#get_venue"
      post '/eventbrite/get-category' => "eventbrite#get_category"
      post '/eventbrite/store-imported' => "eventbrite#store_imported"
      get '/view-activity' => "users#view_activity"
-     get '/ambassadors' => 'ambassadors#ambassadors_requets'
-     get '/ambassadors/approve' => 'ambassadors#approve'
-     get '/ambassadors/remove' => 'ambassadors#remove'
-     get '/ambassadors/view' => 'ambassadors#view_ambassador'
+    
      get '/add-payment-account' => 'payments#add_payment_account'
      get '/stripe/oauth' => 'payments#stripe_oauth_redirect'
      get '/payments/received-payments' => "payments#received_payments"
@@ -271,6 +275,11 @@ Rails.application.routes.draw do
      resources :tickets
 
    end
+
+
+
+#===========================================================================================================================================================================================================================================================================================================
+
 
    namespace :dashboard do
     namespace :api do

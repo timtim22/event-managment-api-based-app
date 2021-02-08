@@ -1,4 +1,4 @@
-class Api::V1::WalletsController < Api::V1::ApiMasterController
+class Api::V1::Users::WalletsController < Api::V1::ApiMasterController
   before_action :authorize_request
   before_action
   require 'json'
