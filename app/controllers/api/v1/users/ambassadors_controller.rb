@@ -1,4 +1,4 @@
-class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
+class Api::V1::Users::AmbassadorsController < Api::V1::ApiMasterController
   before_action :authorize_request
 
   require "pubnub"
@@ -90,8 +90,8 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           event_name: pass.event.title,
           event_image: pass.event.image,
           event_location: eval(pass.event.location),
-          event_start_time: pass.,
-          event_end_time: pass.,
+          event_start_time: pass.event.start_time,
+          event_end_time: pass.event.end_time,
           event_date: pass.event.start_date,
           distributed_by: distributed_by(pass),
           is_added_to_wallet: is_added_to_wallet?(pass.id),
@@ -186,8 +186,6 @@ class Api::V1::AmbassadorsController < Api::V1::ApiMasterController
           event_name: pass.event.title,
           event_image: pass.event.image,
           event_location: eval(pass.event.location),
-          event_start_time: pass.,
-          event_end_time: pass.,
           event_date: pass.event.start_date,
           distributed_by: distributed_by(pass),
           is_added_to_wallet: is_added_to_wallet?(pass.id),

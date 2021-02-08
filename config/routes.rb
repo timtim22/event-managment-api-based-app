@@ -18,39 +18,40 @@ Rails.application.routes.draw do
             get '/get-profile' => 'users#get_profile'
             post '/get-profile' => "users#get_others_profile"
             post '/get-latlng' => 'gmap#getLatLong'
-            post "/change-location-status" => "settings#change_location_status"
             post "/delete-account" => "users#delete_account"
             post '/update-device-token' => "users#update_device_token"
             get '/get-activity-logs' => "users#get_activity_logs"
             post '/update-current-location' => "users#update_current_location"       
-            post '/update-setting' => 'settings#update_global_setting'
-            post '/update-user-setting' => 'settings#update_user_setting'
             post '/update-profile-picture' => 'users#update_profile_pictures'
             post '/user-activity-logs' => 'users#activity_logs'
             get '/privacy-policy' => 'users#privacy_policy'
             get '/get-phone-numbers' => 'users#get_phone_numbers'
-            get '/my-activity-logs' => 'users#my_activity_logs'
+            get 'my-activity-logs' => 'users#my_activity_logs'
+            get '/get-profile' => "users#get_business_profile"
+            post '/get-profile' => "users#get_others_business_profile"
+
+          namespace :settings do
+            post '/update' => 'settings#update_global_setting'
+            post '/update-user-setting' => 'settings#update_user_setting'
+            post "/change-location-status" => "settings#change_location_status"
+          end
 
           namespace :auth do
             post '/login', to: 'authentication#login'
             post '/logout', to: 'authentication#logout'
             post '/update-password', to: 'authentication#update_password'
             post '/get-accounts' => 'authentication#get_accounts'
-            # post 'send-verification-email', to: 'authentication#send_verification_email'
-            # get '/verify-code', to: 'authentication#verify_code'
           end
 
       end #users
 
 
-      namespace :businesses do
-        post '/get-dashboard' => 'analytics#get_dashboard'
-        post '/get-offer-stats' => 'analytics#get_offer_stats'
-        post '/get-competition-stats' => 'analytics#get_competition_stats' 
-        post "/get-event-stats" => "analytics#get_event_stats"
+      namespace :business do
+        post '/get-offer-stats' => 'business_dashboard#get_offer_stats'
+        post '/get-business-newsfeeds' => 'business_dashboard#get_business_news_feeds'
+        post '/get-competition-stats' => 'business_dashboard#get_competition_stats' 
+        post "/get-event-stats" => "business_dashboard#get_event_stats"
         post '/events/show' => 'business_dashboard#show_event'
-        get '/get-profile' => "users#get_business_profile"
-        post '/get-profile' => "users#get_others_business_profile"
         get '/get-dashbord' => 'business_dashboard#home'
         get '/get-events' => 'business_dashboard#events'
         get '/get-special-offers' => 'business_dashboard#special_offers'
@@ -60,23 +61,24 @@ Rails.application.routes.draw do
 
       namespace :events do
           post "/events" => "events#index"
-          post '/get-tickets' => 'tickets#get_tickets'
-          post '/comments' => "comments#comments"
           post  "/get-map-events" =>  "events#get_map_events"
           post '/report-event' =>  "events#report_event"
+          post '/create-event' =>  "events#create_view"
+          post '/get-business-events' =>  "events#get_business_events"
           get '/map-event-list' => 'events#map_event_list'
           get '/categories' => "categories#index"
           post '/show' => 'events#show_event'
-          get '/search' => 'search#events_live_search'
           
           namespace :passes do
             post '/get-list' => 'passes#index'
             post '/create-impression' => "passes#create_view"
             post "/single" => "passes#pass_single"
+            post "/redemm-pass" => "passes#redeem_it"
           end
 
           namespace :tickets do
             post '/redeem' => "tickets#redeem_it"
+            post '/get-tickets' => 'tickets#get_tickets'
           end
       
       end #event
@@ -119,6 +121,8 @@ Rails.application.routes.draw do
       post '/clear-conversation' => 'chats#clear_conversation'
       post '/clear-chat' => 'chats#clear_chat'
       post '/delete-event-comments' => 'comments#delete_event_comments'
+
+      post '/comments' => "comments#comments"
     end
 
 
@@ -129,7 +133,6 @@ Rails.application.routes.draw do
      get '/mark-as-read' => "notifications#mark_as_read"
      post '/delete' => "notifications#delete_notification"
    end
-
 
    namespace :friendship do
       post '/send-request' => "friendships#send_request"
@@ -198,6 +201,8 @@ Rails.application.routes.draw do
 
     post "/create-impression" => "api_master#create_impression"
     post "/search/global-search" => "search#global_search"
+    get '/search' => 'search#events_live_search'
+
       #  get '/publish', to: 'chat#publish'
       #  get '/subscribe', to: 'chat#subscribe'
       #  post '/events-by-date', to: 'events#events_list_by_date'

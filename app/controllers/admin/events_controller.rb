@@ -47,8 +47,8 @@ class Admin::EventsController < Admin::AdminMasterController
         @event.end_date = params[:end_date].to_date
         @event.event_type = params[:event_type]
         @event.price_type = params[:price_type]
-        @ = params[:start_time]
-        @ = params[:end_time]
+        @event.start_time = params[:start_time]
+        @event.end_time = params[:end_time]
         @event.host = params[:host]
         @event.category_ids = params[:category_ids]
         @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
@@ -225,8 +225,8 @@ class Admin::EventsController < Admin::AdminMasterController
       @event.end_date = date.to_date
       @event.event_type = params[:event_type]
       @event.price_type = params[:price_type]
-      @ = params[:start_time]
-      @ = params[:end_time]
+      @event.start_time = params[:start_time]
+      @event.end_time = params[:end_time]
       @event.category_ids = params[:category_ids]
       @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
       @event.description = params[:description]
@@ -432,8 +432,8 @@ class Admin::EventsController < Admin::AdminMasterController
     @event.end_price = end_price
     @event.price_type = params[:price_type]
     @event.event_type = params[:event_type]
-    @ = params[:start_time]
-    @ = params[:end_time]
+    @event.start_time = params[:start_time]
+    @event.end_time = params[:end_time]
     @event.host = params[:host]
     @event.category_ids = params[:category_ids]
     @event.description = params[:description]

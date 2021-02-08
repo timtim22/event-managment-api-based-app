@@ -1,4 +1,4 @@
-class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
+class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterController
   before_action :authorize_request, except: ['index','show']
 
   api :GET, '/api/v1/special_offers', 'Get special offers'
