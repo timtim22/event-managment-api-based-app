@@ -20,6 +20,9 @@ pickle-email-*.html
 !/log/.keep
 !/tmp/.keep
 
+/db/development.sqlite3
+/db/test.sqlite3
+
 # TODO Comment out this rule if you are OK with secrets being uploaded to the repo
 config/initializers/secret_token.rb
 config/master.key
@@ -33,6 +36,9 @@ config/master.key
 # TODO Comment out these rules if environment variables can be committed
 .env
 .env.*
+
+erd.pdf
+pubnub.log
 
 ## Environment normalization:
 /.bundle
