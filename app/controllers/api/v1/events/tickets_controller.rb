@@ -69,7 +69,7 @@ class Api::V1::TicketsController < Api::V1::ApiMasterController
            ticket_type: ticket.ticket_type,
            quantity: ticket.quantity,
            per_head: ticket.per_head,
-           event_name: ticket.event.title,
+           event_title: ticket.event.title,
            event_location: eval(ticket.event.location),
            event_start_time: ticket.,
            event_date: ticket.event.start_date,

@@ -224,7 +224,7 @@ class Api::V1::SpecialOffersController < Api::V1::ApiMasterController
   api :POST, '/api/v1/special_offers/create-view', 'Create a special offer view'
   param :offer_id, :number, :desc => "Offer ID", :required => true
 
-  def create_view
+  def create_impression
     if !params[:offer_id].blank?
       offer = SpecialOffer.find(params[:offer_id])
       if view = offer.views.create!(user_id: request_user.id, business_id: offer.user.id)

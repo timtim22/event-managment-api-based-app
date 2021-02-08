@@ -350,16 +350,16 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
 
 
 
- def get_map_event_object(event)
-    event = {
-      "id" => event.id,
-      "price_type" => event.event.price_type,
-      "max_price" => get_max_price(event.event),
-      "has_passes" => has_passes?(event.event),
-      "categories" => event.event.categories,
-      "location" => eval(event.location)
-    }
- end
+  def get_map_event_object(event)
+      event = {
+        "id" => event.id,
+        "price_type" => event.event.price_type,
+        "max_price" => get_max_price(event.event),
+        "has_passes" => has_passes?(event.event),
+        "categories" => event.event.categories,
+        "location" => eval(event.location)
+      }
+  end
 
      def get_simple_child_event_object(child_event)
         if request_user

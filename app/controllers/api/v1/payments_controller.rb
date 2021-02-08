@@ -352,7 +352,7 @@ class Api::V1::PaymentsController < Api::V1::ApiMasterController
   param :ticket_id, :number, :desc => "Ticket ID", :required => true
   param :quantity, :number, :desc => "Quantity of the tickets", :required => true
 
-  def get_secret
+  def create_payment_intent
       if !params[:total_price].blank? && !params[:ticket_id].blank? && !params[:quantity].blank?
          application_fee_percent = 5; #later to change it to dynamic value
      @ticket = Ticket.find(params[:ticket_id])
