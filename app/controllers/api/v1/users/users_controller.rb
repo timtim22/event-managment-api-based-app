@@ -1,4 +1,4 @@
-class Api::V1::UsersController < Api::V1::ApiMasterController
+class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   before_action :authorize_request, except: :create
   before_action :checkout_logout, except: :create
   require 'action_view'
@@ -51,16 +51,18 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     render json: @user, status: :ok
   end
 
-  api :POST, '/api/v1/users', 'To SignUp/Register'
-  param :first_name, String, :desc => "First Name"
-  param :last_name, String, :desc => "last Name"
-  param :email, String, :desc => "Email"
-  param :phone_number, String, :desc => "Phone Number - Required for Mobile App users", :required => true
-  #param :password, String, :desc => "Password", :required => true
-  #param :password_confirmation, String, :desc => "Password Confirmation", :required => true
-
+  api :POST, '/api/v1/users/create-user', 'To SignUp/Register'
+  param :first_name, String, :desc => "First Name", :required => true
+  param :last_name, String, :desc => "last Name", :required => true
+  param :dob, String, :desc => "DOB", :required => true
+  param :gender, String, :desc => "Gender", :required => true
+  param :role_id, Integer, :desc => "role_id", :required => true
+  param :phone_number, String, :desc => "phone_number"
+  param :email, String, :desc => "email"
+  param :location, String, :desc => "location"
+  param :about, String, :desc => "about"
   # POST /users
-  def create
+  def create_user
     required_fields = ['first_name', 'last_name','dob', 'gender', 'role_id']
     errors = []
     required_fields.each do |field|
@@ -80,9 +82,9 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     @user.phone_number = params[:phone_number]
     @user.email = params[:email]
     @user.location = params[:location]
-    @user.verification_code = generate_code
+    @user.about = params[:about]
+    @user.password = params[:password]
     @user.uuid = generate_uuid
-    @user.stripe_state = generate_code
     if @user.save
       @profile = Profile.new
       @profile.dob = params[:dob]
@@ -96,6 +98,9 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
       @profile_data["first_name"] = @user.profile.first_name
       @profile_data["last_name"] = @user.profile.last_name
       @profile_data["avatar"] = @user.avatar
+
+      @user.social_media.new
+      @user.save
        #Also save default setting
        setting_name_values = ['all_chat_notifications','event_notifications','special_offers_notifications','passes_notifications','competitions_notifications','location']
 
@@ -179,30 +184,52 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     end
   end
 
-
+  api :POST, '/api/v1/users/update-user', 'To SignUp/Register'
+  param :id, Integer, :desc => "The Id of the user", :required => true
+  param :first_name, String, :desc => "First Name", :required => true
+  param :last_name, String, :desc => "last Name", :required => true
+  param :dob, String, :desc => "DOB", :required => true
+  param :gender, String, :desc => "Gender", :required => true
+  param :role_id, Integer, :desc => "role_id", :required => true
+  param :phone_number, String, :desc => "phone_number"
+  param :email, String, :desc => "email"
+  param :location, String, :desc => "location"
+  param :about, String, :desc => "about"
 
   def update_profile
-    user = request_user
+    user = User.find(params[:id])
     profile = user.profile
+    social = user.social_media
     user.profile.first_name = params[:first_name]
     user.profile.last_name = params[:last_name]
     user.avatar = params[:avatar]
     user.profile.gender = params[:gender]
-    profile.about = params[:about]
+    user.about = params[:about]
     user.profile.dob = params[:dob]
     user.phone_number = params[:phone_number]
     user.email = params[:email]
+    user.password = params[:password]
     user.location = params[:location]
-  if profile.save && user.save
+
+    @social = user.social_media
+
+    @social.youtube = params[:youtube]
+    @social.linkedin = params[:linkedin]
+    @social.instagram = params[:instagram]
+    @social.twitter = params[:twitter]
+    @social.snapchat = params[:snapchat]
+    @social.facebook = params[:facebook]
+
+  if user.save && @social.save
    # create_activity("updated profile.", profile, "Profile")
    profile_object = {
     'first_name' => user.profile.first_name,
     'last_name' => user.profile.last_name,
     'avatar' => user.avatar,
     'location' => eval(user.location),
-    'about' => user.profile.about,
+    'about' => user.about,
     'dob' => user.profile.dob.to_date,
-    'roles' => get_user_role_names(user),
+    'roles' => user.role_ids,
     'gender' => user.profile.gender,
     'mobile' => user.phone_number,
     'email' => user.email,
@@ -222,13 +249,13 @@ class Api::V1::UsersController < Api::V1::ApiMasterController
     render json: {
       code: 400,
       success: false,
-      message: { profile_errors: profile.errors.full_messages, user_errors: user.errors.full_messages },
+      message: {  user_errors: user.errors.full_messages },
       data: nil
     }
   end
 end
 
-  api :GET, '/api/v1/user/get-profile', 'To get your own profile - Token is required'
+  api :GET, '/api/v1/users/get-profile', 'To get your own profile - Token is required'
 
   def get_profile
     user = request_user
@@ -236,11 +263,11 @@ end
           'id' => user.id,
           'first_name' => user.profile.first_name,
           'last_name' => user.profile.last_name,
-          'avatar' => user.avatar,
-          'location' => eval(user.location),
-          'about' => user.profile.about,
+          'avatar' => eval(user.avatar),
+          'location' => user.location,
+          'about' => user.about,
           'dob' => user.profile.dob.to_date,
-          'roles' => get_user_role_names(user),
+          'roles' => user.role_ids,
           'gender' => user.profile.gender,
           'mobile' => user.phone_number,
           'email' => user.email,
@@ -261,8 +288,8 @@ end
       }
 end
 
-  api :POST, '/api/v1/user/get-others-profile', 'To get a mobile user profile'
-  #param :user_id, :number, :desc => "User ID", :required => true
+  api :POST, '/api/v1/users/get-others-profile', 'To get a mobile user profile'
+  param :user_id, Integer, :desc => "User ID", :required => true
 
  def get_others_profile
   if !params[:user_id].blank?
@@ -273,9 +300,9 @@ end
   profile['first_name'] = user.profile.first_name
   profile['last_name'] = user.profile.last_name
   profile['avatar'] = user.avatar
-  profile['about'] = user.profile.about
+  profile['about'] = user.about
   profile['dob'] = user.profile.dob.to_date
-  profile['roles'] = get_user_role_names(user)
+  profile['roles'] = user.role_ids
   profile['gender'] = user.profile.gender
   profile['mobile'] = user.phone_number
   profile['email'] = user.email
@@ -304,8 +331,8 @@ else
 end
 end
 
-  api :POST, '/api/v1/user-activity-logs', 'To get user get activity logs'
-  #param :user_id, :number, :desc => "User ID", :required => true
+  api :POST, '/api/v1/users/user-activity-logs', 'To get user get activity logs'
+  param :user_id, Integer, :desc => "User ID", :required => true
 
  def activity_logs
    if !params[:user_id].blank?
@@ -392,8 +419,8 @@ end
     }
    end
  end
-  api :POST, '/api/v1/user-attending', 'User Events to attend list'
-  #param :user_id, :number, :desc => "User ID", :required => true
+  api :POST, '/api/v1/users/user-attending', 'User Events to attend list'
+  param :user_id, Integer, :desc => "User ID", :required => true
 
  def attending
    if !params[:user_id].blank?
@@ -418,8 +445,8 @@ end
   end
  end
 
-  api :POST, '/api/v1/gives_away', 'To get user gives away'
-  #param :user_id, :number, :desc => "user ID", :required => true
+  api :POST, '/api/v1/users/gives_away', 'To get user gives away'
+  param :user_id, Integer, :desc => "user ID", :required => true
 
  def gives_away
   if !params[:user_id].blank?
@@ -452,7 +479,7 @@ end
   end
  end
 
-  api :get, '/api/v1/my-activity-logs', 'To get my activity logs'
+  api :get, '/api/v1/users/my-activity-logs', 'To get my activity logs'
 
  def my_activity_logs
     user = request_user
@@ -532,7 +559,7 @@ end
 
 end
 
-  api :GET, '/api/v1/my-attending', 'To get my attending'
+  api :GET, '/api/v1/users/my-attending', 'To get my attending'
 def my_attending
     attending = []
     user = request_user
@@ -542,8 +569,8 @@ def my_attending
        "name" => event.title,
        "start_date" => event.start_date,
        "end_date" => event.end_date,
-       "start_time" => ,
-       "end_time" => ,
+       "start_time" => event.start_time,
+       "end_time" => event.end_time,
        "location" => eval(event.location),
        "event_type" => event.event_type,
        "image" => event.image,
@@ -572,7 +599,7 @@ def my_attending
 
 end
 
-  api :GET, '/api/v1/my-gives-away', 'To get my gives away'
+  api :GET, '/api/v1/users/my-gives-away', 'To get my gives away'
 
 def my_gives_away
    user = request_user
@@ -606,8 +633,8 @@ end
       profile['first_name'] = user.business_profile.profile_name
       profile['last_name'] = ''
       profile['avatar'] = user.avatar
-      profile['about'] = user.business_profile.about
-      profile['address'] = eval(user.business_profile.address)
+      profile['about'] = user.about
+      profile['location'] = eval(user.location)
       profile['followers_count'] = user.followers.size
       profile['events_count'] = user.events.size
       profile['competitions_count'] = user.competitions.size
@@ -625,8 +652,8 @@ end
       }
  end
 
-  api :POST, '/api/v1/user/get-others-business-profile', 'To get a business profile'
-  #param :user_id, :number, :desc => "User ID", :required => true
+  api :POST, '/api/v1/user/users/get-others-business-profile', 'To get a business profile'
+  param :user_id, Integer, :desc => "User ID", :required => true
 
  def get_others_business_profile
   if !params[:user_id].blank?
@@ -638,7 +665,7 @@ end
   profile['first_name'] = user.business_profile.profile_name
   profile['last_name'] = ''
   profile['avatar'] = user.avatar
-  profile['address'] = eval(user.business_profile.address)
+  profile['address'] = eval(user.location)
   profile["social"] = user.social_media
   profile['website'] = user.business_profile.website
   profile['followers_count'] = user.followers.size
@@ -667,7 +694,7 @@ else
 end
 end
 
-  api :GET, '/api/v1/get-activity-logs', 'To get the activity logs'
+  api :GET, '/api/v1/users/get-activity-logs', 'To get the activity logs'
 
   def get_activity_logs
     @activity_logs = request_user.activity_logs.order(:created_at => "DESC")
@@ -681,7 +708,7 @@ end
     }
   end
 
-  api :POST, '/api/v1/update-device-token', 'To update a device token'
+  api :POST, '/api/v1/users/update-device-token', 'To update a device token'
   param :device_token, String, :desc => "Device Token", :required => true
 
   def update_device_token
@@ -711,14 +738,13 @@ end
   end
   end
 
-  api :POST, '/api/v1/update-current-location', 'To update a current location'
-  param :lat, :decimal, :desc => "Latitude of the location", :required => true
-  param :lng, :decimal, :desc => "Longitude of the location", :required => true
+  api :POST, '/api/v1/users/update-current-location', 'To update a current location'
+  param :location, String, :desc => "Location of the user", :required => true
 
   def update_current_location
-    if !params[:lat].blank? && !params[:lng].blank?
+    if !params[:location].blank?
       user = request_user
-      if user.profile.update!(lat: params[:lat], lng: params[:lng])
+      if user.update!(location: params[:location])
         render json:  {
           code: 200,
           success: true,
@@ -737,7 +763,7 @@ end
       render json: {
         code: 400,
         success: false,
-        message: 'lat and lng are required fields',
+        message: 'Location is a required fields',
         data: nil
       }
     end

@@ -386,12 +386,12 @@ end #if
 
 #if there are no users based on the above principle then suggest poineer user upto 7
 if @friends_suggestions.blank? || @friends_suggestions.size < 30
-  if User.app_users.size > 30
-   User.app_users[1..30].each do |user|
+  if User.mobile_users.size > 30
+   User.mobile_users[1..30].each do |user|
     @friends_suggestions.push(user)
   end#each
   else
-   User.app_users.each do |user|
+   User.mobile_users.each do |user|
     @friends_suggestions.push(user)
   end#each
   end
@@ -439,7 +439,7 @@ end
            "is_friend" => is_friend?(request_user, follower),
            "mutual_friends_count" => get_mutual_friends(request_user, follower).size,
            "is_my_following" => false,
-           "app_user" => follower.app_user,
+           "app_user" => follower.mobile_users,
            "is_self" =>  !not_me?(follower),
            "followers_count" => user.followings.size
          }
@@ -458,7 +458,7 @@ end
             "is_friend" => false,
             "mutual_friends_count" => 0,
             "is_my_following" => is_my_following?(following),
-            "app_user" => following.app_user,
+            "app_user" => following.mobile_users,
             "is_self" =>  !not_me?(following),
             "followers_count" => following.followers.size
 

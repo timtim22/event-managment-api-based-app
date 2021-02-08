@@ -17,11 +17,29 @@ Rails.application.routes.draw do
           resources :users, param: :email
           
           post '/update-profile' => 'users#update_profile'
+          post '/create-user' => 'users#create_user'
           get '/get-profile' => 'users#get_profile'
-          post '/get-profile' => "users#get_others_profile"
+          post '/get-other-profile' => "users#get_others_profile"
           get '/get-business-profile' => "users#get_business_profile"
-          post '/get-business-profile' => "users#get_others_business_profile"
-         
+          post '/get-other-business-profile' => "users#get_others_business_profile"
+          post '/user-activity-logs' => 'users#activity_logs'
+          post '/user-attending' => 'users#attending'
+          post '/user-gives-away' => 'users#gives_away'
+          get 'my-activity-logs' => 'users#my_activity_logs'
+          get 'my-attending' => 'users#my_attending'
+          get '/my-gives-away' => 'users#my_gives_away'
+          get '/get-activity-logs' => "users#get_activity_logs"
+          post '/update-current-location' => "users#update_current_location"
+          get '/get-phone-numbers' => 'users#get_phone_numbers'
+          post '/update-profile-picture' => 'users#update_profile_pictures'
+          post "/delete-account" => "users#delete_account"
+          get '/wallet/get-offers' => 'wallets#get_offers'
+          get '/wallet/get-passes' => 'wallets#get_passes'
+          get '/wallet/get-competitions' => 'wallets#get_competitions'
+          get 'wallet/get-tickets' => 'wallets#get_tickets'
+          post 'wallet/remove-offer' => 'wallets#remove_offer'
+          post '/add-to-wallet' => 'wallets#add_to_wallet'
+          post '/view-offer' => "wallets#view_offer"
         
           namespace :auth do
             post '/login', to: 'authentication#login'
@@ -43,6 +61,17 @@ Rails.application.routes.draw do
 
       end #users
 
+
+      namespace :follows do
+       get '/followers' => "follows#followers"
+       get '/followings' => "follows#followings"
+       post '/follow' => "follows#follow"
+       post '/unfollow' => "follows#unfollow"
+       post '/remove-follow-request' => 'follows#remove_request'
+       post '/remove-follower' => 'follows#remove_follower'
+       post '/follow/accept-request' => "follows#accept_request"
+       get '/follow/requests' => "follows#requests_list"
+      end
 #######------Events--------####################################################
       namespace :events do
         resource :passes
@@ -74,14 +103,7 @@ Rails.application.routes.draw do
        post '/event/post-comment' => "comments#create"
        get '/event/get-commented-events' => "comments#get_commented_events"
        post '/event/comments' => "comments#comments"
-       get '/event/followers' => "follows#followers"
-       get '/event/followings' => "follows#followings"
-       post '/event/follow' => "follows#follow"
-       post '/event/unfollow' => "follows#unfollow"
-       post '/event/remove-follow-request' => 'follows#remove_request'
-       post '/event/remove-follower' => 'follows#remove_follower'
-       post '/event/follow/accept-request' => "follows#accept_request"
-       get '/event/follow/requests' => "follows#requests_list"
+
        post '/event/create-interest' => "interest_levels#create_interest"
        post '/event/create-going' => "interest_levels#create_going"
        post "create-impression" => "api_master#create_impression"
@@ -91,9 +113,9 @@ Rails.application.routes.draw do
        post '/event/redeem-ticket' => "tickets#redeem_it"
        get '/competitions' => "competitions#index"
        post '/competitions/register' => "competitions#register"
-       post '/add-to-wallet' => 'wallets#add_to_wallet'
+       
        get '/get-wallet' => "wallets#get_wallet"
-       get '/get-activity-logs' => "users#get_activity_logs"
+       
        post '/ask-location' => "notifications#ask_location"
        post '/get-location' => "notifications#get_location"
        post '/send-location' => "notifications#send_location"
@@ -110,10 +132,10 @@ Rails.application.routes.draw do
        post '/ambassadors/send-request' => "ambassadors#send_request"
        get '/ambassadors/businesses-list' => "ambassadors#businesses_list"
        get '/ambassadors/my-businesses' => "ambassadors#my_businesses"
-       post '/update-current-location' => "users#update_current_location"
+       
        post '/forward-offer' => "forwarding#forward_offer"
        post '/share-offer' => "forwarding#share_offer"
-       post '/view-offer' => "wallets#view_offer"
+       
        post '/events/report-event' =>  "events#report_event"
        post '/settings/update' => 'settings#update_global_setting'
        post '/settings/update-user-setting' => 'settings#update_user_setting'
@@ -140,30 +162,30 @@ Rails.application.routes.draw do
        get '/get-business-events' => 'business_dashboard#events'
        get '/get-business-special-offers' => 'business_dashboard#special_offers'
        get '/get-business-competitions' => 'business_dashboard#competitions'
-       get '/get-phone-numbers' => 'users#get_phone_numbers'
+       
        post '/events/show' => 'events#show_event'
        post '/business-events/show' => 'business_dashboard#show_event'
        get '/events/map-event-list' => 'events#map_event_list'
        get '/events/search' => 'search#events_live_search'
        post '/events/passes' => 'passes#index'
-       get 'wallet/get-offers' => 'wallets#get_offers'
-       get 'wallet/get-passes' => 'wallets#get_passes'
-       get 'wallet/get-competitions' => 'wallets#get_competitions'
-       get 'wallet/get-tickets' => 'wallets#get_tickets'
-       post 'wallet/remove-offer' => 'wallets#remove_offer'
+       
+       
+       
+       
+       
        post 'get-business-events' => 'events#get_business_events'
        post 'get-business-offers' => 'special_offers#get_business_special_offers'
        post 'get-business-competitions' => 'competitions#get_business_competitions'
        post 'get-business-news-feeds' => 'business_dashboard#get_business_news_feeds'
        post 'event/get-tickets' => 'tickets#get_tickets'
        post 'payments/get-stripe-params' => 'payments#get_stripe_params'
-       post 'users/update-profile-picture' => 'users#update_profile_pictures'
-       post 'user-activity-logs' => 'users#activity_logs'
-       post 'user-attending' => 'users#attending'
-       post 'user-gives-away' => 'users#gives_away'
-       get 'my-gives-away' => 'users#my_gives_away'
-       get 'my-attending' => 'users#my_attending'
-       get 'my-activity-logs' => 'users#my_activity_logs'
+       
+       
+       
+       
+       
+       
+       
        post 'special_offers/show' => "special_offers#show"
        post "special-offers/special-offer-single" => "special_offers#special_offer_single"
        post "passes/pass-single" => "passes#pass_single"
@@ -171,7 +193,7 @@ Rails.application.routes.draw do
        post "notifications/read" => "notifications#read_notification"
        post  "events/get-map-events" =>  "events#get_map_events"
        post "settings/change-location-status" => "settings#change_location_status"
-       post "users/delete-account" => "users#delete_account"
+       
        post "/search/global-search" => "search#global_search"
        post "/analytics/get-event-stats" => "analytics#get_event_stats"
        post "/analytics/get-offer-stats" => "analytics#get_offer_stats"

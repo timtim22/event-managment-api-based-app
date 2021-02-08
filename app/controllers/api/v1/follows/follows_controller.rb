@@ -4,7 +4,7 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
   # Send follow request
-  api :POST, '/api/v1/event/follow', 'To Follow a business'
+  api :POST, '/api/v1/follows/follow', 'To Follow a business'
   param :following_id, :number, :desc => "Following ID", :required => true
 
   def follow
@@ -118,7 +118,7 @@ class Api::V1::FollowsController < Api::V1::ApiMasterController
     end
   end# func
 
-  api :POST, '/api/v1/event/unfollow', 'To unfollow an event'
+  api :POST, '/api/v1/follows/unfollow', 'To unfollow an event'
   param :following_id, :number, :desc => "Following ID", :required => true
 
   def unfollow
@@ -182,7 +182,7 @@ end
     }
   end
 
-  api :POST, '/api/v1/event/followings', 'Get Following List - Token is required'
+  api :POST, '/api/v1/follows/followings', 'Get Following List - Token is required'
   def followings
     @followings = []
     request_user.followings.each do |following|
@@ -202,7 +202,7 @@ end
     }
   end
 
-  api :GET, '/api/v1/event/follow/requests', 'Get follow requests list - Token is required'
+  api :GET, '/api/v1/follows/follow/requests', 'Get follow requests list - Token is required'
    def requests_list
      follow_requests = request_user.follow_requests
     render json: {
@@ -215,7 +215,7 @@ end
       }
    end
 
-  api :POST, '/api/v1/event/remove-follow-request', 'To remove a follow request'
+  api :POST, '/api/v1/follows/remove-follow-request', 'To remove a follow request'
   param :request_id, :number, :desc => "Request ID (Request primary key e.g. 1,2,3)", :required => true
 
    def remove_request
@@ -247,7 +247,7 @@ end
      end
    end
 
-  api :POST, '/api/v1/user/remove-follower', 'To remove a follower'
+  api :POST, '/api/v1/follows/remove-follower', 'To remove a follower'
   param :user_id, :number, :desc => "User ID (Follower ID)", :required => true
 
    def remove_follower
@@ -306,12 +306,12 @@ end
 
  #if there are no users based on the above principle then suggest poineer user upto 7
   if @businesses_suggestions.blank? || @businesses_suggestions.size < 30
-    if User.web_users.size > 30
-      User.web_users[1..30].each do |user|
+    if User.business_users.size > 30
+      User.business_users[1..30].each do |user|
        @businesses_suggestions.push(user)
      end#each
      else
-      User.web_users.each do |user|
+      User.business_users.each do |user|
        @businesses_suggestions.push(user)
      end#each
      end

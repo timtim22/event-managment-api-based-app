@@ -4,7 +4,7 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
    # POST /auth/login
 
     api :POST, '/api/v1/auth/login', 'To login and Generate Auhtorization Token'
-    param :uuid, :number, :desc => "The ID of the user", :required => true
+    param :uuid, String, :desc => "The ID of the user", :required => true
     param :device_token, String, :desc => "pass any string ", :required => true
 
 
