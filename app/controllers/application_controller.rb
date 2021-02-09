@@ -1224,13 +1224,9 @@ def get_percent_of(number, total)
   number.to_f / total.to_f * 100.0
 end
 
-def mobile_users
-  users = Assignment.where(role_id: 5).map {|assignment| assignment.user }
-end
 
-def business_users
-  users = Assignment.where(role_id: 2).map {|assignment| assignment.user }
-end
+
+
 
 
 

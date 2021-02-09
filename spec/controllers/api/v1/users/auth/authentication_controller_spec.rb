@@ -12,7 +12,7 @@ RSpec.describe Api::V1::Users::Auth::AuthenticationController, type: :controller
 ###################################################################################################
 
     it "should login" do
-      post :login, params: {uuid: Assignment.where(role_id: 2).last.user.uuid, device_token: "anything"}
+      post :login, params: {uuid: mobile_users.last.uuid, device_token: "anything"}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end

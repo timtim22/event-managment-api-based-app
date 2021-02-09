@@ -75,8 +75,6 @@
      'name' => e.title,
      'start_date' => e.start_date,
      'end_date' => e.end_date,
-     'start_time' => ,
-     'end_time' => ,
      'image' => e.image.url,
      'location' => eval(e.location),
      'description' => e.description,
@@ -178,8 +176,6 @@
         'name' => e.title,
         'start_date' => e.start_date,
         'end_date' => e.end_date,
-        'start_time' => ,
-        'end_time' => ,
         'image' => e.image.url,
         'location' => location,
         'description' => e.description,
@@ -231,7 +227,6 @@
         'id' => e.id,
         'name' => e.title,
         'date' => e.start_date,
-        'time' => ,
         'image' => e.image.url,
         "terms_conditions" => e.terms_conditions,
         'creator_name' => e.user.business_profile.profile_name,
@@ -367,8 +362,6 @@
     @event.image = params[:image]
     @event.start_date = params[:start_date]
     @event.end_date = params[:end_date]
-    @ =  params["start_time"]
-    @ = params["end_time"]
     @event.over_18 = params[:over_18]
     @event.description = params[:description]
     @event.allow_chat = params[:allow_chat]
@@ -630,8 +623,6 @@
     @event.image = params[:image]
     @event.start_date = params[:start_date]
     @event.end_date = params[:end_date]
-    @ = params['start_time']
-    @ = params['end_time']
     @event.over_18 = params[:over_18]
     @event.description = params[:description]
     @event.allow_chat = params[:allow_chat]

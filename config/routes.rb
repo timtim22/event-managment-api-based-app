@@ -241,7 +241,6 @@ Rails.application.routes.draw do
      post '/eventbrite/get-category' => "eventbrite#get_category"
      post '/eventbrite/store-imported' => "eventbrite#store_imported"
      get '/view-activity' => "users#view_activity"
-    
      get '/add-payment-account' => 'payments#add_payment_account'
      get '/stripe/oauth' => 'payments#stripe_oauth_redirect'
      get '/payments/received-payments' => "payments#received_payments"
@@ -275,7 +274,7 @@ Rails.application.routes.draw do
    namespace :dashboard do
     namespace :api do
       namespace :v1 do
-
+        
       namespace :users do
         post '/update-user' => 'users#update_user'
         post '/create-user' => 'users#create_user'
