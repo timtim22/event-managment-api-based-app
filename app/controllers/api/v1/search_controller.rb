@@ -23,12 +23,10 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                   "location" => eval(event.location),
                   "start_date" => event.start_date,
                   "end_date" => event.end_date,
-                  "start_time" => get_date_time(event.start_date, ),
-                  "end_time" => get_date_time(event.end_date, ),
                   "over_18" => event.over_18,
                   "price_type" => event.price_type,
                   "price" => get_price(event.event),
-                  "has_passes" => has__child_event_passes?(event),
+                  "has_passes" => has_child_event_passes?(event),
                   "created_at" => event.created_at,
                   "categories" => event.event.categories,
                  "all_passes_added_to_wallet" => all_passes_added_to_wallet?(request_user, event.event.passes)
@@ -236,7 +234,6 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
   end
 
   def search_events
-
      search_base_validate = false
      @data = []
      if !params[:search_bases].blank?
