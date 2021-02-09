@@ -1,4 +1,4 @@
-class Api::V1::Users::AmbassadorsController < Api::V1::ApiMasterController
+class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
   before_action :authorize_request
 
   require "pubnub"
@@ -250,6 +250,111 @@ class Api::V1::Users::AmbassadorsController < Api::V1::ApiMasterController
       }
     }
   end
+
+
+  api :POST, '/api/v1/users/gives_away', 'To get user gives away'
+  param :user_id, Integer, :desc => "user ID", :required => true
+
+ def gives_away
+  if !params[:user_id].blank?
+    user = User.find(params[:user_id])
+    if is_ambassador?(user)
+      gives_away = get_ambassador_gives_away(user)
+      render json: {
+        code: 200,
+        success: true,
+        message: '',
+        data: {
+          gives_away: gives_away
+        }
+      }
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: 'this user is not an ambassador.',
+        data: nil
+      }
+    end #is_ambassador if
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: 'user_id is required field.',
+      data: nil
+    }
+  end
+ end
+
+
+
+ api :GET, '/api/v1/users/my-attending', 'To get my attending'
+def my_attending
+    attending = []
+    user = request_user
+    attendings = user.events_to_attend.page(params[:page]).per(30).each do |event|
+     attending << {
+       "event_id" => event.id,
+       "name" => event.title,
+       "start_date" => event.start_date,
+       "end_date" => event.end_date,
+       "start_time" => event.start_time,
+       "end_time" => event.end_time,
+       "location" => eval(event.location),
+       "event_type" => event.event_type,
+       "image" => event.image,
+       "price_type" => event.price_type,
+       "price" => event.price,
+       "additional_media" => event.event.event_attachments,
+       "created_at" => event.created_at,
+       "updated_at" => event.updated_at,
+       "host" => get_full_name(event.user),
+       "host_image" => event.user.avatar,
+       "interest_count" => event.interested_interest_levels.size,
+       "going_count" => event.going_interest_levels.size,
+       "demographics" => get_demographics(event),
+       'has_passes' => has_passes?(event.event)
+     }
+    end#each
+
+    render json: {
+      code: 200,
+      success: true,
+      message: '',
+      data: {
+        attending: attending
+      }
+    }
+
+end
+
+
+
+
+api :GET, '/api/v1/users/my-gives-away', 'To get my gives away'
+
+def my_gives_away
+   user = request_user
+   if is_ambassador?(user)
+     gives_away = get_ambassador_gives_away(user)
+     render json: {
+       code: 200,
+       success: true,
+       message: '',
+       data: {
+         gives_away: gives_away
+       }
+     }
+   else
+     render json: {
+       code: 400,
+       success: false,
+       message: 'this user is not an ambassador.',
+       data: nil
+     }
+   end #is_ambassador if
+end
+
 
   private
   def is_added_to_wallet?(pass_id)

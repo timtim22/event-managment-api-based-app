@@ -1,4 +1,4 @@
-class Api::V1::Events::TicketsController < Api::V1::ApiMasterController
+class Api::V1::Events::Tickets::TicketsController < Api::V1::ApiMasterController
 
   api :POST, '/api/v1/events/redeem-ticket', 'Redeem Ticket'
   param :event_id, :number, :desc => "Event ID", :required => true

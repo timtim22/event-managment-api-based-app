@@ -1,4 +1,4 @@
-class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
+class Api::V1::Bookings::InterestLevelsController < Api::V1::ApiMasterController
   before_action :authorize_request
   require 'json'
   require 'pubnub'

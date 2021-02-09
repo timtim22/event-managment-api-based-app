@@ -1,217 +1,148 @@
-class Api::V1::AnalyticsController < Api::V1::ApiMasterController
+class Api::V1::Business::BusinessDashboard < Api::V1::ApiMasterController
   before_action :authorize_request
+  before_action :business
 
-  def get_event_stats
-    if !params[:event_id].blank? && !params[:frequency].blank? && !params[:date].blank?
-          valid_frequencies = ['daily', 'weekly','overall']
-          if !validate_frequency(params[:frequency], valid_frequencies)
-              render json: {
-                code: 400,
-                success: true,
-                message: "frequency is invalid, please select one from #{valid_frequencies.join("', '")}",
-                data: nil
-              }
-              return
-          end
-           event = ChildEvent.find(params[:event_id])
-              case params[:frequency]
-              when "daily"
-                start_date = params[:date]
-                end_date = params[:date]
-                before_start_date = Date.parse(params[:date]) - 1
-                before_start_date_to_string = before_start_date.to_s
-                before_end_date = Date.parse(params[:date]) - 1
-                before_end_date_to_string = before_end_date.to_s
-                @current_time_slot_dates = generate_date_range(start_date, end_date)
-                @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
-              when "weekly"
-                start_date = Date.parse(params[:date]).tomorrow - 7.days
-                start_date_to_string = start_date.to_s
-                end_date = params[:date]
-                @current_time_slot_dates = generate_date_range(start_date_to_string, end_date)
-                before_start_date = Date.parse(params[:date]).tomorrow - 14.days
-                before_start_date_to_string = before_start_date.to_s
-                before_end_date = Date.parse(params[:date]).tomorrow - 7.days
-                before_end_date_to_string = before_end_date.to_s
-                @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
-              when  "overall"
-                 start_date = event.created_at.to_date.to_s
-                 end_date = event.end_date.to_date.to_s
-                 @current_time_slot_dates = generate_date_range(start_date, end_date)
-                 # in case of overall there should be no comparison between time slots
-                 @before_current_time_slot_dates = generate_date_range(start_date, end_date)
-
-              else
-                "Do nothing"
-              end
-              
-              dates = []
-              @current_time_slot_dates.each do |date|
-                dt = {}
-                data =  {
-                    "impressions" => event.views.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
-                    "attending_count" =>  event.going_interest_levels.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
-                    "maybe_count" => event.interested_interest_levels.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
-                    "passes_check_in_count" => event.event.passes.map{|p| p.redemptions.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size }.sum,
-                    "shared_count" =>  event.event_shares.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size + event.event_forwardings.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size
-                  }
-                 dt[date.to_date.strftime("%a %d")] = data
-                 dates << dt
-              end #each
-
-              stats = {
-                "total_checked_in" => get_total_event_checked_in(event.event),
-                "time_slot_total_checked_in" => get_time_slot_total_pass_checked_in(@current_time_slot_dates, event.event),
-                "total_paid_checked_in" => get_total_paid_checked_in(event.event),
-                "time_slot_total_paid_checked_in" => get_time_slot_event_paid_checked_in(@current_time_slot_dates, event.event),
-                "total_pass_checked_in" => get_pass_total_checked_in(event.event),
-                "time_slot_total_pass_checked_in" => get_time_slot_total_pass_checked_in(@current_time_slot_dates, event.event),
-                "max_attendees" => event.event.max_attendees,
-                "max_passes" => event.event.passes.size,
-                "total_earning" => get_total_event_earning(event.event),
-                "total_attendees" => event.going_interest_levels.size,
-                "time_slot_total_attendees" => get_time_slot_total_attendees(@current_time_slot_dates, event),
-                "time_slot_movement" => get_time_slot_movement_in_event_attendees(@current_time_slot_dates, @before_current_time_slot_dates, event),
-                "demographics" => get_demographics(event),
-                 "graph_stats" => {
-                    "time_slot_total_impressions" => get_time_slot_total_views(@current_time_slot_dates, event),
-                    "time_slot_attendees" => get_time_slot_total_attendees(@current_time_slot_dates, event),
-                    "time_slot_total_interested_people" => get_time_slot_total_interested_people(@current_time_slot_dates, event),
-                    "time_slot_total_pass_checked_in" => get_time_slot_total_pass_checked_in(@current_time_slot_dates, event.event),
-                    "time_slot_total_shared_events" => get_time_slot_total_shared_events(@current_time_slot_dates, event),
-                    "dates" =>  dates
-                }
-              }
-
-              @event_stats = {
-                  "event_id" => event.id,
-                  "name" => event.title,
-                  "start_date" => event.start_date,
-                  "end_date" => event.end_date,
-                  "start_time" => get_date_time(event.start_date, ),
-                  "end_time" => get_date_time(event.end_date, ),
-                  "location" => eval(event.location),
-                  "event_type" => event.event_type,
-                  "image" => event.image,
-                  "price_type" => event.event.price_type,
-                  "price" => event.event.price,
-                  "additional_media" => event.event.event_attachments,
-                  "created_at" => event.created_at,
-                  "updated_at" => event.updated_at,
-                  "stats" => stats,
-                }
-    
-                render json: {
-                  code: 200,
-                  success: true,
-                  message: '',
-                  data: {
-                    event: @event_stats
-                  }
-                }
-                else
-                  render json: {
-                    code: 400,
-                    success: true,
-                    message: 'event_id, date and frequency are required.',
-                    data: nil
-                  }
-                end
-              end
+  require 'action_view'
+  require 'action_view/helpers'
+  include ActionView::Helpers::DateHelper
 
 
 
+  def home
+    profile = {
+      "id" => business.id,
+      "profile_name" => business.business_profile.profile_name,
+      "avatar" => business.avatar,
+      "about" => business.business_profile.about,
+      "unread_messages_count" => business.incoming_messages.unread.size,
+      "address" => eval(business.business_profile.address),
+      "social" => business.social_media,
+      "news_feeds" => business.news_feeds,
+      "followers_count" =>  business.followers.size
+    }
 
-  def get_offer_stats
-    if !params[:offer_id].blank? && !params[:frequency].blank? && !params[:date].blank?
-      valid_frequencies = ['daily', 'weekly','overall']
-      if !validate_frequency(params[:frequency], valid_frequencies)
-          render json: {
-            code: 400,
-            success: true,
-            message: "frequency is invalid, please select one from #{valid_frequencies.join("', '")}",
-            data: nil
-          }
-          return
-      end
-
-      offer = SpecialOffer.find(params[:offer_id])
-      case params[:frequency]
-      when "daily"
-        start_date = params[:date]
-        end_date = params[:date]
-        before_start_date = Date.parse(params[:date]) - 1
-        before_start_date_to_string = before_start_date.to_s
-        before_end_date = Date.parse(params[:date]) - 1
-        before_end_date_to_string = before_end_date.to_s
-        @current_time_slot_dates = generate_date_range(start_date, end_date)
-        @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
-      when "weekly"
-        start_date = Date.parse(params[:date]) - 6.days
-        start_date_to_string = start_date.to_s
-        end_date = params[:date]
-        @current_time_slot_dates = generate_date_range(start_date_to_string, end_date)
-        before_start_date = Date.parse(params[:date]) - 14.days
-        before_start_date_to_string = before_start_date.to_s
-        before_end_date = Date.parse(params[:date]) - 6.days
-        before_end_date_to_string = before_end_date.to_s
-        @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
-      when  "overall"
-          start_date = offer.created_at.to_date.to_s
-          end_date = offer.validity.to_date.to_s
-         @current_time_slot_dates = generate_date_range(start_date, end_date)
-         # in case of overall there should be no comparison between time slots
-         @before_current_time_slot_dates = generate_date_range(start_date, end_date)
-
-      else
-        "Do nothing"
-      end
-
-
-      dates = []
-      @current_time_slot_dates.each do |date|
-        dt = {}
-        data =  {
-          impression_count: offer.views.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
-          in_wallet_count: offer.wallets.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
-          redeemed_count: offer.redemptions.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
-          shared_count: offer.offer_shares.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size + offer.offer_forwardings.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
-          }
-         dt[date.to_date.strftime("%a %d")] = data
-         dates << dt
-      end #each
-      
-
-      stats = {
-        offer_start_date: offer.date.strftime(get_time_format),
-        offer_creation_date: offer.created_at, 
-        offer_end_date: offer.validity.strftime(get_time_format),
-        max_redemptions: offer.quantity,
-        total_redeem_count: offer.redemptions.size,
-        movement_percentage: get_time_slot_increment_decrement_in_offer_views(@current_time_slot_dates, @before_current_time_slot_dates, offer),
-        "demographics" => get_offer_demographics(offer),
-        graph_stats: {
-          total_impression_count: get_time_slot_total_offer_impresssions(offer, @current_time_slot_dates),
-          total_in_wallet_count: get_time_slot_offer_in_wallet(@current_time_slot_dates, offer),
-          total_redeemed_count: get_time_slot_total_redemptions(offer, @current_time_slot_dates),
-          total_shared_count: get_time_slot_total_offer_shares(@current_time_slot_dates, offer),
-          dates: dates
-       }
+    render json: {
+      code: 200,
+      success: true,
+      message: '',
+      data: {
+        dashboard: profile
       }
+    }
 
-      render json: {
+  end
+
+
+  def events
+    @events = []
+    business.child_events.page(params[:page]).per(30).each do |e|
+      @events << {
+        'id' => e.id,
+        'name' => e.title,
+        'start_date' => e.start_date,
+        'end_date' => e.end_date,
+        'image' => e.event.image,
+        'location' => eval(e.location),
+        'price' => get_price(e.event),
+        'price_type' => e.event.price_type,
+        'has_passes' => has_passes?(e.event)
+     }
+     
+    end #each
+    render json: {
+      code: 200,
+      success: true,
+      message: '',
+      data: { 
+       "events" =>  @events
+     }
+  }
+
+  end
+
+  def special_offers
+    @special_offers = business.special_offers.page(params[:page]).per(20).order(id: 'DESC')
+    @offers = []
+    @special_offers.each do |offer|
+      @offers << {
+        id: offer.id,
+        title: offer.title,
+        image: offer.image,
+        location: eval(offer.location),
+        validity: offer.validity.strftime(get_time_format),
+        description: offer.description,
+        ambassador_rate: offer.ambassador_rate,
+        terms_conditions: offer.terms_conditions, 
+        creator_name: get_full_name(offer.user), 
+        creator_image: offer.user.avatar, 
+        start_time: offer.time,
+        creation_date: offer.created_at,
+        end_date: offer.validity, 
+        end_time: offer.end_time,
+        quantity: offer.quantity,
+        redeem_count: get_redeem_count(offer)
+      }
+    end
+    render json: {
+      code: 200,
+      success: true,
+      message: '',
+      data: {
+        special_offers: @offers
+      }
+    }
+  end
+
+
+  def competitions
+    @competitions = []
+    business.competitions.page(params[:page]).per(30).each do |competition|
+      @competitions <<  {
+        id: competition.id,
+        title: competition.title,
+        description: competition.description,
+        location: eval(competition.location),
+        image: competition.image,
+        start_date: competition.start_date,
+        creation_date: competition.created_at, 
+        end_date: competition.end_date,
+        creator_name: get_full_name(competition.user),
+        creator_image: competition.user.avatar,
+        terms_conditions: competition.terms_conditions,
+        validity: competition.validity.strftime(get_time_format)
+      }
+    end #each
+
+    render json: {
+      code: 200,
+      success: true,
+      message: '',
+      data: {
+        competitions: @competitions
+      }
+    }
+  end
+
+
+
+
+  def get_business_news_feeds
+    if !params[:business_id].blank?
+       business_id = params[:business_id]
+       @news_feeds = User.find(business_id).news_feeds.page(params[:page]).per(10) 
+       render json: {
         code: 200,
         success: true,
         message: '',
         data: {
-          stats: stats
+          news_feeds: @news_feeds
         }
       }
     else
       render json: {
-        code:400,
+        code: 400,
         success: false,
-        message: 'offer_id, date and frequency are required.',
+        message: 'business_id is required field.',
         data: nil
       }
     end
@@ -219,329 +150,134 @@ class Api::V1::AnalyticsController < Api::V1::ApiMasterController
 
 
 
-  def get_competition_stats
-    if !params[:competition_id].blank? && !params[:frequency].blank? && !params[:date].blank?
-      valid_frequencies = ['daily', 'weekly','overall']
-      if !validate_frequency(params[:frequency], valid_frequencies)
-          render json: {
-            code: 400,
-            success: true,
-            message: "frequency is invalid, please select one from #{valid_frequencies.join("', '")}",
-            data: nil
+
+  def show_event
+    if !params[:event_id].blank?
+        child_event = ChildEvent.find(params[:event_id])
+        e = child_event
+          @passes = []
+          @ticket = []
+          all_pass_added = false
+          if request_user
+            all_pass_added = has_passes?(e.event) && all_passes_added_to_wallet?(request_user, e.event.passes)
+          e.event.passes.not_expired.map { |pass|
+          if !is_removed_pass?(request_user, pass)
+            @passes << {
+            id: pass.id,
+            title: pass.title,
+            host_name: get_full_name(e.user),
+            host_image: e.user.avatar,
+            event_name: e.title,
+            event_image: e.image,
+            event_location: eval(e.location),
+            event_date: e.start_date,
+            is_added_to_wallet: is_added_to_wallet?(pass.id),
+            validity: pass.validity.strftime(get_time_format),
+            grabbers_count: pass.wallets.size,
+            terms_and_conditions: pass.terms_conditions,
+            description: pass.description,
+            issued_by: get_full_name(pass.user),
+            redeem_count: get_redeem_count(pass),
+            quantity: pass.quantity
           }
-          return
-      end
-
-     
-      competition = Competition.find(params[:competition_id])
-      case params[:frequency]
-      when "daily"
-        start_date = params[:date]
-        end_date = params[:date]
-        before_start_date = Date.parse(params[:date]) - 1
-        before_start_date_to_string = before_start_date.to_s
-        before_end_date = Date.parse(params[:date]) - 1
-        before_end_date_to_string = before_end_date.to_s
-        @current_time_slot_dates = generate_date_range(start_date, end_date)
-        @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
-      when "weekly"
-        start_date = Date.parse(params[:date]) - 6.days
-        start_date_to_string = start_date.to_s
-        end_date = params[:date]
-        @current_time_slot_dates = generate_date_range(start_date_to_string, end_date)
-        before_start_date = Date.parse(params[:date]) - 14.days
-        before_start_date_to_string = before_start_date.to_s
-        before_end_date = Date.parse(params[:date]) - 6.days
-        before_end_date_to_string = before_end_date.to_s
-        @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
-      when  "overall"
-          start_date = competition.created_at.to_date.to_s
-          end_date = competition.end_date.to_date.to_s
-         @current_time_slot_dates = generate_date_range(start_date, end_date)
-         # in case of overall there should be no comparison between time slots
-         @before_current_time_slot_dates = generate_date_range(start_date, end_date)
-
+        end# remove if
+      } #map
       else
-        "Do nothing"
-      end
-
-      
-      
-      dates = []
-      @current_time_slot_dates.each do |date|
-        dt = {}
-        data =  {
-          impression_count: competition.views.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
-          entries_count: competition.registrations.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
-          shared_count: competition.offer_shares.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size + competition.offer_forwardings.where(created_at: Date.parse(date).midnight..Date.parse(date).end_of_day).size,
-          }
-         dt[date.to_date.strftime("%a %d")] = data
-         dates << dt
-      end #each
-
-
-      stats = {
-        competition_winners: competition.competition_winners.map {|c| {
-            winner_name: User.get_full_name(c.user),
-            winner_image: c.user.avatar,
-            winner_id: c.user.id
-        }},
-        draw_date: competition.end_date,
-        start_date: competition.start_date,
-        creation_date: competition.created_at,
-        end_date: competition.end_date,
-        total_entries_count: competition.registrations.size,
-        movement_percentage: get_time_slot_movement_in_competition_entries(@current_time_slot_dates, @before_current_time_slot_dates, competition),
-        "demographics" =>  get_competition_demographics(competition),
-        graph_stats: {
-          total_impression_count: get_time_slot_total_competition_impresssions(competition, @current_time_slot_dates),
-          total_entries_count: get_time_slot_total_entries(competition,@current_time_slot_dates),
-          total_shared_count: get_time_slot_total_offer_shares(@current_time_slot_dates, competition),
-          dates: dates
-      }
-    }
-
-        render json: {
-          code: 200,
-          success: true,
-          message: '',
-          data: {
-            stats: stats
-          }
+        e.event.passes.not_expired.map { |pass|
+          @passes << {
+          id: pass.id,
+          title: pass.title,
+          description: pass.description,
+          host_name: get_full_name(e.user),
+          host_image: e.user.avatar,
+          event_name: e.title,
+          event_image: e.image,
+          event_location: eval(e.location),
+          event_date: e.start_date,
+          is_added_to_wallet: is_added_to_wallet?(pass.id),
+          validity: pass.validity.strftime(get_time_format),
+          grabbers_count: pass.wallets.size,
+          terms_and_conditions: pass.terms_conditions,
+          issued_by: get_full_name(pass.user),
+          redeem_count: get_redeem_count(pass),
+          quantity: pass.quantity
         }
+      }# passes map
+      end #if request_user
+
+          @event = {
+            'id' => e.id,
+            'name' => e.title,
+            'description' => e.description,
+            'start_date' => e.start_date,
+            'creation_date' => e.created_at,
+            'end_date' => e.end_date,
+            'price' => get_price(e.event), # check for price if it is zero
+            'price_type' => e.event.price_type,
+            'event_type' => e.event_type,
+            'additional_media' => e.event.event_attachments,
+            'location' => eval(e.location),
+            'image' => e.event.image,
+            'is_interested' => is_interested?(e),
+            'is_going' => is_attending?(e),
+            'is_followed' => is_followed(e.user),
+            'interest_count' => e.interested_interest_levels.size,
+            'going_count' => e.going_interest_levels.size,
+            'demographics' => get_demographics(e),
+            'going_users' => e.going_users,
+            "interested_users" => getInterestedUsers(e),
+            'creator_name' => e.user.business_profile.profile_name,
+            'creator_id' => e.user.id,
+            'creator_image' => e.user.avatar,
+            'categories' => !e.event.categories.blank? ? e.event.categories : @empty,
+            'sponsors' => e.event.sponsors,
+            "mute_chat" => get_mute_chat_status(e),
+            "mute_notifications" => get_mute_notifications_status(e),
+            "terms_and_conditions" => e.terms_conditions,
+            "forwards_count" => e.event_forwardings.count,
+            "comments_count" => e.comments.size + e.comments.map {|c| c.replies.size }.sum,
+            "has_passes" => has_passes?(e.event),
+            "all_passes_added_to_wallet" => all_pass_added
+         }
+
+         render json: {
+           code: 200,
+           success: true,
+           message: '',
+           user: request_user,
+           data: {
+             event: @event,
+             #business_all_events: e.user.events.sort_by_date.page(params[:page]).per(10).map {|e| get_simple_event_object(e) }
+           }
+         }
+
       else
         render json: {
-          code:400,
+          code: 400,
           success: false,
-          message: 'competition_id, date and frequency are required.',
+          message: "event_id is required.",
           data: nil
         }
       end
   end
 
 
+  
+   
 
-
-
-  # def get_dashboard
-
-  #  if !params[:business_id].blank? && !params[:resource].blank? && !params[:current_time_slot_dates].blank? && !params[:before_current_time_slot_dates].blank?
-
-  #   @business = User.find(params[:business_id])
-  #    resource = params[:resource]
-  #    business_detail = []
-  #    business_detail << {
-  #      "total_events" =>  @business.events.size,
-  #      "total_competitions" => @business.competitions.size,
-  #      "total_offers" => @business.special_offers.size.to_i + @business.passes.size.to_i,
-  #      "total_followers" => @business.followers.size,
-  #      "business_name" => get_full_name(@business),
-  #      "business_logo" => @business.avatar,
-  #    }
-  #   case resource
-  #     when 'events'
-  #       events = []
-  #    @business.events.each do |event|
-  #          stats = []
-  #          stats << {
-  #         "time_slot_total_attendees" => get_time_slot_total_attendees(params[:current_time_slot_dates], event),
-  #         "time_slot_increment_decrement_in_attendees" => get_time_slot_increment_decrement_in_attendees(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
-  #         "time_slot_attendees_date_wise" => get_time_slot_attendees_date_wise(params[:current_time_slot_dates], event),
-  #         "time_slot_total_views" => get_time_slot_total_views(params[:current_time_slot_dates], event),
-  #         "time_slot_increment_decrement_in_views" => get_time_slot_increment_decrement_in_views(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
-  #         "time_slot_event_views_date_wise" => get_time_slot_event_views_date_wise(params[:current_time_slot_dates],event),
-  #         "time_slot_total_sold_tickets" => get_time_slot_total_sold_tickets(params[:current_time_slot_dates], event),
-  #         "time_slot_increment_decrement_in_sold_tickets" => time_slot_increment_decrement_in_sold_tickets(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
-  #         "time_slot_sold_tickets_date_wise" => get_time_slot_sold_tickets_date_wise(params[:current_time_slot_dates] ,event),
-  #         "time_slot_total_interested_people" => get_time_slot_total_interested_people(params[:current_time_slot_dates], event),
-  #         "time_slot_interested_increment_decrement" => get_time_slot_interested_increment_decrement(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
-  #         "time_slot_total_shared_events" => get_time_slot_total_shared_events(params[:current_time_slot_dates], event),
-  #         "time_slot_increment_decrement_in_shared_events" => get_time_slot_increment_decrement_in_shared_events(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
-  #         "time_slot_shares_date_wise" => get_time_slot_shares_date_wise(params[:current_time_slot_dates],event),
-  #         "time_slot_total_event_comments" => get_time_slot_total_event_comments(params[:current_time_slot_dates], event),
-  #         "time_slot_increment_decrement_in_event_comments" => get_time_slot_increment_decrement_in_event_comments(params[:current_time_slot_dates], params[:before_current_time_slot_dates], event),
-  #         "time_slot_comments_date_wise" => get_time_slot_comments_date_wise(params[:current_time_slot_dates],event)
-  #       }
-
-  #         if event.location.include? "\"=>\""
-  #             location =  eval(event.location)["city"] + ", " + eval(event.location)["country"]
-  #         else
-  #               location = event.location
-  #         end  
-
-  #       events << {
-  #         "event_id" => event.id,
-  #         "name" => event.title,
-  #         "start_date" => event.start_date,
-  #         "end_date" => event.end_date,
-  #         "start_time" => ,
-  #         "end_time" => ,
-  #         "location" => location,
-  #         # "location" => eval(event.location)["city"] + ", " + eval(event.location)["country"],
-  #         # "lat" => eval(event.location)["geometry"]["lat"],
-  #         # "lng" => eval(event.location)["geometry"]["lng"],
-  #         "event_type" => event.event_type,
-  #         "image" => event.image,
-  #         "price_type" => event.price_type,
-  #         "price" => event.price,
-  #         "additional_media" => event.event_attachments,
-  #         "created_at" => event.created_at,
-  #         "updated_at" => event.updated_at,
-  #         "stats" => stats
-  #       }
-  #       end #each
-  #       render json: {
-  #         code: 200,
-  #         success: true,
-  #         message: '',
-  #         data: {
-  #           business_detail: business_detail,
-  #           resource: events
-  #         }
-  #       }
-  #     when 'offers'
-  #       special_offers = []
-  #        @business.special_offers.each do |offer|
-  #         stats = []
-  #         stats << {
-  #          "time_slot_total_special_offers" => get_time_slot_total_special_offers(params[:current_time_slot_dates], offer),
-  #          "time_slot_increment_decrement_in_special_offers" =>  get_time_slot_special_offers_increment_decrement(params[:current_time_slot_dates],    params[:before_current_time_slot_dates], offer),
-  #          "time_slot_taken_special_offers_date_wise" => get_time_slot_special_offers_date_wise(params[:current_time_slot_dates], offer),
-  #          "time_slot_offer_views" => get_time_slot_offer_views(params[:current_time_slot_dates], offer),
-  #          "time_slot_increment_decrement_in_offer_views" => get_time_slot_increment_decrement_in_offer_views(params[:current_time_slot_dates], params[:before_current_time_slot_dates], offer),
-  #          "time_slot_views_date_wise" => get_time_slot_views_date_wise(params[:current_time_slot_dates], offer),
-  #          "time_slot_increment_decrement_in_offer_redemptions" => get_time_slot_increment_decrement_in_offer_redemptions(params[:current_time_slot_dates], params[:before_current_time_slot_dates], offer),
-  #          "time_slot_redemptions_date_wise" => get_time_slot_redemptions_date_wise(params[:current_time_slot_dates], offer),
-  #          "time_slot_total_offer_shares" => get_time_slot_total_offer_shares(params[:current_time_slot_dates], offer),
-  #          "time_slot_increment_decrement_in_offer_shares" => get_time_slot_increment_decrement_in_offer_shares(params[:current_time_slot_dates], params[:before_current_time_slot_dates], offer),
-  #          "time_slot_offer_shares_date_wise" => get_time_slot_offer_shares_date_wise(params[:current_time_slot_dates], offer),
-  #          "time_slot_total_ambassador_offer_shares" =>  get_time_slot_total_ambassador_offer_shares(params[:current_time_slot_dates], offer),
-  #          "time_slot_increment_decrement_in_ambassador_offer_shares" => get_time_slot_increment_decrement_in_ambassador_offer_shares(params[:current_time_slot_dates], params[:before_current_time_slot_dates], offer),
-  #          "time_slot_ambassador_offer_shares_date_wise" => get_time_slot_ambassador_offer_shares_date_wise(params[:current_time_slot_dates], offer)
-
-  #         }
-  #         special_offers << {
-  #         id: offer.id,
-  #         title: offer.title,
-  #         sub_title: offer.sub_title,
-  #         location: offer.location,
-  #         date: offer.date,
-  #         time: offer.time,
-  #         lat: offer.lat,
-  #         lng: offer.lng,
-  #         image: offer.image.url,
-  #         creator_name: offer.user.business_profile.profile_name,
-  #         creator_image: offer.user.avatar,
-  #         description: offer.description,
-  #         validity: offer.validity,
-  #         grabbers_count: offer.wallets.size,
-  #         stats: stats
-  #       }
-  #       end #each
-
-  #       render json: {
-  #         code: 200,
-  #         success: true,
-  #         message: '',
-  #         data: {
-  #           business_detail: business_detail,
-  #           resource: special_offers
-  #         }
-  #       }
-
-  #     when 'competitions'
-  #       competitions = []
-  #       @business.competitions.each do |competition|
-  #         stats = []
-  #          stats << {
-  #            "time_slot_total_competitions" =>  get_time_slot_total_competitions(params[:current_time_slot_dates], competition),
-  #            "time_slot_competitions_increment_decrement" => get_time_slot_competitions_increment_decrement(params[:current_time_slot_dates],    params[:before_current_time_slot_dates], competition),
-  #            "time_slot_competitions_date_wise" => get_time_slot_competitions_date_wise(params[:current_time_slot_dates], competition)
-  #          }
-  #         competitions << {
-  #           id: competition.id,
-  #           title: competition.title,
-  #           description: competition.description,
-  #           location: competition.location,
-  #           start_date: competition.start_date,
-  #           end_date: competition.end_date,
-  #           start_time: competition.start_time,
-  #           end_time: competition.end_time,
-  #           price: competition.price,
-  #           lat: competition.lat,
-  #           lng: competition.lng,
-  #           image: competition.image.url,
-  #           friends_participants_count: competition.registrations.map {|reg| if(request_user.friends.include? reg.user) then reg.user end }.size,
-  #           creator_name: competition.user.first_name + " " + competition.user.last_name,
-  #           creator_image: competition.user.avatar,
-  #           validity: competition.validity + "T" + competition.validity_time.strftime("%H:%M:%S") + ".000Z",
-  #           stats: stats
-  #         }
-  #       end #each
-
-  #       render json: {
-  #         code: 200,
-  #         success: true,
-  #         message: '',
-  #         data: {
-  #           business_detail: business_detail,
-  #           resource: competitions
-  #         }
-  #       }
-
-  #     when 'passes'
-  #     passes = []
-  #     @business.passes.each do |pass|
-  #       stats = []
-  #       stats << {
-  #         "time_slot_total_special_offers" => get_time_slot_total_passes(params[:current_time_slot_dates], pass),
-  #         "time_slot_passes_increment_decrement" =>  get_time_slot_passes_increment_decrement(params[:current_time_slot_dates], params[:before_current_time_slot_dates], pass),
-  #         "time_slot_passes_date_wise" => get_time_slot_passes_date_wise(params[:current_time_slot_dates], pass)
-  #       }
-  #       passes << {
-  #         id: pass.id,
-  #         title: pass.title,
-  #         host_name: pass.event.user.first_name + " " + pass.event.user.last_name,
-  #         host_image: pass.event.user.avatar,
-  #         event_name: pass.event.title,
-  #         event_id: pass.event.id,
-  #         event_image: pass.event.image,
-  #         event_location: pass.event.location,
-  #         event_start_time: pass.,
-  #         event_end_time: pass.,
-  #         event_date: pass.event.start_date,
-  #         distributed_by: distributed_by(pass),
-  #         validity: pass.validity + " " + pass.validity_time.strftime("%H:%M:%S").to_s,
-  #         grabbers_count: pass.wallets.size,
-  #         stats: stats
-  #       }
-  #         end#each
-
-  #         render json: {
-  #           code: 200,
-  #           success: true,
-  #           message: '',
-  #           data: {
-  #             business_detail: business_detail,
-  #             resource: passes
-  #           }
-  #         }
-
-  #     else
-  #       #do nothing
-  #     end #case end
-  #   else
-  #     render json: {
-  #       code: 400,
-  #       success: false,
-  #       message: 'business_id, current_time_slot_dates,before_current_time_slot_dates and resource are required fields.',
-  #       data: nil
-  #     }
-  #   end #if
-
-  # end
 
   private
+
+
+def get_date_time(date, time)
+    d = date.strftime("%Y-%m-%d")
+    t = time.strftime("%H:%M:%S")
+    datetime = d + "T" + t + ".000Z"
+end
+
+def business
+ business = request_user
+end
 
   ##################### attendess #######################
 

@@ -1236,6 +1236,7 @@ end
   helper_method :generate_code
   helper_method :get_full_name
   helper_method :get_price
+  helper_method :get_token_from_user
 
 
 

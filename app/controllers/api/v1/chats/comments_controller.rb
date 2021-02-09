@@ -1,4 +1,4 @@
-class Api::V1::CommentsController < Api::V1::ApiMasterController
+class Api::V1::Chats::CommentsController < Api::V1::ApiMasterController
   before_action :authorize_request, except:  ['comments','get_commented_events']
   require 'json'
   require 'pubnub'

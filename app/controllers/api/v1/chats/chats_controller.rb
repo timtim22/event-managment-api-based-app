@@ -1,4 +1,4 @@
-class Api::V1::ChatsController < Api::V1::ApiMasterController
+class Api::V1::Chats::ChatsController < Api::V1::ApiMasterController
   before_action :authorize_request, except:  ['chat_people']
   require 'pubnub'
   require 'json'

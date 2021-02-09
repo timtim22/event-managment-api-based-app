@@ -1,4 +1,4 @@
-class Api::V1::CategoriesController < Api::V1::ApiMasterController
+class Api::V1::Events::CategoriesController < Api::V1::ApiMasterController
 
   def index
     categories = Category.all

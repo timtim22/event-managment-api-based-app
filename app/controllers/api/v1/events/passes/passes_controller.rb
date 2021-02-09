@@ -1,4 +1,4 @@
-class Api::V1::Passes::PassesController < Api::V1::ApiMasterController
+class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
 
   def index
     if !params[:event_id].blank?

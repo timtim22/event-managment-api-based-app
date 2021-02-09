@@ -17,7 +17,6 @@ Rails.application.routes.draw do
             post '/update-profile' => 'users#update_profile'
             get '/get-profile' => 'users#get_profile'
             post '/get-profile' => "users#get_others_profile"
-            post '/get-latlng' => 'gmap#getLatLong'
             post "/delete-account" => "users#delete_account"
             post '/update-device-token' => "users#update_device_token"
             get '/get-activity-logs' => "users#get_activity_logs"
@@ -46,11 +45,11 @@ Rails.application.routes.draw do
       end #users
 
 
-      namespace :business do
-        post '/get-offer-stats' => 'business_dashboard#get_offer_stats'
+      namespace :businesse do
+        post '/get-offer-stats' => 'analytics#get_offer_stats'
+        post '/get-competition-stats' => 'analytics#get_competition_stats' 
+        post "/get-event-stats" => "analytics#get_event_stats"
         post '/get-business-newsfeeds' => 'business_dashboard#get_business_news_feeds'
-        post '/get-competition-stats' => 'business_dashboard#get_competition_stats' 
-        post "/get-event-stats" => "business_dashboard#get_event_stats"
         post '/events/show' => 'business_dashboard#show_event'
         get '/get-dashbord' => 'business_dashboard#home'
         get '/get-events' => 'business_dashboard#events'
@@ -121,7 +120,6 @@ Rails.application.routes.draw do
       post '/clear-conversation' => 'chats#clear_conversation'
       post '/clear-chat' => 'chats#clear_chat'
       post '/delete-event-comments' => 'comments#delete_event_comments'
-
       post '/comments' => "comments#comments"
     end
 
@@ -152,10 +150,10 @@ Rails.application.routes.draw do
      get '/approve' => 'ambassadors#approve'
      get '/remove' => 'ambassadors#remove'
      get '/view' => 'ambassadors#view_ambassador'
-     post '/attending' => 'users#attending'
-     post '/gives-away' => 'users#gives_away'
-     get '/my-gives-away' => 'users#my_gives_away'
-     get '/my-attending' => 'users#my_attending'
+     post '/attending' => 'ambassadors#attending'
+     post '/gives-away' => 'ambassadors#gives_away'
+     get '/my-gives-away' => 'ambassadors#my_gives_away'
+     get '/my-attending' => 'ambassadors#my_attending'
      post '/send-request' => "ambassadors#send_request"
      get '/businesses-list' => "ambassadors#businesses_list"
      get '/my-businesses' => "ambassadors#my_businesses"
@@ -178,9 +176,9 @@ Rails.application.routes.draw do
 
 
    namespace :share do
-     post '/ask-location' => "notifications#ask_location"
-     post '/get-location' => "notifications#get_location"
-     post '/send-location' => "notifications#send_location"
+     post '/ask-location' => "forwarding#ask_location"
+     post '/get-location' => "forwarding#get_location"
+     post '/send-location' => "forwarding#send_location"
      post '/forward-offer' => "forwarding#forward_offer"
      post '/share-offer' => "forwarding#share_offer"
      post '/events/share' => 'forwarding#share_event'
@@ -202,6 +200,7 @@ Rails.application.routes.draw do
     post "/create-impression" => "api_master#create_impression"
     post "/search/global-search" => "search#global_search"
     get '/search' => 'search#events_live_search'
+    post '/get-latlng' => 'gmap#getLatLong'
 
       #  get '/publish', to: 'chat#publish'
       #  get '/subscribe', to: 'chat#subscribe'
