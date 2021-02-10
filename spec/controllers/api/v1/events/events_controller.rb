@@ -1,7 +1,6 @@
 require 'rails_helper'
 require "spec_helper"
 
-
 RSpec.describe Api::V1::Events::EventsController, type: :controller do
   describe "Mobile - Events API - " do
     

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterController
+=======
+class Api::V1::Businesses::BusinessDashboard < Api::V1::ApiMasterController
+>>>>>>> 8a4aa5cc95b1becd8db30ddfd5f1f625eb5947fb
   before_action :authorize_request
   before_action :business
 
@@ -261,7 +265,41 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
       end
   end
 
+<<<<<<< HEAD
   private
 
 
+=======
+
+
+
+
+  
+
+  private
+
+
+def get_date_time(date, time)
+    d = date.strftime("%Y-%m-%d")
+    t = time.strftime("%H:%M:%S")
+    datetime = d + "T" + t + ".000Z"
+end
+
+def business
+ business = request_user
+end
+
+  ##################### attendess #######################
+
+ def get_date_time(date, time)
+    d = date.strftime("%Y-%m-%d")
+    t = time.strftime("%H:%M:%S")
+    datetime = d + "T" + t + ".000Z"
+ end
+
+
+ 
+
+
+>>>>>>> 8a4aa5cc95b1becd8db30ddfd5f1f625eb5947fb
 end

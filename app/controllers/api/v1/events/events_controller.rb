@@ -1,8 +1,11 @@
 class Api::V1::Events::EventsController < Api::V1::ApiMasterController
   before_action :authorize_request, except:  ['events_list_by_date','index','show_event','get_map_events']
 
+
+
   api :POST, '/api/v1/events/show', 'To view a specific event'
-  param :event_id, String, :desc => "Event ID", :required => true
+  param :event_id, Integer, :desc => "Event ID", :required => true
+
 
   def show_event
     if !params[:event_id].blank?
@@ -113,8 +116,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
     end
   end
 
-  api :get, '/api/v1/events', 'Get events by list'
-
+  api :post, '/api/v1/events/get-list', 'Get events by list'
 
   def index
     cats_id = []
@@ -203,8 +205,6 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
       end #func
 
 
-
-
  #  api :POST, '/api/v1/events-by-date', 'Get events by date'
  #  param :date, String, :desc => "Date", :required => true
 
@@ -213,8 +213,8 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
 	# 	render json: @events
 	# end
 
-  api :POST, '/api/v1/event/report-event', 'To repot an event'
-  param :event_id, :number, :desc => "Event ID", :required => true
+  api :POST, '/api/v1/events/report-event', 'To repot an event'
+  param :event_id, Integer, :desc => "Event ID", :required => true
   param :reason, String, :desc => "Reason for reporting an event", :required => true
 
 
@@ -245,10 +245,10 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
 
   end
 
-  api :POST, '/api/v1/event/create-view', 'To create view'
+  api :POST, '/api/v1/events/create-impression', 'To create impression'
   param :event_id, :number, :desc => "Event ID", :required => true
 
-  def create_view
+  def create_impression
     if !params[:event_id].blank?
       event = ChildEvent.find(params[:event_id])
     if view = event.views.create!(user_id: request_user.id, business_id: event.user.id)
@@ -276,32 +276,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
     end
   end
 
-  api :POST, '/api/v1/get-business-events', 'Get a business user events'
-  param :business_id, :number, :desc => "Business ID", :required => true
-
-  def get_business_events
-    if !params[:business_id].blank?
-      business = User.find(params[:business_id])
-      events =  business.child_events.page(params[:page]).per(30).map { |e| get_simple_event_object(e) }
-        render json: {
-          code: 200,
-          success:true,
-          message: '',
-          data: {
-            events: events
-          }
-        }
-
-    else
-      render json: {
-        code: 400,
-        success:false,
-        message: "business_id is required field.",
-        data: nil
-      }
-    end
-  end
-
+ 
 
   def get_map_events
     if !params[:date].blank?

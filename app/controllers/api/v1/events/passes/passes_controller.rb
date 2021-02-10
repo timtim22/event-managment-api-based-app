@@ -1,5 +1,9 @@
 class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
 
+  api :POST, '/api/v1/events/passes/get-list', 'Get a single pass'
+  param :event_id, Integer, :desc => "ID of the event", :required => true
+
+
   def index
     if !params[:event_id].blank?
       child_event = ChildEvent.find(params[:event_id])
@@ -74,8 +78,8 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
 
   end
 
-    api :POST, '/api/v1/passes/pass-single', 'Get a single pass'
-    param :pass_id, :number, :desc => "ID of the event", :required => true
+    api :POST, '/api/v1/events/passes/show', 'View a pass'
+    param :pass_id, Integer, :desc => "ID of the pass", :required => true
 
 
   def pass_single
@@ -89,7 +93,7 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
         host_image:pass.event.user.avatar,
         event_title:pass.event.title,
         event_image:pass.event.image,
-        event_location:eval(pass.event.location),
+        event_location: eval(pass.event.location),
         event_date:pass.event.start_date,
         is_added_to_wallet: is_added_to_wallet?(pass.id),
         validity: pass.validity.strftime(get_time_format),
@@ -119,9 +123,9 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
    end
    end
 
-  # api :POST, '/api/v1/event/redeem-pass', 'To redeem an event'
-  # param :pass_id, :number, :desc => "Event ID", :required => true
-  # param :redeem_code, String, :desc => "Redeem Code", :required => true
+  api :POST, '/api/v1/events/passes/redeem', 'To redeem a pass'
+  param :pass_id, Integer, :desc => "pass id", :required => true
+  param :redeem_code, String, :desc => "Redeem Code", :required => true
 
   def redeem_it
     if !params[:redeem_code].blank? && !params[:pass_id].blank?
@@ -197,10 +201,10 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
   end
   end
 
-  api :POST, '/api/v1/passes/create-view', 'Create a passes view'
-  param :pass_id, :number, :desc => "Pass ID", :required => true
+  api :POST, '/api/v1/events/passes/create-impression', 'Create an impression'
+  param :pass_id, Integer, :desc => "Pass ID", :required => true
 
-  def create_view
+  def create_impression
     if !params[:pass_id].blank?
       pass = Pass.find(params[:pass_id])
       if view = pass.views.create!(user_id: request_user.id, business_id: pass.user.id)
