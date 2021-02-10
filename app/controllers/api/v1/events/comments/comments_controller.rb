@@ -1,4 +1,4 @@
-class Api::V1::CommentsController < Api::V1::ApiMasterController
+class Api::V1::Events::Comments::CommentsController < Api::V1::ApiMasterController
   before_action :authorize_request, except:  ['comments','get_commented_events']
   require 'json'
   require 'pubnub'
@@ -7,8 +7,8 @@ class Api::V1::CommentsController < Api::V1::ApiMasterController
   include ActionView::Helpers::DateHelper
 
   api :POST, '/api/v1/event/post-comment', 'Post event based comment'
-  # param :event_id, :number, :desc => "Event ID", :required => true
-  # param :comment, String, :desc => "Comment", :required => true
+  param :event_id, Integer, :desc => "Event ID", :required => true
+  param :comment, String, :desc => "Comment", :required => true
   # param :is_reply, String, :desc => "True/False", :required => true
 
   def create
@@ -275,7 +275,7 @@ end
   param :event_id, :number, :desc => "Event ID", :required => true
 
 
-   def comments
+   def get_event_comments
     @event = ChildEvent.find(params[:event_id])
      @comments = []
     ## if event is not blocked by request user

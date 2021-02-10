@@ -1,4 +1,4 @@
-class Api::V1::NotificationsController < Api::V1::ApiMasterController
+class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterController
   before_action :authorize_request
   require 'json'
   require 'pubnub'

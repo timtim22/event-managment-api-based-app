@@ -29,6 +29,19 @@ Rails.application.routes.draw do
             get 'my-activity-logs' => 'users#my_activity_logs'
             get '/get-profile' => "users#get_business_profile"
             post '/get-profile' => "users#get_others_business_profile"
+            post '/attending' => 'users#attending'
+            post '/gives-away' => 'users#gives_away'
+            get '/my-gives-away' => 'users#my_gives_away'
+            get '/my-attending' => 'users#my_attending'
+
+
+          namespace :comments do
+            post '/post-comment' => "comments#create"
+            get '/get-commented-events' => "comments#get_commented_events"
+            post '/comments/mark-as-read' => "comments#mark_as_read"
+            post '/delete-event-comments' => 'comments#delete_event_comments'
+            post '/comments' => "comments#get_event_comments"
+          end
 
           namespace :settings do
             post '/update-setting' => 'settings#update_global_setting'
@@ -70,7 +83,6 @@ Rails.application.routes.draw do
           post '/show' => 'events#show_event'
           
           
-
           namespace :passes do
             post '/get-list' => 'passes#index'
             post '/create-impression' => "passes#create_view"
@@ -100,6 +112,8 @@ Rails.application.routes.draw do
         post '/create-impression' => "special_offers#create_impression"
         post '/redeem' => "special_offers#redeem_it"
         post '/show' => "special_offers#show"
+        post 'show-all-offers' => "special_offers#show_all_offers"
+        post 'get-business-offers' => "special_offers#get_business_special_offers"
         post "/single" => "special_offers#special_offer_single"
       end #special_offers
 
@@ -113,32 +127,29 @@ Rails.application.routes.draw do
      end 
 
     namespace :chats do
-      post '/post-comment' => "comments#create"
-      get '/get-commented-events' => "comments#get_commented_events"
       post '/send-message', to: 'chats#send_message'
       post '/history', to: 'chats#chat_history'
       get '/chat-people', to: 'chats#chat_people'
       post '/mark-as-read' => "chats#mark_as_read"
-      post '/comments/mark-as-read' => "comments#mark_as_read"
       post '/clear-conversation' => 'chats#clear_conversation'
-      post '/clear-chat' => 'chats#clear_chat'
-      post '/delete-event-comments' => 'comments#delete_event_comments'
-
-      post '/comments' => "comments#comments"
+      post '/clear-chat' => 'chats#clear_chat'      
     end
 
 
    namespace :notifications do
-     post "/read" => "notifications#read_notification"
+     post "/read-notification" => "notifications#read_notification"
      get '/send-events-reminder' => "notifications#send_events_reminder"
-     get '/get-list' => "notifications#index"
+     get '/get-all-notifications' => "notifications#index"
      get '/mark-as-read' => "notifications#mark_as_read"
      post '/delete' => "notifications#delete_notification"
+     post '/ask-location' => "notifications#ask_location"
+     post '/get-location' => "notifications#get_location"
+     post '/send-location' => "notifications#send_location"
    end
 
    namespace :friendship do
       post '/send-request' => "friendships#send_request"
-      # post '/check-request' => "friendships#check_request"
+      post '/check-request' => "friendships#check_request"
       get '/friend-requests' => "friendships#friend_requests"
       post '/accept-request' => "friendships#accept_request"
       post '/decline-request' => "friendships#remove_request"
@@ -154,10 +165,6 @@ Rails.application.routes.draw do
      get '/approve' => 'ambassadors#approve'
      get '/remove' => 'ambassadors#remove'
      get '/view' => 'ambassadors#view_ambassador'
-     post '/attending' => 'users#attending'
-     post '/gives-away' => 'users#gives_away'
-     get '/my-gives-away' => 'users#my_gives_away'
-     get '/my-attending' => 'users#my_attending'
      post '/send-request' => "ambassadors#send_request"
      get '/businesses-list' => "ambassadors#businesses_list"
      get '/my-businesses' => "ambassadors#my_businesses"
@@ -181,9 +188,8 @@ Rails.application.routes.draw do
 
 
    namespace :share do
-     post '/ask-location' => "notifications#ask_location"
-     post '/get-location' => "notifications#get_location"
-     post '/send-location' => "notifications#send_location"
+
+     
      post '/forward-offer' => "forwarding#forward_offer"
      post '/share-offer' => "forwarding#share_offer"
      post '/events/share' => 'forwarding#share_event'

@@ -1,4 +1,4 @@
-class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
+class Api::V1::Bookings::InterestLevelsController < Api::V1::ApiMasterController
   before_action :authorize_request
   require 'json'
   require 'pubnub'
@@ -7,7 +7,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
   include ActionView::Helpers::DateHelper
 
   api :POST, '/api/v1/event/create-interest', 'To create interest'
-  param :event_id, :number, :desc => "Event ID", :required => true
+  param :event_id, Integer, :desc => "Event ID", :required => true
 
  def create_interest
     if !params[:event_id].blank?
@@ -126,7 +126,7 @@ class Api::V1::InterestLevelsController < Api::V1::ApiMasterController
 
 
    api :POST, '/api/v1/event/create-going', 'To create going'
-  param :event_id, :number, :desc => "Event ID", :required => true
+  param :event_id, Integer, :desc => "Event ID", :required => true
 
  def create_going
   if !params[:event_id].blank?
