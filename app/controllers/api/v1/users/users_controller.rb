@@ -56,7 +56,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   param :last_name, String, :desc => "last Name", :required => true
   param :dob, String, :desc => "DOB", :required => true
   param :gender, String, :desc => "Gender", :required => true
-  param :role_id, Integer, :desc => "role_id", :required => true
+  # param :role_id, Integer, :desc => "role_id", :required => true
   param :phone_number, String, :desc => "phone_number"
   param :email, String, :desc => "email"
   param :location, String, :desc => "location"
@@ -191,7 +191,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   param :last_name, String, :desc => "last Name", :required => true
   param :dob, String, :desc => "DOB", :required => true
   param :gender, String, :desc => "Gender", :required => true
-  param :role_id, Integer, :desc => "role_id", :required => true
+  # param :role_id, Integer, :desc => "role_id", :required => true
   param :phone_number, String, :desc => "phone_number"
   param :email, String, :desc => "email"
   param :location, String, :desc => "location"
