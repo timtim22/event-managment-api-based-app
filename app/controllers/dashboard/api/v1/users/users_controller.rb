@@ -1,6 +1,6 @@
 class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMasterController
-  before_action :authorize_request, except: ['create']
-  before_action :checkout_logout, except: :create
+  before_action :authorize_request, except: ['create_user']
+  before_action :checkout_logout, except: :create_user
   require 'action_view'
   require 'action_view/helpers'
   require 'json'
@@ -80,7 +80,7 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
   end
 
 
-  api :POST, 'dashboard/api/v1/users', 'Create new user'
+  api :POST, 'dashboard/api/v1/users/create-user', 'Create new user'
   # param :type, :number, :desc => "Role ID (1,2,3)", :required => true
   # param :profile_name, String, :desc => "Profile Name", :required => true
   # param :contact_name, String, :desc => "Contact Name", :required => true
