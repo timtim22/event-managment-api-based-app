@@ -30,18 +30,8 @@ Rails.application.routes.draw do
             get '/get-profile' => "users#get_business_profile"
             post '/get-profile' => "users#get_others_business_profile"
             post '/attending' => 'users#attending'
-            post '/gives-away' => 'users#gives_away'
-            get '/my-gives-away' => 'users#my_gives_away'
             get '/my-attending' => 'users#my_attending'
 
-
-          namespace :comments do
-            post '/post-comment' => "comments#create"
-            get '/get-commented-events' => "comments#get_commented_events"
-            post '/comments/mark-as-read' => "comments#mark_as_read"
-            post '/delete-event-comments' => 'comments#delete_event_comments'
-            post '/comments' => "comments#get_event_comments"
-          end
 
           namespace :settings do
             post '/update' => 'settings#update_global_setting'
@@ -92,6 +82,14 @@ Rails.application.routes.draw do
           namespace :tickets do
             post '/redeem' => "tickets#redeem_it"
             post '/get-list' => 'tickets#get_tickets'
+          end
+
+          namespace :comments do
+            post '/post-comment' => "comments#create"
+            get '/get-commented-events' => "comments#get_commented_events"
+            post '/comments-mark-as-read' => "comments#mark_as_read"
+            post '/delete-event-comments' => 'comments#delete_event_comments'
+            post '/comments' => "comments#get_event_comments"
           end
       
       end #events
@@ -166,6 +164,8 @@ Rails.application.routes.draw do
      post '/send-request' => "ambassadors#send_request"
      get '/businesses-list' => "ambassadors#businesses_list"
      get '/my-businesses' => "ambassadors#my_businesses"
+     post '/gives-away' => 'users#gives_away'
+     get '/my-gives-away' => 'users#my_gives_away'
    end
 
 

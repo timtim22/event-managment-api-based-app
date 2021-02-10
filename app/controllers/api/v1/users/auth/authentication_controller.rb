@@ -82,6 +82,7 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
         if account.role_ids.include?(2)
           obj = {
             "id" => account.id,
+            "uuid" => account.uuid,
             "profile_name" => account.business_profile.profile_name,
             "contact_name" => account.business_profile.contact_name,
             "display_name" => account.business_profile.display_name,

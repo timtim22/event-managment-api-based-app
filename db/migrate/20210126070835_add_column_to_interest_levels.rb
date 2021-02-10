@@ -1,5 +1,5 @@
 class AddColumnToInterestLevels < ActiveRecord::Migration[5.2]
   def change
-    add_column :interest_levels, :ticket_id, :integer
+    add_column :interest_levels, :ticket_id, Integer
   end
 end

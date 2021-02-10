@@ -2,7 +2,7 @@ require 'rails_helper'
 require "spec_helper"
 
 
-RSpec.describe Api::V1::Chats::CommentsController, type: :controller do
+RSpec.describe Api::V1::Events::Comments::CommentsController, type: :controller do
   describe "Mobile - Comments API - " do
     
     before do

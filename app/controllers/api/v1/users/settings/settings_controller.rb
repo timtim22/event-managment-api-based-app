@@ -1,4 +1,4 @@
-class Api::V1::Users::Setting::SettingsController < Api::V1::ApiMasterController
+class Api::V1::Users::Settings::SettingsController < Api::V1::ApiMasterController
   before_action :authorize_request
 
   api :POST, '/api/v1/user/settings/update', 'To update a user profile global settings'
@@ -143,9 +143,7 @@ class Api::V1::Users::Setting::SettingsController < Api::V1::ApiMasterController
         end
 
 
-        
-
-
+      
         def change_location_status
           if !params[:status].blank?
             if request_user.update!(location_enabled: params[:status])

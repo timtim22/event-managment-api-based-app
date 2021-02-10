@@ -6,7 +6,7 @@ class Api::V1::Events::Comments::CommentsController < Api::V1::ApiMasterControll
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
 
-  api :POST, '/api/v1/event/post-comment', 'Post event based comment'
+  api :POST, '/api/v1/events/post-comment', 'Post event based comment'
   param :event_id, Integer, :desc => "Event ID", :required => true
   param :comment, String, :desc => "Comment", :required => true
   # param :is_reply, String, :desc => "True/False", :required => true
@@ -271,7 +271,7 @@ else
 end
 end
 
-  api :POST, '/api/v1/event/comments', 'Get list of event based comments'
+  api :POST, '/api/v1/events/comments', 'Get list of event based comments'
   param :event_id, :number, :desc => "Event ID", :required => true
 
 
@@ -329,7 +329,7 @@ end
    end
 
 
-  api :get, '/api/v1/event/get-commented-events', 'Get comment events'
+  api :get, '/api/v1/events/get-commented-events', 'Get comment events'
 
    def get_commented_events
      @events = []
@@ -375,7 +375,7 @@ end
      }
    end
 
-  api :POST, '/api/v1/event/delete-event-comments', 'Delete Comment Events'
+  api :POST, '/api/v1/events/delete-event-comments', 'Delete Comment Events'
   param :event_id, :number, :desc => "Event ID", :required => true
 
    def delete_event_comments
@@ -407,7 +407,7 @@ end
         end
    end
 
-  api :POST, '/api/v1/event/mark-as-read', 'To mark as read'
+  api :POST, '/api/v1/events/comments-mark-as-read', 'To mark as read'
   param :event_id, :number, :desc => "Event ID", :required => true
 
 def mark_as_read

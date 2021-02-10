@@ -7,7 +7,7 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
   include ActionView::Helpers::DateHelper
 
   api :POST, '/api/v1/ambassadors/send-request', 'Send Ambassador Request'
-  param :business_id, :number, :desc => "Business ID", :required => true
+  param :business_id, Integer, :desc => "Business ID", :required => true
 
   def send_request
     if !params[:business_id].blank?
@@ -252,7 +252,7 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
   end
 
 
-  api :POST, '/api/v1/users/gives_away', 'To get user gives away'
+  api :POST, '/api/v1/ambassadors/gives_away', 'To get user gives away'
   param :user_id, Integer, :desc => "user ID", :required => true
 
  def gives_away
@@ -288,50 +288,9 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
 
 
 
- api :GET, '/api/v1/users/my-attending', 'To get my attending'
-def my_attending
-    attending = []
-    user = request_user
-    attendings = user.events_to_attend.page(params[:page]).per(30).each do |event|
-     attending << {
-       "event_id" => event.id,
-       "name" => event.title,
-       "start_date" => event.start_date,
-       "end_date" => event.end_date,
-       "start_time" => event.start_time,
-       "end_time" => event.end_time,
-       "location" => eval(event.location),
-       "event_type" => event.event_type,
-       "image" => event.image,
-       "price_type" => event.price_type,
-       "price" => event.price,
-       "additional_media" => event.event.event_attachments,
-       "created_at" => event.created_at,
-       "updated_at" => event.updated_at,
-       "host" => get_full_name(event.user),
-       "host_image" => event.user.avatar,
-       "interest_count" => event.interested_interest_levels.size,
-       "going_count" => event.going_interest_levels.size,
-       "demographics" => get_demographics(event),
-       'has_passes' => has_passes?(event.event)
-     }
-    end#each
+ 
 
-    render json: {
-      code: 200,
-      success: true,
-      message: '',
-      data: {
-        attending: attending
-      }
-    }
-
-end
-
-
-
-
-api :GET, '/api/v1/users/my-gives-away', 'To get my gives away'
+api :GET, '/api/v1/ambassadors/my-gives-away', 'To get my gives away'
 
 def my_gives_away
    user = request_user
