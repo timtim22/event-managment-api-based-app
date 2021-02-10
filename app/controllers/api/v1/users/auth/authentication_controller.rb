@@ -7,8 +7,6 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
     param :uuid, String, :desc => "The ID of the user", :required => true
     param :device_token, String, :desc => "pass any string ", :required => true
 
-
-
    def login
      if params[:uuid].present? && params[:device_token].present?
          user = User.find_by(uuid: params[:uuid])
@@ -138,7 +136,8 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
   #    render json: response.to_json
   # end
 
-
+  api :POST, '/api/v1/logout', 'To logout'
+  param :phone_number, String, :desc => "Phone Number", :required => true
 
   def logout
     if params[:phone_number].present?
@@ -227,7 +226,7 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
 
   api :POST, '/api/v1/auth/update-password', 'To update password'
   param :email, String, :desc => "Email", :required => true
-  #param :password, String, :desc => "Password", :required => true
+  param :password, String, :desc => "Password", :required => true
 
   def update_password
     @user = User.find_by(email: params[:email])

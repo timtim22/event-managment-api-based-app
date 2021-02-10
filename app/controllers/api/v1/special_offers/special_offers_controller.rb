@@ -3,7 +3,7 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
 
   api :GET, '/api/v1/special_offers', 'Get special offers'
 
-  def index
+  def show_all_offers
     @special_offers = []
     if request_user
     SpecialOffer.page(params[:page]).per(20).not_expired.order(created_at: "DESC").each do |offer|
@@ -72,7 +72,7 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
 
 
   api :POST, '/api/v1/special-offers/special-offer-single', 'Get a single special offer'
-  param :special_offer_id, :number, :desc => "ID of the special offer", :required => true
+  param :special_offer_id, Integer, :desc => "ID of the special offer", :required => true
 
   def special_offer_single
    if !params[:special_offer_id].blank?

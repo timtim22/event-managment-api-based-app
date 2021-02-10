@@ -592,9 +592,9 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
         end
     end
 
-      api :GET, '/api/v1/send_events_reminder', 'Send event reminders to interested participants before ony day'
+      # api :GET, '/api/v1/send_events_reminder', 'Send event reminders to interested participants before ony day'
 
-    def send_events_reminder
+    # def send_events_reminder
       # interested_in_events = request_user.interested_in_events
       # #send reminder about interested in events
       #  @reminder_sent = false;
@@ -783,9 +783,9 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
       #       token: request_user.device_token,
       #       data: nil
       #     }
-      #   end
-     render json: "Do nothing for now. when we will implement crone jobs then will be operational"
-    end
+    #   #   end
+    #  render json: "Do nothing for now. when we will implement crone jobs then will be operational"
+    # end
 
   api :POST, '/api/v1/notifications/delete-notification', 'Delete a notification'
   # param :notification_id, String, :desc => "Notification ID", :required => true

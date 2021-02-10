@@ -51,17 +51,17 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     render json: @user, status: :ok
   end
 
-  # api :POST, '/api/v1/users/create-user', 'To SignUp/Register'
-  # param :first_name, String, :desc => "First Name", :required => true
-  # param :last_name, String, :desc => "last Name", :required => true
-  # param :dob, String, :desc => "DOB", :required => true
-  # param :gender, String, :desc => "Gender", :required => true
-  # param :role_id, Integer, :desc => "role_id", :required => true
-  # param :phone_number, String, :desc => "phone_number"
-  # param :email, String, :desc => "email"
-  # param :location, String, :desc => "location"
-  # param :about, String, :desc => "about"
-  # POST /users
+  api :POST, '/api/v1/users/create-user', 'To SignUp/Register'
+  param :first_name, String, :desc => "First Name", :required => true
+  param :last_name, String, :desc => "last Name", :required => true
+  param :dob, String, :desc => "DOB", :required => true
+  param :gender, String, :desc => "Gender", :required => true
+  param :role_id, Integer, :desc => "role_id", :required => true
+  param :phone_number, String, :desc => "phone_number"
+  param :email, String, :desc => "email"
+  param :location, String, :desc => "location"
+  param :about, String, :desc => "about"
+  param :password, String, :desc => "password"
 
 
 
@@ -102,8 +102,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
       @profile_data["last_name"] = @user.profile.last_name
       @profile_data["avatar"] = @user.avatar
 
-      @user.social_media.new
-      @user.save
+      SocialMedia.create!(user: @user)
        #Also save default setting
        setting_name_values = ['all_chat_notifications','event_notifications','special_offers_notifications','passes_notifications','competitions_notifications','location']
 
@@ -187,17 +186,17 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     end
   end
 
-  # api :POST, '/api/v1/users/update-user', 'To SignUp/Register'
-  # param :id, Integer, :desc => "The Id of the user", :required => true
-  # param :first_name, String, :desc => "First Name", :required => true
-  # param :last_name, String, :desc => "last Name", :required => true
-  # param :dob, String, :desc => "DOB", :required => true
-  # param :gender, String, :desc => "Gender", :required => true
-  # param :role_id, Integer, :desc => "role_id", :required => true
-  # param :phone_number, String, :desc => "phone_number"
-  # param :email, String, :desc => "email"
-  # param :location, String, :desc => "location"
-  # param :about, String, :desc => "about"
+  api :POST, '/api/v1/users/update-user', 'To SignUp/Register'
+  param :first_name, String, :desc => "First Name", :required => true
+  param :last_name, String, :desc => "last Name", :required => true
+  param :dob, String, :desc => "DOB", :required => true
+  param :gender, String, :desc => "Gender", :required => true
+  param :role_id, Integer, :desc => "role_id", :required => true
+  param :phone_number, String, :desc => "phone_number"
+  param :email, String, :desc => "email"
+  param :location, String, :desc => "location"
+  param :about, String, :desc => "about"
+  param :password, String, :desc => "password"
 
   def update_profile
     user = User.find(params[:id])
@@ -291,8 +290,8 @@ end
       }
 end
 
-  # api :POST, '/api/v1/users/get-others-profile', 'To get a mobile user profile'
-  # param :user_id, Integer, :desc => "User ID", :required => true
+  api :POST, '/api/v1/users/get-others-profile', 'To get a mobile user profile'
+  param :user_id, Integer, :desc => "User ID", :required => true
 
  def get_others_profile
   if !params[:user_id].blank?
@@ -334,8 +333,8 @@ else
 end
 end
 
-  # api :POST, '/api/v1/users/user-activity-logs', 'To get user get activity logs'
-  # param :user_id, Integer, :desc => "User ID", :required => true
+  api :POST, '/api/v1/users/user-activity-logs', 'To get user get activity logs'
+  param :user_id, Integer, :desc => "User ID", :required => true
 
  def activity_logs
    if !params[:user_id].blank?
@@ -425,8 +424,8 @@ end
 
 
 
-  # api :POST, '/api/v1/users/user-attending', 'User Events to attend list'
-  # param :user_id, Integer, :desc => "User ID", :required => true
+  api :POST, '/api/v1/users/user-attending', 'User Events to attend list'
+  param :user_id, Integer, :desc => "User ID", :required => true
 
  def attending
    if !params[:user_id].blank?
@@ -565,8 +564,8 @@ end
       }
  end
 
-  # api :POST, '/api/v1/user/users/get-others-business-profile', 'To get a business profile'
-  # param :user_id, Integer, :desc => "User ID", :required => true
+  api :POST, '/api/v1/user/users/get-others-business-profile', 'To get a business profile'
+  param :user_id, Integer, :desc => "User ID", :required => true
 
  def get_others_business_profile
   if !params[:user_id].blank?
@@ -651,8 +650,8 @@ end
   end
   end
 
-  # api :POST, '/api/v1/users/update-current-location', 'To update a current location'
-  # param :location, String, :desc => "Location of the user", :required => true
+  api :POST, '/api/v1/users/update-current-location', 'To update a current location'
+  param :location, String, :desc => "Location of the user", :required => true
 
   def update_current_location
     if !params[:location].blank?
