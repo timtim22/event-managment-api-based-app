@@ -182,10 +182,10 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
                     data: {
 
                       "id": notification.id,
-                      "friend_name": User.get_full_name(notification.resource.user),
+                      "friend_name": get_full_name(notification.resource.user),
                       "competition_id": notification.resource.event.id,
                       "competition_name": notification.resource.event.title,
-                      "business_name": User.get_full_name(notification.resource.event.user),
+                      "business_name": get_full_name(notification.resource.event.user),
                       "draw_date": notification.resource.event.end_date,
                       "actor_image": notification.actor.avatar,
                       "notifiable_id": notification.notifiable_id,
@@ -267,10 +267,10 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
                  data: {
 
                   "id": notification.id,
-                  "friend_name": User.get_full_name(notification.resource.user),
+                  "friend_name": get_full_name(notification.resource.user),
                   "competition_id": notification.resource.event.id,
                   "competition_name": notification.resource.event.title,
-                  "business_name": User.get_full_name(notification.resource.event.user),
+                  "business_name": get_full_name(notification.resource.event.user),
                   "draw_date": notification.resource.event.end_date,
                   "actor_image": notification.actor.avatar,
                   "notifiable_id": notification.notifiable_id,
@@ -365,10 +365,10 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
                        },
                        "data": {
                         "id": notification.id,
-                        "business_name": User.get_full_name(notification.resource.user),
+                        "business_name": get_full_name(notification.resource.user),
                         "competition_name": notification.resource.title,
                         "total_competition_entries": notification.resource.registrations.size,
-                        "winner_name": User.get_full_name(notification.notifiable.user),
+                        "winner_name": get_full_name(notification.notifiable.user),
                         "winner_avatar": notification.notifiable.user.avatar,
                         "winner_id": notification.notifiable.user.id,
                         "actor_image": notification.resource.user.avatar,

@@ -1,4 +1,4 @@
-class Api::V1::Users:Settings::UsersController < Api::V1::ApiMasterController
+class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   before_action :authorize_request, except: :create
   before_action :checkout_logout, except: :create
   require 'action_view'
@@ -51,18 +51,21 @@ class Api::V1::Users:Settings::UsersController < Api::V1::ApiMasterController
     render json: @user, status: :ok
   end
 
-  api :POST, '/api/v1/users/create-user', 'To SignUp/Register'
-  param :first_name, String, :desc => "First Name", :required => true
-  param :last_name, String, :desc => "last Name", :required => true
-  param :dob, String, :desc => "DOB", :required => true
-  param :gender, String, :desc => "Gender", :required => true
-  param :role_id, Integer, :desc => "role_id", :required => true
-  param :phone_number, String, :desc => "phone_number"
-  param :email, String, :desc => "email"
-  param :location, String, :desc => "location"
-  param :about, String, :desc => "about"
+  # api :POST, '/api/v1/users/create-user', 'To SignUp/Register'
+  # param :first_name, String, :desc => "First Name", :required => true
+  # param :last_name, String, :desc => "last Name", :required => true
+  # param :dob, String, :desc => "DOB", :required => true
+  # param :gender, String, :desc => "Gender", :required => true
+  # param :role_id, Integer, :desc => "role_id", :required => true
+  # param :phone_number, String, :desc => "phone_number"
+  # param :email, String, :desc => "email"
+  # param :location, String, :desc => "location"
+  # param :about, String, :desc => "about"
   # POST /users
-  def create_user
+
+
+
+  def create
     required_fields = ['first_name', 'last_name','dob', 'gender', 'role_id']
     errors = []
     required_fields.each do |field|
@@ -184,17 +187,17 @@ class Api::V1::Users:Settings::UsersController < Api::V1::ApiMasterController
     end
   end
 
-  api :POST, '/api/v1/users/update-user', 'To SignUp/Register'
-  param :id, Integer, :desc => "The Id of the user", :required => true
-  param :first_name, String, :desc => "First Name", :required => true
-  param :last_name, String, :desc => "last Name", :required => true
-  param :dob, String, :desc => "DOB", :required => true
-  param :gender, String, :desc => "Gender", :required => true
-  param :role_id, Integer, :desc => "role_id", :required => true
-  param :phone_number, String, :desc => "phone_number"
-  param :email, String, :desc => "email"
-  param :location, String, :desc => "location"
-  param :about, String, :desc => "about"
+  # api :POST, '/api/v1/users/update-user', 'To SignUp/Register'
+  # param :id, Integer, :desc => "The Id of the user", :required => true
+  # param :first_name, String, :desc => "First Name", :required => true
+  # param :last_name, String, :desc => "last Name", :required => true
+  # param :dob, String, :desc => "DOB", :required => true
+  # param :gender, String, :desc => "Gender", :required => true
+  # param :role_id, Integer, :desc => "role_id", :required => true
+  # param :phone_number, String, :desc => "phone_number"
+  # param :email, String, :desc => "email"
+  # param :location, String, :desc => "location"
+  # param :about, String, :desc => "about"
 
   def update_profile
     user = User.find(params[:id])
@@ -263,7 +266,7 @@ end
           'id' => user.id,
           'first_name' => user.profile.first_name,
           'last_name' => user.profile.last_name,
-          'avatar' => eval(user.avatar),
+          'avatar' => user.avatar,
           'location' => user.location,
           'about' => user.about,
           'dob' => user.profile.dob.to_date,
@@ -288,8 +291,8 @@ end
       }
 end
 
-  api :POST, '/api/v1/users/get-others-profile', 'To get a mobile user profile'
-  param :user_id, Integer, :desc => "User ID", :required => true
+  # api :POST, '/api/v1/users/get-others-profile', 'To get a mobile user profile'
+  # param :user_id, Integer, :desc => "User ID", :required => true
 
  def get_others_profile
   if !params[:user_id].blank?
@@ -331,8 +334,8 @@ else
 end
 end
 
-  api :POST, '/api/v1/users/user-activity-logs', 'To get user get activity logs'
-  param :user_id, Integer, :desc => "User ID", :required => true
+  # api :POST, '/api/v1/users/user-activity-logs', 'To get user get activity logs'
+  # param :user_id, Integer, :desc => "User ID", :required => true
 
  def activity_logs
    if !params[:user_id].blank?
@@ -419,8 +422,11 @@ end
     }
    end
  end
-  api :POST, '/api/v1/users/user-attending', 'User Events to attend list'
-  param :user_id, Integer, :desc => "User ID", :required => true
+
+
+
+  # api :POST, '/api/v1/users/user-attending', 'User Events to attend list'
+  # param :user_id, Integer, :desc => "User ID", :required => true
 
  def attending
    if !params[:user_id].blank?
@@ -559,8 +565,8 @@ end
       }
  end
 
-  api :POST, '/api/v1/user/users/get-others-business-profile', 'To get a business profile'
-  param :user_id, Integer, :desc => "User ID", :required => true
+  # api :POST, '/api/v1/user/users/get-others-business-profile', 'To get a business profile'
+  # param :user_id, Integer, :desc => "User ID", :required => true
 
  def get_others_business_profile
   if !params[:user_id].blank?
@@ -645,8 +651,8 @@ end
   end
   end
 
-  api :POST, '/api/v1/users/update-current-location', 'To update a current location'
-  param :location, String, :desc => "Location of the user", :required => true
+  # api :POST, '/api/v1/users/update-current-location', 'To update a current location'
+  # param :location, String, :desc => "Location of the user", :required => true
 
   def update_current_location
     if !params[:location].blank?
@@ -764,8 +770,8 @@ end
     }
   end
 
-  api :POST, '/api/v1/users/update-profile-picture', 'Update Profile Picture'
-  param :avatar, String, :desc => "Avatar", :required => true
+  # api :POST, '/api/v1/users/update-profile-picture', 'Update Profile Picture'
+  # param :avatar, String, :desc => "Avatar", :required => true
 
   def update_profile_pictures
     if @update = request_user.update!(avatar: params[:avatar])
@@ -845,17 +851,17 @@ private
   param :email, String, :desc => "Email", :required => true
 
 
- def send_verification_email(user)
-    @code = user.verification_code
-    base_url = request.base_url
-    @url = "#{base_url}/api/v1/auth/verify-code?email=#{user.email}&&verification_code=#{@code}"
-    # @url = "#{ENV['BASE_URL']}/api/v1/auth/verify-code?email=#{user.email}&&verification_code=#{@code}"
-    if UserMailer.with(user: user).verification_email(user,@url).deliver_now#UserMailer.deliver_now
-     true
-  else
-    false
-  end
-end
+#  def send_verification_email(user)
+#     @code = user.verification_code
+#     base_url = request.base_url
+#     @url = "#{base_url}/api/v1/auth/verify-code?email=#{user.email}&&verification_code=#{@code}"
+#     # @url = "#{ENV['BASE_URL']}/api/v1/auth/verify-code?email=#{user.email}&&verification_code=#{@code}"
+#     if UserMailer.with(user: user).verification_email(user,@url).deliver_now#UserMailer.deliver_now
+#      true
+#   else
+#     false
+#   end
+# end
 
 
 

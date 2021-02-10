@@ -475,11 +475,11 @@ end
               when "Competition"
                 data =  {
                   "id": notification.id,
-                  "friend_name": User.get_full_name(notification.resource.user),
-                  "business_name": User.get_full_name(notification.resource.offer.user),
+                  "friend_name": get_full_name(notification.resource.user),
+                  "business_name": get_full_name(notification.resource.offer.user),
                   "competition_id": notification.resource.offer.id,
                   "competition_name": notification.resource.offer.title,
-                  "competition_host": User.get_full_name(notification.resource.offer.user),
+                  "competition_host": get_full_name(notification.resource.offer.user),
                   "competition_draw_date": notification.resource.offer.end_date,
                   "user_id": notification.resource.user.id,
                   "actor_image": notification.actor.avatar,
@@ -494,7 +494,7 @@ end
               when "Pass"
                 data = {
                   "id": notification.id,
-                  "friend_name": User.get_full_name(notification.resource.user),
+                  "friend_name": get_full_name(notification.resource.user),
                   "event_name": notification.resource.offer.event.title,
                   "event_start_date": notification.resource.offer.event.start_date,
                   "pass_id": notification.resource.offer.id,
@@ -513,10 +513,10 @@ end
               when "SpecialOffer"
                 data = {
                   "id": notification.id,
-                  "friend_name": User.get_full_name(notification.resource.user),
+                  "friend_name": get_full_name(notification.resource.user),
                   "special_offer_id": notification.resource.offer.id,
                   "special_offer_title": notification.resource.offer.title,
-                  "business_name": User.get_full_name(notification.resource.offer.user),
+                  "business_name": get_full_name(notification.resource.offer.user),
                   "total_grabbers_count": notification.resource.offer.wallets.size,
                   "user_id": notification.resource.user.id,
                   "actor_image": notification.actor.avatar,
@@ -612,11 +612,11 @@ end
               when "Competition"
                 data =  {
                   "id": notification.id,
-                  "friend_name": User.get_full_name(notification.resource.user),
-                  "business_name": User.get_full_name(notification.resource.offer.user),
+                  "friend_name": get_full_name(notification.resource.user),
+                  "business_name": get_full_name(notification.resource.offer.user),
                   "competition_id": notification.resource.offer.id,
                   "competition_name": notification.resource.offer.title,
-                  "competition_host": User.get_full_name(notification.resource.offer.user),
+                  "competition_host": get_full_name(notification.resource.offer.user),
                   "competition_draw_date": notification.resource.offer.end_date,
                   "user_id": notification.resource.user.id,
                   "actor_image": notification.actor.avatar,
@@ -631,7 +631,7 @@ end
               when "Pass"
                 data = {
                   "id": notification.id,
-                  "friend_name": User.get_full_name(notification.resource.user),
+                  "friend_name": get_full_name(notification.resource.user),
                   "event_name": notification.resource.offer.event.title,
                   "event_start_date": notification.resource.offer.event.start_date,
                   "pass_id": notification.resource.offer.id,
@@ -650,10 +650,10 @@ end
               when "SpecialOffer"
                 data = {
                   "id": notification.id,
-                  "friend_name": User.get_full_name(notification.resource.user),
+                  "friend_name": get_full_name(notification.resource.user),
                   "special_offer_id": notification.resource.offer.id,
                   "special_offer_title": notification.resource.offer.title,
-                  "business_name": User.get_full_name(notification.resource.offer.user),
+                  "business_name": get_full_name(notification.resource.offer.user),
                   "total_grabbers_count": notification.resource.offer.wallets.size,
                   "user_id": notification.resource.user.id,
                   "actor_image": notification.actor.avatar,

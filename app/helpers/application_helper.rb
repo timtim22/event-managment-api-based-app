@@ -7,13 +7,7 @@ module ApplicationHelper
       name = user.business_profile.profile_name
     end
   end
-end
 
 
-def mobile_users
-  users = Assignment.where(role_id: 5).map {|assignment| assignment.user }
-end
 
-def business_users
-  users = Assignment.where(role_id: 2).map {|assignment| assignment.user }
 end

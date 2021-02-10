@@ -47,7 +47,7 @@ class Api::V1::Friendship::FriendshipsController < Api::V1::ApiMasterController
           data: {
 
             "id": notification.id,
-            "friend_name": User.get_full_name(notification.resource.user),
+            "friend_name": get_full_name(notification.resource.user),
             "friend_id": notification.resource.user.id,
             "request_id": notification.resource.id,
             "mutual_friends_count": get_mutual_friends(request_user, @friend).size,
@@ -192,7 +192,7 @@ def accept_request
               },
               data: {
                 "id": notification.id,
-                "friend_name": User.get_full_name(notification.resource.friend),
+                "friend_name": get_full_name(notification.resource.friend),
                 "friend_id": notification.resource.friend.id,
                 "mutual_friends_count": get_mutual_friends(request_user, notification.resource.friend).size,
                 "actor_image": notification.actor.avatar,

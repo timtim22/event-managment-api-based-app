@@ -2,7 +2,7 @@ module UsersHelper
   def InfoData(user)
       user_info = {}
     if user.business_profile
-       user_info['about'] = user.business_profile.about
+       user_info['about'] = user.business_about
        user_info['facebook'] = user.business_profile.facebook
        user_info['twitter'] = user.business_profile.twitter
        user_info['linkedin'] = user.business_profile.linkedin

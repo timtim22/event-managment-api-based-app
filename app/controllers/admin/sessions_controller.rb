@@ -2,7 +2,7 @@ class Admin::SessionsController < Admin::AdminMasterController
 
     def create
     if  user = User.authenticate(params[:email], params[:password])
-      if user.app_user ==  true
+      if !is_business?(user)
         flash.now[:alert_danger] = "App user can not be logged in via web interface."
         render :new
       end

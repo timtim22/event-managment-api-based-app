@@ -7,7 +7,7 @@ RSpec.describe Api::V1::SpecialOffers::SpecialOffersController, type: :controlle
   describe "Mobile - SpecialOffer API - " do
 
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should return all SpecialOffers" do
@@ -23,7 +23,7 @@ RSpec.describe Api::V1::SpecialOffers::SpecialOffersController, type: :controlle
     end
 
     it "should return business SpecialOffers" do
-      get :get_business_special_offers, params: {business_id: User.web_users.last.id}
+      get :get_business_special_offers, params: {business_id: business_users.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end

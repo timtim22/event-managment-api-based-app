@@ -2,11 +2,11 @@ require 'rails_helper'
 require "spec_helper"
 
 
-RSpec.describe Api::V1::Settings::SettingsController, type: :controller do
+RSpec.describe Api::V1::Users::Settings::SettingsController, type: :controller do
   describe "Mobile - Settings API - " do
 
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should purchase ticket" do

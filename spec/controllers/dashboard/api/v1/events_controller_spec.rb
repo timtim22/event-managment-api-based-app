@@ -6,7 +6,7 @@ RSpec.describe Dashboard::Api::V1::EventsController, type: :controller do
   describe "Dashboard Events APIs" do
 
     before do
-      request.headers["Authorization"] = ENV["WEB_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["WEB_LOGIN_TOKEN"]
     end
 
     it "should return all events" do

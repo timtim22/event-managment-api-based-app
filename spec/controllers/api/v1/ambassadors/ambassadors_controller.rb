@@ -5,11 +5,11 @@ RSpec.describe Api::V1::::Ambassadors::AmbassadorsController, type: :controller 
   describe "Mobile - Ambassadors API - " do
    
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should send ambassador request to business user" do
-      get :send_request, params: {:business_id => User.web_users.last}
+      get :send_request, params: {:business_id => business_users.last}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
@@ -25,6 +25,32 @@ RSpec.describe Api::V1::::Ambassadors::AmbassadorsController, type: :controller 
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
+
+    it "should return my attending" do
+      get :my_attending
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)["success"]).to eq(true)
+   end
+
+   it "should return my gives away" do
+      get :my_gives_away
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)["success"]).to eq(true)
+   end
+
+
+
+   it "should return user attending info" do
+    post :attending, params: {user_id: mobile_users.last.id}
+    expect(response).to have_http_status(200)
+    expect(JSON.parse(response.body)["success"]).to eq(true)
+   end
+
+ it "should return gives_away" do
+    post :gives_away, params: {user_id: mobile_users.last.id}
+    expect(response).to have_http_status(200)
+    expect(JSON.parse(response.body)["success"]).to eq(true)
+ end
 
    
   end

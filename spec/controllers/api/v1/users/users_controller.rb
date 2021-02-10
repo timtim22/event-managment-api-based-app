@@ -1,8 +1,6 @@
 require 'rails_helper'
 require "spec_helper"
  
-
-
 RSpec.describe Api::V1::Users::UsersController, type: :controller do
   describe "Mobile - User API - " do
 
@@ -10,6 +8,7 @@ RSpec.describe Api::V1::Users::UsersController, type: :controller do
       request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
     end
 
+    puts "token: " + ENV["APP_LOGIN_TOKEN"]
 
    it "should return all users" do
       get :index
@@ -26,6 +25,7 @@ RSpec.describe Api::V1::Users::UsersController, type: :controller do
         gender: "male",
         is_email_subscribed: "true",
         type: "1",
+        role_id: 2,
         email: "taimoor.hassan10@yahoo.com",
         password: "Pakistan2!",
         phone_number: "+923109909077"
@@ -33,6 +33,10 @@ RSpec.describe Api::V1::Users::UsersController, type: :controller do
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
    end
+
+
+
+
 
    it "should update users" do
       put :update_profile, params: {
@@ -42,6 +46,7 @@ RSpec.describe Api::V1::Users::UsersController, type: :controller do
         dob: "22-05-1995",
         device_token: "anytihng",
         gender: "male",
+        role_id: 2,
         is_email_subscribed: "true",
         type: "1",
         email: "taimoor.hassan10@yahoo.com",
@@ -52,6 +57,11 @@ RSpec.describe Api::V1::Users::UsersController, type: :controller do
       expect(JSON.parse(response.body)["success"]).to eq(true)
    end
 
+
+
+
+
+
    it "should return profile" do
       get :get_profile
       expect(response).to have_http_status(200)
@@ -59,25 +69,25 @@ RSpec.describe Api::V1::Users::UsersController, type: :controller do
    end
 
    it "should return profile" do
-      post :get_others_profile, params: {user_id: User.app_users.last.id}
+      post :get_others_profile, params: {user_id: mobile_users.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
    end
 
    it "should return user activity" do
-      post :activity_logs, params: {user_id: User.app_users.last.id}
+      post :activity_logs, params: {user_id: mobile_users.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
    end
 
    it "should return user attending info" do
-      post :attending, params: {user_id: User.app_users.last.id}
+      post :attending, params: {user_id: mobile_users.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
    end
 
    it "should return gives_away" do
-      post :gives_away, params: {user_id: User.app_users.last.id}
+      post :gives_away, params: {user_id: mobile_users.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
    end
@@ -113,7 +123,8 @@ RSpec.describe Api::V1::Users::UsersController, type: :controller do
    end
 
    it "should update current location" do
-      get :update_current_location, params: {lat: "22.00", lng: "-23.00"}
+      get :update_current_location, params: {location: "{\"short_address\"=>\"San Jose United States\", \"full_address\"=>\"San Jose, CA, USA\", \"geometry\"=>{\"lat\"=>\"37.4125974\", \"lng\"=>\"-121.9481252\"}}" 
+    }
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
    end
@@ -151,7 +162,7 @@ RSpec.describe Api::V1::Users::UsersController, type: :controller do
 
 
   #     it "should return other business profile" do
-  #       get :get_others_business_profile, params: {user_id: User.web_users.last.id}
+  #       get :get_others_business_profile, params: {user_id: business_users.last.id}
   #       expect(response).to have_http_status(200)
   #       expect(JSON.parse(response.body)["success"]).to eq(true)
   #     end

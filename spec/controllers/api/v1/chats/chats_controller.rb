@@ -6,17 +6,17 @@ RSpec.describe Api::V1::Chats::ChatsController, type: :controller do
   describe "Mobile - Chats API - " do
 
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should send message" do
-      post :send_message, params: {recipient_id: User.app_users.first.id, message: "foo"}
+      post :send_message, params: {recipient_id: mobile_users.first.id, message: "foo"}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
 
     it "should return chat history" do
-      post :chat_history, params: {sender_id: User.app_users.last.id}
+      post :chat_history, params: {sender_id: mobile_users.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
@@ -28,7 +28,7 @@ RSpec.describe Api::V1::Chats::ChatsController, type: :controller do
     end
 
     it "should clear conversation" do
-      get :clear_conversation, params: {user_id: User.app_users.last.id}
+      get :clear_conversation, params: {user_id: mobile_users.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
@@ -40,7 +40,7 @@ RSpec.describe Api::V1::Chats::ChatsController, type: :controller do
     end
 
     # it "should mark chat as read" do
-    #   get :mark_as_read, params: {sender_id: User.app_users.last.id}
+    #   get :mark_as_read, params: {sender_id: mobile_users.last.id}
     #   expect(response).to have_http_status(200)
     #   expect(JSON.parse(response.body)["success"]).to eq(true)
     # end

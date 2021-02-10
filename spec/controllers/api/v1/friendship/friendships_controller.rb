@@ -6,17 +6,17 @@ RSpec.describe Api::V1::Friendship::FriendshipsController, type: :controller do
   describe "Mobile - Friendships API - " do
 
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should send request" do
-      post :send_request, params: {friend_id: User.app_users.first.id }
+      post :send_request, params: {friend_id: mobile_users.first.id }
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
 
     it "should check request status" do
-      post :send_request, params: {friend_id: User.app_users.first.id }
+      post :send_request, params: {friend_id: mobile_users.first.id }
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
@@ -47,7 +47,7 @@ RSpec.describe Api::V1::Friendship::FriendshipsController, type: :controller do
     end
 
     it "should remove friend" do
-      post :remove_friend, params: {friend_id: User.app_users.last.friends.last.id}
+      post :remove_friend, params: {friend_id: mobile_users.last.friends.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
@@ -59,7 +59,7 @@ RSpec.describe Api::V1::Friendship::FriendshipsController, type: :controller do
     end
 
     it "should return friend details" do
-      get :get_friends_details, params: {user_id: User.app_users.last.friends.last.id}
+      get :get_friends_details, params: {user_id: mobile_users.last.friends.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end

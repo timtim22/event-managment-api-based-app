@@ -7,7 +7,7 @@ RSpec.describe Api::V1::Wallets::WalletsController, type: :controller do
   describe "Mobile - Wallet API - " do
     
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end
 
    it "should get offers from wallet" do

@@ -88,7 +88,7 @@ class Api::V1::Events::Comments::CommentsController < Api::V1::ApiMasterControll
              },
              data: {
               "id": notification.id,
-              "user_name": User.get_full_name(notification.resource.user),
+              "user_name": get_full_name(notification.resource.user),
               "comment": notification.resource.comment,
               "event_name": notification.resource.child_event.title,
               "user_id": notification.resource.user.id,
@@ -178,7 +178,7 @@ class Api::V1::Events::Comments::CommentsController < Api::V1::ApiMasterControll
        end ##notification create
         #also notify who commented on the event
         if @comment.user != request_user
-        if notification = Notification.create!(recipient: @comment.user, actor: request_user, action: "#{User.get_full_name(request_user)}  replied to your comemnt on the event '#{@event.title}'.", notifiable: @reply, resource: @reply, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'reply_comment')
+        if notification = Notification.create!(recipient: @comment.user, actor: request_user, action: "#{get_full_name(request_user)}  replied to your comemnt on the event '#{@event.title}'.", notifiable: @reply, resource: @reply, url: "/admin/events/#{@event.id}", notification_type: 'mobile_web',action_type: 'reply_comment')
 
          if !mute_push_notification?(@comment.user) && !mute_event_notifications?(@comment.user, @event)
 
@@ -200,7 +200,7 @@ class Api::V1::Events::Comments::CommentsController < Api::V1::ApiMasterControll
                 "event_id": notification.resource.child_event.id,
                 "event_name": notification.resource.child_event.title,
                 "replier_id": notification.resource.user.id,
-                "replier_name": User.get_full_name(notification.resource.user),
+                "replier_name": get_full_name(notification.resource.user),
                 "comment_id": notification.resource.comment.id,
                 "comment": notification.resource.msg,
                 "actor_id": notification.actor_id,

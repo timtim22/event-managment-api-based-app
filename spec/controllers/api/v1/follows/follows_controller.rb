@@ -6,7 +6,7 @@ RSpec.describe Api::V1::Follows::FollowsController, type: :controller do
   describe "Mobile - Follow API - " do
     
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should follow" do

@@ -176,7 +176,7 @@ class Admin::PassesController < Admin::AdminMasterController
 
 
   def send_vip_pass_page
-    @users = User.app_users
+    @users = mobile_users
   end
 
 

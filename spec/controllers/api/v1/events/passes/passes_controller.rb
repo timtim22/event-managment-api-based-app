@@ -6,7 +6,7 @@ RSpec.describe Api::V1::Events::Passes::PassesController, type: :controller do
   describe "Mobile - Passes API - " do
 
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should return all passes" do
