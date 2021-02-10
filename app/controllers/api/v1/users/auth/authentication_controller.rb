@@ -94,6 +94,7 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
         else account.role_ids.include?(5)
          app_account =  {
           "id" => account.id,
+          "uuid" => account.uuid,
           "first_name" => account.profile.first_name,
           "last_name" => account.profile.last_name,
           "dob" => account.profile.dob,
