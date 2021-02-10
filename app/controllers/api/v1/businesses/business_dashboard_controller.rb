@@ -1,4 +1,4 @@
-class Api::V1::Business::BusinessDashboard < Api::V1::ApiMasterController
+class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterController
   before_action :authorize_request
   before_action :business
 

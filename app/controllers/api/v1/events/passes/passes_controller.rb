@@ -153,7 +153,7 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
           
           @ambassador = @share.user
           if @ambassador.profile.is_ambassador ==  true #if user is an ambassador
-           @ambassador.profile.update!(earning:  @ambassador.'3', #should be change when ambassador schema/program will be updated. + @pass.ambassador_rate.to_i)
+           @ambassador.profile.update!(earning: '3') #should be change when ambassador schema/program will be updated. + @pass.ambassador_rate.to_i)
           end
         end
 

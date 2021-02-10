@@ -783,9 +783,9 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
       #       token: request_user.device_token,
       #       data: nil
       #     }
-      #   end
-     render json: "Do nothing for now. when we will implement crone jobs then will be operational"
-    end
+    #   #   end
+    #  render json: "Do nothing for now. when we will implement crone jobs then will be operational"
+    # end
 
   api :POST, '/api/v1/notifications/delete-notification', 'Delete a notification'
   # param :notification_id, String, :desc => "Notification ID", :required => true

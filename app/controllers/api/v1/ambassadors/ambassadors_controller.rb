@@ -245,7 +245,7 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
       success: true,
       message: '',
       data: {
-        total_earning: request_'3', #should be change when ambassador schema/program will be updated.,
+        total_earning: '3', #should be change when ambassador schema/program will be updated.,
         my_businesses: @offers
       }
     }

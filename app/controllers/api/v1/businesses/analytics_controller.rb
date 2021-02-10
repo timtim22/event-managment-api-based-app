@@ -1,4 +1,4 @@
-class Api::V1::Business::AnalyticsController < Api::V1::ApiMasterController
+class Api::V1::Businesses::AnalyticsController < Api::V1::ApiMasterController
   before_action :authorize_request
 
   def get_event_stats

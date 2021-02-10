@@ -8,8 +8,6 @@ RSpec.describe Api::V1::Users::UsersController, type: :controller do
       request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
     end
 
-    puts "token: " + ENV["APP_LOGIN_TOKEN"]
-
    it "should return all users" do
       get :index
       expect(response).to have_http_status(200)
@@ -21,37 +19,32 @@ RSpec.describe Api::V1::Users::UsersController, type: :controller do
         first_name: "timtim",
         last_name: "hassan",
         dob: "22-05-1995",
-        device_token: "anytihng",
         gender: "male",
-        is_email_subscribed: "true",
-        type: "1",
-        role_id: 2,
+        role_id: 5,
         email: "taimoor.hassan10@yahoo.com",
         password: "Pakistan2!",
-        phone_number: "+923109909077"
+        phone_number: "+923109909077",
+        location: "Islamabad, Pakistan",
+        about: "nothign is real"
       }
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
    end
-
-
-
 
 
    it "should update users" do
       put :update_profile, params: {
         id: User.last.id,
-        first_name: "timtim - update",
+        first_name: "timtim",
         last_name: "hassan",
         dob: "22-05-1995",
-        device_token: "anytihng",
         gender: "male",
-        role_id: 2,
-        is_email_subscribed: "true",
-        type: "1",
+        role_id: 5,
         email: "taimoor.hassan10@yahoo.com",
         password: "Pakistan2!",
-        phone_number: "+923109909077"
+        phone_number: "+923109909077",
+        location: "Islamabad, Pakistan",
+        about: "nothign is real"
       }
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
@@ -62,35 +55,30 @@ RSpec.describe Api::V1::Users::UsersController, type: :controller do
 
 
 
-   it "should return profile" do
+   it "should return my profile" do
       get :get_profile
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
    end
 
    it "should return profile" do
-      post :get_others_profile, params: {user_id: mobile_users.last.id}
+      post :get_others_profile, params: {user_id: User.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
    end
 
    it "should return user activity" do
-      post :activity_logs, params: {user_id: mobile_users.last.id}
+      post :activity_logs, params: {user_id: User.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
    end
 
    it "should return user attending info" do
-      post :attending, params: {user_id: mobile_users.last.id}
+      post :attending, params: {user_id: User.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
    end
 
-   it "should return gives_away" do
-      post :gives_away, params: {user_id: mobile_users.last.id}
-      expect(response).to have_http_status(200)
-      expect(JSON.parse(response.body)["success"]).to eq(true)
-   end
 
    it "should return my activity logs" do
       get :my_activity_logs
@@ -98,17 +86,6 @@ RSpec.describe Api::V1::Users::UsersController, type: :controller do
       expect(JSON.parse(response.body)["success"]).to eq(true)
    end
 
-   it "should return my attending" do
-      get :my_attending
-      expect(response).to have_http_status(200)
-      expect(JSON.parse(response.body)["success"]).to eq(true)
-   end
-
-   it "should return my gives away" do
-      get :my_gives_away
-      expect(response).to have_http_status(200)
-      expect(JSON.parse(response.body)["success"]).to eq(true)
-   end
 
    it "should get activity logs" do
       get :get_activity_logs
