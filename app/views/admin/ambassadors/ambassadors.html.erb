@@ -32,13 +32,13 @@
           <td class="py-1"><a href="/admin/ambassadors/view?id=<%= request.user.id %>&&r_id=<%=request.id %>"><img src='<%= asset_path "#{request.user.avatar}" %>'' onError="this.onerror=null;this.src='/assets/avatar.png';" alt="image" class="user_list_img"></a></td>
           <td> <%= get_full_name(request.user) %></td>
           <td><%= request.user.created_at.strftime("%A %-d %B,%Y-%H:%M") %></td>
-          <td><%= request.user.profile.ranking %></td>
+          <td><%= request.'3', #should be change when ambassador schema/program will be updated. %></td>
           <td><%= request.user.friends.size %></td>
           <td><%= request.user.profile.facebook.blank? ? "Not Connected" : request.user.profile.facebook   %></td>
           <td><%= request.user.profile.instagram.blank? ? "Not Connected" : request.user.profile.instagram   %></td>
           <td><%= request.user.profile.twitter.blank? ? "Not Connected" : request.user.profile.twitter   %></td>
           <td>to be created</td>
-          <td><%= request.user.profile.earning %></td>
+          <td><%= request.'3', #should be change when ambassador schema/program will be updated. %></td>
            <td>
            <% if request.status == 'accepted' %>
            <a href="<%= admin_ambassadors_remove_path + "?id=#{request.id}" %>"><buttn class="btn btn-primary btn-sm">Remove</button></a>

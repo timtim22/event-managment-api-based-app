@@ -113,13 +113,13 @@ class User < ApplicationRecord
     requests = FriendRequest.where(friend_id: user.id).where(status: 'pending').order(:created_at => "DESC")
   end
 
-  def self.get_full_name(user)
-    if user.app_user == true
-     name = user.profile.first_name + " " + user.profile.last_name
-    elsif(user.web_user ==  true)
-      name = user.business_profile.profile_name
-    end
-  end
+  # def self.get_full_name(user)
+  #   if user.app_user == true
+  #    name = user.profile.first_name + " " + user.profile.last_name
+  #   elsif(user.web_user ==  true)
+  #     name = user.business_profile.profile_name
+  #   end
+  # end
 
   def self.businesses_list
     businesses = []

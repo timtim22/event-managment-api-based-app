@@ -13,7 +13,8 @@ Rails.application.routes.draw do
      namespace :v1 do
  
       namespace :users do
-          resources :users, param: :email
+            resources :users
+            get '/get-list' => 'users#index'
             post '/update-profile' => 'users#update_profile'
             get '/get-profile' => 'users#get_profile'
             post '/get-profile' => "users#get_others_profile"
@@ -215,59 +216,73 @@ Rails.application.routes.draw do
 #==================================================================================================
 #==================================================================================================
 
-   get 'send-email' => 'contact_form#send_email'
-   namespace :admin do
-     get 'dashboard' => 'dashboard#index'
-     get 'user/get-profile' => 'users#get_profile'
-     post '/user/update-password' => "users#update_password"
-     get '/reset-password' => 'users#send_email_page'
-     post '/send-reset-email' => 'users#send_reset_email'
-     get  '/reset-password-page' => 'users#reset_password_page'
-     post '/reset-password' => 'users#reset_password'
-     post '/user/update-avatar' => "users#update_avatar"
-     post '/user/update-info' => 'users#update_info'
-     get '/user/search-friends' => 'search#search_friends'
-     get '/user/add-friends-page' => 'search#add_friends_page'
-    
-    #  get '/eventbrite-authorize' => "eventbrite#authorize_page"
-    #  get "/import/events" => "eventbrite#import_events"
-    #  get '/oauth/authorize' => "eventbrite#authorize_user"
+namespace :admin do
+  get 'dashboard' => 'dashboard#index'
+  get 'user/get-profile' => 'users#get_profile'
+  post '/user/update-password' => "users#update_password"
+  get '/reset-password' => 'users#send_email_page'
+  post '/send-reset-email' => 'users#send_reset_email'
+  get  '/reset-password-page' => 'users#reset_password_page'
+  post '/reset-password' => 'users#reset_password'
+  post '/user/update-avatar' => "users#update_avatar"
+  post '/user/update-info' => 'users#update_info'
+  get '/user/search-friends' => 'search#search_friends'
+  get '/user/add-friends-page' => 'search#add_friends_page'
+  get '/add-friend' => "friendships#send_request"
+  get '/check-request' => "friendships#check_request"
+  get '/friend-requests' => "friendships#friend_requests"
+  get '/accept-request' => "friendships#accept_request"
+  get '/my-friends' => "friendships#my_friends"
+  get '/eventbrite-authorize' => "eventbrite#authorize_page"
+  get "/import/events" => "eventbrite#import_events"
+  get '/oauth/authorize' => "eventbrite#authorize_user"
 
-    #  get '/ticketmaster/import-events' => "ticketmaster#select_date"
-    #  post '/ticketmaster/import-events' => "ticketmaster#import_events"
-   
-     post '/eventbrite/get-venue' => "eventbrite#get_venue"
-     post '/eventbrite/get-category' => "eventbrite#get_category"
-     post '/eventbrite/store-imported' => "eventbrite#store_imported"
-     get '/view-activity' => "users#view_activity"
-     get '/add-payment-account' => 'payments#add_payment_account'
-     get '/stripe/oauth' => 'payments#stripe_oauth_redirect'
-     get '/payments/received-payments' => "payments#received_payments"
-     delete '/payments/delete' => "payments#delete_payment"
-     get '/payments/refund-requests' => "payments#refund_requests"
-     get '/payments/approve-refund' => "payments#approve_refund"
-     get '/payments/reject-refund' => "payments#reject_refund"
-     get '/send-vip-pass' => "passes#send_vip_pass_page"
-     post '/send-vip-pass' => "passes#send_vip_pass"
-     post '/delete-resource' => 'events#delete_resource'
+  get '/ticketmaster/import-events' => "ticketmaster#select_date"
+  post '/ticketmaster/import-events' => "ticketmaster#import_events"
+  get '/get-notificatons' => "notifications#index"
+  get '/get-notifications-count' => "notifications#get_notifications_count"
+  get '/mark-as-read' => "notifications#mark_as_read"
+  get '/clear-notifications' => "notifications#clear_notifications"
+  post '/get-latlng' => 'gmap#getLatLong'
+  get '/follow-requests' => "follows#requests_list"
+  get '/accept-follow-request' => "follows#accept_request"
+  get '/my-followers' => "follows#followers"
+  post '/eventbrite/get-venue' => "eventbrite#get_venue"
+  post '/eventbrite/get-category' => "eventbrite#get_category"
+  post '/eventbrite/store-imported' => "eventbrite#store_imported"
+  get '/view-activity' => "users#view_activity"
+  get '/ambassadors' => 'ambassadors#ambassadors_requets'
+  get '/ambassadors/approve' => 'ambassadors#approve'
+  get '/ambassadors/remove' => 'ambassadors#remove'
+  get '/ambassadors/view' => 'ambassadors#view_ambassador'
+  get '/add-payment-account' => 'payments#add_payment_account'
+  get '/stripe/oauth' => 'payments#stripe_oauth_redirect'
+  get '/payments/received-payments' => "payments#received_payments"
+  delete '/payments/delete' => "payments#delete_payment"
+  get '/payments/refund-requests' => "payments#refund_requests"
+  get '/payments/approve-refund' => "payments#approve_refund"
+  get '/payments/reject-refund' => "payments#reject_refund"
+  get '/send-vip-pass' => "passes#send_vip_pass_page"
+  post '/send-vip-pass' => "passes#send_vip_pass"
+  post '/delete-resource' => 'events#delete_resource'
 
-     resources :news_feeds
-     resources :categories
+  resources :news_feeds
+  resources :categories
 
-     resources :events do
-       resources :comments
-     end
+  resources :events do
+    resources :comments
+  end
 
-     resources :transactions, :controller => "payments"
-     resources :users
-     resources :roles
-     resource :session
-     resources :passes
-     resources :special_offers
-     resources :competitions
-     resources :tickets
+  resources :transactions, :controller => "payments"
+  resources :users
+  resources :roles
+  resource :session
+  resources :passes
+  resources :special_offers
+  resources :competitions
+  resources :tickets
 
-   end
+end
 
 #=======================================================================================================================================================================================================
    namespace :dashboard do

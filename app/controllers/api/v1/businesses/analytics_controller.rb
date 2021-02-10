@@ -282,7 +282,7 @@ class Api::V1::Business::AnalyticsController < Api::V1::ApiMasterController
 
       stats = {
         competition_winners: competition.competition_winners.map {|c| {
-            winner_name: User.get_full_name(c.user),
+            winner_name: get_full_name(c.user),
             winner_image: c.user.avatar,
             winner_id: c.user.id
         }},

@@ -13,7 +13,7 @@ class Api::V1::Business::BusinessDashboard < Api::V1::ApiMasterController
       "id" => business.id,
       "profile_name" => business.business_profile.profile_name,
       "avatar" => business.avatar,
-      "about" => business.business_profile.about,
+      "about" => business.business_about,
       "unread_messages_count" => business.incoming_messages.unread.size,
       "address" => eval(business.business_profile.address),
       "social" => business.social_media,

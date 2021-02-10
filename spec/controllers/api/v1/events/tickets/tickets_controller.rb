@@ -7,7 +7,7 @@ RSpec.describe Api::V1::Events::Tickets::TicketsController, type: :controller do
   describe "Mobile - Tickets API - " do
 
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end
 
     # it "should redeem ticket" do

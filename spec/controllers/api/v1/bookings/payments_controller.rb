@@ -6,7 +6,7 @@ RSpec.describe Api::V1::Payments::PaymentsController, type: :controller do
   describe "Mobile - Payments API - " do
 
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should purchase ticket" do

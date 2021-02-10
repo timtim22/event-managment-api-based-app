@@ -6,7 +6,7 @@ RSpec.describe Api::V1::Bookings::InterestLevelsController, type: :controller do
   describe "Mobile - InterestLevels API - " do
 
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should create interest for an event" do

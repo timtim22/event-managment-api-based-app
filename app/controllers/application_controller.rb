@@ -9,13 +9,13 @@ class ApplicationController < ActionController::Base
       if friend_request
        if friend_request.status == 'pending' || friend_request.status == 'accepted'
         status = {
-          "message" => "You have already sent friend request to #{User.get_full_name(recipient)} ",
+          "message" => "You have already sent friend request to #{get_full_name(recipient)} ",
            "status" => true
          }
        end
       elsif FriendRequest.where(user_id: recipient.id).where(friend_id: sender.id).first
         status = {
-           "message" => "#{User.get_full_name(recipient)} already sent you a friend request ",
+           "message" => "#{get_full_name(recipient)} already sent you a friend request ",
            "status" => true
          }
         else
@@ -229,7 +229,6 @@ class ApplicationController < ActionController::Base
       "roles" => get_user_role_names(user), 
       "vat_number" => user.business_profile.vat_number,
       "charity_number" => user.business_profile.charity_number,
-      "address" => eval(user.business_profile.address),
       "about" => user.about,
       "social_media" => user.social_media,
       "is_charity" => user.business_profile.is_charity,
@@ -252,13 +251,13 @@ class ApplicationController < ActionController::Base
       "email" => user.email,
       "avatar" => user.avatar,
       "phone_number" => user.phone_number,
-      "about" => user.profile.about,
+      "about" => user.about,
        "social" => user.social_media,
       "is_ambassador" => is_ambassador?(user),
-      "earning" => user.profile.earning,
-      "location" => eval(user.profile.location),
+      "earning" => '3', #should be change when ambassador schema/program will be updated.
+      "location" => eval(user.location),
       "device_token" => user.device_token,
-      "ranking" => user.profile.ranking,
+      "ranking" => '3', #should be change when ambassador schema/program will be updated.,
       "gender" => user.profile.gender,
       "dob" => user.profile.dob.to_date,
       "is_request_sent" => request_status(request_user, user)['status'],
@@ -266,7 +265,7 @@ class ApplicationController < ActionController::Base
       "is_my_following" => false,
       "is_my_friend" => is_my_friend?(user),
       "mutual_friends_count" => get_mutual_friends(request_user, user).size,
-      "location_enabled" => user.location_enabled
+     
     }
 
   end
@@ -862,7 +861,7 @@ end
 
 
   def get_user_role_names(user)
-    user.roles.map {|role| role.title }
+    user.roles.map {|role| role.name }
   end
 
 
@@ -976,7 +975,7 @@ end
             },
             data: {
               "id": notification.id,
-              "business_name": User.get_full_name(notification.resource.business),
+              "business_name": get_full_name(notification.resource.business),
               "actor_image": notification.actor.avatar,
               "notifiable_id": notification.notifiable_id,
               "notifiable_type": notification.notifiable_type,
@@ -1003,7 +1002,7 @@ end
 
         if !request.user.friends.blank?
           request.user.friends.each do |friend|
-            if notification = Notification.create(recipient: friend, actor: request.user, action: get_full_name(request.user) + " has become ambassador of #{User.get_full_name(request.business)}", notifiable: request, resource: request,  url: "/admin/users/#{request.user.id}", notification_type: 'mobile', action_type: "friend_become_ambassador")
+            if notification = Notification.create(recipient: friend, actor: request.user, action: get_full_name(request.user) + " has become ambassador of #{get_full_name(request.business)}", notifiable: request, resource: request,  url: "/admin/users/#{request.user.id}", notification_type: 'mobile', action_type: "friend_become_ambassador")
             @push_channel = "event" #encrypt later
             @current_push_token = @pubnub.add_channels_to_push(
                push_token: friend.device_token,
@@ -1014,14 +1013,14 @@ end
              payload = {
               "pn_gcm":{
                "notification":{
-                 "title": User.get_full_name(request.user),
+                 "title": get_full_name(request.user),
                  "body": notification.action
                },
                data: {
                 "id": notification.id,
-                "friend_name": User.get_full_name(notification.resource.user),
+                "friend_name": get_full_name(notification.resource.user),
                 "friend_id": notification.resource.user.id,
-                "business_name": User.get_full_name(notification.resource.business),
+                "business_name": get_full_name(notification.resource.business),
                 "actor_image": notification.actor.avatar,
                 "notifiable_id": notification.notifiable_id,
                 "notifiable_type": notification.notifiable_type,
@@ -1224,9 +1223,15 @@ def get_percent_of(number, total)
   number.to_f / total.to_f * 100.0
 end
 
+def mobile_users
+  user_ids = Assignment.where(role_id: 5).map {|assignment| assignment.user.id }
+  mobile_users = User.where(id: user_ids)
+end
 
-
-
+def business_users
+  user_ids = Assignment.where(role_id: 2).map {|assignment| assignment.user.id }
+  mobile_users = User.where(id: user_ids)
+end
 
 
 
@@ -1236,7 +1241,11 @@ end
   helper_method :generate_code
   helper_method :get_full_name
   helper_method :get_price
+  helper_method :encode
   helper_method :get_token_from_user
+  helper_method :is_business
+  helper_method :mobile_users
+  helper_method :business_users
 
 
 

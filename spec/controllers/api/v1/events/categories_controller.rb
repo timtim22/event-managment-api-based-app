@@ -6,7 +6,7 @@ RSpec.describe Api::V1::Events::CategoriesController, type: :controller do
   describe "Mobile - Categories API - " do
     
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end 
 
     it "should get categories" do

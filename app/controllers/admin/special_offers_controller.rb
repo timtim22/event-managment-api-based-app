@@ -59,7 +59,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
              data: {
               "id": notification.id,
               "special_offer_id": notification.resource.id,
-              "business_name": User.get_full_name(notification.resource.user),
+              "business_name": get_full_name(notification.resource.user),
               "special_offer_title": notification.resource.title,
               "actor_id": notification.actor_id,
               "actor_image": notification.actor.avatar,
@@ -142,7 +142,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
            data: {
             "id": notification.id,
             "special_offer_id": notification.resource.id,
-            "business_name": User.get_full_name(notification.resource.user),
+            "business_name": get_full_name(notification.resource.user),
             "special_offer_title": notification.resource.title,
             "actor_id": notification.actor_id,
             "actor_image": notification.actor.avatar,

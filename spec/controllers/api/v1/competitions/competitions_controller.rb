@@ -6,7 +6,7 @@ RSpec.describe Api::V1::Competitions::CompetitionsController, type: :controller 
   describe "Mobile - Competitions API - " do
     
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should return all competitions" do
@@ -40,7 +40,7 @@ RSpec.describe Api::V1::Competitions::CompetitionsController, type: :controller 
     end
 
     it "should return business competitions" do
-      post :get_business_competitions, params: {business_id: User.web_users.last.id}
+      post :get_business_competitions, params: {business_id: business_users.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end

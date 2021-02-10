@@ -6,7 +6,7 @@ RSpec.describe Api::V1::Chats::CommentsController, type: :controller do
   describe "Mobile - Comments API - " do
     
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should create comments" do

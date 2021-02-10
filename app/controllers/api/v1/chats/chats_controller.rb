@@ -166,7 +166,7 @@ def chat_history
         "user_id" => history.user_id,
         "created_at" =>  history.created_at,
         "updated_at" => history.updated_at,
-        "from" => User.get_full_name(history.user),
+        "from" => get_full_name(history.user),
         "user_avatar" => history.user.avatar.url,
         "sender_id" => history.user.id
       }

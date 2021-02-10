@@ -5,7 +5,7 @@ RSpec.describe Dashboard::Api::V1::Users::UsersController, type: :controller do
   describe "User API" do
 
     before do
-      request.headers["Authorization"] = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo1LCJleHAiOjIzNjgzNDg4NDd9.SqgUyBqC0tkGopadOOw2hNSMww8ePDbsbJXcDlsQYqw"
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end
 
 

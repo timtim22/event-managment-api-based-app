@@ -6,7 +6,7 @@ RSpec.describe Api::V1::Events::EventsController, type: :controller do
   describe "Mobile - Events API - " do
     
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should return single event" do

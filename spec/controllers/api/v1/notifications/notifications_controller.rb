@@ -6,7 +6,7 @@ RSpec.describe Api::V1::Notifications::NotificationsController, type: :controlle
   describe "Mobile - Notifications API - " do
      
     before do
-      request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
+      request.headers["Authorization"] =ENV["APP_LOGIN_TOKEN"]
     end
 
     it "should return notifications" do
@@ -16,7 +16,7 @@ RSpec.describe Api::V1::Notifications::NotificationsController, type: :controlle
     end
 
     it "should ask location" do
-      get :ask_location, params: {askee_ids: User.app_users.last.id}
+      get :ask_location, params: {askee_ids: mobile_users.last.id}
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
@@ -25,7 +25,7 @@ RSpec.describe Api::V1::Notifications::NotificationsController, type: :controlle
     #   get :get_location, params: {
     #     lat: Profile.last.lat,
     #     lat: Profile.last.lng,
-    #     asker_id: User.app_users.last.id
+    #     asker_id: mobile_users.last.id
     #   }
     #   expect(response).to have_http_status(200)
     #   expect(JSON.parse(response.body)["success"]).to eq(true)
@@ -36,7 +36,7 @@ RSpec.describe Api::V1::Notifications::NotificationsController, type: :controlle
     #   get :send_location, params: {
     #     lat: Profile.last.lat,
     #     lat: Profile.last.lng,
-    #     asker_id: User.app_users.last.id
+    #     asker_id: mobile_users.last.id
     #   }
     #   expect(response).to have_http_status(200)
     #   expect(JSON.parse(response.body)["success"]).to eq(true)

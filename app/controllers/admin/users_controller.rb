@@ -101,7 +101,7 @@ class Admin::UsersController < Admin::AdminMasterController
         profile = user.business_profile
         profile.profile_name = params[:profile_name]
         profile.contact_name = params[:contact_name]
-        profile.about = params[:about]
+        about = params[:about]
         profile.vat_number = params[:vat_number]
         profile.charity_number = params[:charity_number]
         profile.website = params[:website]

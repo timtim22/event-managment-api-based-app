@@ -89,10 +89,10 @@
 # 	)
 # end
 
-User.app_users.all.each do |user|
+mobile_users.all.each do |user|
 	ChildEvent.last.interest_levels.create!(user_id: user.id, level: 'interested')
 end
 
-User.app_users.all.each do |user|
+mobile_users.all.each do |user|
 	ChildEvent.last.interest_levels.create!(user_id: user.id, level: 'going')
 end
