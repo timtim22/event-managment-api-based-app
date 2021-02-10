@@ -3,7 +3,7 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
   require 'pubnub'
    # POST /auth/login
 
-    api :POST, '/api/v1/auth/login', 'To login and Generate Auhtorization Token'
+    api :POST, '/api/v1/users/auth/login', 'To login and Generate Auhtorization Token'
     param :uuid, String, :desc => "The ID of the user", :required => true
     param :device_token, String, :desc => "pass any string ", :required => true
 
@@ -59,7 +59,7 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
 
 
 
-  api :POST, '/api/v1/auth/get-accounts', 'To get user account list'
+  api :POST, '/api/v1/users/auth/get-accounts', 'To get user account list'
   param :phone_number, String, :desc => "Phone Number", :required => true
 
 
@@ -137,7 +137,7 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
   #    render json: response.to_json
   # end
 
-  api :POST, '/api/v1/auth/logout', 'To logout'
+  api :POST, '/api/v1/users/auth/logout', 'To logout'
   param :phone_number, String, :desc => "Phone Number", :required => true
 
   def logout
@@ -225,7 +225,7 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
   # end
   # end
 
-  api :POST, '/api/v1/auth/update-password', 'To update password'
+  api :POST, '/api/v1/users/auth/update-password', 'To update password'
   param :email, String, :desc => "Email", :required => true
   param :password, String, :desc => "Password", :required => true
 
