@@ -575,8 +575,6 @@ class ApplicationController < ActionController::Base
           event_name: pass.event.title,
           event_image: pass.event.image,
           event_location: eval(pass.event.location),
-          event_start_time: pass.event.start_time,
-          event_end_time: pass.event.end_time,
           event_date: pass.event.start_date,
           distributed_by: distributed_by(pass),
           is_added_to_wallet: is_added_to_wallet?(pass.id),
@@ -1226,13 +1224,9 @@ def get_percent_of(number, total)
   number.to_f / total.to_f * 100.0
 end
 
-def mobile_users
-  users = Assignment.where(role_id: 5).map {|assignment| assignment.user }
-end
 
-def business_users
-  users = Assignment.where(role_id: 2).map {|assignment| assignment.user }
-end
+
+
 
 
 
@@ -1242,6 +1236,7 @@ end
   helper_method :generate_code
   helper_method :get_full_name
   helper_method :get_price
+  helper_method :get_token_from_user
 
 
 

@@ -17,7 +17,6 @@ Rails.application.routes.draw do
             post '/update-profile' => 'users#update_profile'
             get '/get-profile' => 'users#get_profile'
             post '/get-profile' => "users#get_others_profile"
-            post '/get-latlng' => 'gmap#getLatLong'
             post "/delete-account" => "users#delete_account"
             post '/update-device-token' => "users#update_device_token"
             get '/get-activity-logs' => "users#get_activity_logs"
@@ -44,7 +43,7 @@ Rails.application.routes.draw do
           end
 
           namespace :settings do
-            post '/update-setting' => 'settings#update_global_setting'
+            post '/update' => 'settings#update_global_setting'
             post '/update-user-setting' => 'settings#update_user_setting'
             post "/change-location-status" => "settings#change_location_status"
           end
@@ -59,11 +58,11 @@ Rails.application.routes.draw do
       end #users
 
 
-      namespace :business do
-        post '/get-offer-stats' => 'business_dashboard#get_offer_stats'
+      namespace :businesse do
+        post '/get-offer-stats' => 'analytics#get_offer_stats'
+        post '/get-competition-stats' => 'analytics#get_competition_stats' 
+        post "/get-event-stats" => "analytics#get_event_stats"
         post '/get-business-newsfeeds' => 'business_dashboard#get_business_news_feeds'
-        post '/get-competition-stats' => 'business_dashboard#get_competition_stats' 
-        post "/get-event-stats" => "business_dashboard#get_event_stats"
         post '/events/show' => 'business_dashboard#show_event'
         get '/get-dashbord' => 'business_dashboard#home'
         get '/get-events' => 'business_dashboard#events'
@@ -81,7 +80,6 @@ Rails.application.routes.draw do
           get '/map-event-list' => 'events#map_event_list'
           get '/categories' => "categories#index"
           post '/show' => 'events#show_event'
-          
           
           namespace :passes do
             post '/get-list' => 'passes#index'
@@ -132,7 +130,9 @@ Rails.application.routes.draw do
       get '/chat-people', to: 'chats#chat_people'
       post '/mark-as-read' => "chats#mark_as_read"
       post '/clear-conversation' => 'chats#clear_conversation'
-      post '/clear-chat' => 'chats#clear_chat'      
+      post '/clear-chat' => 'chats#clear_chat'
+      post '/delete-event-comments' => 'comments#delete_event_comments'
+      post '/comments' => "comments#comments"
     end
 
 
@@ -142,9 +142,6 @@ Rails.application.routes.draw do
      get '/get-all-notifications' => "notifications#index"
      get '/mark-as-read' => "notifications#mark_as_read"
      post '/delete' => "notifications#delete_notification"
-     post '/ask-location' => "notifications#ask_location"
-     post '/get-location' => "notifications#get_location"
-     post '/send-location' => "notifications#send_location"
    end
 
    namespace :friendship do
@@ -172,8 +169,7 @@ Rails.application.routes.draw do
 
 
    namespace :follows do
-     get '/followers' => "follows#followers"
-     get '/followings' => "follows#followings"
+     get '/my-followings' => "follows#my_followings"
      post '/follow' => "follows#follow"
      post '/unfollow' => "follows#unfollow"
      post '/remove-follow-request' => 'follows#remove_request'
@@ -188,8 +184,9 @@ Rails.application.routes.draw do
 
 
    namespace :share do
-
-     
+     post '/ask-location' => "forwarding#ask_location"
+     post '/get-location' => "forwarding#get_location"
+     post '/send-location' => "forwarding#send_location"
      post '/forward-offer' => "forwarding#forward_offer"
      post '/share-offer' => "forwarding#share_offer"
      post '/events/share' => 'forwarding#share_event'
@@ -208,10 +205,10 @@ Rails.application.routes.draw do
    end
 
 
-
-    post "create-impression" => "api_master#create_impression"
+    post "/create-impression" => "api_master#create_impression"
     post "/search/global-search" => "search#global_search"
     get '/search' => 'search#events_live_search'
+    post '/get-latlng' => 'gmap#getLatLong'
 
       #  get '/publish', to: 'chat#publish'
       #  get '/subscribe', to: 'chat#subscribe'
@@ -223,7 +220,8 @@ Rails.application.routes.draw do
      end
    end
 
-#===========================================================================================================================================================================================================================================================================================================
+#==================================================================================================
+#==================================================================================================
 
    get 'send-email' => 'contact_form#send_email'
    namespace :admin do
@@ -246,13 +244,10 @@ Rails.application.routes.draw do
     #  get '/ticketmaster/import-events' => "ticketmaster#select_date"
     #  post '/ticketmaster/import-events' => "ticketmaster#import_events"
    
-    
-     
      post '/eventbrite/get-venue' => "eventbrite#get_venue"
      post '/eventbrite/get-category' => "eventbrite#get_category"
      post '/eventbrite/store-imported' => "eventbrite#store_imported"
      get '/view-activity' => "users#view_activity"
-    
      get '/add-payment-account' => 'payments#add_payment_account'
      get '/stripe/oauth' => 'payments#stripe_oauth_redirect'
      get '/payments/received-payments' => "payments#received_payments"
@@ -282,16 +277,11 @@ Rails.application.routes.draw do
 
    end
 
-
-
-#===========================================================================================================================================================================================================================================================================================================
-
-
+#=======================================================================================================================================================================================================
    namespace :dashboard do
     namespace :api do
       namespace :v1 do
-
-#######------Users--------#################################################
+        
       namespace :users do
         post '/update-user' => 'users#update_user'
         post '/create-user' => 'users#create_user'
@@ -299,13 +289,6 @@ Rails.application.routes.draw do
         post '/get-user' => 'users#get_user'
         post '/auth/login', to: 'authentication#login'
       end
-#######------end--------####################################################
-
-
-
-#######------Authentication--------#########################################
-
-#######------end--------####################################################
 
         resources :news_feeds
         resources :invoices
@@ -343,15 +326,12 @@ Rails.application.routes.draw do
         post '/vip-pass-users' => 'passes#vip_pass_users'
         post '/search-users' => 'passes#search_users'
         post '/delete-vip-pass' => 'passes#delete_vip_pass'
-
       end
     end
    end
 
    namespace :business do
    end
-
-
 
    namespace :college_society do
    end

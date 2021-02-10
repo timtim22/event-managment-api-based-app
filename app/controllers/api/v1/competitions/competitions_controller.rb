@@ -1,4 +1,4 @@
-class Api::V1::CompetitionsController < Api::V1::ApiMasterController
+class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterController
     before_action :authorize_request, except:  ['index']
     require 'json'
     require 'pubnub'

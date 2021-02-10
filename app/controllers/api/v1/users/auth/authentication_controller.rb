@@ -11,8 +11,8 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
 
    def login
      if params[:uuid].present? && params[:device_token].present?
-        if user = User.where(uuid: params[:uuid]).present?
-          user = User.where(uuid: params[:uuid]).first
+         user = User.find_by(uuid: params[:uuid])
+         if user
             token = get_token_from_user(user)
             @profile_data = {
               id: user.id,
