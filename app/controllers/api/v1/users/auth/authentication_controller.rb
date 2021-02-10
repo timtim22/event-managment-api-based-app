@@ -59,7 +59,7 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
 
 
 
-  api :POST, '/api/v1/get-accounts', 'To get user account list'
+  api :POST, '/api/v1/auth/get-accounts', 'To get user account list'
   param :phone_number, String, :desc => "Phone Number", :required => true
 
 
@@ -136,7 +136,7 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
   #    render json: response.to_json
   # end
 
-  api :POST, '/api/v1/logout', 'To logout'
+  api :POST, '/api/v1/auth/logout', 'To logout'
   param :phone_number, String, :desc => "Phone Number", :required => true
 
   def logout
