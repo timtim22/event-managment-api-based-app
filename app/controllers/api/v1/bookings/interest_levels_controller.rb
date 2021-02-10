@@ -6,7 +6,7 @@ class Api::V1::Bookings::InterestLevelsController < Api::V1::ApiMasterController
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
 
-  api :POST, '/api/v1/event/create-interest', 'To create interest'
+  api :POST, '/api/v1/bookings/create-interest', 'To create interest'
   param :event_id, Integer, :desc => "Event ID", :required => true
 
  def create_interest
@@ -125,7 +125,7 @@ class Api::V1::Bookings::InterestLevelsController < Api::V1::ApiMasterController
 
 
 
-   api :POST, '/api/v1/event/create-going', 'To create going'
+   api :POST, '/api/v1/bookings/create-going', 'To create going'
   param :event_id, Integer, :desc => "Event ID", :required => true
 
  def create_going

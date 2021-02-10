@@ -94,7 +94,7 @@ Rails.application.routes.draw do
             post '/get-list' => 'tickets#get_tickets'
           end
       
-      end #event
+      end #events
 
 
       namespace :bookings do
