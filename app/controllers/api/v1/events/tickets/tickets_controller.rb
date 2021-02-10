@@ -1,8 +1,8 @@
 class Api::V1::Events::Tickets::TicketsController < Api::V1::ApiMasterController
 
-  api :POST, '/api/v1/events/redeem-ticket', 'Redeem Ticket'
-  param :event_id, :number, :desc => "Event ID", :required => true
-  param :redeem_code, String, :desc => "Redeem ID", :required => true
+  api :POST, '/api/v1/events/tickets/redeem', 'Redeem Ticket'
+  param :event_id, Integer, :desc => "Event ID", :required => true
+  param :redeem_code, String, :desc => "Redeem code", :required => true
 
   def redeem_it
     if !params[:redeem_code].blank? && !params[:event_id].blank?
@@ -53,8 +53,9 @@ class Api::V1::Events::Tickets::TicketsController < Api::V1::ApiMasterController
   end
   end
 
-  api :POST, '/api/v1/event/get-tickets', 'Get event Tickets'
-  param :event_id, :number, :desc => "Event ID", :required => true
+
+  api :POST, '/api/v1/events/tickets/get-list', 'Get event tickets list'
+  param :event_id, Integer, :desc => "Event ID", :required => true
 
   def get_tickets
     if !params[:event_id].blank?

@@ -60,25 +60,25 @@ Rails.application.routes.draw do
 
 
       namespace :events do
-          post "/events" => "events#index"
+          post "/get-list" => "events#index"
           post  "/get-map-events" =>  "events#get_map_events"
           post '/report-event' =>  "events#report_event"
           post '/create-event' =>  "events#create_view"
-          post '/get-business-events' =>  "events#get_business_events"
+          post '/create-impression' =>  "events#create_impression"
           get '/map-event-list' => 'events#map_event_list'
           get '/categories' => "categories#index"
           post '/show' => 'events#show_event'
           
           namespace :passes do
             post '/get-list' => 'passes#index'
-            post '/create-impression' => "passes#create_view"
-            post "/single" => "passes#pass_single"
-            post "/redemm-pass" => "passes#redeem_it"
+            post '/create-impression' => "passes#create_impression"
+            post "/show" => "passes#pass_single"
+            post "/redeem" => "passes#redeem_it"
           end
 
           namespace :tickets do
             post '/redeem' => "tickets#redeem_it"
-            post '/get-tickets' => 'tickets#get_tickets'
+            post '/get-list' => 'tickets#get_tickets'
           end
       
       end #event

@@ -35,7 +35,7 @@ RSpec.describe Api::V1::Users::UsersController, type: :controller do
    end
 
 
-
+   
 
 
    it "should update users" do
@@ -56,9 +56,6 @@ RSpec.describe Api::V1::Users::UsersController, type: :controller do
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
    end
-
-
-
 
 
 

@@ -177,7 +177,7 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
           end
           @ambassador = @share.user
           if @ambassador.profile.is_ambassador ==  true #if user is an ambassador
-          @ambassador.profile.update!(earning: @ambassador.'3', #should be change when ambassador schema/program will be updated..to_i + @special_offer.ambassador_rate)
+          @ambassador.profile.update!(earning: '3') #should be change when ambassador schema/program will be updated..to_i + @special_offer.ambassador_rate)
           end
         end
 
