@@ -114,7 +114,7 @@ class User < ApplicationRecord
   end
 
   # def self.get_full_name(user)
-  #   if user.app_user == true
+  #   if self.roles.map {|role| role.id }.include?  == true
   #    name = user.profile.first_name + " " + user.profile.last_name
   #   elsif(user.web_user ==  true)
   #     name = user.business_profile.profile_name
@@ -131,6 +131,11 @@ class User < ApplicationRecord
     if BusinessProfile.contact_name.empty?
       errors.add(:contact, " is required field.")
     end
+  end
+
+
+  def self.app_users
+    
   end
 
 
