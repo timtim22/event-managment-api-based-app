@@ -221,7 +221,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     property :gender, String, desc: 'gender'
   end
 
-  api :POST, '/api/v1/users/update-user', 'To SignUp/Register'
+  api :POST, '/api/v1/users/update-user', 'To update profile'
   param :first_name, String, :desc => "First Name", :required => true
   param :last_name, String, :desc => "last Name", :required => true
   param :dob, String, :desc => "DOB", :required => true
