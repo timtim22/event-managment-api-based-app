@@ -6,6 +6,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   include ActionView::Helpers::DateHelper
   # GET /users
 
+
   api :GET, '/api/v1/users', 'View All Users - Token Required'
 
   def index
@@ -51,6 +52,20 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     render json: @user, status: :ok
   end
 
+
+   def_param_group :create do
+    property :id, Integer, desc: 'Account primary key'    
+    property :first_name, String, desc: 'first_name'
+    property :last_name, String, desc: 'last_name'
+    property :avatar, String, desc: 'avatar'
+    property :email, String, desc: 'email'
+    property :about, String, desc: 'about'
+    property :location, String, desc: 'location'
+    property :phone_number, String, desc: 'phone_number'
+    property :dob, String, desc: 'dob'
+    property :gender, String, desc: 'gender'
+  end
+
   api :POST, '/api/v1/users/create-user', 'To SignUp/Register'
   param :first_name, String, :desc => "First Name", :required => true
   param :last_name, String, :desc => "last Name", :required => true
@@ -62,6 +77,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   param :location, String, :desc => "location"
   param :about, String, :desc => "about"
   param :password, String, :desc => "password"
+  returns array_of: :create, code: 200, desc: 'This api will return the following response.' 
 
 
 
@@ -101,6 +117,12 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
       @profile_data["first_name"] = @user.profile.first_name
       @profile_data["last_name"] = @user.profile.last_name
       @profile_data["avatar"] = @user.avatar
+      @profile_data["email"] = @user.email
+      @profile_data["about"] = @user.about
+      @profile_data["location"] = @user.location
+      @profile_data["phone_number"] = @user.phone_number
+      @profile_data["dob"] = @user.profile.dob
+      @profile_data["gender"] = @user.profile.gender
 
       SocialMedia.create!(user: @user)
        #Also save default setting
@@ -186,6 +208,19 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     end
   end
 
+   def_param_group :update_profile do
+    property :id, Integer, desc: 'Account primary key'    
+    property :first_name, String, desc: 'first_name'
+    property :last_name, String, desc: 'last_name'
+    property :avatar, String, desc: 'avatar'
+    property :email, String, desc: 'email'
+    property :about, String, desc: 'about'
+    property :location, String, desc: 'location'
+    property :phone_number, String, desc: 'phone_number'
+    property :dob, String, desc: 'dob'
+    property :gender, String, desc: 'gender'
+  end
+
   api :POST, '/api/v1/users/update-user', 'To SignUp/Register'
   param :first_name, String, :desc => "First Name", :required => true
   param :last_name, String, :desc => "last Name", :required => true
@@ -197,6 +232,8 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   param :location, String, :desc => "location"
   param :about, String, :desc => "about"
   param :password, String, :desc => "password"
+  returns array_of: :update_profile, code: 200, desc: 'This api will return the following response.' 
+
 
   def update_profile
     user = User.find(params[:id])
@@ -257,7 +294,27 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   end
 end
 
+   def_param_group :get_profile do
+    property :id, Integer, desc: 'Account primary key'    
+    property :first_name, String, desc: 'first_name'
+    property :last_name, String, desc: 'last_name'
+    property :avatar, String, desc: 'avatar'
+    property :email, String, desc: 'email'
+    property :about, String, desc: 'about'
+    property :location, String, desc: 'location'
+    property :phone_number, String, desc: 'phone_number'
+    property :dob, String, desc: 'dob'
+    property :gender, String, desc: 'gender'
+    property :role, String, desc: 'role_ids'
+    property :social, String, desc: 'Social Media links'
+    property :friends_count, String, desc: 'friends count'
+    property :follows_count, String, desc: 'follows count'
+    property :followers_count, String, desc: 'followers count'
+  end
+
   api :GET, '/api/v1/users/get-profile', 'To get your own profile - Token is required'
+  returns array_of: :get_profile, code: 200, desc: 'This api will return the following response.' 
+
 
   def get_profile
     user = request_user
@@ -290,8 +347,29 @@ end
       }
 end
 
+
+   def_param_group :get_others_profile do
+    property :id, Integer, desc: 'Account primary key'    
+    property :first_name, String, desc: 'first_name'
+    property :last_name, String, desc: 'last_name'
+    property :avatar, String, desc: 'avatar'
+    property :email, String, desc: 'email'
+    property :about, String, desc: 'about'
+    property :location, String, desc: 'location'
+    property :phone_number, String, desc: 'phone_number'
+    property :dob, String, desc: 'dob'
+    property :gender, String, desc: 'gender'
+    property :role, String, desc: 'role_ids'
+    property :social, String, desc: 'Social Media links'
+    property :friends_count, String, desc: 'friends count'
+    property :follows_count, String, desc: 'follows count'
+    property :followers_count, String, desc: 'followers count'
+  end
+
   api :POST, '/api/v1/users/get-others-profile', 'To get a mobile user profile'
   param :user_id, Integer, :desc => "User ID", :required => true
+  returns array_of: :get_others_profile, code: 200, desc: 'This api will return the following response.' 
+
 
  def get_others_profile
   if !params[:user_id].blank?
@@ -422,10 +500,28 @@ end
    end
  end
 
+   def_param_group :attending do
+    property :id, Integer, desc: 'Account primary key'    
+    property :image, String, desc: 'image'
+    property :title, String, desc: 'title of the event'
+    property :description, String, desc: 'description'
+    property :location, String, desc: 'location'
+    property :start_date, String, desc: 'start date and time'
+    property :end_date, String, desc: 'end date and time'
+    property :over_18, String, desc: 'true or false'
+    property :price_type, String, desc: 'price type of the event'
+    property :price, String, desc: 'price of the event'
+    property :has_passes, String, desc: 'return true or false'
+    property :all_passes_added_to_wallet, String, desc: 'all_passes_added_to_wallet'
+    property :created_at, String, desc: 'created_at time'
+    property :categories, String, desc: 'categories'
+  end
 
 
   api :POST, '/api/v1/users/user-attending', 'User Events to attend list'
   param :user_id, Integer, :desc => "User ID", :required => true
+  returns array_of: :attending, code: 200, desc: 'This api will return the following response.' 
+
 
  def attending
    if !params[:user_id].blank?
@@ -451,7 +547,31 @@ end
  end
 
 
+   def_param_group :my_attending do
+    property :event_id, Integer, desc: 'Account primary key'    
+    property :image, String, desc: 'image'
+    property :name, String, desc: 'title of the event'
+    property :event_type, String, desc: 'event type'
+    property :additional_media, String, desc: 'additional_media'
+    property :location, String, desc: 'location'
+    property :start_date, String, desc: 'start date and time'
+    property :end_date, String, desc: 'end date and time'
+    property :over_18, String, desc: 'true or false'
+    property :price_type, String, desc: 'price type of the event'
+    property :price, String, desc: 'price of the event'
+    property :has_passes, String, desc: 'return true or false'
+    property :created_at, String, desc: 'created_at time'
+    property :updated_at, String, desc: 'updated_at time'
+    property :host, String, desc: 'host of the event'
+    property :host_image, String, desc: 'host image'
+    property :interest_count, String, desc: 'interested count'
+    property :going_count, String, desc: 'going users count'
+    property :demographics, String, desc: 'Demographics'
+  end
+
  api :GET, '/api/v1/users/my-attending', 'To get my attending'
+ returns array_of: :my_attending, code: 200, desc: 'This api will return the following response.' 
+
  def my_attending
      attending = []
      user = request_user
@@ -461,8 +581,6 @@ end
         "name" => event.title,
         "start_date" => event.start_date,
         "end_date" => event.end_date,
-        "start_time" => event.start_time,
-        "end_time" => event.end_time,
         "location" => eval(event.location),
         "event_type" => event.event_type,
         "image" => event.image,
@@ -574,8 +692,23 @@ end
 
 end
 
- 
 
+   def_param_group :get_business_profile do
+    property :first_name, String, desc: 'first_name'
+    property :last_name, String, desc: 'last_name'
+    property :avatar, String, desc: 'avatar'
+    property :about, String, desc: 'about'
+    property :location, String, desc: 'location'
+    property :followers_count, String, desc: 'followers_count'
+    property :offers_count, String, desc: 'offers_count'
+    property :competitions, String, desc: 'competitions'
+    property :competitions_count, String, desc: 'competitions_count'
+    property :events, String, desc: 'events'
+    property :offers, String, desc: 'offers'
+  end
+ 
+  api :get, '/api/v1/user/users/get-profile', 'To get a business profile'
+  returns array_of: :get_business_profile, code: 200, desc: 'This api will return the following response.' 
 
  #own profile
  def get_business_profile
@@ -606,8 +739,29 @@ end
       }
  end
 
+   def_param_group :get_others_business_profile do
+    property :id, String, desc: 'id'
+    property :profile_name, String, desc: 'profile_name'
+    property :first_name, String, desc: 'first_name'
+    property :last_name, String, desc: 'last_name'
+    property :avatar, String, desc: 'avatar'
+    property :location, String, desc: 'location'
+    property :social, String, desc: 'social links'
+    property :website, String, desc: 'website'
+    property :news_feeds, String, desc: 'news_feeds'
+    property :followers_count, String, desc: 'followers_count'
+    property :events_count, String, desc: 'events_count'
+    property :offers_count, String, desc: 'offers_count'
+    property :competitions_count, String, desc: 'competitions_count'
+    property :ambassador_request_status, String, desc: 'ambassador_request_status'
+    property :is_ambassador, String, desc: 'is_ambassador'
+  end
+
+
   api :POST, '/api/v1/user/users/get-others-business-profile', 'To get a business profile'
   param :user_id, Integer, :desc => "User ID", :required => true
+  returns array_of: :get_others_business_profile, code: 200, desc: 'This api will return the following response.' 
+
 
  def get_others_business_profile
   if !params[:user_id].blank?
@@ -619,7 +773,7 @@ end
   profile['first_name'] = user.business_profile.profile_name
   profile['last_name'] = ''
   profile['avatar'] = user.avatar
-  profile['address'] = eval(user.location)
+  profile['location'] = eval(user.location)
   profile["social"] = user.social_media
   profile['website'] = user.business_profile.website
   profile['followers_count'] = user.followers.size

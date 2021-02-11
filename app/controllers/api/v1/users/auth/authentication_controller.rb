@@ -3,9 +3,19 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
   require 'pubnub'
    # POST /auth/login
 
+
+     def_param_group :login do
+      property :id, Integer, desc: 'Account primary key'    
+      property :phone_number, String, desc: 'Phone number'
+      property :email, String, desc: 'Email'
+      property :about, String, desc: 'About'
+    end
+
     api :POST, '/api/v1/users/auth/login', 'To login and Generate Auhtorization Token'
     param :uuid, String, :desc => "The ID of the user", :required => true
     param :device_token, String, :desc => "pass any string ", :required => true
+    returns array_of: :login, code: 200, desc: 'This api will return the following response.' 
+
 
    def login
      if params[:uuid].present? && params[:device_token].present?
@@ -58,11 +68,18 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
 
 
    def_param_group :get_accounts do
-    property :id, :number, desc: 'Account primary key'	  
-    property :id, :number, desc: 'Primary key'  
+    property :id, Integer, desc: 'Account primary key'	  
+    property :uuid, Integer, desc: 'Primary key'  
     property :profile_name, String, desc: 'Business Profile Name'  
     property :contact_name, String, desc: 'Business Contact name'  
     property :display_name, String, desc: 'Business display name'
+    property :first_name, String, desc: 'Mobile user first name'
+    property :last_name, String, desc: 'Mobile user last name'
+    property :dob, String, desc: 'Mobile user Date of birth'
+    property :gender, String, desc: 'Mobile user gender'
+    property :avatar, String, desc: 'User profile picture'
+    property :phone_number, String, desc: 'Phone number'
+    property :email, String, desc: 'Email'
   end
 
   api :POST, '/api/v1/users/auth/get-accounts', 'To get user account list'
