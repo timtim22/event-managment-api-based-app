@@ -7,7 +7,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   # GET /users
 
 
-  api :GET, '/api/v1/users', 'View All Users - Token Required'
+  api :GET, '/api/v1/users/get-list', 'View All Users - Token Required'
 
   def index
     all_users = []
@@ -23,7 +23,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     }
   end
 
-  api :GET, '/api/v1/get-users-having-common-fields', 'To update a user profile'
+  api :GET, '/api/v1/users/get-users-having-common-fields', 'To update a user profile'
 
   def get_users_having_common_fields
     users = []
@@ -72,11 +72,11 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   param :dob, String, :desc => "DOB", :required => true
   param :gender, String, :desc => "Gender", :required => true
   # param :role_id, Integer, :desc => "role_id", :required => true
-  param :phone_number, String, :desc => "phone_number"
-  param :email, String, :desc => "email"
-  param :location, String, :desc => "location"
-  param :about, String, :desc => "about"
-  param :password, String, :desc => "password"
+  param :phone_number, String, :desc => "phone_number", :required => true
+  param :email, String, :desc => "email", :required => true
+  param :location, String, :desc => "location", :required => true
+  param :about, String, :desc => "about", :required => true
+  param :password, String, :desc => "password", :required => true
   returns array_of: :create, code: 200, desc: 'This api will return the following response.' 
 
 
@@ -222,16 +222,17 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   end
 
   api :POST, '/api/v1/users/update-user', 'To update profile'
+  param :id, String, :desc => "ID", :required => true
   param :first_name, String, :desc => "First Name", :required => true
   param :last_name, String, :desc => "last Name", :required => true
   param :dob, String, :desc => "DOB", :required => true
   param :gender, String, :desc => "Gender", :required => true
   # param :role_id, Integer, :desc => "role_id", :required => true
-  param :phone_number, String, :desc => "phone_number"
-  param :email, String, :desc => "email"
-  param :location, String, :desc => "location"
-  param :about, String, :desc => "about"
-  param :password, String, :desc => "password"
+  param :phone_number, String, :desc => "phone_number", :required => true
+  param :email, String, :desc => "email", :required => true
+  param :location, String, :desc => "location", :required => true
+  param :about, String, :desc => "about", :required => true
+  param :password, String, :desc => "password", :required => true
   returns array_of: :update_profile, code: 200, desc: 'This api will return the following response.' 
 
 
@@ -262,6 +263,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   if user.save && @social.save
    # create_activity("updated profile.", profile, "Profile")
    profile_object = {
+    'id' => user.id,
     'first_name' => user.profile.first_name,
     'last_name' => user.profile.last_name,
     'avatar' => user.avatar,
@@ -951,7 +953,7 @@ end
     }
   end
 
-  api :GET, '/api/v1/get-phone-numbers', 'To get phone number list'
+  api :GET, '/api/v1/users/get-phone-numbers', 'To get phone number list'
 
   def get_phone_numbers
     @phone_numbers = User.all.map {|user| user.phone_number }
@@ -1042,8 +1044,8 @@ private
    @roles = Role.all
  end
 
-  api :GET, '/api/v1/auth/send-verification-email', 'Send verification code to verify email'
-  param :email, String, :desc => "Email", :required => true
+  # api :GET, '/api/v1/auth/send-verification-email', 'Send verification code to verify email'
+  # param :email, String, :desc => "Email", :required => true
 
 
 #  def send_verification_email(user)

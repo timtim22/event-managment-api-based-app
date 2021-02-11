@@ -17,7 +17,7 @@ Rails.application.routes.draw do
             get '/get-list' => 'users#index'
             post '/update-profile' => 'users#update_profile'
             get '/get-profile' => 'users#get_profile'
-            post '/get-profile' => "users#get_others_profile"
+            post '/get-others-profile' => "users#get_others_profile"
             post "/delete-account" => "users#delete_account"
             post '/update-device-token' => "users#update_device_token"
             get '/get-activity-logs' => "users#get_activity_logs"
