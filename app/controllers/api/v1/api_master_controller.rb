@@ -323,9 +323,6 @@ class Api::V1::ApiMasterController < ApplicationController
    end
 
 
-
-
-
     private
     def check_if_app_user?
       if request_user && request_user.app_user != true && params["controller"] != "api/v1/analytics" && params["controller"] != "api/v1/business_dashboard"

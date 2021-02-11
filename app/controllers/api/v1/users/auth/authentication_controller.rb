@@ -57,11 +57,17 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
    end
 
 
-
+   def_param_group :get_accounts do
+    property :id, :number, desc: 'Account primary key'	  
+    property :id, :number, desc: 'Primary key'  
+    property :profile_name, String, desc: 'Business Profile Name'  
+    property :contact_name, String, desc: 'Business Contact name'  
+    property :display_name, String, desc: 'Business display name'
+  end
 
   api :POST, '/api/v1/users/auth/get-accounts', 'To get user account list'
-  param :phone_number, String, :desc => "Phone Number", :required => true
-
+  param :phone_number, String, :desc => "Phone Number", :required => true, :desc => "Required params"
+  returns array_of: :get_accounts, code: 200, desc: 'This api will return the following response.' 
 
  def get_accounts
     @phone_number = params[:phone_number]
@@ -90,7 +96,7 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
             "phone_number" => account.phone_number,
             "email" => account.email
           }
-         business_accounts.push(obj)
+        business_accounts.push(obj)
         else account.role_ids.include?(5)
          app_account =  {
           "id" => account.id,
@@ -226,31 +232,31 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
   # end
   # end
 
-  api :POST, '/api/v1/users/auth/update-password', 'To update password'
-  param :email, String, :desc => "Email", :required => true
-  param :password, String, :desc => "Password", :required => true
+  # api :POST, '/api/v1/users/auth/update-password', 'To update password'
+  # param :uuid, String, :desc => "Email", :required => true
+  # param :password, String, :desc => "Password", :required => true
 
-  def update_password
-    @user = User.find_by(email: params[:email])
-    @user.password = params[:password]
-    if @user.save()
-      response = {
-        code: 200,
-        success: true,
-        message: "Password updated successfully.",
-        data: nil
-      }
-      render json: response.to_json
-    else
-      response = {
-        code: 400,
-        status: false,
-        message: @user.errors.full_messages,
-        data: nil
-      }
-      render json: response.to_json
-    end
-  end
+  # def update_password
+  #   @user = User.find_by(email: params[:email])
+  #   @user.password = params[:password]
+  #   if @user.save()
+  #     response = {
+  #       code: 200,
+  #       success: true,
+  #       message: "Password updated successfully.",
+  #       data: nil
+  #     }
+  #     render json: response.to_json
+  #   else
+  #     response = {
+  #       code: 400,
+  #       status: false,
+  #       message: @user.errors.full_messages,
+  #       data: nil
+  #     }
+  #     render json: response.to_json
+  #   end
+  # end
 
   private
 
