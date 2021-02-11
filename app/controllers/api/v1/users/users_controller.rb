@@ -350,7 +350,7 @@ end
 end
 
 
-   def_param_group :get_others_profile do
+   def_param_group :get_profile do
     property :id, Integer, desc: 'Account primary key'    
     property :first_name, String, desc: 'first_name'
     property :last_name, String, desc: 'last_name'
@@ -370,10 +370,10 @@ end
 
   api :POST, '/api/v1/users/get-others-profile', 'To get a mobile user profile'
   param :user_id, Integer, :desc => "User ID", :required => true
-  returns array_of: :get_others_profile, code: 200, desc: 'This api will return the following response.' 
+  returns array_of: :get_profile, code: 200, desc: 'This api will return the following response.' 
 
 
- def get_others_profile
+ def get_profile
   if !params[:user_id].blank?
   user = User.find(params[:user_id])
   profile = {}
