@@ -8,6 +8,7 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
       property :id, Integer, desc: 'Account primary key'    
       property :phone_number, String, desc: 'Phone number'
       property :email, String, desc: 'Email'
+      property :avatar, String, desc: 'avatar'
       property :about, String, desc: 'About'
     end
 
