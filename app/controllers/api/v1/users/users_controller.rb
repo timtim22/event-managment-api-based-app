@@ -53,7 +53,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   end
 
 
-   def_param_group :create do
+   def_param_group :create_user do
     property :id, Integer, desc: 'Account primary key'    
     property :first_name, String, desc: 'first_name'
     property :last_name, String, desc: 'last_name'
@@ -80,7 +80,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
 
 
 
-  def create
+  def create_user
     required_fields = ['first_name', 'last_name','dob', 'gender', 'role_id']
     errors = []
     required_fields.each do |field|
@@ -138,6 +138,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
        else
         email_sent = "No email was sent"
        end
+
        #applicable only if user is invited
        if !params[:inviter_phone].blank?
          inviter = User.where(phone_number: params[:inviter_phone]).first
