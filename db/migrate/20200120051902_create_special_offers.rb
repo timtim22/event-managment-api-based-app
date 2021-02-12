@@ -4,7 +4,7 @@ class CreateSpecialOffers < ActiveRecord::Migration[5.2]
       t.integer :user_id
       t.string :title, default: ''
       t.string :sub_title, default: ''
-      t.string :redeem_code, default: ''
+      t.string :qr_code, default: ''
       t.string :image, default: ''
       t.datetime :date
       t.datetime :time

@@ -79,7 +79,7 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
   param :validity, String, :desc => "Validity", :required => true
   param :ambassador_rate, :decimal, :desc => "Ambassador rate of the special offer", :required => true
   param :image, String, :desc => "Image of the special offer", :required => true
-  param :redeem_code, :number, :desc => "Redeem Code", :required => true
+  param :qr_code, :number, :desc => "Redeem Code", :required => true
   param :terms_conditions, String, :desc => "Terms and condition of the special offer", :required => true
 
   def create
@@ -90,7 +90,7 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
     @special_offer.validity = params[:validity]
     @special_offer.ambassador_rate = params[:ambassador_rate]
     @special_offer.image = params[:image]
-    @special_offer.redeem_code = generate_code
+    @special_offer.qr_code = generate_code
     @special_offer.terms_conditions = params[:terms_conditions]
     if !params[:location].blank?
       @special_offer.location = params[:location][:name]
@@ -175,7 +175,7 @@ end
   param :validity, String, :desc => "Validity", :required => true
   param :ambassador_rate, :number, :desc => "Ambassador rate of the special offer", :required => true
   param :image, String, :desc => "Image of the special offer", :required => true
-  param :redeem_code, String, :desc => "Redeem Code", :required => true
+  param :qr_code, String, :desc => "Redeem Code", :required => true
   param :terms_conditions, String, :desc => "Terms and condition of the special offer", :required => true
  # param :id, :number, :desc => "Title of the competition", :required => true
 

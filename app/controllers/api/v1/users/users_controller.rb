@@ -22,7 +22,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     }
   end
 
-  api :GET, '/api/v1/get-users-having-common-fields', 'To update a user profile'
+  api :GET, '/api/v1/users/get-users-having-common-fields', 'To retrieve users having common fields.'
 
   def get_users_having_common_fields
     users = []
@@ -61,7 +61,6 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   param :email, String, :desc => "email"
   param :location, String, :desc => "location"
   param :about, String, :desc => "about"
-  param :password, String, :desc => "password"
 
 
 
@@ -86,7 +85,6 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     @user.email = params[:email]
     @user.location = params[:location]
     @user.about = params[:about]
-    @user.password = params[:password]
     @user.uuid = generate_uuid
     if @user.save
       @profile = Profile.new

@@ -153,7 +153,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
  def get_dashboard_child_event_object(event)
     qr = []
      if !event.event.passes.blank?
-       event.event.passes.map {|p| qr.push(p.redeem_code) }
+       event.event.passes.map {|p| qr.push(p.qr_code) }
      end
   case
   when event.start_date.to_date == Date.today
@@ -181,7 +181,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
     "parent_event_id" => event.event.id,
     "price" => get_price(event.event),
     "status" => status,
-    "redeem_code" => qr,
+    "qr_code" => qr,
     "pass_id" => event.event.passes.map { |e| e.id}.to_sentence
   }
 

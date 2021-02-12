@@ -29,7 +29,7 @@ RSpec.describe Api::V1::SpecialOffers::SpecialOffersController, type: :controlle
     end
 
     # it "should return redeem special offer" do
-    #   get :redeem_it, params: {redeem_code:d}
+    #   get :redeem_it, params: {qr_code:d}
     #   expect(response).to have_http_status(200)
     #   expect(JSON.parse(response.body)["success"]).to eq(true)
     # end

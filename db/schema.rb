@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_05_112810) do
+ActiveRecord::Schema.define(version: 2021_02_12_065555) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -237,6 +237,7 @@ ActiveRecord::Schema.define(version: 2021_02_05_112810) do
     t.string "frequency", default: "daily"
     t.integer "max_attendees", default: 1
     t.string "location_name", default: "no_location"
+    t.string "qr_code", default: ""
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
@@ -401,17 +402,12 @@ ActiveRecord::Schema.define(version: 2021_02_05_112810) do
     t.string "title", default: ""
     t.text "description", default: ""
     t.datetime "validity"
-    t.datetime "validity_time"
-    t.string "redeem_code", default: ""
-    t.text "terms_conditions", default: ""
-    t.boolean "agreed_to_terms", default: false
     t.integer "ambassador_rate", default: 1
     t.integer "quantity", default: 1
-    t.datetime "valid_from"
-    t.datetime "valid_to"
     t.string "pass_type", default: "guest_pass"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "per_head"
     t.index ["event_id"], name: "index_passes_on_event_id"
     t.index ["user_id"], name: "index_passes_on_user_id"
   end
@@ -535,7 +531,6 @@ ActiveRecord::Schema.define(version: 2021_02_05_112810) do
     t.integer "user_id"
     t.string "title", default: ""
     t.string "sub_title", default: ""
-    t.string "redeem_code", default: ""
     t.string "image", default: ""
     t.datetime "date"
     t.datetime "time"
@@ -551,6 +546,7 @@ ActiveRecord::Schema.define(version: 2021_02_05_112810) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "quantity", default: 0
+    t.string "qr_code", default: ""
     t.index ["user_id"], name: "index_special_offers_on_user_id"
   end
 
@@ -588,7 +584,6 @@ ActiveRecord::Schema.define(version: 2021_02_05_112810) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "terms_conditions", default: ""
-    t.string "redeem_code", default: ""
     t.index ["event_id"], name: "index_tickets_on_event_id"
     t.index ["user_id"], name: "index_tickets_on_user_id"
   end

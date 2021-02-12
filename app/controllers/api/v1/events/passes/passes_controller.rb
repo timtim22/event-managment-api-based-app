@@ -27,7 +27,6 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
               event_date:@event.start_date,
               is_added_to_wallet: is_added_to_wallet?(pass.id),
               validity: pass.validity.strftime(get_time_format),
-              terms_and_conditions: pass.terms_conditions,
               grabbers_count: pass.wallets.size,
               description: pass.description,
               issued_by: get_full_name(pass.user),
@@ -49,7 +48,6 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
             event_date:@event.start_date,
             is_added_to_wallet: is_added_to_wallet?(pass.id),
             validity: pass.validity.strftime(get_time_format),
-            terms_and_conditions: pass.terms_conditions,
             grabbers_count: pass.wallets.size,
             description: pass.description,
             issued_by: get_full_name(pass.user),
@@ -125,15 +123,15 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
 
   api :POST, '/api/v1/events/passes/redeem', 'To redeem a pass'
   param :pass_id, Integer, :desc => "pass id", :required => true
-  param :redeem_code, String, :desc => "Redeem Code", :required => true
+  param :qr_code, String, :desc => "Redeem Code", :required => true
 
   def redeem_it
-    if !params[:redeem_code].blank? && !params[:pass_id].blank?
+    if !params[:qr_code].blank? && !params[:pass_id].blank?
      @pass = Pass.find(params[:pass_id])
      @check  = Redemption.where(offer_id: @pass.id).where(offer_type: 'Pass').where(user_id: request_user.id)
      if @check.blank?
-    if(@pass && @pass.redeem_code == params[:redeem_code].to_s)
-      if  @redemption = Redemption.create!(:user_id =>  request_user.id, offer_id: @pass.id, code: params[:redeem_code], offer_type: 'Pass')
+    if(@pass && @pass.event.qr_code == params[:qr_code].to_s)
+      if  @redemption = Redemption.create!(:user_id =>  request_user.id, offer_id: @pass.id, code: params[:qr_code], offer_type: 'Pass')
       @pass.quantity = @pass.quantity - 1;
       @pass.save
        request_user.wallets.where(offer: @pass).first.update!(is_redeemed: true)
@@ -195,7 +193,7 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
     render json: {
       code: 400,
       success: false,
-      message: "pass_id and redeem_code are required fields.",
+      message: "pass_id and qr_code are required fields.",
       data: nil
     }
   end

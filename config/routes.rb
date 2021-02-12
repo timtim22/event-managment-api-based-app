@@ -190,8 +190,8 @@ Rails.application.routes.draw do
      post '/send-location' => "forwarding#send_location"
      post '/forward-offer' => "forwarding#forward_offer"
      post '/share-offer' => "forwarding#share_offer"
-     post '/events/share' => 'forwarding#share_event'
-     post '/events/forward' => 'forwarding#forward_event'
+     post '/share-event' => 'forwarding#share_event'
+     post '/forward-event' => 'forwarding#forward_event'
    end
 
 
