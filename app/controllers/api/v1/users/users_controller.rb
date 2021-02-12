@@ -23,7 +23,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     }
   end
 
-  api :GET, '/api/v1/users/get-users-having-common-fields', 'To retrieve users having common fields.'
+  api :GET, '/api/v1/users/get-users-having-common-fields', 'To update a user profile'
 
   def get_users_having_common_fields
     users = []
@@ -76,12 +76,12 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   param :location, String, :desc => "location"
   param :about, String, :desc => "about"
   param :gender, String, :desc => "Gender"
-  returns array_of: :create_user, code: 200, desc: 'This api will return the following response.' 
+  returns array_of: :create_user, code: 200, desc: 'This api will return the following response.'
 
 
 
   def create_user
-    required_fields = ['first_name', 'last_name','dob',  'role_id']
+    required_fields = ['first_name', 'last_name','dob', 'role_id']
     errors = []
     required_fields.each do |field|
       if params[field.to_sym].blank?
@@ -102,6 +102,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     @user.location = if !params[:location].blank? then params[:location] else "" end
     @user.is_subscribed = params[:is_email_subscribed]
     @user.about = params[:about]
+    @user.password = params[:password]
     @user.uuid = generate_uuid
     if @user.save
       @profile = Profile.new
@@ -122,7 +123,6 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
       @profile_data["phone_number"] = @user.phone_number
       @profile_data["dob"] = @user.profile.dob
       @profile_data["gender"] = @user.profile.gender
-      
 
       SocialMedia.create!(user: @user)
        #Also save default setting
@@ -350,7 +350,7 @@ end
 end
 
 
-   def_param_group :get_other_profile do
+   def_param_group :get_profile do
     property :id, Integer, desc: 'Account primary key'    
     property :first_name, String, desc: 'first_name'
     property :last_name, String, desc: 'last_name'
@@ -368,12 +368,12 @@ end
     property :followers_count, String, desc: 'followers count'
   end
 
-  api :POST, '/api/v1/users/get-profile', 'To get a mobile user profile'
+  api :POST, '/api/v1/users/get-others-profile', 'To get a mobile user profile'
   param :user_id, Integer, :desc => "User ID", :required => true
-  returns array_of: :get_other_profile, code: 200, desc: 'This api will return the following response.' 
+  returns array_of: :get_profile, code: 200, desc: 'This api will return the following response.' 
 
 
- def get_other_profile
+ def get_profile
   if !params[:user_id].blank?
   user = User.find(params[:user_id])
   profile = {}
@@ -695,7 +695,7 @@ end
 end
 
 
-
+ 
   api :GET, '/api/v1/users/get-activity-logs', 'To get the activity logs'
 
   def get_activity_logs
