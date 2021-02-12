@@ -132,13 +132,13 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
          new_setting = Setting.create!(user_id: @user.id, name: name, is_on: true)
        end #each
 
-       # if params[:is_email_subscribed] ==  'true'
-       # #send verification email
-       #  email_sent =  send_verification_email(@user)
-       # else
-       #  email_sent = "No email was sent"
-       # end
-       #applicable only if user is invited
+       if params[:is_email_subscribed] ==  'true'
+       #send verification email
+        email_sent =  send_verification_email(@user)
+       else
+        email_sent = "No email was sent"
+       end
+       applicable only if user is invited
        if !params[:inviter_phone].blank?
          inviter = User.where(phone_number: params[:inviter_phone]).first
          if inviter
