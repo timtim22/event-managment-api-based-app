@@ -1,6 +1,6 @@
 class Api::V1::Users::UsersController < Api::V1::ApiMasterController
-  before_action :authorize_request, except: :create
-  before_action :checkout_logout, except: :create
+  before_action :authorize_request, except: :create_user
+  before_action :checkout_logout, except: :create_user
   require 'action_view'
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
@@ -70,18 +70,18 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   param :first_name, String, :desc => "First Name", :required => true
   param :last_name, String, :desc => "last Name", :required => true
   param :dob, String, :desc => "DOB"
-  param :gender, String, :desc => "Gender", :required => true
-  param :role_id, Integer, :desc => "role_id", :required => true
+  param :gender, String, :desc => "Gender"
+  param :role_id, String, :desc => "role_id", :required => true
   param :phone_number, String, :desc => "phone_number", :required => true
   param :email, String, :desc => "email", :required => true
   param :location, String, :desc => "location"
-  param :about, String, :desc => "about", :required => true
+  param :about, String, :desc => "about"
   returns array_of: :create_user, code: 200, desc: 'This api will return the following response.' 
 
 
 
   def create_user
-    required_fields = ['first_name', 'last_name','dob', 'gender', 'role_id']
+    required_fields = ['first_name', 'last_name','dob',  'role_id']
     errors = []
     required_fields.each do |field|
       if params[field.to_sym].blank?
@@ -100,11 +100,12 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     @user.phone_number = params[:phone_number]
     @user.email = params[:email]
     @user.location = params[:location]
+    @user.is_subscribed = params[:is_email_subscribed]
     @user.about = params[:about]
     @user.uuid = generate_uuid
     if @user.save
       @profile = Profile.new
-      @profile.dob = if !params[:dob].blank? then params[:dob] else "no_dob" end
+      @profile.dob = if !params[:gender].blank? then params[:gender] else "no_gender_specified" end
       @profile.user = @user
       @profile.first_name = params[:first_name]
       @profile.last_name = params[:last_name]
@@ -121,6 +122,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
       @profile_data["phone_number"] = @user.phone_number
       @profile_data["dob"] = @user.profile.dob
       @profile_data["gender"] = @user.profile.gender
+      
 
       SocialMedia.create!(user: @user)
        #Also save default setting

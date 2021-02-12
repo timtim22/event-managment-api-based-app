@@ -15,7 +15,7 @@ Rails.application.routes.draw do
       namespace :users do
             resources :users
             get '/get-list' => 'users#index'
-            post '/create-user' => 'users#create-user'
+            post '/create-user' => 'users#create_user'
             post '/update-profile' => 'users#update_profile'
             get '/get-profile' => 'users#get_profile'
             post '/get-profile' => "users#get_profile"
