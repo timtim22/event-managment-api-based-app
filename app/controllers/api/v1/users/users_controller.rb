@@ -69,7 +69,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   api :POST, '/api/v1/users/create-user', 'To SignUp/Register'
   param :first_name, String, :desc => "First Name", :required => true
   param :last_name, String, :desc => "last Name", :required => true
-  param :dob, String, :desc => "DOB", :required => true
+  param :dob, String, :desc => "DOB"
   param :gender, String, :desc => "Gender", :required => true
   param :role_id, Integer, :desc => "role_id", :required => true
   param :phone_number, String, :desc => "phone_number", :required => true
@@ -104,7 +104,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     @user.uuid = generate_uuid
     if @user.save
       @profile = Profile.new
-      @profile.dob = params[:dob]
+      @profile.dob = if !params[:dob].blank? then params[:dob] else "no_dob" end
       @profile.user = @user
       @profile.first_name = params[:first_name]
       @profile.last_name = params[:last_name]
