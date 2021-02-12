@@ -121,6 +121,17 @@ class User < ApplicationRecord
   #   end
   # end
 
+
+  def self.get_full_name(user)
+    if !user.profile.nil?
+      name = user.profile.first_name + " " + user.profile.last_name
+    elsif !user.business_profile.nil?
+      name = user.business_profile.profile_name
+    else
+      ""
+    end
+  end
+
   def self.businesses_list
     businesses = []
     self.all.map {|user| if user.roles.map {|role| role.id }.include?  2 then businesses.push(user) end }

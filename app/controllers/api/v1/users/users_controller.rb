@@ -70,14 +70,13 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   param :first_name, String, :desc => "First Name", :required => true
   param :last_name, String, :desc => "last Name", :required => true
   param :dob, String, :desc => "DOB", :required => true
-  param :gender, String, :desc => "Gender", :required => true
-  # param :role_id, Integer, :desc => "role_id", :required => true
+  param :role_id, String, :desc => "role_id", :required => true
   param :phone_number, String, :desc => "phone_number", :required => true
   param :email, String, :desc => "email", :required => true
-  param :location, String, :desc => "location", :required => true
-  param :about, String, :desc => "about", :required => true
-  param :password, String, :desc => "password", :required => true
-  returns array_of: :create, code: 200, desc: 'This api will return the following response.' 
+  param :location, String, :desc => "location"
+  param :about, String, :desc => "about"
+  param :gender, String, :desc => "Gender"
+  returns array_of: :create_user, code: 200, desc: 'This api will return the following response.'
 
 
 
@@ -100,7 +99,8 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
 
     @user.phone_number = params[:phone_number]
     @user.email = params[:email]
-    @user.location = params[:location]
+    @user.location = if !params[:location].blank? then params[:location] else "" end
+    @user.is_subscribed = params[:is_email_subscribed]
     @user.about = params[:about]
     @user.password = params[:password]
     @user.uuid = generate_uuid
@@ -110,7 +110,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
       @profile.user = @user
       @profile.first_name = params[:first_name]
       @profile.last_name = params[:last_name]
-      @profile.gender = params[:gender]
+      @profile.gender = if !params[:gender].blank? then params[:gender] else "" end
       @profile.save
       @profile_data = {}
       @profile_data['id'] = @user.id
@@ -118,7 +118,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
       @profile_data["last_name"] = @user.profile.last_name
       @profile_data["avatar"] = @user.avatar
       @profile_data["email"] = @user.email
-      @profile_data["about"] = @user.about
+      @profile_data["about"] = if !params[:about].blank? then params[:about] else "" end
       @profile_data["location"] = @user.location
       @profile_data["phone_number"] = @user.phone_number
       @profile_data["dob"] = @user.profile.dob
@@ -1048,17 +1048,17 @@ private
   # param :email, String, :desc => "Email", :required => true
 
 
-#  def send_verification_email(user)
-#     @code = user.verification_code
-#     base_url = request.base_url
-#     @url = "#{base_url}/api/v1/auth/verify-code?email=#{user.email}&&verification_code=#{@code}"
-#     # @url = "#{ENV['BASE_URL']}/api/v1/auth/verify-code?email=#{user.email}&&verification_code=#{@code}"
-#     if UserMailer.with(user: user).verification_email(user,@url).deliver_now#UserMailer.deliver_now
-#      true
-#   else
-#     false
-#   end
-# end
+ def send_verification_email(user)
+    @code = generate_code
+    base_url = request.base_url
+    @url = "#{base_url}/api/v1/auth/verify-code?email=#{user.email}&&verification_code=#{@code}"
+    # @url = "#{ENV['BASE_URL']}/api/v1/auth/verify-code?email=#{user.email}&&verification_code=#{@code}"
+    if UserMailer.with(user: user).verification_email(user,@url).deliver_now#UserMailer.deliver_now
+     true
+  else
+    false
+  end
+end
 
 
 
