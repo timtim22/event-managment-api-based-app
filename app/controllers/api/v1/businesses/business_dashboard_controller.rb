@@ -262,6 +262,120 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
   end
 
 
+  
+  def_param_group :get_other_business_profile do
+    property :id, String, desc: 'id'
+    property :profile_name, String, desc: 'profile_name'
+    property :first_name, String, desc: 'first_name'
+    property :last_name, String, desc: 'last_name'
+    property :avatar, String, desc: 'avatar'
+    property :location, String, desc: 'location'
+    property :social, String, desc: 'social links'
+    property :website, String, desc: 'website'
+    property :news_feeds, Hash, desc: 'news_feeds'
+    property :followers_count, Integer, desc: 'followers_count'
+    property :events_count, String, desc: 'events_count'
+    property :offers_count, String, desc: 'offers_count'
+    property :competitions_count, String, desc: 'competitions_count'
+    property :ambassador_request_status, String, desc: 'ambassador_request_status'
+    property :is_ambassador, String, desc: 'is_ambassador'
+  end
+
+
+
+  
+  api :POST, '/api/v1/business/get-profile', 'To get other business profile'
+  param :user_id, Integer, :desc => "User ID", :required => true
+  returns array_of: :get_other_business_profile, code: 200, desc: 'This api will return the following response.' 
+
+ def get_other_business_profile
+  if !params[:user_id].blank?
+  user = User.find(params[:user_id])
+  profile = {}
+  status = get_request_status(user.id)
+  profile['id'] = user.id
+  profile['profile_name'] = user.business_profile.profile_name
+  profile['first_name'] = user.business_profile.profile_name
+  profile['last_name'] = ''
+  profile['avatar'] = user.avatar
+  profile['location'] = eval(user.location)
+  profile["social"] = user.social_media
+  profile['website'] = user.business_profile.website
+  profile['followers_count'] = user.followers.size
+  profile['events_count'] = user.events.size
+  profile['competitions_count'] = user.competitions.size
+  profile['offers_count'] = user.special_offers.size
+  profile['news_feeds'] = user.news_feeds
+  profile['ambassador_request_status'] = status
+  profile['is_ambassador'] = false
+  render json: {
+    code: 200,
+    success: true,
+    message: '',
+    data: {
+      profile: profile,
+      user: user
+    }
+  }
+else
+  render json: {
+    code: 400,
+    success: false,
+    message: 'user_id is required.',
+    data: nil
+  }
+end
+end
+
+
+
+def_param_group :get_business_profile do
+  property :first_name, String, desc: 'first_name'
+  property :last_name, String, desc: 'last_name'
+  property :avatar, String, desc: 'avatar'
+  property :about, String, desc: 'about'
+  property :location, String, desc: 'location'
+  property :followers_count, String, desc: 'followers_count'
+  property :offers_count, String, desc: 'offers_count'
+  property :competitions, String, desc: 'competitions'
+  property :competitions_count, String, desc: 'competitions_count'
+  property :events, String, desc: 'events'
+  property :offers, String, desc: 'offers'
+end
+
+api :get, '/api/v1/business/get-profile', 'To get a business profile'
+returns array_of: :get_business_profile, code: 200, desc: 'This api will return the following response.' 
+
+#own profile
+def get_business_profile
+    user = request_user
+    profile = {}
+    offers = {}
+    offers['special_offers'] = user.special_offers
+    offers['passes'] = user.passes
+    profile['first_name'] = user.business_profile.profile_name
+    profile['last_name'] = ''
+    profile['avatar'] = user.avatar
+    profile['about'] = user.about
+    profile['location'] = eval(user.location)
+    profile['followers_count'] = user.followers.size
+    profile['events_count'] = user.events.size
+    profile['competitions_count'] = user.competitions.size
+    profile['offers_count'] = user.passes.size + user.special_offers.size
+    profile['competitions'] = user.competitions
+    profile['events'] = user.events
+    profile['offers'] = offers
+    render json: {
+      code: 200,
+      success: true,
+      message: '',
+      data: {
+        profile: profile
+      }
+    }
+end
+
+
   private
 
 

@@ -1,5 +1,5 @@
 Apipie.configure do |config|
-  config.app_name                = "MygoAdmin"
+  config.app_name                = "Mygo"
   config.api_base_url            = ""
   config.doc_base_url            = "/api-doc"
   config.translate = false
