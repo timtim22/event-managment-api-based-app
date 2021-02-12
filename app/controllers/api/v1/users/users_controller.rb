@@ -1,6 +1,6 @@
 class Api::V1::Users::UsersController < Api::V1::ApiMasterController
-  before_action :authorize_request, except: :create_user
-  before_action :checkout_logout, except: :create_user
+  before_action :authorize_request, except: :create
+  before_action :checkout_logout, except: :create
   require 'action_view'
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
@@ -23,7 +23,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     }
   end
 
-  api :GET, '/api/v1/users/get-users-having-common-fields', 'To retrieve users having common fields.'
+  api :GET, '/api/v1/users/get-users-having-common-fields', 'To update a user profile'
 
   def get_users_having_common_fields
     users = []
@@ -53,7 +53,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   end
 
 
-   def_param_group :create_user do
+   def_param_group :create do
     property :id, Integer, desc: 'Account primary key'    
     property :first_name, String, desc: 'first_name'
     property :last_name, String, desc: 'last_name'
@@ -69,19 +69,20 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   api :POST, '/api/v1/users/create-user', 'To SignUp/Register'
   param :first_name, String, :desc => "First Name", :required => true
   param :last_name, String, :desc => "last Name", :required => true
-  param :dob, String, :desc => "DOB"
-  param :gender, String, :desc => "Gender"
-  param :role_id, String, :desc => "role_id", :required => true
+  param :dob, String, :desc => "DOB", :required => true
+  param :gender, String, :desc => "Gender", :required => true
+  # param :role_id, Integer, :desc => "role_id", :required => true
   param :phone_number, String, :desc => "phone_number", :required => true
   param :email, String, :desc => "email", :required => true
-  param :location, String, :desc => "location"
-  param :about, String, :desc => "about"
-  returns array_of: :create_user, code: 200, desc: 'This api will return the following response.' 
+  param :location, String, :desc => "location", :required => true
+  param :about, String, :desc => "about", :required => true
+  param :password, String, :desc => "password", :required => true
+  returns array_of: :create, code: 200, desc: 'This api will return the following response.' 
 
 
 
-  def create_user
-    required_fields = ['first_name', 'last_name','dob',  'role_id']
+  def create
+    required_fields = ['first_name', 'last_name','dob', 'gender', 'role_id']
     errors = []
     required_fields.each do |field|
       if params[field.to_sym].blank?
@@ -100,12 +101,12 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     @user.phone_number = params[:phone_number]
     @user.email = params[:email]
     @user.location = params[:location]
-    @user.is_subscribed = params[:is_email_subscribed]
     @user.about = params[:about]
+    @user.password = params[:password]
     @user.uuid = generate_uuid
     if @user.save
       @profile = Profile.new
-      @profile.dob = if !params[:gender].blank? then params[:gender] else "no_gender_specified" end
+      @profile.dob = params[:dob]
       @profile.user = @user
       @profile.first_name = params[:first_name]
       @profile.last_name = params[:last_name]
@@ -122,7 +123,6 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
       @profile_data["phone_number"] = @user.phone_number
       @profile_data["dob"] = @user.profile.dob
       @profile_data["gender"] = @user.profile.gender
-      
 
       SocialMedia.create!(user: @user)
        #Also save default setting
@@ -132,12 +132,12 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
          new_setting = Setting.create!(user_id: @user.id, name: name, is_on: true)
        end #each
 
-       # if params[:is_email_subscribed] ==  'true'
-       # #send verification email
-       #  email_sent =  send_verification_email(@user)
-       # else
-       #  email_sent = "No email was sent"
-       # end
+       if params[:is_email_subscribed] ==  'true'
+       #send verification email
+        email_sent =  send_verification_email(@user)
+       else
+        email_sent = "No email was sent"
+       end
        #applicable only if user is invited
        if !params[:inviter_phone].blank?
          inviter = User.where(phone_number: params[:inviter_phone]).first
@@ -350,7 +350,7 @@ end
 end
 
 
-   def_param_group :get_other_profile do
+   def_param_group :get_profile do
     property :id, Integer, desc: 'Account primary key'    
     property :first_name, String, desc: 'first_name'
     property :last_name, String, desc: 'last_name'
@@ -368,12 +368,12 @@ end
     property :followers_count, String, desc: 'followers count'
   end
 
-  api :POST, '/api/v1/users/get-profile', 'To get a mobile user profile'
+  api :POST, '/api/v1/users/get-others-profile', 'To get a mobile user profile'
   param :user_id, Integer, :desc => "User ID", :required => true
-  returns array_of: :get_other_profile, code: 200, desc: 'This api will return the following response.' 
+  returns array_of: :get_profile, code: 200, desc: 'This api will return the following response.' 
 
 
- def get_other_profile
+ def get_profile
   if !params[:user_id].blank?
   user = User.find(params[:user_id])
   profile = {}
@@ -695,6 +695,114 @@ end
 end
 
 
+   def_param_group :get_business_profile do
+    property :first_name, String, desc: 'first_name'
+    property :last_name, String, desc: 'last_name'
+    property :avatar, String, desc: 'avatar'
+    property :about, String, desc: 'about'
+    property :location, String, desc: 'location'
+    property :followers_count, String, desc: 'followers_count'
+    property :offers_count, String, desc: 'offers_count'
+    property :competitions, String, desc: 'competitions'
+    property :competitions_count, String, desc: 'competitions_count'
+    property :events, String, desc: 'events'
+    property :offers, String, desc: 'offers'
+  end
+ 
+  api :get, '/api/v1/user/users/get-profile', 'To get a business profile'
+  returns array_of: :get_business_profile, code: 200, desc: 'This api will return the following response.' 
+
+ #own profile
+ def get_business_profile
+      user = request_user
+      profile = {}
+      offers = {}
+      offers['special_offers'] = user.special_offers
+      offers['passes'] = user.passes
+      profile['first_name'] = user.business_profile.profile_name
+      profile['last_name'] = ''
+      profile['avatar'] = user.avatar
+      profile['about'] = user.about
+      profile['location'] = eval(user.location)
+      profile['followers_count'] = user.followers.size
+      profile['events_count'] = user.events.size
+      profile['competitions_count'] = user.competitions.size
+      profile['offers_count'] = user.passes.size + user.special_offers.size
+      profile['competitions'] = user.competitions
+      profile['events'] = user.events
+      profile['offers'] = offers
+      render json: {
+        code: 200,
+        success: true,
+        message: '',
+        data: {
+          profile: profile
+        }
+      }
+ end
+
+   def_param_group :get_others_business_profile do
+    property :id, String, desc: 'id'
+    property :profile_name, String, desc: 'profile_name'
+    property :first_name, String, desc: 'first_name'
+    property :last_name, String, desc: 'last_name'
+    property :avatar, String, desc: 'avatar'
+    property :location, String, desc: 'location'
+    property :social, String, desc: 'social links'
+    property :website, String, desc: 'website'
+    property :news_feeds, String, desc: 'news_feeds'
+    property :followers_count, String, desc: 'followers_count'
+    property :events_count, String, desc: 'events_count'
+    property :offers_count, String, desc: 'offers_count'
+    property :competitions_count, String, desc: 'competitions_count'
+    property :ambassador_request_status, String, desc: 'ambassador_request_status'
+    property :is_ambassador, String, desc: 'is_ambassador'
+  end
+
+
+  api :POST, '/api/v1/user/users/get-others-business-profile', 'To get a business profile'
+  param :user_id, Integer, :desc => "User ID", :required => true
+  returns array_of: :get_others_business_profile, code: 200, desc: 'This api will return the following response.' 
+
+
+ def get_others_business_profile
+  if !params[:user_id].blank?
+  user = User.find(params[:user_id])
+  profile = {}
+  status = get_request_status(user.id)
+  profile['id'] = user.id
+  profile['profile_name'] = user.business_profile.profile_name
+  profile['first_name'] = user.business_profile.profile_name
+  profile['last_name'] = ''
+  profile['avatar'] = user.avatar
+  profile['location'] = eval(user.location)
+  profile["social"] = user.social_media
+  profile['website'] = user.business_profile.website
+  profile['followers_count'] = user.followers.size
+  profile['events_count'] = user.events.size
+  profile['competitions_count'] = user.competitions.size
+  profile['offers_count'] = user.special_offers.size
+  profile['news_feeds'] = user.news_feeds
+  profile['ambassador_request_status'] = status
+  profile['is_ambassador'] = false
+  render json: {
+    code: 200,
+    success: true,
+    message: '',
+    data: {
+      profile: profile,
+      user: user
+    }
+  }
+else
+  render json: {
+    code: 400,
+    success: false,
+    message: 'user_id is required.',
+    data: nil
+  }
+end
+end
 
   api :GET, '/api/v1/users/get-activity-logs', 'To get the activity logs'
 
