@@ -112,7 +112,7 @@ class Admin::SpecialOffersController < Admin::AdminMasterController
      @special_offer.time = params[:time]
      @special_offer.end_time = params[:validity_time]
      @special_offer.image = params[:image]
-     @special_offer.redeem_code = generate_code
+     @special_offer.qr_code = generate_code
      @special_offer.terms_conditions = params[:terms_conditions]
      @special_offer.quantity = params[:quantity]
      @special_offer.validity = params[:validity]

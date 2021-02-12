@@ -16,7 +16,7 @@
    <p class="so_p"><strong>Validity: </strong><span class="unbold"><%= @special_offer.validity %></span> </p>
 
    <p class="so_p"><strong>Terms and conditions: </strong><span class="unbold"><%= @special_offer.terms_conditions.html_safe %></span></p>
-   <p class="so_p"><strong>QRcode: <br> </strong><span class="unbold"><img src="<%= render_qr_code(@special_offer.redeem_code) %>" class="qr"></p>
+   <p class="so_p"><strong>QRcode: <br> </strong><span class="unbold"><img src="<%= render_qr_code(@special_offer.qr_code) %>" class="qr"></p>
  </div>
   <%=  render 'shared/footer' %>
  </div><!--main panel-->

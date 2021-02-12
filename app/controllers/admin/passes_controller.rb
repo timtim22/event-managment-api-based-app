@@ -78,7 +78,7 @@ class Admin::PassesController < Admin::AdminMasterController
       @pass.description = params[:description]
       @pass.event_id = id
       @pass.user = current_user
-      @pass.redeem_code = generate_code
+      @pass.qr_code = generate_code
       @pass.quantity = params[:quantity]
       @pass.validity = string_to_DateTime(params[:validity])
       @pass.pass_type = params[:pass_type]
@@ -155,7 +155,7 @@ class Admin::PassesController < Admin::AdminMasterController
 
   # def redeem_it
   #   @pass = Pass.find_by(event_id: params[:event_id])
-  #   if(@pass.redeem_code == params[:code])
+  #   if(@pass.qr_code == params[:code])
       #@redemption = @pass.redemption.create!(:user_id =>  current_user.id, code: params[:code])
   #   else
   #

@@ -7,7 +7,7 @@ class CreatePasses < ActiveRecord::Migration[5.2]
       t.text :description, default: ''
       t.datetime :validity
       t.datetime :validity_time
-      t.string :redeem_code, default: ''
+      t.string :qr_code, default: ''
       t.text :terms_conditions, default: ''
       t.boolean :agreed_to_terms, default: false
       t.integer :ambassador_rate, default: 1

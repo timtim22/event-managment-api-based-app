@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       namespace :users do
             resources :users
             get '/get-list' => 'users#index'
+            post '/create-user' => 'users#create_user'
             post '/update-profile' => 'users#update_profile'
             get '/get-profile' => 'users#get_profile'
             post '/get-profile' => "users#get_profile"
@@ -27,8 +28,6 @@ Rails.application.routes.draw do
             get '/privacy-policy' => 'users#privacy_policy'
             get '/get-phone-numbers' => 'users#get_phone_numbers'
             get 'my-activity-logs' => 'users#my_activity_logs'
-            get '/get-profile' => "users#get_business_profile"
-            post '/get-profile' => "users#get_others_business_profile"
             post '/attending' => 'users#attending'
             get '/my-attending' => 'users#my_attending'
 
@@ -59,6 +58,8 @@ Rails.application.routes.draw do
         get '/get-events' => 'business_dashboard#events'
         get '/get-special-offers' => 'business_dashboard#special_offers'
         get '/get-competitions' => 'business_dashboard#competitions'
+        get '/get-profile' => "business_dashboard#get_business_profile"
+        post '/get-profile' => "business_dashboard#get_other_business_profile"
       end
 
 
@@ -190,8 +191,8 @@ Rails.application.routes.draw do
      post '/send-location' => "forwarding#send_location"
      post '/forward-offer' => "forwarding#forward_offer"
      post '/share-offer' => "forwarding#share_offer"
-     post '/events/share' => 'forwarding#share_event'
-     post '/events/forward' => 'forwarding#forward_event'
+     post '/share-event' => 'forwarding#share_event'
+     post '/forward-event' => 'forwarding#forward_event'
    end
 
 

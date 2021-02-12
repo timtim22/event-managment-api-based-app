@@ -5,11 +5,11 @@ one:
   description: MyText
   validity: MyString
   event_id: 1
-  redeem_code: 1
+  qr_code: 1
 
 two:
   name: MyString
   description: MyText
   validity: MyString
   event_id: 1
-  redeem_code: 1
+  qr_code: 1

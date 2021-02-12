@@ -119,7 +119,6 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
       @user.about = params[:about]
       @user.uuid = generate_uuid
 
-
       user_and_profile_errors = []
 
 
@@ -149,7 +148,6 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
         @business.charity_number = params[:charity_number]
         @business.is_charity = params[:is_charity]
         @business.stripe_state = generate_code
-
 
 
         if @business.save

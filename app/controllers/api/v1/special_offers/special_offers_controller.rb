@@ -151,12 +151,12 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
 
 
   def redeem_it
-    if !params[:redeem_code].blank? && !params[:offer_id].blank?
+    if !params[:qr_code].blank? && !params[:offer_id].blank?
      @special_offer = SpecialOffer.find(params[:offer_id])
        @check = Redemption.where(offer_id: params[:offer_id]).where(offer_type: 'SpecialOffer').where(user_id: request_user.id)
    if @check.blank?
-    if(@special_offer && @special_offer.redeem_code == params[:redeem_code].to_s)
-      if  @redemption = Redemption.create!(:user_id =>  request_user.id, offer_id: @special_offer.id, code: params[:redeem_code], offer_type: 'SpecialOffer')
+    if(@special_offer && @special_offer.qr_code == params[:qr_code].to_s)
+      if  @redemption = Redemption.create!(:user_id =>  request_user.id, offer_id: @special_offer.id, code: params[:qr_code], offer_type: 'SpecialOffer')
 
         # resource should be parent resource in case of api so that event id should be available in order to show event based interest level.
         #create_activity("redeemed special offer", @redemption, 'Redemption', '', @special_offer.title, 'post', 'redeem_special_offer')
@@ -215,7 +215,7 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
     render json: {
       code: 400,
       success: false,
-      message: "offer_id and redeem_code are required fields.",
+      message: "offer_id and qr_code are required fields.",
       data: nil
     }
   end

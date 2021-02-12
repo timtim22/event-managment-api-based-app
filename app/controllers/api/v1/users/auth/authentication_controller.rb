@@ -13,7 +13,7 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
     end
 
     api :POST, '/api/v1/users/auth/login', 'To login and Generate Auhtorization Token'
-    param :uuid, String, :desc => "The ID of the user", :required => true
+    param :uuid, String, :desc => "The Universal Unique identifier of the user", :required => true
     param :device_token, String, :desc => "pass any string ", :required => true
     returns array_of: :login, code: 200, desc: 'This api will return the following response.' 
 
@@ -28,7 +28,8 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
               email: user.email,
               avatar: user.avatar,
               phone_number: user.phone_number,
-              about: user.about
+              about: user.about,
+              role: get_user_role_names(user)
             }
 
             if update = user.update!(device_token: params[:device_token])
@@ -112,7 +113,8 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
             "display_name" => account.business_profile.display_name,
             "avatar" => account.avatar,
             "phone_number" => account.phone_number,
-            "email" => account.email
+            "email" => account.email,
+            "role" => get_user_role_names(user)
           }
         business_accounts.push(obj)
         else account.role_ids.include?(5)
@@ -125,7 +127,8 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
           "gender" => account.profile.gender,
           "avatar" => account.avatar,
           "phone_number" => account.phone_number,
-          "email" => account.email
+          "email" => account.email,
+          "role" => get_user_role_names(user)
          }
         end
       end #each

@@ -22,7 +22,7 @@ RSpec.describe Api::V1::Events::Passes::PassesController, type: :controller do
     end
 
     # it "should redeem the pass pass" do
-    #   get :redeem_it, params: {pass_id: Pass.last.id, redeem_code: Redemption.last.code}
+    #   get :redeem_it, params: {pass_id: Pass.last.id, qr_code: Redemption.last.code}
     #   expect(response).to have_http_status(200)
     #   expect(JSON.parse(response.body)["success"]).to eq(true)
     # end

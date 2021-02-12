@@ -27,7 +27,7 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
   #     @pass.description = params[:description]
   #     @pass.event_id = id
   #     @pass.user_id = current_user.id,
-  #     @pass.redeem_code = params[:redeem_code]
+  #     @pass.qr_code = params[:qr_code]
   #     @pass.validity = params[:validity]
   #     if @pass.save
   #       success = true
@@ -54,12 +54,12 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
   # end
 
   def redeem_it
-    if !params[:redeem_code].blank? && !params[:event_id].blank?
+    if !params[:qr_code].blank? && !params[:event_id].blank?
      @pass = Pass.find_by(event_id: params[:event_id])
      @check  = Redemption.where(offer_id: @pass.id).where(offer_type: 'Pass').where(user_id: request_user.id)
      if @check.blank?
-    if(@pass && @pass.redeem_code == params[:redeem_code].to_s)
-      if  @redemption = Redemption.create!(:user_id =>  request_user.id, offer_id: @pass.id, code: params[:redeem_code], offer_type: 'Pass')
+    if(@pass && @pass.qr_code == params[:qr_code].to_s)
+      if  @redemption = Redemption.create!(:user_id =>  request_user.id, offer_id: @pass.id, code: params[:qr_code], offer_type: 'Pass')
       @pass.is_redeemed = true
       @pass.number_of_passes = @pass.number_of_passes - 1;
       @pass.save
@@ -121,7 +121,7 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
     render json: {
       code: 400,
       success: false,
-      message: "event_id and redeem_code are required fields.",
+      message: "event_id and qr_code are required fields.",
       data: nil
     }
   end

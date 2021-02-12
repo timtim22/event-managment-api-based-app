@@ -57,7 +57,7 @@
    end
     qr = []
      if !e.passes.blank?
-       e.passes.map {|p| qr.push(p.redeem_code) }
+       e.passes.map {|p| qr.push(p.qr_code) }
      end
   case
   when e.start_date.to_date == Date.today
@@ -96,7 +96,7 @@
      "price" => get_price(e),
      'is_repetive' => e.is_repetive,
      'frequency' => e.frequency,
-     "redeem_code" => qr,
+     "qr_code" => qr,
      'max_attendees' => e.max_attendees,
      "get_demographics" => get_demographics(e),
      "going" => e.going_interest_levels.size,
@@ -369,6 +369,7 @@
     @event.location = params[:location]
     @event.location_name = params[:location][:full_address]
     @event.event_type = params[:event_type]
+    @event.qr_code = generate_code
     @event.category_ids = params[:category_ids]
     @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
     @event.terms_conditions = params[:terms_conditions]
@@ -443,7 +444,7 @@
           when 'pass'
             passes_done = false
             resource[:fields].each do |f|
-           if @event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], terms_conditions: f[:terms_conditions], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+           if @event.passes.create!(user: request_user, title: f[:title], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], per_head: f[:per_head])
              passes_done = true
            else
             passes_done = false
@@ -742,13 +743,13 @@
                 passes_done = false
                 resource[:fields].each do |f|
                   if f.include? "id"
-                    if @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], terms_conditions: f[:terms_conditions],  ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+                    if @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], terms_conditions: f[:terms_conditions],  ambassador_rate: f[:ambassador_rate], qr_code: generate_code)
                       passes_done = true
                     else
                       passes_done = false
                     end
                 else
-                      if @event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], terms_conditions: f[:terms_conditions],  ambassador_rate: f[:ambassador_rate], redeem_code: generate_code)
+                      if @event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], terms_conditions: f[:terms_conditions],  ambassador_rate: f[:ambassador_rate], qr_code: generate_code)
                         passes_done = true
                       else
                         passes_done = false

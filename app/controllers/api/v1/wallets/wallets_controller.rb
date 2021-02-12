@@ -156,7 +156,6 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
             is_redeemed: true,
             redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
             grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
-            terms_and_conditions: pass.terms_conditions,
             redeem_count: get_redeem_count(pass),
             quantity: pass.quantity,
             issued_by: get_full_name(pass.user),
@@ -184,7 +183,6 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
             is_redeemed: false,
             redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
             grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
-            terms_and_conditions: pass.terms_conditions,
             redeem_count: get_redeem_count(pass),
             quantity: pass.quantity,
             issued_by: get_full_name(pass.user),
@@ -201,7 +199,6 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
             event_id: pass.event.id,
             event_image: pass.event.image,
             event_location: eval(pass.event.location),
-
             event_date: pass.event.start_date,
             distributed_by: distributed_by(pass),
             validity: get_date_time(pass.event.end_date, pass),
@@ -210,12 +207,10 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
             is_redeemed: false,
             redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
             grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
-            terms_and_conditions: pass.terms_conditions,
             redeem_count: get_redeem_count(pass),
             quantity: pass.quantity,
             issued_by: get_full_name(pass.user),
             pass_type: pass.pass_type
-
           }
            end #if
          
