@@ -639,7 +639,7 @@ class ApplicationController < ActionController::Base
 end
 
   def is_ambassador?(user)
-    user.profile.is_ambassador
+      user.roles.map {|role| role.id }.include? 6
   end
 
   def is_added_to_wallet?(pass_id)

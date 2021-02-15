@@ -232,7 +232,6 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   param :email, String, :desc => "email", :required => true
   param :location, String, :desc => "location", :required => true
   param :about, String, :desc => "about", :required => true
-  param :password, String, :desc => "password", :required => true
   returns array_of: :update_profile, code: 200, desc: 'This api will return the following response.' 
 
 
@@ -253,12 +252,12 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
 
     @social = user.social_media
 
-    @social.youtube = params[:youtube]
-    @social.linkedin = params[:linkedin]
-    @social.instagram = params[:instagram]
-    @social.twitter = params[:twitter]
-    @social.snapchat = params[:snapchat]
-    @social.facebook = params[:facebook]
+    @social.youtube = if !params[:youtube].blank? then params[:youtube] else "" end
+    @social.linkedin = if !params[:linkedin].blank? then params[:linkedin] else "" end
+    @social.instagram = if  !params[:instagram].blank? then params[:instagram] else "" end
+    @social.twitter = if !params[:twitter].blank? then params[:twitter] else "" end
+    @social.snapchat = if !params[:snapchat].blank? then params[:snapchat] else "" end
+    @social.facebook = if !params[:facebook].blank? then params[:facebook] else "" end
 
   if user.save && @social.save
    # create_activity("updated profile.", profile, "Profile")
@@ -267,7 +266,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     'first_name' => user.profile.first_name,
     'last_name' => user.profile.last_name,
     'avatar' => user.avatar,
-    'location' => eval(user.location),
+    # 'location' => eval(user.location),
     'about' => user.about,
     'dob' => user.profile.dob.to_date,
     'roles' => get_user_role_names(user),
@@ -415,7 +414,7 @@ end
 end
 
   api :POST, '/api/v1/users/user-activity-logs', 'To get user get activity logs'
-  param :user_id, Integer, :desc => "User ID", :required => true
+  param :user_id, :number, :desc => "User ID", :required => true
 
  def activity_logs
    if !params[:user_id].blank?
@@ -522,7 +521,7 @@ end
 
 
   api :POST, '/api/v1/users/user-attending', 'User Events to attend list'
-  param :user_id, Integer, :desc => "User ID", :required => true
+  param :user_id, :number, :desc => "User ID", :required => true
   returns array_of: :attending, code: 200, desc: 'This api will return the following response.' 
 
 
@@ -572,7 +571,7 @@ end
     property :demographics, String, desc: 'Demographics'
   end
 
- api :GET, '/api/v1/users/my-attending', 'To get my attending'
+ api :GET, '/api/v1/users/attending', 'To get my attending'
  returns array_of: :my_attending, code: 200, desc: 'This api will return the following response.' 
 
  def my_attending
@@ -615,7 +614,7 @@ end
 
   
 
-  api :get, '/api/v1/users/my-activity-logs', 'To get my activity logs'
+  api :get, '/api/v1/users/activity-logs', 'To get my activity logs'
 
  def my_activity_logs
     user = request_user
@@ -697,7 +696,7 @@ end
 
 
  
-  api :GET, '/api/v1/users/get-activity-logs', 'To get the activity logs'
+  api :GET, '/api/v1/users/activity-logs', 'To get the activity logs'
 
   def get_activity_logs
     @activity_logs = request_user.activity_logs.order(:created_at => "DESC")

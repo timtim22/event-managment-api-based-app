@@ -285,7 +285,7 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
 
   
   api :POST, '/api/v1/business/get-profile', 'To get other business profile'
-  param :user_id, Integer, :desc => "User ID", :required => true
+  param :user_id, String, :desc => "User ID", :required => true
   returns array_of: :get_other_business_profile, code: 200, desc: 'This api will return the following response.' 
 
  def get_other_business_profile
