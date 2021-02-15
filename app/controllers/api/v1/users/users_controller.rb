@@ -696,51 +696,51 @@ end
 end
 
 
-   def_param_group :get_business_profile do
-    property :first_name, String, desc: 'first_name'
-    property :last_name, String, desc: 'last_name'
-    property :avatar, String, desc: 'avatar'
-    property :about, String, desc: 'about'
-    property :location, String, desc: 'location'
-    property :followers_count, String, desc: 'followers_count'
-    property :offers_count, String, desc: 'offers_count'
-    property :competitions, String, desc: 'competitions'
-    property :competitions_count, String, desc: 'competitions_count'
-    property :events, String, desc: 'events'
-    property :offers, String, desc: 'offers'
-  end
+ #   def_param_group :get_business_profile do
+ #    property :first_name, String, desc: 'first_name'
+ #    property :last_name, String, desc: 'last_name'
+ #    property :avatar, String, desc: 'avatar'
+ #    property :about, String, desc: 'about'
+ #    property :location, String, desc: 'location'
+ #    property :followers_count, String, desc: 'followers_count'
+ #    property :offers_count, String, desc: 'offers_count'
+ #    property :competitions, String, desc: 'competitions'
+ #    property :competitions_count, String, desc: 'competitions_count'
+ #    property :events, String, desc: 'events'
+ #    property :offers, String, desc: 'offers'
+ #  end
  
-  api :get, '/api/v1/user/users/get-profile', 'To get a business profile'
-  returns array_of: :get_business_profile, code: 200, desc: 'This api will return the following response.' 
+ #  api :get, '/api/v1/user/users/get-profile', 'To get a business profile'
+ #  returns array_of: :get_business_profile, code: 200, desc: 'This api will return the following response.' 
 
- #own profile
- def get_business_profile
-      user = request_user
-      profile = {}
-      offers = {}
-      offers['special_offers'] = user.special_offers
-      offers['passes'] = user.passes
-      profile['first_name'] = user.business_profile.profile_name
-      profile['last_name'] = ''
-      profile['avatar'] = user.avatar
-      profile['about'] = user.about
-      profile['location'] = eval(user.location)
-      profile['followers_count'] = user.followers.size
-      profile['events_count'] = user.events.size
-      profile['competitions_count'] = user.competitions.size
-      profile['offers_count'] = user.passes.size + user.special_offers.size
-      profile['competitions'] = user.competitions
-      profile['events'] = user.events
-      profile['offers'] = offers
-      render json: {
-        code: 200,
-        success: true,
-        message: '',
-        data: {
-          profile: profile
-        }
-      }
- end
+ # #own profile
+ # def get_business_profile
+ #      user = request_user
+ #      profile = {}
+ #      offers = {}
+ #      offers['special_offers'] = user.special_offers
+ #      offers['passes'] = user.passes
+ #      profile['first_name'] = user.business_profile.profile_name
+ #      profile['last_name'] = ''
+ #      profile['avatar'] = user.avatar
+ #      profile['about'] = user.about
+ #      profile['location'] = eval(user.location)
+ #      profile['followers_count'] = user.followers.size
+ #      profile['events_count'] = user.events.size
+ #      profile['competitions_count'] = user.competitions.size
+ #      profile['offers_count'] = user.passes.size + user.special_offers.size
+ #      profile['competitions'] = user.competitions
+ #      profile['events'] = user.events
+ #      profile['offers'] = offers
+ #      render json: {
+ #        code: 200,
+ #        success: true,
+ #        message: '',
+ #        data: {
+ #          profile: profile
+ #        }
+ #      }
+ # end
 
    def_param_group :get_others_business_profile do
     property :id, String, desc: 'id'
