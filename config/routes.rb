@@ -18,7 +18,7 @@ Rails.application.routes.draw do
             post '/create-user' => 'users#create_user'
             post '/update-profile' => 'users#update_profile'
             get '/get-profile' => 'users#get_profile'
-            post '/get-profile' => "users#get_profile"
+            post '/get-profile' => "users#get_other_profile"
             post "/delete-account" => "users#delete_account"
             post '/update-device-token' => "users#update_device_token"
             get '/get-activity-logs' => "users#get_activity_logs"
@@ -30,7 +30,6 @@ Rails.application.routes.draw do
             get 'my-activity-logs' => 'users#my_activity_logs'
             post '/attending' => 'users#attending'
             get '/my-attending' => 'users#my_attending'
-
 
           namespace :settings do
             post '/update' => 'settings#update_global_setting'

@@ -319,6 +319,7 @@ end
 
 
   def get_profile
+   
     user = request_user
       profile = {
           'id' => user.id,
@@ -368,12 +369,12 @@ end
     property :followers_count, String, desc: 'followers count'
   end
 
-  api :POST, '/api/v1/users/get-others-profile', 'To get a mobile user profile'
+  api :POST, '/api/v1/users/get-other-profile', 'To get a other user profile'
   param :user_id, Integer, :desc => "User ID", :required => true
   returns array_of: :get_profile, code: 200, desc: 'This api will return the following response.' 
 
 
- def get_profile
+ def get_other_profile
   if !params[:user_id].blank?
   user = User.find(params[:user_id])
   profile = {}
