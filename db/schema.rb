@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_12_065555) do
+ActiveRecord::Schema.define(version: 2021_02_15_064538) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -628,6 +628,7 @@ ActiveRecord::Schema.define(version: 2021_02_12_065555) do
     t.string "about", default: ""
     t.string "location", default: ""
     t.string "uuid", default: ""
+    t.boolean "mobile_user", default: true
   end
 
   create_table "views", force: :cascade do |t|

@@ -201,6 +201,10 @@ class ApplicationController < ActionController::Base
     user.roles.map {|role| role.id }.include? 2
   end
 
+  def is_mobile_user?(user)
+    user.roles.map {|role| role.id }.include? 5
+  end
+
   def get_full_name(user)
     if is_business?(user)
       name = user.business_profile.profile_name

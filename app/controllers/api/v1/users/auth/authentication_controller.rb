@@ -23,14 +23,28 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
          user = User.find_by(uuid: params[:uuid])
          if user
             token = get_token_from_user(user)
-            @profile_data = {
-              id: user.id,
-              email: user.email,
-              avatar: user.avatar,
-              phone_number: user.phone_number,
-              about: user.about,
-              role: get_user_role_names(user)
-            }
+            if is_business?(user) 
+             @profile_data =  {
+                id: user.id,
+                profile_name: user.business_profile.profile_name,
+                email: user.email,
+                avatar: user.avatar,
+                phone_number: user.phone_number,
+                about: user.about,
+                role: get_user_role_names(user)
+              }
+            else
+              @profile_data =  {
+                id: user.id,
+                first_name: user.profile.first_name,
+                last_name: user.profile.last_name,
+                email: user.email,
+                avatar: user.avatar,
+                phone_number: user.phone_number,
+                about: user.about,
+                role: get_user_role_names(user)
+              }
+            end
 
             if update = user.update!(device_token: params[:device_token])
               render json: {
