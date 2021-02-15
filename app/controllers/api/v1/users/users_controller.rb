@@ -370,7 +370,7 @@ end
   end
 
   api :POST, '/api/v1/users/get-other-profile', 'To get a other user profile'
-  param :user_id, Integer, :desc => "User ID", :required => true
+  param :user_id, String, :desc => "User ID", :required => true
   returns array_of: :get_profile, code: 200, desc: 'This api will return the following response.' 
 
 
