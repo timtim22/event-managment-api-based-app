@@ -114,7 +114,7 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
             "avatar" => account.avatar,
             "phone_number" => account.phone_number,
             "email" => account.email,
-            "role" => get_user_role_names(user)
+            "role" => get_user_role_names(account)
           }
         business_accounts.push(obj)
         else account.role_ids.include?(5)
@@ -128,7 +128,7 @@ class Api::V1::Users::Auth::AuthenticationController < Api::V1::ApiMasterControl
           "avatar" => account.avatar,
           "phone_number" => account.phone_number,
           "email" => account.email,
-          "role" => get_user_role_names(user)
+          "role" => get_user_role_names(account)
          }
         end
       end #each
