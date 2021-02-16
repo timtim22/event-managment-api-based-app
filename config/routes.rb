@@ -314,6 +314,7 @@ end
         post '/add-media' => 'events#add_media'
         post '/update-event' => 'events#update_event'
         post '/add-social' => 'events#add_social'
+        get '/get-categories' => 'events#get_categories'
       end
 
         resources :news_feeds
@@ -338,7 +339,7 @@ end
         post '/passes/remove-vip-pass' => 'passes#remove_vip_pass'
         get '/get-app-users' => 'users#get_app_users'
         post '/get-user' => 'users#get_user'
-        get '/get-categories' => 'events#get_categories'
+        
         post '/cancel-event' => 'events#cancel_event'
         post '/delete-event' => 'events#delete_event'
         post '/payments/create-intant' => 'payments#create_intant'
