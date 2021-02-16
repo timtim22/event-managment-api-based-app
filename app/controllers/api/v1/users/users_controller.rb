@@ -815,9 +815,21 @@ end
 end
 
 
+ #   def_param_group :get_business_profile do
+ #    property :first_name, String, desc: 'first_name'
+ #    property :last_name, String, desc: 'last_name'
+ #    property :avatar, String, desc: 'avatar'
+ #    property :about, String, desc: 'about'
+ #    property :location, String, desc: 'location'
+ #    property :followers_count, String, desc: 'followers_count'
+ #    property :offers_count, String, desc: 'offers_count'
+ #    property :competitions, String, desc: 'competitions'
+ #    property :competitions_count, String, desc: 'competitions_count'
+ #    property :events, String, desc: 'events'
+ #    property :offers, String, desc: 'offers'
+ #  end
  
   api :GET, '/api/v1/users/activity-logs', 'To get the activity logs'
-
   def get_activity_logs
     @activity_logs = request_user.activity_logs.order(:created_at => "DESC")
     render json: {

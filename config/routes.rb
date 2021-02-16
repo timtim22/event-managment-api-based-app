@@ -302,6 +302,17 @@ end
         post '/auth/login', to: 'authentication#login'
       end
 
+
+      namespace :events do
+        post '/create-event' => 'events#create_event'
+        post '/add-time' => 'events#add_times'
+        post '/add-resource' => 'events#add_admission_resource'
+        post '/add-sponsor' => 'events#add_sponsor'
+        post '/add-media' => 'events#add_media'
+        post '/update-event' => 'events#update_event'
+        post '/add-social' => 'events#add_social'
+      end
+
         resources :news_feeds
         resources :invoices
 
