@@ -131,7 +131,7 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
        end #each
 
         #create role
-        assignment = @user.assignments.create!(role_id: params[:type])
+        assignment = @user.assignments.create!(role_id: params[:role_id])
       else
         @user.errors.full_messages.map { |m| user_and_profile_errors.push(m) }
 

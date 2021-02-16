@@ -540,7 +540,6 @@
         data: nil
       }
     end    
-
   end
 
   def add_times

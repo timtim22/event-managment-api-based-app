@@ -41,6 +41,7 @@ accepts_nested_attributes_for :event_attachments
 mount_uploader :image, ImageUploader
 mount_base64_uploader :image, ImageUploader
 
+scope :drafts, -> {where('start_date=? OR price_type=? OR event_forwardings=?', "","","").left_joins(:sponsors).merge(Sponsor.where(id: nil)).left_joins(:event_attachments).merge(EventAttachment.where(id: nil)) }
 
 
 
