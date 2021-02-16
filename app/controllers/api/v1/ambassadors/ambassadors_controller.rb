@@ -288,10 +288,8 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
 
 
 
- 
 
 api :GET, '/api/v1/ambassadors/gives-away', 'To get my gives away- token is required.'
-
 def my_gives_away
    user = request_user
    if is_ambassador?(user)
