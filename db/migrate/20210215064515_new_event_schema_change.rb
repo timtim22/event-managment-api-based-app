@@ -7,7 +7,6 @@ class NewEventSchemaChange < ActiveRecord::Migration[5.2]
     remove_column :events, :feature_media_link
     remove_column :events, :host
     remove_column :events, :invitees
-    remove_column :events, :palceholder
 
     remove_column :child_events, :start_time
     remove_column :child_events, :end_time
@@ -16,7 +15,6 @@ class NewEventSchemaChange < ActiveRecord::Migration[5.2]
     remove_column :child_events, :feature_media_link
     remove_column :child_events, :host
     remove_column :child_events, :invitees
-    remove_column :child_events, :palceholder
 
     add_column :events, :venue, :string, default: ""
     add_column :child_events, :venue, :string, default: ""

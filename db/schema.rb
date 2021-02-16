@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_15_122738) do
+ActiveRecord::Schema.define(version: 2021_02_16_100032) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -106,7 +106,6 @@ ActiveRecord::Schema.define(version: 2021_02_15_122738) do
     t.boolean "allow_chat", default: true
     t.boolean "allow_additional_media", default: true
     t.string "image", default: ""
-    t.string "placeholder", default: "http://placehold.it/900x300"
     t.string "event_type", default: "public"
     t.string "price_type", default: ""
     t.decimal "price", precision: 8, scale: 2, default: "0.0"
@@ -218,7 +217,6 @@ ActiveRecord::Schema.define(version: 2021_02_15_122738) do
     t.boolean "allow_chat", default: true
     t.boolean "allow_additional_media", default: true
     t.string "image", default: ""
-    t.string "placeholder", default: "http://placehold.it/900x300"
     t.string "event_type", default: "public"
     t.string "price_type", default: ""
     t.decimal "price", precision: 8, scale: 2, default: "0.0"
