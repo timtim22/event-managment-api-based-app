@@ -10,10 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_12_065555) do
-
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+ActiveRecord::Schema.define(version: 2021_02_15_122738) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -46,8 +43,8 @@ ActiveRecord::Schema.define(version: 2021_02_12_065555) do
   end
 
   create_table "assignments", force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "role_id"
+    t.integer "user_id"
+    t.integer "role_id"
     t.index ["role_id"], name: "index_assignments_on_role_id"
     t.index ["user_id"], name: "index_assignments_on_user_id"
   end
@@ -78,8 +75,8 @@ ActiveRecord::Schema.define(version: 2021_02_12_065555) do
   end
 
   create_table "categorizations", force: :cascade do |t|
-    t.bigint "event_id"
-    t.bigint "category_id"
+    t.integer "event_id"
+    t.integer "category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["category_id"], name: "index_categorizations_on_category_id"
@@ -89,7 +86,7 @@ ActiveRecord::Schema.define(version: 2021_02_12_065555) do
   create_table "chat_channels", force: :cascade do |t|
     t.integer "recipient_id"
     t.string "name"
-    t.bigint "user_id"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "push_token"
@@ -97,10 +94,10 @@ ActiveRecord::Schema.define(version: 2021_02_12_065555) do
   end
 
   create_table "child_events", force: :cascade do |t|
-    t.bigint "event_id"
-    t.string "title", default: ""
-    t.datetime "start_date"
-    t.datetime "end_date"
+    t.integer "event_id"
+    t.string "name", default: ""
+    t.string "start_date", default: ""
+    t.string "end_date", default: ""
     t.datetime "terms_conditions"
     t.text "description", default: ""
     t.string "location", default: ""
@@ -109,26 +106,29 @@ ActiveRecord::Schema.define(version: 2021_02_12_065555) do
     t.boolean "allow_chat", default: true
     t.boolean "allow_additional_media", default: true
     t.string "image", default: ""
-    t.string "feature_media_link", default: ""
+    t.string "placeholder", default: "http://placehold.it/900x300"
     t.string "event_type", default: "public"
-    t.string "price_type", default: "free"
+    t.string "price_type", default: ""
     t.decimal "price", precision: 8, scale: 2, default: "0.0"
     t.decimal "start_price", precision: 8, scale: 2, default: "0.0"
     t.decimal "end_price", precision: 8, scale: 2, default: "0.0"
+    t.boolean "is_cancelled", default: false
     t.boolean "is_private", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "pass", default: "false"
     t.integer "user_id"
+    t.integer "quantity"
     t.integer "first_cat_id"
     t.string "location_name", default: "no_location"
+    t.string "venue", default: ""
     t.index ["event_id"], name: "index_child_events_on_event_id"
   end
 
   create_table "comments", force: :cascade do |t|
     t.string "comment"
-    t.bigint "user_id"
-    t.bigint "event_id"
+    t.integer "user_id"
+    t.integer "event_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "from"
@@ -157,17 +157,14 @@ ActiveRecord::Schema.define(version: 2021_02_12_065555) do
     t.datetime "end_date"
     t.datetime "start_time"
     t.datetime "end_time"
-    t.date "validity"
-    t.datetime "validity_time"
-    t.decimal "price", precision: 8, scale: 2, default: "0.0"
-    t.string "location"
-    t.string "lat", default: ""
-    t.string "lng", default: ""
     t.string "host", default: ""
     t.string "placeholder", default: "http://placehold.it/900x300"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "terms_conditions", default: ""
+    t.boolean "over_18", default: true
+    t.integer "number_of_winner"
+    t.boolean "competition_forwarding", default: false
     t.index ["user_id"], name: "index_competitions_on_user_id"
   end
 
@@ -211,9 +208,9 @@ ActiveRecord::Schema.define(version: 2021_02_12_065555) do
 
   create_table "events", force: :cascade do |t|
     t.integer "user_id"
-    t.string "title", default: ""
-    t.datetime "start_date"
-    t.datetime "end_date"
+    t.string "name", default: ""
+    t.string "start_date", default: ""
+    t.string "end_date", default: ""
     t.text "description", default: ""
     t.string "location", default: ""
     t.boolean "over_18", default: true
@@ -221,23 +218,29 @@ ActiveRecord::Schema.define(version: 2021_02_12_065555) do
     t.boolean "allow_chat", default: true
     t.boolean "allow_additional_media", default: true
     t.string "image", default: ""
-    t.string "feature_media_link", default: ""
+    t.string "placeholder", default: "http://placehold.it/900x300"
     t.string "event_type", default: "public"
-    t.string "price_type", default: "free"
+    t.string "price_type", default: ""
     t.decimal "price", precision: 8, scale: 2, default: "0.0"
     t.decimal "start_price", precision: 8, scale: 2, default: "0.0"
     t.decimal "end_price", precision: 8, scale: 2, default: "0.0"
+    t.boolean "is_cancelled", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "terms_conditions", default: ""
+    t.boolean "price_range", default: false
+    t.boolean "has_passes", default: false
     t.string "pass", default: "false"
     t.integer "first_cat_id"
+    t.string "video"
     t.string "status", default: "active"
     t.boolean "is_repetive", default: false
     t.string "frequency", default: "daily"
     t.integer "max_attendees", default: 1
+    t.integer "quantity"
     t.string "location_name", default: "no_location"
-    t.string "qr_code", default: ""
+    t.string "redeem_code", default: ""
+    t.string "venue", default: ""
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
@@ -267,8 +270,8 @@ ActiveRecord::Schema.define(version: 2021_02_12_065555) do
 
   create_table "friend_requests", force: :cascade do |t|
     t.string "status"
-    t.bigint "user_id"
-    t.bigint "friend_id"
+    t.integer "user_id"
+    t.integer "friend_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "read_at"
@@ -331,7 +334,7 @@ ActiveRecord::Schema.define(version: 2021_02_12_065555) do
     t.integer "recipient_id"
     t.text "message"
     t.datetime "read_at"
-    t.bigint "user_id"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "from"
@@ -552,7 +555,6 @@ ActiveRecord::Schema.define(version: 2021_02_12_065555) do
 
   create_table "sponsors", force: :cascade do |t|
     t.integer "event_id"
-    t.string "name"
     t.string "sponsor_image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -638,6 +640,10 @@ ActiveRecord::Schema.define(version: 2021_02_12_065555) do
     t.datetime "updated_at", null: false
     t.integer "business_id"
     t.index ["resource_id", "resource_type"], name: "index_views_on_resource_id_and_resource_type"
+    t.index ["user_id"], name: "index_views_on_competition_id_and_user_id"
+    t.index ["user_id"], name: "index_views_on_event_id_and_user_id"
+    t.index ["user_id"], name: "index_views_on_pass_id_and_user_id"
+    t.index ["user_id"], name: "index_views_on_special_offer_id_and_user_id"
     t.index ["user_id"], name: "index_views_on_user_id"
   end
 
@@ -661,13 +667,8 @@ ActiveRecord::Schema.define(version: 2021_02_12_065555) do
     t.integer "quantity", default: 1
     t.index ["offer_id", "offer_type"], name: "index_wallets_on_offer_id_and_offer_type"
     t.index ["user_id"], name: "index_wallets_on_user_id"
+    t.index [nil, "user_id"], name: "index_wallets_on_pass_id_and_user_id"
+    t.index [nil, "user_id"], name: "index_wallets_on_special_offer_id_and_user_id"
   end
 
-  add_foreign_key "categorizations", "categories"
-  add_foreign_key "categorizations", "events"
-  add_foreign_key "chat_channels", "users"
-  add_foreign_key "comments", "events"
-  add_foreign_key "comments", "users"
-  add_foreign_key "friend_requests", "users"
-  add_foreign_key "messages", "users"
 end

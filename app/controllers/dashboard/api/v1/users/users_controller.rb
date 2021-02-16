@@ -117,6 +117,7 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
       @user.location = params[:location]
       @user.is_subscribed = params[:is_subscribed]
       @user.about = params[:about]
+      @user.mobile_user = false
       @user.uuid = generate_uuid
 
       user_and_profile_errors = []
@@ -272,6 +273,7 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
             @user.location = params[:location]
             @user.is_subscribed = params[:is_subscribed]
             @user.about = params[:about]
+            @user.mobile_user = false
 
             user_and_profile_errors = []
 

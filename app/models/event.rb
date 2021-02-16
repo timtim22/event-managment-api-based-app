@@ -2,10 +2,10 @@
 class Event < ApplicationRecord
 validates :name, presence: true, on: :create
 validates :image, presence: true, on: :create
-validates :start_date, presence: true, on: :create
-validates :end_date, presence: true, on: :create
-validates :start_time, presence: true, on: :create
-validates :end_time, presence: true, on: :create
+validates :venue, presence: true, on: :create
+# validates :start_date, presence: true, on: :create
+# validates :end_date, presence: true, on: :create
+
 validates :description, presence: true, on: :create
 validates :location, presence: true, on: :create
 validate  :has_one_category_at_least, on: :create
