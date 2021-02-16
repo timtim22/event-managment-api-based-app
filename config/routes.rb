@@ -18,19 +18,18 @@ Rails.application.routes.draw do
             post '/create-user' => 'users#create_user'
             post '/update-profile' => 'users#update_profile'
             get '/get-profile' => 'users#get_profile'
-            post '/get-profile' => "users#get_profile"
+            post '/get-profile' => "users#get_other_profile"
             post "/delete-account" => "users#delete_account"
             post '/update-device-token' => "users#update_device_token"
             get '/get-activity-logs' => "users#get_activity_logs"
             post '/update-current-location' => "users#update_current_location"       
             post '/update-profile-picture' => 'users#update_profile_pictures'
-            post '/user-activity-logs' => 'users#activity_logs'
+            post '/activity-logs' => 'users#activity_logs'
             get '/privacy-policy' => 'users#privacy_policy'
             get '/get-phone-numbers' => 'users#get_phone_numbers'
-            get 'my-activity-logs' => 'users#my_activity_logs'
+            get '/activity-logs' => 'users#my_activity_logs'
             post '/attending' => 'users#attending'
-            get '/my-attending' => 'users#my_attending'
-
+            get '/attending' => 'users#my_attending'
 
           namespace :settings do
             post '/update' => 'settings#update_global_setting'
@@ -48,7 +47,7 @@ Rails.application.routes.draw do
       end #users
 
 
-      namespace :businesse do
+      namespace :businesses do
         post '/get-offer-stats' => 'analytics#get_offer_stats'
         post '/get-competition-stats' => 'analytics#get_competition_stats' 
         post "/get-event-stats" => "analytics#get_event_stats"
@@ -165,8 +164,8 @@ Rails.application.routes.draw do
      post '/send-request' => "ambassadors#send_request"
      get '/businesses-list' => "ambassadors#businesses_list"
      get '/my-businesses' => "ambassadors#my_businesses"
-     post '/gives-away' => 'users#gives_away'
-     get '/my-gives-away' => 'users#my_gives_away'
+     post '/gives-away' => 'ambassadors#gives_away'
+     get '/gives-away' => 'ambassadors#my_gives_away'
    end
 
 

@@ -61,7 +61,7 @@ class Api::V1::Users::Settings::SettingsController < Api::V1::ApiMasterControlle
    end
   end
 
- api :POST, '/api/v1/user/update-user-setting', 'To update a user profile settings'
+ api :POST, '/api/v1/users/settings/update-user-setting', 'To update a user profile settings'
  param :setting_name, String, :desc => "Setting Name", :required => true
  param :resource_id, :number, :desc => "Resource ID", :required => true
  param :resource_type, String, :desc => "Resource Type", :required => true

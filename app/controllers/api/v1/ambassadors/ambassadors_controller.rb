@@ -253,7 +253,7 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
 
 
   api :POST, '/api/v1/ambassadors/gives_away', 'To get user gives away'
-  param :user_id, Integer, :desc => "user ID", :required => true
+  param :user_id, :number, :desc => "user ID", :required => true
 
  def gives_away
   if !params[:user_id].blank?
@@ -290,7 +290,7 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
 
  
 
-api :GET, '/api/v1/ambassadors/my-gives-away', 'To get my gives away'
+api :GET, '/api/v1/ambassadors/gives-away', 'To get my gives away- token is required.'
 
 def my_gives_away
    user = request_user

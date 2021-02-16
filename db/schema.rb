@@ -630,6 +630,8 @@ ActiveRecord::Schema.define(version: 2021_02_15_122738) do
     t.string "about", default: ""
     t.string "location", default: ""
     t.string "uuid", default: ""
+    t.boolean "mobile_user", default: true
+    t.boolean "location_enabled", default: false
   end
 
   create_table "views", force: :cascade do |t|

@@ -201,6 +201,10 @@ class ApplicationController < ActionController::Base
     user.roles.map {|role| role.id }.include? 2
   end
 
+  def is_mobile_user?(user)
+    user.roles.map {|role| role.id }.include? 5
+  end
+
   def get_full_name(user)
     if is_business?(user)
       name = user.business_profile.profile_name
@@ -255,11 +259,11 @@ class ApplicationController < ActionController::Base
        "social" => user.social_media,
       "is_ambassador" => is_ambassador?(user),
       "earning" => '3', #should be change when ambassador schema/program will be updated.
-      "location" => eval(user.location),
+       "location" => if !user.location.blank? then eval(user.location) else "" end,
       "device_token" => user.device_token,
       "ranking" => '3', #should be change when ambassador schema/program will be updated.,
       "gender" => user.profile.gender,
-      "dob" => user.profile.dob.to_date,
+      "dob" => if !user.profile.dob.blank? then user.profile.dob.to_date else "" end,
       "is_request_sent" => request_status(request_user, user)['status'],
       "roles" => get_user_role_names(user),
       "is_my_following" => false,
@@ -635,7 +639,7 @@ class ApplicationController < ActionController::Base
 end
 
   def is_ambassador?(user)
-    user.profile.is_ambassador
+      user.roles.map {|role| role.id }.include? 6
   end
 
   def is_added_to_wallet?(pass_id)
