@@ -885,6 +885,16 @@ end
   end
 
 
+  def is_ambassador_of?(business_id)
+    ar = AmbassadorRequest.where(business_id: business_id).where(user_id: request_user.id).first
+    if ar
+    ar.status
+    else
+      false
+    end
+  end
+
+
   def get_formated_price(number)
      ##
   end

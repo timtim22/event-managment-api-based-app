@@ -105,6 +105,15 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     @user.password = params[:password]
     @user.uuid = generate_uuid
     if @user.save
+         location = ""
+         about = ""
+         dob = ""
+         gender  = ""
+      if !@user.profile.about.blank? then about = @user.profile.about else  about = "" end
+      if !@user.location.blank? then location = @user.location else location = "" end
+      if !@user.profile.dob.blank? then dob = @user.profile.dob else dob =  "" end
+      if !@user.profile.gender.blank? then gender  = @user.profile.gender else gender =  "" end
+
       @profile = Profile.new
       @profile.dob = params[:dob]
       @profile.user = @user
@@ -118,11 +127,11 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
       @profile_data["last_name"] = @user.profile.last_name
       @profile_data["avatar"] = @user.avatar
       @profile_data["email"] = @user.email
-      @profile_data["about"] = if !params[:about].blank? then params[:about] else "" end
-      @profile_data["location"] = @user.location
+      @profile_data["about"] = about
+      @profile_data["location"] = location
       @profile_data["phone_number"] = @user.phone_number
-      @profile_data["dob"] = @user.profile.dob
-      @profile_data["gender"] = @user.profile.gender
+      @profile_data["dob"] = dob
+      @profile_data["gender"] = gender
 
       SocialMedia.create!(user: @user)
        #Also save default setting
@@ -260,17 +269,25 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     @social.facebook = if !params[:facebook].blank? then params[:facebook] else "" end
 
   if user.save && @social.save
+    location = ""
+    about = ""
+    dob = ""
+    gender  = ""
+ if !@user.profile.about.blank? then about = @user.profile.about else  about = "" end
+ if !@user.location.blank? then location = @user.location else location = "" end
+ if !@user.profile.dob.blank? then dob = @user.profile.dob else dob =  "" end
+ if !@user.profile.gender.blank? then gender  = @user.profile.gender else gender =  "" end
    # create_activity("updated profile.", profile, "Profile")
    profile_object = {
     'id' => user.id,
     'first_name' => user.profile.first_name,
     'last_name' => user.profile.last_name,
     'avatar' => user.avatar,
-    # 'location' => eval(user.location),
-    'about' => user.about,
-    'dob' => user.profile.dob.to_date,
+    "location" => location,
+    'about' => about,
+    'dob' =>  dob,
     'roles' => get_user_role_names(user),
-    'gender' => user.profile.gender,
+    'gender' => gender,
     'mobile' => user.phone_number,
     'email' => user.email,
     'social' => user.social_media
@@ -295,123 +312,226 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
   end
 end
 
-   def_param_group :get_profile do
-    property :id, Integer, desc: 'Account primary key'    
-    property :first_name, String, desc: 'first_name'
-    property :last_name, String, desc: 'last_name'
-    property :avatar, String, desc: 'avatar'
-    property :email, String, desc: 'email'
-    property :about, String, desc: 'about'
-    property :location, String, desc: 'location'
-    property :phone_number, String, desc: 'phone_number'
-    property :dob, String, desc: 'dob'
-    property :gender, String, desc: 'gender'
-    property :role, String, desc: 'role_ids'
-    property :social, String, desc: 'Social Media links'
-    property :friends_count, String, desc: 'friends count'
-    property :follows_count, String, desc: 'follows count'
-    property :followers_count, String, desc: 'followers count'
-  end
+#    def_param_group :get_profile do
+#     property :id, Integer, desc: 'Account primary key'    
+#     property :first_name, String, desc: 'first_name'
+#     property :last_name, String, desc: 'last_name'
+#     property :avatar, String, desc: 'avatar'
+#     property :email, String, desc: 'email'
+#     property :about, String, desc: 'about'
+#     property :location, String, desc: 'location'
+#     property :phone_number, String, desc: 'phone_number'
+#     property :dob, String, desc: 'dob'
+#     property :gender, String, desc: 'gender'
+#     property :role, String, desc: 'role_ids'
+#     property :social, String, desc: 'Social Media links'
+#     property :friends_count, String, desc: 'friends count'
+#     property :follows_count, String, desc: 'follows count'
+#     property :followers_count, String, desc: 'followers count'
+#   end
 
-  api :GET, '/api/v1/users/get-profile', 'To get your own profile - Token is required'
-  returns array_of: :get_profile, code: 200, desc: 'This api will return the following response.' 
+#   api :GET, '/api/v1/users/get-profile', 'To get your own profile - Token is required'
+#   returns array_of: :get_profile, code: 200, desc: 'This api will return the following response.' 
 
 
-  def get_profile
+#   def get_profile
    
-    user = request_user
-      profile = {
-          'id' => user.id,
-          'first_name' => user.profile.first_name,
-          'last_name' => user.profile.last_name,
-          'avatar' => user.avatar,
-          'location' => user.location,
-          'about' => user.about,
-          'dob' => user.profile.dob.to_date,
-          'roles' => get_user_role_names(user),
-          'gender' => user.profile.gender,
-          'mobile' => user.phone_number,
-          'email' => user.email,
-          'social' => user.social_media,
-          'friends_count' => user.friends.size,
-          'follows_count' => user.followings.size,
-          'followers_count' => user.followers.size
-      }
+#     user = request_user
+#       profile = {
+#           'id' => user.id,
+#           'first_name' => user.profile.first_name,
+#           'last_name' => user.profile.last_name,
+#           'avatar' => user.avatar,
+#           'location' => if !user.location.blank? then user.location else "" end,
+#           'about' => if !user.about.blank? then user.about else "" end,
+#           'dob' => if !user.profile.dob.blank? then user.profile.dob.to_date else "" end,
+#           'roles' => get_user_role_names(user),
+#           'gender' => if !user.profile.gender.blank? then user.profile.gender else "" end,
+#           'mobile' => user.phone_number,
+#           'email' => user.email,
+#           'social' => user.social_media,
+#           'friends_count' => user.friends.size,
+#           'follows_count' => user.followings.size,
+#           'followers_count' => user.followers.size
+#       }
 
-      render json: {
-        code: 200,
-        success: true,
-        message: '',
-        data: {
-          profile: profile,
-          user: request_user
-        }
-      }
+#       render json: {
+#         code: 200,
+#         success: true,
+#         message: '',
+#         data: {
+#           profile: profile,
+#           user: request_user
+#         }
+#       }
+# end
+
+
+#    def_param_group :get_profile do
+#     property :id, Integer, desc: 'Account primary key'    
+#     property :first_name, String, desc: 'first_name'
+#     property :last_name, String, desc: 'last_name'
+#     property :avatar, String, desc: 'avatar'
+#     property :email, String, desc: 'email'
+#     property :about, String, desc: 'about'
+#     property :location, String, desc: 'location'
+#     property :phone_number, String, desc: 'phone_number'
+#     property :dob, String, desc: 'dob'
+#     property :gender, String, desc: 'gender'
+#     property :role, String, desc: 'role_ids'
+#     property :social, String, desc: 'Social Media links'
+#     property :friends_count, String, desc: 'friends count'
+#     property :follows_count, String, desc: 'follows count'
+#     property :followers_count, String, desc: 'followers count'
+#   end
+
+#   api :POST, '/api/v1/users/get-other-profile', 'To get a other user profile'
+#   param :user_id, String, :desc => "User ID", :required => true
+#   returns array_of: :get_profile, code: 200, desc: 'This api will return the following response.' 
+
+
+#  def get_other_profile
+#   if !params[:user_id].blank?
+#   user = User.find(params[:user_id])
+#   profile = {}
+
+#   profile['user_id'] = user.id
+#   profile['first_name'] = user.profile.first_name
+#   profile['last_name'] = user.profile.last_name
+#   profile['avatar'] = user.avatar
+#   profile['about'] = if !user.about.blank? then user.about else "" end
+#   profile['dob'] = if !user.profile.dob.blank? then user.profile.dob.to_date else "" end
+#   profile['roles'] = get_user_role_names(user)
+#   profile['gender'] = if !user.profile.gender.blank? then user.profile.gender else "" end
+#   profile['mobile'] = user.phone_number
+#   profile['email'] = user.email
+#   profile['location'] = eval(user.location)
+#   profile['social'] = user.social_media
+#   profile['friends_count'] = user.friends.size
+#   profile['follows_count'] = user.followings.size
+#   profile['followers_count'] = user.followers.size
+
+#   render json: {
+#     code: 200,
+#     success: true,
+#     message: '',
+#     data: {
+#       profile: profile,
+#       user: request_user
+#     }
+#   }
+# else
+#   render json: {
+#     code: 400,
+#     success: false,
+#     message: 'user_id is required.',
+#     data: nil
+#   }
+# end
+# end
+
+
+def_param_group :get_profile do
+  property :id, String, desc: 'id'
+  property :profile_name, String, desc: 'profile_name'
+  property :first_name, String, desc: 'first_name'
+  property :last_name, String, desc: 'last_name'
+  property :avatar, String, desc: 'avatar'
+  property :location, String, desc: 'location'
+  property :social, String, desc: 'social links'
+  property :website, String, desc: 'website'
+  property :news_feeds, Hash, desc: 'news_feeds'
+  property :followers_count, Integer, desc: 'followers_count'
+  property :events_count, String, desc: 'events_count'
+  property :email, String, desc: 'email'
+  property :offers_count, String, desc: 'offers_count'
+  property :competitions_count, String, desc: 'competitions_count'
+  property :ambassador_request_status, String, desc: 'ambassador_request_status'
+  property :is_ambassador, String, desc: 'is_ambassador'
 end
 
+api :POST, '/api/v1/users/get-profile', 'To get user profile'
+param :user_id, :number, :desc => "User ID", :required => true
+returns array_of: :get_profile, code: 200, desc: 'This api will return the following response.'
 
-   def_param_group :get_profile do
-    property :id, Integer, desc: 'Account primary key'    
-    property :first_name, String, desc: 'first_name'
-    property :last_name, String, desc: 'last_name'
-    property :avatar, String, desc: 'avatar'
-    property :email, String, desc: 'email'
-    property :about, String, desc: 'about'
-    property :location, String, desc: 'location'
-    property :phone_number, String, desc: 'phone_number'
-    property :dob, String, desc: 'dob'
-    property :gender, String, desc: 'gender'
-    property :role, String, desc: 'role_ids'
-    property :social, String, desc: 'Social Media links'
-    property :friends_count, String, desc: 'friends count'
-    property :follows_count, String, desc: 'follows count'
-    property :followers_count, String, desc: 'followers count'
-  end
-
-  api :POST, '/api/v1/users/get-other-profile', 'To get a other user profile'
-  param :user_id, String, :desc => "User ID", :required => true
-  returns array_of: :get_profile, code: 200, desc: 'This api will return the following response.' 
-
-
- def get_other_profile
+def get_profile
   if !params[:user_id].blank?
-  user = User.find(params[:user_id])
-  profile = {}
+    user = User.find(params[:user_id])
+    if is_mobile_user?(user)
+      location = ""
+      about = ""
+      dob = ""
+      gender  = ""
 
-  profile['user_id'] = user.id
-  profile['first_name'] = user.profile.first_name
-  profile['last_name'] = user.profile.last_name
-  profile['avatar'] = user.avatar
-  profile['about'] = user.about
-  profile['dob'] = user.profile.dob.to_date
-  profile['roles'] = get_user_role_names(user)
-  profile['gender'] = user.profile.gender
-  profile['mobile'] = user.phone_number
-  profile['email'] = user.email
-  profile['location'] = eval(user.location)
-  profile['social'] = user.social_media
-  profile['friends_count'] = user.friends.size
-  profile['follows_count'] = user.followings.size
-  profile['followers_count'] = user.followers.size
+      if !user.about.blank? then about = user.about else  about = "" end
+      if !user.location.blank? then location = user.location else location = "" end
+      if !user.profile.dob.blank? then dob = user.profile.dob else dob =  "" end
+      if !user.profile.gender.blank? then gender  = user.profile.gender else gender =  "" end
+  
+        profile = {
+            'id' => user.id,
+            'first_name' => user.profile.first_name,
+            'last_name' => user.profile.last_name,
+            'avatar' => user.avatar,
+            'location' => location,
+            'about' => about,
+            'dob' => dob,
+            'gender' => gender,
+            'roles' => get_user_role_names(user),
+            'mobile' => user.phone_number,
+            'email' => user.email,
+            'social' => user.social_media,
+            'friends_count' => user.friends.size,
+            'follows_count' => user.followings.size,
+            'followers_count' => user.followers.size
+        }
+  
+    elsif is_business?(user)
+      status = get_request_status(user.id)
+      location = ""
+      about = ""
+      social = []
+      if !user.about.blank? then about = user.about else  about = "" end
+      if !user.location.blank? then location = user.location else location = "" end
+      if !user.social_media.blank? then social = user.social_media else social = [] end
+      profile = {
+        'id' => user.id,
+        'profile_name' => user.business_profile.profile_name,
+        'avatar' => user.avatar,
+        'location' => location,
+        'about' => about,
+        'roles' => get_user_role_names(user),
+        'mobile' => user.phone_number,
+        'email' => user.email,
+        'social' => social,
+        'website' => user.business_profile.website,
+        'friends_count' => user.friends.size,
+        'news_feeds' => user.news_feeds,
+        'follows_count' => user.followings.size,
+        'followers_count' => user.followers.size,
+        "ambassador_request_status" => status,
+        'is_ambassador' => is_ambassador_of?(user)
+      }
+    end
+     render json: {
+       code: 200,
+       success: true,
+       message: '',
+       data: {
+         profile: profile
+       }
+     }
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "user_id is required field.",
+        data: nil
+      }
+    end
+end
 
-  render json: {
-    code: 200,
-    success: true,
-    message: '',
-    data: {
-      profile: profile,
-      user: request_user
-    }
-  }
-else
-  render json: {
-    code: 400,
-    success: false,
-    message: 'user_id is required.',
-    data: nil
-  }
-end
-end
+
 
   api :POST, '/api/v1/users/user-activity-logs', 'To get user get activity logs'
   param :user_id, :number, :desc => "User ID", :required => true
@@ -583,7 +703,7 @@ end
         "name" => event.title,
         "start_date" => event.start_date,
         "end_date" => event.end_date,
-        "location" => eval(event.location),
+        "location" => event.location,
         "event_type" => event.event_type,
         "image" => event.image,
         "price_type" => event.price_type,
