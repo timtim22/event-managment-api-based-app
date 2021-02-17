@@ -163,7 +163,7 @@ def get_live_event_data
       end
           @event << {
             time_remaning: "Live Now",
-            location: remove_slashes(e.location),
+            location: jsonify_location(e.location),
             date: e.start_date,
             going: e.going_interest_levels.size,
             passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
@@ -242,7 +242,7 @@ def get_child_event_attendees_stats
 
           @event << {
             time_remaning: (e.start_date.to_date - Date.today).to_i.to_s + " days remaning",
-            location: remove_slashes(e.location),
+            location: jsonify_location(e.location),
             date: e.start_date,
             going: e.going_interest_levels.size,
             passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
@@ -291,7 +291,7 @@ def get_child_event_attendees_stats
           end
           @event << {
             time_remaning: "Live Now",
-            location: remove_slashes(e.location),
+            location: jsonify_location(e.location),
             date: e.start_date,
             going: e.going_interest_levels.size,
             passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
@@ -341,7 +341,7 @@ def get_child_event_attendees_stats
           end
         @event << {
           time_remaning: "Event Over",
-          location: remove_slashes(e.location),
+          location: jsonify_location(e.location),
           date: e.start_date,
           going: e.going_interest_levels.size,
           passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,

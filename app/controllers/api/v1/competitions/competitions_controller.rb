@@ -18,7 +18,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        location: remove_slashes(competition.location),
+        location: jsonify_location(competition.location),
         start_date: competition.start_date,
         end_date: competition.end_date,
         start_time: competition.start_time,
@@ -46,7 +46,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
       id: competition.id,
       title: competition.title,
       description: competition.description,
-      location: remove_slashes(competition.location),
+      location: jsonify_location(competition.location),
       start_date: competition.start_date,
       end_date: competition.end_date,
       start_time: competition.start_time,
@@ -89,7 +89,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        location: remove_slashes(competition.location),
+        location: jsonify_location(competition.location),
         start_date: competition.start_date,
         end_date: competition.end_date,
         start_time: competition.start_time,
@@ -378,7 +378,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
                         "action_type": notification.action_type,
                         "created_at": notification.created_at,
                         "is_read": !notification.read_at.nil?,
-                        "location": remove_slashes(notification.resource.location),
+                        "location": jsonify_location(notification.resource.location),
                          "competition_id": notification.resource.id
                        }
 
