@@ -76,7 +76,7 @@
      'start_date' => e.start_date,
      'end_date' => e.end_date,
      'image' => e.image.url,
-     'location' => eval(e.location),
+     'location' => remove_slashes(e.location),
      'description' => e.description,
      'categories' => e.categories,
      "allow_chat" => e.allow_chat,
