@@ -465,7 +465,7 @@ def get_profile
 
       if !user.about.blank? then about = user.about else  about = "" end
       if !user.location.blank? then location = user.location else location = "" end
-      if !user.profile.dob.blank? then dob = user.profile.dob else dob =  "" end
+      if !user.profile.dob.blank? then dob = user.profile.dob.to_date else dob =  "" end
       if !user.profile.gender.blank? then gender  = user.profile.gender else gender =  "" end
   
         profile = {
