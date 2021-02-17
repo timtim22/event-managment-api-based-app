@@ -309,9 +309,9 @@ end
         post '/add-resource' => 'events#add_admission_resource'
         post '/add-sponsor' => 'events#add_sponsor'
         post '/add-media' => 'events#add_media'
-        post '/update-event' => 'events#update_event'
         post '/add-social' => 'events#add_social'
         get '/get-categories' => 'events#get_categories'
+        get '/get-list' => 'events#index'
       end
 
         resources :news_feeds
