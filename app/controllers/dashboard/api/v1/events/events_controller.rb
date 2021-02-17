@@ -742,6 +742,7 @@
       @event.is_repetive = ""
       @event.frequency = ""
       @event.price = ""
+      @event.status = "draft"
     end
 
     if @event.save
