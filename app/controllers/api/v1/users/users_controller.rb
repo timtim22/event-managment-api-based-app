@@ -109,7 +109,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
          about = ""
          dob = ""
          gender  = ""
-      if !@user.profile.about.blank? then about = @user.profile.about else  about = "" end
+      if !@user.about.blank? then about = @user.about else  about = "" end
       if !@user.location.blank? then location = @user.location else location = "" end
       if !@user.profile.dob.blank? then dob = @user.profile.dob else dob =  "" end
       if !@user.profile.gender.blank? then gender  = @user.profile.gender else gender =  "" end
@@ -273,10 +273,10 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     about = ""
     dob = ""
     gender  = ""
- if !@user.profile.about.blank? then about = @user.profile.about else  about = "" end
- if !@user.location.blank? then location = @user.location else location = "" end
- if !@user.profile.dob.blank? then dob = @user.profile.dob else dob =  "" end
- if !@user.profile.gender.blank? then gender  = @user.profile.gender else gender =  "" end
+ if !user.about.blank? then about = user.about else  about = "" end
+ if !user.location.blank? then location = user.location else location = "" end
+ if !user.profile.dob.blank? then dob = user.profile.dob else dob =  "" end
+ if !user.profile.gender.blank? then gender  = user.profile.gender else gender =  "" end
    # create_activity("updated profile.", profile, "Profile")
    profile_object = {
     'id' => user.id,
