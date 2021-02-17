@@ -177,7 +177,7 @@
         'start_date' => e.start_date,
         'end_date' => e.end_date,
         'image' => e.image.url,
-        'location' => location,
+        'location' => jsonify_location(location),
         'description' => e.description,
         "terms_conditions" => e.terms_conditions,
         'categories' => e.categories,
@@ -232,7 +232,7 @@
         'creator_name' => e.user.business_profile.profile_name,
         'creator_id' => e.user.id,
         'creator_image' => e.user.avatar,
-        'location' => location,
+        'location' => jsonify_location(location),
         'lat' => e.lat,
         'lng' => e.lng,
         'stats' => stats
