@@ -311,6 +311,7 @@ end
         post '/add-media' => 'events#add_media'
         post '/add-social' => 'events#add_social'
         get '/get-categories' => 'events#get_categories'
+        get '/get-list' => 'events#index'
       end
 
         resources :news_feeds

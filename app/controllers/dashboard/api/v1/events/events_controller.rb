@@ -9,7 +9,7 @@
       api_versions "dashboard"
     end
 
-  api :GET, 'dashboard/api/v1/get-my-events', 'Get all events'
+  api :GET, 'dashboard/api/v1/get-list', 'Get all events'
 
   def index
 
