@@ -1249,7 +1249,12 @@ end
 
 
 def jsonify_location(location)
-   JSON.parse(location.gsub("=>", ":").gsub(":nil,", ":null,"))
+  if location.include? "=>" && locatiion.include? "{"
+    l = JSON.parse(location.gsub("=>", ":").gsub(":nil,", ":null,"))
+  else
+    l = locatiion
+  end
+  l
 end
 
 
