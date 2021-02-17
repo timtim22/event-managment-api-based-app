@@ -698,30 +698,51 @@
      #     end #each
      #  end #each
      # end #blank
-
-    @event = request_user.events.new
-    @event.name = params[:name]
-    @event.image = params[:image]
-    @event.start_date = ""
-    @event.end_date = ""
-    @event.venue = params[:venue]
-    @event.over_18 = params[:over_18]
-    @event.description = params[:description]
-    @event.allow_chat = ""
-    @event.event_forwarding = ""
-    @event.location = params[:location]
-    @event.location_name = ""
-    @event.event_type = params[:event_type]
-    # @event.qr_code = generate_code
-    @event.category_ids = params[:category_ids]
-    @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
-    # @event.terms_conditions = params[:terms_conditions]
-    @event.quantity = ""
-    @event.is_repetive = ""
-    @event.frequency = ""
-    @event.price = ""
-
-    
+    if !params[:id].blank?
+      @event = Event.find(params[:id])
+      @event.name = params[:name]
+      @event.image = params[:image]
+      @event.start_date = ""
+      @event.end_date = ""
+      @event.venue = params[:venue]
+      @event.over_18 = params[:over_18]
+      @event.description = params[:description]
+      @event.allow_chat = ""
+      @event.event_forwarding = ""
+      @event.location = params[:location]
+      @event.location_name = ""
+      @event.event_type = params[:event_type]
+      # @event.qr_code = generate_code
+      @event.category_ids = params[:category_ids]
+      @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
+      # @event.terms_conditions = params[:terms_conditions]
+      @event.quantity = ""
+      @event.is_repetive = ""
+      @event.frequency = ""
+      @event.price = ""
+    else
+      @event = request_user.events.new
+      @event.name = params[:name]
+      @event.image = params[:image]
+      @event.start_date = ""
+      @event.end_date = ""
+      @event.venue = params[:venue]
+      @event.over_18 = params[:over_18]
+      @event.description = params[:description]
+      @event.allow_chat = ""
+      @event.event_forwarding = ""
+      @event.location = params[:location]
+      @event.location_name = ""
+      @event.event_type = params[:event_type]
+      # @event.qr_code = generate_code
+      @event.category_ids = params[:category_ids]
+      @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
+      # @event.terms_conditions = params[:terms_conditions]
+      @event.quantity = ""
+      @event.is_repetive = ""
+      @event.frequency = ""
+      @event.price = ""
+    end
 
     if @event.save
       # params[:event_dates].map { |date| @event.child_events.create!(
@@ -838,50 +859,6 @@
       end
   end
 
-
-
-  def update_event
-    success = false
-    @event = Event.find(params[:id])
-    @event.name = params[:name]
-    @event.image = params[:image]
-    @event.start_date = ""
-    @event.end_date = ""
-    @event.venue = params[:venue]
-    @event.over_18 = params[:over_18]
-    @event.description = params[:description]
-    @event.allow_chat = ""
-    @event.event_forwarding = ""
-    @event.location = params[:location]
-    @event.location_name = ""
-    @event.event_type = params[:event_type]
-    # @event.qr_code = generate_code
-    @event.category_ids = params[:category_ids]
-    @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
-    # @event.terms_conditions = params[:terms_conditions]
-    @event.quantity = ""
-    @event.is_repetive = ""
-    @event.frequency = ""
-    @event.price = ""
-
-    if @event.save
-        render json:  {
-          code: 200,
-          success: true,
-          message: 'Event successfully updated.',
-          data: {
-             event: (@event)
-          }
-        }
-      else
-        render json: {
-          code: 400,
-          success: false,
-          message: @event.errors.full_messages,
-          data: nil
-        }
-      end
-  end
 
   api :POST, 'dashboard/api/v1/events', 'To update an event'
   # param :id, :number, :desc => "ID of the event", :required => true
