@@ -312,6 +312,7 @@ end
         post '/add-social' => 'events#add_social'
         get '/get-categories' => 'events#get_categories'
         get '/get-list' => 'events#index'
+        post '/publish-event' => 'events#publish_event'
       end
 
         resources :news_feeds

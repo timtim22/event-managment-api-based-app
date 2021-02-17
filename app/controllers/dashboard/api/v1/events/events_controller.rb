@@ -280,8 +280,8 @@
 
 
   def add_admission_resource
-    if !params[:id].blank?
-      @event = Event.find(params[:id])
+    if !params[:event_id].blank?
+      @event = Event.find(params[:event_id])
         @error_messages = []
 
         if params[:price_type] != "free_event"
@@ -437,7 +437,7 @@
         render json: {
           code: 400,
           success: false,
-          message: 'id is required.',
+          message: 'event_id is required.',
           data: nil
         }
       end
@@ -445,8 +445,8 @@
   end
 
   def add_sponsor
-    if !params[:id].blank?
-      @event = Event.find(params[:id])
+    if !params[:event_id].blank?
+      @event = Event.find(params[:event_id])
       if !params[:sponsors].blank?
         params[:sponsors].each do |sponsor|
           if sponsor.include? "id"
@@ -469,7 +469,7 @@
       render json: {
         code: 400,
         success: false,
-        message: 'id is required.',
+        message: 'event_id is required.',
         data: nil
       }
     end
@@ -478,8 +478,8 @@
 
 
   def add_media
-    if !params[:id].blank?
-      @event = Event.find(params[:id])
+    if !params[:event_id].blank?
+      @event = Event.find(params[:event_id])
       if !params[:event_attachments].blank?
         params[:event_attachments].each do |attachment|
           if attachment.include? "id"
@@ -502,15 +502,15 @@
       render json: {
         code: 400,
         success: false,
-        message: 'id is required.',
+        message: 'event_id is required.',
         data: nil
       }
     end
   end
 
   def add_social
-    if !params[:id].blank?
-     @event = Event.find(params[:id])
+    if !params[:event_id].blank?
+     @event = Event.find(params[:event_id])
 
      @event.event_forwarding = params[:event_forwarding]
      @event.allow_chat = params[:allow_chat]
@@ -536,15 +536,15 @@
       render json: {
         code: 400,
         success: false,
-        message: 'id is required.',
+        message: 'event_id is required.',
         data: nil
       }
     end    
   end
 
   def add_times
-    if !params[:id].blank?
-      @event = Event.find(params[:id])
+    if !params[:event_id].blank?
+      @event = Event.find(params[:event_id])
       @event.start_date = get_date_time(params[:start_date].to_date, params[:start_time])
       @event.end_date = get_date_time(params[:end_date].to_date, params[:end_time])
       @event.frequency = params[:frequency]
@@ -616,7 +616,40 @@
       render json: {
         code: 400,
         success: false,
-        message: 'id is required.',
+        message: 'event_id is required.',
+        data: nil
+      }
+    end
+  end
+
+
+  def publish_event
+    if !params[:event_id].blank?
+      @event = Event.find(params[:event_id])
+      @event.status = "active"
+
+      if @event.save
+        render json:  {
+          code: 200,
+          success: true,
+          message: 'Time succesfully added.',
+          data: {
+             event: @event
+          }
+        }
+      else
+        render json:  {
+          code: 400,
+          success: false,
+          message: @event.error_messages,
+          data: nil
+        }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: 'event_id is required.',
         data: nil
       }
     end
@@ -698,8 +731,8 @@
      #     end #each
      #  end #each
      # end #blank
-    if !params[:id].blank?
-      @event = Event.find(params[:id])
+    if !params[:event_id].blank?
+      @event = Event.find(params[:event_id])
       @event.name = params[:name]
       @event.image = params[:image]
       @event.start_date = ""
@@ -742,6 +775,7 @@
       @event.is_repetive = ""
       @event.frequency = ""
       @event.price = ""
+      @event.status = "draft"
     end
 
     if @event.save
