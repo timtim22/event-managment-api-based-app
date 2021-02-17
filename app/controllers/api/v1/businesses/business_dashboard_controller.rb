@@ -15,7 +15,7 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
       "avatar" => business.avatar,
       "about" => business.business_about,
       "unread_messages_count" => business.incoming_messages.unread.size,
-      "address" => eval(business.business_profile.address),
+      "address" => remove_slashes(business.business_profile.address),
       "social" => business.social_media,
       "news_feeds" => business.news_feeds,
       "followers_count" =>  business.followers.size
@@ -42,7 +42,7 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
         'start_date' => e.start_date,
         'end_date' => e.end_date,
         'image' => e.event.image,
-        'location' => eval(e.location),
+        'location' => remove_slashes(e.location),
         'price' => get_price(e.event),
         'price_type' => e.event.price_type,
         'has_passes' => has_passes?(e.event)
@@ -68,7 +68,7 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
         id: offer.id,
         title: offer.title,
         image: offer.image,
-        location: eval(offer.location),
+        location: remove_slashes(offer.location),
         validity: offer.validity.strftime(get_time_format),
         description: offer.description,
         ambassador_rate: offer.ambassador_rate,
@@ -101,7 +101,7 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        location: eval(competition.location),
+        location: remove_slashes(competition.location),
         image: competition.image,
         start_date: competition.start_date,
         creation_date: competition.created_at, 
@@ -169,7 +169,7 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
             host_image: e.user.avatar,
             event_name: e.title,
             event_image: e.image,
-            event_location: eval(e.location),
+            event_location: remove_slashes(e.location),
             event_date: e.start_date,
             is_added_to_wallet: is_added_to_wallet?(pass.id),
             validity: pass.validity.strftime(get_time_format),
@@ -192,7 +192,7 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
           host_image: e.user.avatar,
           event_name: e.title,
           event_image: e.image,
-          event_location: eval(e.location),
+          event_location: remove_slashes(e.location),
           event_date: e.start_date,
           is_added_to_wallet: is_added_to_wallet?(pass.id),
           validity: pass.validity.strftime(get_time_format),
@@ -216,7 +216,7 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
             'price_type' => e.event.price_type,
             'event_type' => e.event_type,
             'additional_media' => e.event.event_attachments,
-            'location' => eval(e.location),
+            'location' => remove_slashes(e.location),
             'image' => e.event.image,
             'is_interested' => is_interested?(e),
             'is_going' => is_attending?(e),
@@ -297,7 +297,7 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
 #   profile['first_name'] = user.business_profile.profile_name
 #   profile['last_name'] = ''
 #   profile['avatar'] = user.avatar
-#   profile['location'] = eval(user.location)
+#   profile['location'] = remove_slashes(user.location)
 #   profile["social"] = user.social_media
 #   profile['website'] = user.business_profile.website
 #   profile['followers_count'] = user.followers.size
@@ -356,7 +356,7 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
 #     profile['last_name'] = ''
 #     profile['avatar'] = user.avatar
 #     profile['about'] = user.about
-#     profile['location'] = eval(user.location)
+#     profile['location'] = remove_slashes(user.location)
 #     profile['followers_count'] = user.followers.size
 #     profile['events_count'] = user.events.size
 #     profile['competitions_count'] = user.competitions.size

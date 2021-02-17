@@ -173,7 +173,7 @@ class ApplicationController < ActionController::Base
 
 
   def string_to_hash(string)
-    eval(string)
+    remove_slashes(string)
   end
 
    def get_dummy_avatar
@@ -259,7 +259,7 @@ class ApplicationController < ActionController::Base
        "social" => user.social_media,
       "is_ambassador" => is_ambassador?(user),
       "earning" => '3', #should be change when ambassador schema/program will be updated.
-       "location" => if !user.location.blank? then eval(user.location) else "" end,
+       "location" => if !user.location.blank? then remove_slashes(user.location) else "" end,
       "device_token" => user.device_token,
       "ranking" => '3', #should be change when ambassador schema/program will be updated.,
       "gender" => user.profile.gender,
@@ -415,7 +415,7 @@ class ApplicationController < ActionController::Base
       "description" => event.description,
       "terms_conditions" => event.terms_conditions,
       "categories" => event.categories,
-      "location" => eval(event.location),
+      "location" => remove_slashes(event.location),
       "admission_resources" => admission_resources,
       "event_attachments" => event.event_attachments,
       "sponsors" => event.sponsors,
@@ -442,7 +442,7 @@ class ApplicationController < ActionController::Base
       host_image: pass.event.user.avatar,
       event_name: pass.event.title,
       event_image: pass.event.image,
-      event_location: eval(pass.event.location),
+      event_location: remove_slashes(pass.event.location),
       event_start_time: pass.event.start_time,
       event_end_time: pass.event.end_time,
       event_date: pass.event.start_date,
@@ -462,7 +462,7 @@ class ApplicationController < ActionController::Base
       id: offer.id,
       title: offer.title,
       sub_title: offer.sub_title,
-      location: eval(offer.location),
+      location: remove_slashes(offer.location),
       date: offer.date,
       time: offer.time,
       lat: offer.lat,
@@ -489,7 +489,7 @@ class ApplicationController < ActionController::Base
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        location: eval(competition.location),
+        location: remove_slashes(competition.location),
         start_date: competition.start_date,
         end_date: competition.end_date,
         start_time: competition.start_time,
@@ -577,7 +577,7 @@ class ApplicationController < ActionController::Base
           host_image: business.avatar,
           event_name: pass.event.title,
           event_image: pass.event.image,
-          event_location: eval(pass.event.location),
+          event_location: remove_slashes(pass.event.location),
           event_date: pass.event.start_date,
           distributed_by: distributed_by(pass),
           is_added_to_wallet: is_added_to_wallet?(pass.id),
@@ -606,7 +606,7 @@ class ApplicationController < ActionController::Base
           type: 'special_offer',
           title: offer.title,
           sub_title: offer.sub_title,
-          location: eval(offer.location),
+          location: remove_slashes(offer.location),
           date: offer.date,
           time: offer.time,
           lat: offer.lat,
@@ -1247,6 +1247,10 @@ def business_users
   mobile_users = User.where(id: user_ids)
 end
 
+
+def remove_slashes(string)
+  string.gsub!(/\"/, '\'')
+end
 
 
   helper_method :SetJsVariables

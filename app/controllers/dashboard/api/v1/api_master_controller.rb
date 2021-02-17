@@ -171,7 +171,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
     "image" => event.event.image,
     "event_type"  => event.event_type,
     "price_type"  => event.price_type,
-    "location"  => eval(event.location),
+    "location"  => remove_slashes(event.location),
     "start_date"  => event.start_date,
     "end_date"  => event.end_date,
     "going"  => event.going_interest_levels.size,

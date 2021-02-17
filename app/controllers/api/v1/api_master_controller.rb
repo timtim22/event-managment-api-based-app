@@ -155,7 +155,7 @@ class Api::V1::ApiMasterController < ApplicationController
         "image" => event.event.image,
         "title" => event.title,
         "description" => event.description,
-        'location' => eval(event.location),
+        'location' => remove_slashes(event.location),
         "start_date" => event.end_date,
         "end_date" => event.end_date,
         "over_18" => event.event.over_18,

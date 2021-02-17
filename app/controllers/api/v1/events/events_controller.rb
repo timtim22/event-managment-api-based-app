@@ -4,7 +4,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
 
 
   api :POST, '/api/v1/events/show', 'To view a specific event'
-  param :event_id, Integer, :desc => "Event ID", :required => true
+  param :event_id, :number, :desc => "Event ID", :required => true
 
 
   def show_event
@@ -70,7 +70,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
             'price_type' => e.event.price_type,
             'event_type' => e.event_type,
             'additional_media' => e.event.event_attachments,
-            'location' => eval(e.location),
+            'location' => remove_slashes(e.location),
             'image' => e.event.image,
             'is_interested' => is_interested?(e),
             'is_going' => is_attending?(e),
@@ -320,7 +320,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
         "max_price" => get_max_price(event.event),
         "has_passes" => has_passes?(event.event),
         "categories" => event.event.categories,
-        "location" => eval(event.location)
+        "location" => remove_slashes(event.location)
       }
   end
 
@@ -335,7 +335,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
         "image" => child_event.event.image,
         "title" => child_event.event.title,
         "description" => child_event.event.description,
-        "location" => eval(child_event.location),
+        "location" => remove_slashes(child_event.location),
         "start_date" => child_event.start_date,
         "end_date" => child_event.end_date,
         "over_18" => child_event.event.over_18,

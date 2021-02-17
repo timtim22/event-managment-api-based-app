@@ -90,7 +90,7 @@ class Api::V1::Businesses::AnalyticsController < Api::V1::ApiMasterController
                   "end_date" => event.end_date,
                   "start_time" => get_date_time(event.start_date, ),
                   "end_time" => get_date_time(event.end_date, ),
-                  "location" => eval(event.location),
+                  "location" => remove_slashes(event.location),
                   "event_type" => event.event_type,
                   "image" => event.image,
                   "price_type" => event.event.price_type,
@@ -364,7 +364,7 @@ class Api::V1::Businesses::AnalyticsController < Api::V1::ApiMasterController
   #       }
 
   #         if event.location.include? "\"=>\""
-  #             location =  eval(event.location)["city"] + ", " + eval(event.location)["country"]
+  #             location =  remove_slashes(event.location)["city"] + ", " + remove_slashes(event.location)["country"]
   #         else
   #               location = event.location
   #         end  
@@ -377,9 +377,9 @@ class Api::V1::Businesses::AnalyticsController < Api::V1::ApiMasterController
   #         "start_time" => ,
   #         "end_time" => ,
   #         "location" => location,
-  #         # "location" => eval(event.location)["city"] + ", " + eval(event.location)["country"],
-  #         # "lat" => eval(event.location)["geometry"]["lat"],
-  #         # "lng" => eval(event.location)["geometry"]["lng"],
+  #         # "location" => remove_slashes(event.location)["city"] + ", " + remove_slashes(event.location)["country"],
+  #         # "lat" => remove_slashes(event.location)["geometry"]["lat"],
+  #         # "lng" => remove_slashes(event.location)["geometry"]["lng"],
   #         "event_type" => event.event_type,
   #         "image" => event.image,
   #         "price_type" => event.price_type,

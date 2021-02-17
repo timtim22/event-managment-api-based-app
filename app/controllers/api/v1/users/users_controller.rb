@@ -405,7 +405,7 @@ end
 #   profile['gender'] = if !user.profile.gender.blank? then user.profile.gender else "" end
 #   profile['mobile'] = user.phone_number
 #   profile['email'] = user.email
-#   profile['location'] = eval(user.location)
+#   profile['location'] = remove_slashes(user.location)
 #   profile['social'] = user.social_media
 #   profile['friends_count'] = user.friends.size
 #   profile['follows_count'] = user.followings.size
@@ -547,7 +547,7 @@ end
        resource['id'] = log.resource_id
        resource['name'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
-       resource['location'] = eval(log.resource.location)
+       resource['location'] = remove_slashes(log.resource.location)
        resource['start_date'] = log.resource.start_date
        resource['interested_people_count'] = log.resource.interest_levels.size
 
@@ -567,21 +567,21 @@ end
       when 'Pass'
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
-        resource['location'] = eval(log.resource.event.location)
+        resource['location'] = remove_slashes(log.resource.event.location)
         resource['start_date'] = log.resource.event.start_date
         resource['grabbers_counts'] = log.resource.wallets.size
 
       when 'SpecialOffer'
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
-        resource['location'] = eval(log.resource.location)
+        resource['location'] = remove_slashes(log.resource.location)
         resource['start_date'] = log.resource.date
         resource['grabbers_counts'] = log.resource.wallets.size
 
       when 'Competition'
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
-        resource['location'] = eval(log.resource.location)
+        resource['location'] = remove_slashes(log.resource.location)
         resource['validity'] = log.resource.validity_time
 
       when 'OfferForwarding'
@@ -746,7 +746,7 @@ end
       resource['id'] = log.resource_id
       resource['name'] = log.resource.title
       resource['host_name'] = get_full_name(log.resource.user)
-      resource['location'] = eval(log.resource.location)
+      resource['location'] = remove_slashes(log.resource.location)
       resource['start_date'] = log.resource.start_date
       resource['interested_people_count'] = log.resource.interest_levels.size
 
@@ -766,21 +766,21 @@ end
      when 'Pass'
        resource['title'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
-       resource['location'] = eval(log.resource.event.location)
+       resource['location'] = remove_slashes(log.resource.event.location)
        resource['start_date'] = log.resource.event.start_date
        resource['grabbers_counts'] = log.resource.wallets.size
 
      when 'SpecialOffer'
        resource['title'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
-       resource['location'] = eval(log.resource.location)
+       resource['location'] = remove_slashes(log.resource.location)
        resource['start_date'] = log.resource.date
        resource['grabbers_counts'] = log.resource.wallets.size
 
      when 'Competition'
        resource['title'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
-       resource['location'] = eval(log.resource.location)
+       resource['location'] = remove_slashes(log.resource.location)
        resource['validity'] = log.resource.validity_time
 
      when 'OfferForwarding'
