@@ -1271,5 +1271,4 @@ end
   helper_method :business_users
 
 
-
 end
