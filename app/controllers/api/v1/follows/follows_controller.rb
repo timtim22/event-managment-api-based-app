@@ -184,7 +184,7 @@ end
     }
   end
 
-  
+
 
   api :POST, '/api/v1/follows/my-followings', 'Get Following List - Token is required'
   def my_followings
@@ -290,7 +290,7 @@ end
    if !request_user.friends.blank?
      request_user.friends.each do |friend|
       # 1. If an ambassador is my friend his/her business should be in my business suggestion.
-         if friend.profile.is_ambassador ==  true
+         if is_ambassador?(friend)
             friend.ambassador_businesses.each do |business|
               @businesses_suggestions.push(business)
             end
