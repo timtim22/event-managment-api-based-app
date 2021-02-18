@@ -83,8 +83,8 @@ class User < ApplicationRecord
   has_one :business_profile, dependent: :destroy
   has_one :social_media, dependent: :destroy
 
-  scope :app_users, -> { where(mobile_user: true) }
-  scope :web_users, -> { where(mobile_user: false) }
+  scope :mobile_users, -> { where(mobile_user: true) }
+  scope :business_users, -> { where(mobile_user: false) }
 
 
   # validates :is_subscribed, presence: true

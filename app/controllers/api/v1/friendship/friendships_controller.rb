@@ -9,7 +9,7 @@ class Api::V1::Friendship::FriendshipsController < Api::V1::ApiMasterController
     @request_data = {}
   end
 
-  api :POST, '/api/v1/add-friend', 'To add user as a friend'
+  api :POST, '/api/v1/friendship/send-request', 'To send friend request to a user'
   param :friend_id, :number, :desc => "Friend ID", :required => true
 
 
@@ -119,7 +119,7 @@ def check_request
    }
 end
 
-api :GET, '/api/v1/friend-requests', 'To view all friend requests - Token is reqiured'
+api :GET, '/api/v1/friendship/friend-requests', 'To view all friend requests - Token is reqiured'
 
 def friend_requests
   requests = User.friend_requests(request_user)
@@ -148,7 +148,7 @@ def friend_requests
   }
 end
 
-  api :POST, '/api/v1/user/accept-request', 'To accpet a friend request'
+  api :POST, '/api/v1/friendship/accept-request', 'To accpet a friend request'
   param :request_id, :number, :desc => "accept ID", :required => true
 
 def accept_request
@@ -224,7 +224,7 @@ def accept_request
         last_name: request.user.profile.last_name,
         avatar: request.user.avatar,
         mutual_friends_count: get_mutual_friends(request_user, request.user).size,
-        is_ambassador: request.friend.profile.is_ambassador
+        is_ambassador: is_ambassador?(request.user)
 
        }
      }
@@ -247,7 +247,7 @@ else
 end
 end
 
-  api :POST, '/api/v1/remove-request', 'To remove/delete friend request'
+  api :POST, '/api/v1/friendship/remove-request', 'To remove/delete friend request'
   param :user_id, :number, :desc => "User ID", :required => true
 
 def remove_request
@@ -274,7 +274,7 @@ def remove_request
   end
 end
 
-  api :GET, '/api/v1/my-friends', 'To view all your friends - Token is required'
+  api :GET, '/api/v1/friendship/my-friends', 'To view all your friends - Token is required'
 def my_friends
   requests = FriendRequest.where(user_id: request_user.id).where(status: 'accepted')
   friends_array = []
@@ -296,7 +296,7 @@ def my_friends
 }.to_json
 end
 
-  api :POST, '/api/v1/remove-friend', 'To remove a friend'
+  api :POST, '/api/v1/friendship/remove-friend', 'To remove a friend'
   param :friend_id, :number, :desc => "Friend ID", :required => true
 
 def remove_friend
@@ -323,7 +323,7 @@ def remove_friend
   end # main
 end# #func
 
-  api :GET, '/api/v1/friendships/suggest-friends', 'To View all suggest friends'
+  api :GET, '/api/v1/friendship/suggest-friends', 'To View all suggest friends'
 
 def suggest_friends
   @friends_suggestions = []
@@ -420,7 +420,7 @@ end
 
  end #func
 
-  api :POST, '/api/v1/friendships/get-friends-details', 'To get friend details'
+  api :POST, '/api/v1/friendship/get-friends-details', 'To get friend details'
   param :user_id, :number, :desc => "User ID", :required => true
 
  def get_friends_details

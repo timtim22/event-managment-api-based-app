@@ -145,7 +145,7 @@ Rails.application.routes.draw do
       post '/check-request' => "friendships#check_request"
       get '/friend-requests' => "friendships#friend_requests"
       post '/accept-request' => "friendships#accept_request"
-      post '/decline-request' => "friendships#remove_request"
+      post '/remove-request' => "friendships#remove_request"
       post '/remove-friend' => "friendships#remove_friend"
       get '/my-friends' => "friendships#my_friends"
       get '/suggest-friends' => 'friendships#suggest_friends'
