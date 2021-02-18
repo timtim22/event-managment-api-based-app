@@ -1251,8 +1251,8 @@ end
 def jsonify_location(location)
   if location.include? "=>" 
     l = JSON.parse(location.gsub("=>", ":").gsub(":nil,", ":null,"))
-  elsif locatiion.include? '":'
-    l = JSON.parse(User.find(206).location)location
+  elsif location.include? '":'
+    l = JSON.parse(location)
   end
   l
 end

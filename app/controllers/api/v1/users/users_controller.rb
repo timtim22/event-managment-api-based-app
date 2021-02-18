@@ -268,7 +268,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     @social.snapchat = if !params[:snapchat].blank? then params[:snapchat] else "" end
     @social.facebook = if !params[:facebook].blank? then params[:facebook] else "" end
 
-  if user.save && @social.save
+  if user.save && @social.save && profile.save
     location = ""
     about = ""
     dob = ""
