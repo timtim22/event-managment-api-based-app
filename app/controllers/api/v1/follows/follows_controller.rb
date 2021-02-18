@@ -118,7 +118,7 @@ class Api::V1::Follows::FollowsController < Api::V1::ApiMasterController
     end
   end# func
 
-  api :POST, '/api/v1/follows/unfollow', 'To unfollow an event'
+  api :POST, '/api/v1/follows/unfollow', 'To unfollow a business'
   param :following_id, :number, :desc => "Following ID", :required => true
 
   def unfollow
@@ -169,8 +169,10 @@ class Api::V1::Follows::FollowsController < Api::V1::ApiMasterController
     end
   end
 end
-  api :GET, '/api/v1/event/followers', 'To view followers of the evennt - Token is required'
-  def followers
+
+
+  api :GET, '/api/v1/follows/my-followers', 'To view followers of a business- Token is required'
+  def my_followers
     @followers = request_user.followers
     render json: {
       code: 200,
@@ -182,8 +184,10 @@ end
     }
   end
 
-  api :POST, '/api/v1/follows/followings', 'Get Following List - Token is required'
-  def followings
+
+
+  api :POST, '/api/v1/follows/my-followings', 'Get Following List - Token is required'
+  def my_followings
     @followings = []
     request_user.followings.each do |following|
       @followings << {
@@ -202,83 +206,83 @@ end
     }
   end
 
-  api :GET, '/api/v1/follows/follow/requests', 'Get follow requests list - Token is required'
-   def requests_list
-     follow_requests = request_user.follow_requests
-    render json: {
-          code: 200,
-          success: true,
-          message: '',
-          data: {
-            requests: follow_requests
-        }
-      }
-   end
+  # api :GET, '/api/v1/follows/follows/requests', 'Get follow requests list - Token is required'
+  #  def requests_list
+  #    follow_requests = request_user.follow_requests
+  #   render json: {
+  #         code: 200,
+  #         success: true,
+  #         message: '',
+  #         data: {
+  #           requests: follow_requests
+  #       }
+  #     }
+  #  end
 
-  api :POST, '/api/v1/follows/remove-follow-request', 'To remove a follow request'
-  param :request_id, :number, :desc => "Request ID (Request primary key e.g. 1,2,3)", :required => true
+  # api :POST, '/api/v1/follows/remove-follow-request', 'To remove a follow request'
+  # param :request_id, :number, :desc => "Request ID (Request primary key e.g. 1,2,3)", :required => true
 
-   def remove_request
-     if !params[:request_id].blank?
-       fr = FollowRequest.find(params[:request_id])
-       if fr.destroy
-       # create_activity(request_user,"removed request of #{get_full_name(fr.sender)}", fr, 'Follow', '', '', 'post')
-        render json: {
-        code: 200,
-        success: true,
-        message: "Request deleted successfully.",
-        data: nil
-      }
-       else
-        render json: {
-        code: 400,
-        success: false,
-        message: "Request deletion failed.",
-        data: nil
-      }
-       end
-     else
-      render json: {
-        code: 400,
-        success: false,
-        message: "Request id is required.",
-        data: nil
-      }
-     end
-   end
+  #  def remove_request
+  #    if !params[:request_id].blank?
+  #      fr = FollowRequest.find(params[:request_id])
+  #      if fr.destroy
+  #      # create_activity(request_user,"removed request of #{get_full_name(fr.sender)}", fr, 'Follow', '', '', 'post')
+  #       render json: {
+  #       code: 200,
+  #       success: true,
+  #       message: "Request deleted successfully.",
+  #       data: nil
+  #     }
+  #      else
+  #       render json: {
+  #       code: 400,
+  #       success: false,
+  #       message: "Request deletion failed.",
+  #       data: nil
+  #     }
+  #      end
+  #    else
+  #     render json: {
+  #       code: 400,
+  #       success: false,
+  #       message: "Request id is required.",
+  #       data: nil
+  #     }
+  #    end
+  #  end
 
-  api :POST, '/api/v1/follows/remove-follower', 'To remove a follower'
-  param :user_id, :number, :desc => "User ID (Follower ID)", :required => true
+  # api :POST, '/api/v1/follows/remove-follower', 'To remove a follower'
+  # param :user_id, :number, :desc => "User ID (Follower ID)", :required => true
 
-   def remove_follower
-    if !params[:user_id].blank?
-      if fr = Follow.where(user_id: params[:user_id]).where(following_id: request_user.id).first.destroy
-       # create_activity(request_user, "removed #{get_full_name(User.find(params[:user_id]))} from your followers", fr, 'Follow', '', '', 'post')
-        render json: {
-          code: 200,
-          success: true,
-          message: "Follower removed successfully.",
-          data: nil
-        }
-      else
-        render json: {
-          code: 400,
-          success: false,
-          message: "Follower removal failed.",
-          data: nil
-        }
-      end
-    else
-      render json: {
-        code: 400,
-        success: false,
-        message: "User id is required.",
-        data: nil
-      }
-    end
-   end
+  #  def remove_follower
+  #   if !params[:user_id].blank?
+  #     if fr = Follow.where(user_id: params[:user_id]).where(following_id: request_user.id).first.destroy
+  #      # create_activity(request_user, "removed #{get_full_name(User.find(params[:user_id]))} from your followers", fr, 'Follow', '', '', 'post')
+  #       render json: {
+  #         code: 200,
+  #         success: true,
+  #         message: "Follower removed successfully.",
+  #         data: nil
+  #       }
+  #     else
+  #       render json: {
+  #         code: 400,
+  #         success: false,
+  #         message: "Follower removal failed.",
+  #         data: nil
+  #       }
+  #     end
+  #   else
+  #     render json: {
+  #       code: 400,
+  #       success: false,
+  #       message: "User id is required.",
+  #       data: nil
+  #     }
+  #   end
+  #  end
 
-  api :GET, '/api/v1/follows/suggest-businesses', 'View all suggest businesses to follow'
+  api :GET, '/api/v1/follows/suggest-businesses', 'View all suggested businesses to follow'
 
    def suggest_businesses
     @businesses_suggestions = []
@@ -286,7 +290,7 @@ end
    if !request_user.friends.blank?
      request_user.friends.each do |friend|
       # 1. If an ambassador is my friend his/her business should be in my business suggestion.
-         if friend.profile.is_ambassador ==  true
+         if is_ambassador?(friend)
             friend.ambassador_businesses.each do |business|
               @businesses_suggestions.push(business)
             end

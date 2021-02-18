@@ -53,9 +53,9 @@ Rails.application.routes.draw do
         post '/get-business-newsfeeds' => 'business_dashboard#get_business_news_feeds'
         post '/events/show' => 'business_dashboard#show_event'
         get '/get-dashbord' => 'business_dashboard#home'
-        get '/get-events' => 'business_dashboard#events'
-        get '/get-special-offers' => 'business_dashboard#special_offers'
-        get '/get-competitions' => 'business_dashboard#competitions'
+        post '/get-events' => 'business_dashboard#get_events'
+        post '/get-special-offers' => 'business_dashboard#get_special_offers'
+        post '/get-competitions' => 'business_dashboard#get_competitions'
       end
 
 
@@ -130,19 +130,20 @@ Rails.application.routes.draw do
       post '/delete-event-comments' => 'comments#delete_event_comments'
       post '/comments' => "comments#comments"
     end
+    
 
 
    namespace :notifications do
-     post "/read-notification" => "notifications#read_notification"
-     get '/send-events-reminder' => "notifications#send_events_reminder"
-     get '/get-all-notifications' => "notifications#index"
-     get '/mark-as-read' => "notifications#mark_as_read"
+     get '/get-list' => "notifications#index"
+     post "/read" => "notifications#read"
      post '/delete' => "notifications#delete_notification"
+     get '/mark-as-read' => "notifications#mark_as_read" 
    end
+
 
    namespace :friendship do
       post '/send-request' => "friendships#send_request"
-      post '/check-request' => "friendships#check_request"
+      # post '/check-request' => "friendships#check_request"
       get '/friend-requests' => "friendships#friend_requests"
       post '/accept-request' => "friendships#accept_request"
       post '/remove-request' => "friendships#remove_request"
@@ -170,14 +171,14 @@ Rails.application.routes.draw do
      get '/my-followings' => "follows#my_followings"
      post '/follow' => "follows#follow"
      post '/unfollow' => "follows#unfollow"
-     post '/remove-follow-request' => 'follows#remove_request'
-     post '/remove-follower' => 'follows#remove_follower'
-     post '/follow/accept-request' => "follows#accept_request"
-     get '/follow/requests' => "follows#requests_list"
-     get '/follow-requests' => "follows#requests_list"
-     get '/accept-request' => "follows#accept_request"
-     get '/my-followers' => "follows#followers"
+     get '/my-followers' => "follows#my_followers"
      get '/suggest-businesses' => 'follows#suggest_businesses'
+    #  post '/remove-follow-request' => 'follows#remove_request'
+    #  post '/remove-follower' => 'follows#remove_follower'
+    #  get '/follow/requests' => "follows#requests_list"
+    #  get '/follow-requests' => "follows#requests_list"
+    #  get '/accept-request' => "follows#accept_request"
+     
    end
 
 

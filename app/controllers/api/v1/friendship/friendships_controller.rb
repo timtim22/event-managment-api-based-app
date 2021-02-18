@@ -102,22 +102,22 @@ else
 end
 end
 
-api :POST, '/api/v1/check-request', 'check request status whether sent or not'
-param :friend_id, :number, :desc => "Friend ID", :required => true
+# api :POST, '/api/v1/check-request', 'check request status whether sent or not'
+# param :friend_id, :number, :desc => "Friend ID", :required => true
 
-def check_request
-   sender = request_user
-   friend = User.find(params[:friend_id]);
-   status = request_status(sender,friend)
-   render json: {
-     code: 200,
-     success: true,
-     message: '',
-     data: {
-       status: status
-     }
-   }
-end
+# def check_request
+#    sender = request_user
+#    friend = User.find(params[:friend_id]);
+#    status = request_status(sender,friend)
+#    render json: {
+#      code: 200,
+#      success: true,
+#      message: '',
+#      data: {
+#        status: status
+#      }
+#    }
+# end
 
 api :GET, '/api/v1/friendship/friend-requests', 'To view all friend requests - Token is reqiured'
 
@@ -439,7 +439,7 @@ end
            "is_friend" => is_friend?(request_user, follower),
            "mutual_friends_count" => get_mutual_friends(request_user, follower).size,
            "is_my_following" => false,
-           "app_user" => follower.mobile_users,
+           "roles" => get_user_role_names(follower),
            "is_self" =>  !not_me?(follower),
            "followers_count" => user.followings.size
          }
@@ -458,7 +458,7 @@ end
             "is_friend" => false,
             "mutual_friends_count" => 0,
             "is_my_following" => is_my_following?(following),
-            "app_user" => following.mobile_users,
+            "roles" => get_user_role_names(following),
             "is_self" =>  !not_me?(following),
             "followers_count" => following.followers.size
 
@@ -477,7 +477,7 @@ end
             "is_friend" => is_friend?(request_user, friend),
             "mutual_friends_count" => get_mutual_friends(request_user, friend).size,
             "is_my_following" => false,
-            "app_user" => friend.app_user,
+            "roles" => get_user_role_names(friend),
             "is_self" =>  !not_me?(friend),
             "followers_count" => friend.followings.size
           }

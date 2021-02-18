@@ -6,7 +6,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
 
-  api :get, '/api/v1/notifications/get-notifications', 'Get notifications list - logged IN user'
+  api :get, '/api/v1/notifications/get-list', 'Get notifications list - logged IN user'
 
   def index
     @notifications = []
@@ -572,7 +572,9 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
             end
 
 
-       api :GET, '/api/v1/notifications/mark-as-read', 'Make notification mark as read'
+
+
+    api :GET, '/api/v1/notifications/mark-as-read', 'Make notification mark as read'
 
      def mark_as_read
         if request_user.notifications.unread.update_all(read_at: Time.zone.now)
@@ -820,8 +822,11 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
         end
    end
 
+   api :POST, '/api/v1/notifications/read', 'Delete a notification'
+   param :notification_id, String, :desc => "Notification ID", :required => true
+ 
 
-   def read_notification
+   def read
       if !params[:notification_id].blank?
         notification = Notification.find(params[:notification_id])
         if notification.update!(read_at: Time.now)

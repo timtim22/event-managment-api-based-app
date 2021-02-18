@@ -33,12 +33,32 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
   end
 
 
-  def events
+  def_param_group :get_events do
+    property :id, String, desc: 'Primary key'
+    property :title, String, desc: 'Event title'
+    property :start_date, String, desc: 'Event start date'
+    property :end_date, String, desc: 'Event end date'
+    property :image, String, desc: 'Event image'
+    property :location, String, desc: 'Event location'
+    property :price, String, desc: 'Event ticket price'
+    property :price_type, String, desc: 'Event ticket price type'
+    property :has_passes, [true, false], desc: 'True if an event has passes'
+
+  end
+
+
+  api :POST, '/api/v1/businesses/get_events', 'To get a business events'
+  param :business_id, String, :desc => "User ID", :required => true
+  returns array_of: :get_events, code: 200, desc: 'This api will return the following response.' 
+
+  def get_events
+   if !params[:business_id].blank?
+    business = User.find(params[:business_id])
     @events = []
     business.child_events.page(params[:page]).per(30).each do |e|
       @events << {
         'id' => e.id,
-        'name' => e.title,
+        'title' => e.title,
         'start_date' => e.start_date,
         'end_date' => e.end_date,
         'image' => e.event.image,
@@ -57,10 +77,43 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
        "events" =>  @events
      }
   }
-
+    else
+      render json: {
+      code: 400,
+      success: false,
+      message: "business_id is required field.",
+      data: nil
+    }
   end
+ end
 
-  def special_offers
+
+
+ def_param_group :get_special_offers do
+  property :id, String, desc: 'Primary key'
+  property :title, String, desc: 'Offer title'
+  property :validity, String, desc: 'Offer validity'
+  property :description, String, desc: 'Offer description'
+  property :ambassador_rate, String, desc: 'Offer ambassador rate per share'
+  property :location, String, desc: 'Offer location'
+  property :terms_conditions, String, desc: 'Offer terms and conditions'
+  property :creator_name, String, desc: 'Offer business name'
+  property :start_time, String, desc: 'The time at which the Offer starts'
+  property :creation_date, String, desc: 'Offer created at date'
+  property :end_date, String, desc: 'Offer end date'
+  property :end_time, String, desc: 'Offer end time'
+  property :quantity, String, desc: 'Offer total quantity'
+  property :redeem_count, String, desc: 'Total number of people who redeemed the offer'
+end  
+
+
+api :POST, '/api/v1/businesses/get-special-offers', 'To get a business special offers'
+param :business_id, String, :desc => "User ID", :required => true
+returns array_of: :get_special_offers, code: 200, desc: 'This api will return the following response.' 
+
+  def get_special_offers
+    if !params[:business_id].blank?
+      business = User.find(params[:business_id])
     @special_offers = business.special_offers.page(params[:page]).per(20).order(id: 'DESC')
     @offers = []
     @special_offers.each do |offer|
@@ -91,10 +144,44 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
         special_offers: @offers
       }
     }
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "business_id is required field.",
+      data: nil
+    }
+  end
   end
 
 
-  def competitions
+
+
+
+ def_param_group :get_competitions do
+  property :id, String, desc: 'Primary key'
+  property :title, String, desc: 'Competition title'
+  property :validity, String, desc: 'Competition validity'
+  property :description, String, desc: 'Competition description'
+  property :start_date, String, desc: 'Competition start date'
+  property :creation_date, String, desc: 'Competition created at'
+  property :image, String, desc: 'Competition image'
+  property :creator_name, String, desc: 'Competition business name'
+  property :creator_image, String, desc: 'Competition business avatar'
+  property :end_date, String, desc: 'Competition end date'
+  property :terms_conditions, String, desc: 'Competition terms and conditions'
+
+end  
+
+
+api :POST, '/api/v1/businesses/get-special-offers', 'To get a business competitions list'
+param :business_id, String, :desc => "User ID", :required => true
+returns array_of: :get_competitions, code: 200, desc: 'This api will return the following response.' 
+
+
+  def get_competitions
+    if !params[:business_id].blank?
+      business = User.find(params[:business_id])
     @competitions = []
     business.competitions.page(params[:page]).per(30).each do |competition|
       @competitions <<  {
@@ -121,8 +208,32 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
         competitions: @competitions
       }
     }
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "business_id is required field.",
+      data: nil
+    }
+  end
   end
 
+
+
+
+    
+  def_param_group :get_business_news_feeds do  
+    property :title, String, desc: 'News feed title'
+    property :image, String, desc: 'News feed image'
+    property :description, String, desc: 'News feed description'
+    property :created_at, String, desc: 'News feed date created at'
+  end
+
+
+
+  api :POST, '/api/v1/businesses/get_business_news_feeds', 'To get a business news feeds list'
+  param :business_id, String, :desc => "User ID", :required => true
+  returns array_of: :get_business_news_feeds, code: 200, desc: 'This api will return the following response.'
 
 
 
