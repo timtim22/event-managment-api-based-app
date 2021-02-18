@@ -135,7 +135,7 @@ def friend_requests
       "user_id" => request.user_id,
       "friend_id" => request.friend_id,
       'mutual_friends_count' =>  get_mutual_friends(request_user, request.user).size,
-      'is_ambassador' => sender.profile.is_ambassador
+      'is_ambassador' => is_ambassador?(request.user)
     }
   end
   render json: {
@@ -283,7 +283,7 @@ def my_friends
     friend = {}
     friend['friend'] = get_user_object(@friend)
     friend['friends_count'] = get_mutual_friends(request_user, @friend).size
-    friend['is_ambassador'] = @friend.profile.is_ambassador
+    friend['is_ambassador'] = is_ambassador?(@friend)
     friends_array.push(friend)
   end
   render json: {
