@@ -1,6 +1,6 @@
 
 class Event < ApplicationRecord
-validates :name, presence: true, on: :create
+validates :title, presence: true, on: :create
 validates :image, presence: true, on: :create
 validates :venue, presence: true, on: :create
 # validates :start_date, presence: true, on: :create

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_16_100032) do
+ActiveRecord::Schema.define(version: 2021_02_17_142822) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -95,7 +95,7 @@ ActiveRecord::Schema.define(version: 2021_02_16_100032) do
 
   create_table "child_events", force: :cascade do |t|
     t.integer "event_id"
-    t.string "name", default: ""
+    t.string "title", default: ""
     t.string "start_date", default: ""
     t.string "end_date", default: ""
     t.datetime "terms_conditions"
@@ -207,7 +207,7 @@ ActiveRecord::Schema.define(version: 2021_02_16_100032) do
 
   create_table "events", force: :cascade do |t|
     t.integer "user_id"
-    t.string "name", default: ""
+    t.string "title", default: ""
     t.string "start_date", default: ""
     t.string "end_date", default: ""
     t.text "description", default: ""

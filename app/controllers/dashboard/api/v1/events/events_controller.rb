@@ -72,7 +72,7 @@
 
    @event = {
      'id' => e.id,
-     'name' => e.title,
+     'title' => e.title,
      'start_date' => e.start_date,
      'end_date' => e.end_date,
      'image' => e.image.url,
@@ -225,7 +225,7 @@
 
       @events << {
         'id' => e.id,
-        'name' => e.title,
+        'title' => e.title,
         'date' => e.start_date,
         'image' => e.image.url,
         "terms_conditions" => e.terms_conditions,
@@ -556,7 +556,7 @@
                 if ch.blank?
                   @event.child_events.create!(
                       user_id: request_user.id,
-                      name: @event.name,
+                      title: @event.title,
                       venue: @event.venue,
                       image: @event.image,
                       start_date: get_date_time(date.to_date, params[:start_time]),
@@ -575,7 +575,7 @@
                 else
                   @event.child_events.find_by(start_date: date).update!(
                     user_id: request_user.id,
-                    name: @event.name,
+                    title: @event.title,
                     venue: @event.venue,
                     image: @event.image,
                     start_date: get_date_time(date.to_date, params[:start_time]),
@@ -733,7 +733,7 @@
      # end #blank
     if !params[:event_id].blank?
       @event = Event.find(params[:event_id])
-      @event.name = params[:name]
+      @event.title = params[:title]
       @event.image = params[:image]
       @event.start_date = ""
       @event.end_date = ""
@@ -755,7 +755,7 @@
       @event.price = ""
     else
       @event = request_user.events.new
-      @event.name = params[:name]
+      @event.title = params[:title]
       @event.image = params[:image]
       @event.start_date = ""
       @event.end_date = ""
@@ -1347,7 +1347,7 @@ end
   end
 
   def event_params
-		params.permit(:name,:start_date,:end_date,:price,:price_type,:event_type, :external_link, :description,:location,:image, :additional_media, :allow_chat,:event_forwarding,:allow_additional_media,:over_18, :quantity, :is_repetive, :frequency, :category_ids => [], event_attachments_attributes:
+		params.permit(:title,:start_date,:end_date,:price,:price_type,:event_type, :external_link, :description,:location,:image, :additional_media, :allow_chat,:event_forwarding,:allow_additional_media,:over_18, :quantity, :is_repetive, :frequency, :category_ids => [], event_attachments_attributes:
     [:id, :event_id, :media])
   end
 
