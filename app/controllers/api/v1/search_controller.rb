@@ -26,7 +26,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                   "over_18" => event.over_18,
                   "price_type" => event.price_type,
                   "price" => get_price(event.event),
-                  "has_passes" => has_child_event_passes?(event),
+                  "has_passes" => has_passes?(event.event),
                   "created_at" => event.created_at,
                   "categories" => event.event.categories,
                  "all_passes_added_to_wallet" => all_passes_added_to_wallet?(request_user, event.event.passes)

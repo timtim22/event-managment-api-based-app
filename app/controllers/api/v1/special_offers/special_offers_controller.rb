@@ -1,9 +1,11 @@
 class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterController
   before_action :authorize_request, except: ['index','show']
 
-  api :GET, '/api/v1/special_offers', 'Get special offers'
 
-  def show_all_offers
+
+  api :GET, '/api/v1/special_offers/get-list', 'Get all special offers'
+
+  def get_list
     @special_offers = []
     if request_user
     SpecialOffer.page(params[:page]).per(20).not_expired.order(created_at: "DESC").each do |offer|
@@ -71,10 +73,10 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
   end
 
 
-  api :POST, '/api/v1/special-offers/special-offer-single', 'Get a single special offer'
+  api :POST, '/api/v1/special-offers/show', 'Get a single special offer'
   param :special_offer_id, Integer, :desc => "ID of the special offer", :required => true
 
-  def special_offer_single
+  def show
    if !params[:special_offer_id].blank?
     offer = SpecialOffer.find(params[:special_offer_id])
     @special_offer = {
@@ -121,33 +123,10 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
 
 
 
-  api :POST, '/api/v1/get-business-offers', 'Get Business user special offer'
-  param :business_id, :number, :desc => "Business ID", :required => true
-
-  def get_business_special_offers
-    if !params[:business_id].blank?
-       business = User.find(params[:business_id])
-       offers = business.special_offers.not_expired.map {|offer| get_special_offer_object(offer) }
-
-        render json: {
-          code: 200,
-          success:true,
-          message: '',
-          data: {
-            special_offers: offers
-          }
-        }
-
-    else
-      render json: {
-        code: 400,
-        success:false,
-        message: "business_id is required field.",
-        data: nil
-      }
-    end
-  end
-
+ 
+  api :POST, '/api/v1/special-offers/redeem', 'Redeem a special offer'
+  param :offer_id, Integer, :desc => "ID of the special offer", :required => true
+  param :qr_code, Integer, :desc => "QR code of the special offer", :required => true
 
 
   def redeem_it
@@ -221,7 +200,11 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
   end
   end
 
-  api :POST, '/api/v1/special_offers/create-view', 'Create a special offer view'
+
+
+
+
+  api :POST, '/api/v1/special_offers/create-impression', 'Create a special offer impression'
   param :offer_id, :number, :desc => "Offer ID", :required => true
 
   def create_impression

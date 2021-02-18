@@ -102,13 +102,11 @@ Rails.application.routes.draw do
       end
 
 
-      namespace :specia_offers do
+      namespace :special_offers do
+        post '/get-list' => "special_offers#get_list"
         post '/create-impression' => "special_offers#create_impression"
         post '/redeem' => "special_offers#redeem_it"
-        post '/show' => "special_offers#show"
-        post 'show-all-offers' => "special_offers#show_all_offers"
-        post 'get-business-offers' => "special_offers#get_business_special_offers"
-        post "/single" => "special_offers#special_offer_single"
+        post '/show' => "special_offers#show" 
       end #special_offers
 
 
@@ -130,13 +128,13 @@ Rails.application.routes.draw do
       post '/delete-event-comments' => 'comments#delete_event_comments'
       post '/comments' => "comments#comments"
     end
-    
+
 
 
    namespace :notifications do
      get '/get-list' => "notifications#index"
      post "/read" => "notifications#read"
-     post '/delete' => "notifications#delete_notification"
+     post '/delete' => "notifications#delete"
      get '/mark-as-read' => "notifications#mark_as_read" 
    end
 

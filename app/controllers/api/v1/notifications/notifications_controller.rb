@@ -789,12 +789,12 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
     #  render json: "Do nothing for now. when we will implement crone jobs then will be operational"
     # end
 
-  api :POST, '/api/v1/notifications/delete-notification', 'Delete a notification'
+  api :POST, '/api/v1/notifications/delete', 'Delete a single notification'
   # param :notification_id, String, :desc => "Notification ID", :required => true
 
 
 
-    def delete_notification
+    def delete
      if !params[:notification_id].blank?
        notification = Notification.find(params[:notification_id])
         if notification.destroy
@@ -822,7 +822,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
         end
    end
 
-   api :POST, '/api/v1/notifications/read', 'Delete a notification'
+   api :POST, '/api/v1/notifications/read', 'Read a single notification'
    param :notification_id, String, :desc => "Notification ID", :required => true
  
 

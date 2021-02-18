@@ -667,10 +667,12 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
       end
      end
 
-       api :POST, '/api/v1/send-location', 'Send location to list of users'
-        #param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true
-        #param :lat, :number, :desc => "latitude", :required => true
-        #param :lng, :number, :desc => "longitude", :required => true
+
+     
+
+       api :POST, '/api/v1/share/send-location', 'Send location to list of users'
+       param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true
+       
 
      def send_location
       if !params[:lat].blank? && !params[:lng].blank? && !params[:user_ids].blank?
