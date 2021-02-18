@@ -13,6 +13,7 @@
 
   def index
     @event = []
+    #to show draft parent events in listing
     request_user.events.where(status: "draft").left_joins(:child_events).merge(ChildEvent.where(id: nil)).order(start_date: 'ASC').each do |event|
       @event << {
         "id" => event.id,
@@ -26,10 +27,10 @@
         "going"  => "",
         "maybe"  => "",
         "get_demographics" => "",
-        "event_status" => event.status,
+        "event_publish_status" => event.status,
         "parent_event_id" => "" ,
         "price" =>  "" ,
-        "status" =>  "" ,
+        "event_phase_status" =>  "" ,
         "qr_code" => "",
         "pass_id" => ""
       }
@@ -40,17 +41,16 @@
        if !event.event.passes.blank?
          event.event.passes.map {|p| qr.push(p.qr_code) }
        end
-    case
-    when event.start_date.to_date == Date.today
-    status =  "Now On"
-    when event.start_date.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door" || event.price_type == "free_event"
-      status =  event.going_interest_levels.size.to_s + " Going"  
-    when event.start_date.to_date > Date.today && event.price_type == "buy"
-      status =  event.event.tickets.map { |e| e.wallets.size.to_s}.join(",") + " Tickets Gone"
-    when event.start_date.to_date < Date.today
-     status = "Event Over"
-    end
-    
+        case
+        when event.start_date.to_date == Date.today
+        status =  "Now On"
+        when event.start_date.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door" || event.price_type == "free_event"
+          status =  event.going_interest_levels.size.to_s + " Going"  
+        when event.start_date.to_date > Date.today && event.price_type == "buy"
+          status =  event.event.tickets.map { |e| e.wallets.size.to_s}.join(",") + " Tickets Gone"
+        when event.start_date.to_date < Date.today
+         status = "Event Over"
+        end
       @event << {
         "id" => event.id,
         "title" => event.title,
@@ -63,10 +63,10 @@
         "going"  => event.going_interest_levels.size,
         "maybe"  => event.interested_interest_levels.size,
         "get_demographics" => get_demographics(event),
-        "event_status" => event.event.status,
+        "event_publish_status" => event.event.status,
         "parent_event_id" => event.event.id,
         "price" => get_price(event.event),
-        "status" => status,
+        "event_phase_status" => status,
         "qr_code" => qr,
         "pass_id" => event.event.passes.map { |e| e.id}.to_sentence
       }
@@ -76,7 +76,8 @@
       success: true,
       message: '',
       data: {
-        event: @event      }
+        event: @event
+      }
     }
   end
 
@@ -305,7 +306,7 @@
   }
   end
 
-  api :POST, 'dashboard/api/v1/events', 'To create an event'
+  api :POST, 'dashboard/api/v1/events/add-resource', 'To add a resource'
   # param :name, String, :desc => "Name of the event", :required => true
   # param :description, String, :desc => "Description of the event", :required => true
   # param :image, String, :desc => "Image of the event", :required => true
@@ -316,23 +317,23 @@
   # param :allow_chat, ['true', 'false'], :desc => "Title of the competition", :required => true
   # param :event_forwarding, ['true', 'false'], :desc => "Title of the competition", :required => true
   # #param :location, :number, :desc => "Title of the competition", :required => true
-  #  param :free, Hash, :desc => "One of the admission resource is required", :required => true  do
-  #   param :title, String, 'Title of the free Ticket'
-  #   param :quantity, :number, 'Quantity of the free tickets'
-  #   param :per_head, :number, 'Per Head'
-  # end
+   param :free, Hash, :desc => "One of the admission resource is required", :required => true  do
+    param :title, String, 'Title of the free Ticket'
+    param :quantity, :number, 'Quantity of the free tickets'
+    param :per_head, :number, 'Per Head'
+  end
 
-  #  param :paid, Hash, :desc => "One of the admission resource is required", :required => true  do
-  #   param :title, String, 'Title of the free Ticket'
-  #   param :quantity, :number, 'Quantity of the free tickets'
-  #   param :per_head, :number, 'Per Head'
-  #   param :price, :decimal, 'Price of the paid ticket'
-  # end
+   param :paid, Hash, :desc => "One of the admission resource is required", :required => true  do
+    param :title, String, 'Title of the free Ticket'
+    param :quantity, :number, 'Quantity of the free tickets'
+    param :per_head, :number, 'Per Head'
+    param :price, :decimal, 'Price of the paid ticket'
+  end
 
-  # param :pay_at_door, Hash, :desc => "One of the admission resource is required", :required => true  do
-  #   param :start_price, :decimal, 'Start Price of the pay at door ticket'
-  #   param :end_price, :decimal, 'End Price of the pay at door ticket'
-  # end
+  param :pay_at_door, Hash, :desc => "One of the admission resource is required", :required => true  do
+    param :start_price, :decimal, 'Start Price of the pay at door ticket'
+    param :end_price, :decimal, 'End Price of the pay at door ticket'
+  end
 
 
   def add_admission_resource

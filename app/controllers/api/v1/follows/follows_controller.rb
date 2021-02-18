@@ -169,6 +169,8 @@ class Api::V1::Follows::FollowsController < Api::V1::ApiMasterController
     end
   end
 end
+
+
   api :GET, '/api/v1/follows/my-followers', 'To view followers of a business- Token is required'
   def my_followers
     @followers = request_user.followers
@@ -181,6 +183,8 @@ end
        }
     }
   end
+
+  
 
   api :POST, '/api/v1/follows/my-followings', 'Get Following List - Token is required'
   def my_followings
@@ -202,18 +206,18 @@ end
     }
   end
 
-  api :GET, '/api/v1/follows/follow/requests', 'Get follow requests list - Token is required'
-   def requests_list
-     follow_requests = request_user.follow_requests
-    render json: {
-          code: 200,
-          success: true,
-          message: '',
-          data: {
-            requests: follow_requests
-        }
-      }
-   end
+  # api :GET, '/api/v1/follows/follows/requests', 'Get follow requests list - Token is required'
+  #  def requests_list
+  #    follow_requests = request_user.follow_requests
+  #   render json: {
+  #         code: 200,
+  #         success: true,
+  #         message: '',
+  #         data: {
+  #           requests: follow_requests
+  #       }
+  #     }
+  #  end
 
   # api :POST, '/api/v1/follows/remove-follow-request', 'To remove a follow request'
   # param :request_id, :number, :desc => "Request ID (Request primary key e.g. 1,2,3)", :required => true
