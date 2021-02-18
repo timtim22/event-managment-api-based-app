@@ -439,7 +439,7 @@ end
            "is_friend" => is_friend?(request_user, follower),
            "mutual_friends_count" => get_mutual_friends(request_user, follower).size,
            "is_my_following" => false,
-           "app_user" => follower.mobile_users,
+           "roles" => get_user_role_names(follower),
            "is_self" =>  !not_me?(follower),
            "followers_count" => user.followings.size
          }
@@ -458,7 +458,7 @@ end
             "is_friend" => false,
             "mutual_friends_count" => 0,
             "is_my_following" => is_my_following?(following),
-            "app_user" => following.mobile_users,
+            "roles" => get_user_role_names(following),
             "is_self" =>  !not_me?(following),
             "followers_count" => following.followers.size
 
@@ -477,7 +477,7 @@ end
             "is_friend" => is_friend?(request_user, friend),
             "mutual_friends_count" => get_mutual_friends(request_user, friend).size,
             "is_my_following" => false,
-            "app_user" => friend.app_user,
+            "roles" => get_user_role_names(friend),
             "is_self" =>  !not_me?(friend),
             "followers_count" => friend.followings.size
           }
