@@ -405,7 +405,7 @@ end
 #   profile['gender'] = if !user.profile.gender.blank? then user.profile.gender else "" end
 #   profile['mobile'] = user.phone_number
 #   profile['email'] = user.email
-#   profile['location'] = remove_slashes(user.location)
+#   profile['location'] = jsonify_location(user.location)
 #   profile['social'] = user.social_media
 #   profile['friends_count'] = user.friends.size
 #   profile['follows_count'] = user.followings.size
@@ -465,7 +465,7 @@ def get_profile
 
       if !user.about.blank? then about = user.about else  about = "" end
       if !user.location.blank? then location = user.location else location = "" end
-      if !user.profile.dob.blank? then dob = user.profile.dob else dob =  "" end
+      if !user.profile.dob.blank? then dob = user.profile.dob.to_date else dob =  "" end
       if !user.profile.gender.blank? then gender  = user.profile.gender else gender =  "" end
   
         profile = {
@@ -473,7 +473,7 @@ def get_profile
             'first_name' => user.profile.first_name,
             'last_name' => user.profile.last_name,
             'avatar' => user.avatar,
-            'location' => location,
+            'location' => jsonify_location(location),
             'about' => about,
             'dob' => dob,
             'gender' => gender,
@@ -498,7 +498,7 @@ def get_profile
         'id' => user.id,
         'profile_name' => user.business_profile.profile_name,
         'avatar' => user.avatar,
-        'location' => location,
+        'location' => jsonify_location(location),
         'about' => about,
         'roles' => get_user_role_names(user),
         'mobile' => user.phone_number,
@@ -547,7 +547,7 @@ end
        resource['id'] = log.resource_id
        resource['name'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
-       resource['location'] = remove_slashes(log.resource.location)
+       resource['location'] = jsonify_location(log.resource.location)
        resource['start_date'] = log.resource.start_date
        resource['interested_people_count'] = log.resource.interest_levels.size
 
@@ -567,21 +567,21 @@ end
       when 'Pass'
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
-        resource['location'] = remove_slashes(log.resource.event.location)
+        resource['location'] = jsonify_location(log.resource.event.location)
         resource['start_date'] = log.resource.event.start_date
         resource['grabbers_counts'] = log.resource.wallets.size
 
       when 'SpecialOffer'
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
-        resource['location'] = remove_slashes(log.resource.location)
+        resource['location'] = jsonify_location(log.resource.location)
         resource['start_date'] = log.resource.date
         resource['grabbers_counts'] = log.resource.wallets.size
 
       when 'Competition'
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
-        resource['location'] = remove_slashes(log.resource.location)
+        resource['location'] = jsonify_location(log.resource.location)
         resource['validity'] = log.resource.validity_time
 
       when 'OfferForwarding'
@@ -746,7 +746,7 @@ end
       resource['id'] = log.resource_id
       resource['name'] = log.resource.title
       resource['host_name'] = get_full_name(log.resource.user)
-      resource['location'] = remove_slashes(log.resource.location)
+      resource['location'] = jsonify_location(log.resource.location)
       resource['start_date'] = log.resource.start_date
       resource['interested_people_count'] = log.resource.interest_levels.size
 
@@ -766,21 +766,21 @@ end
      when 'Pass'
        resource['title'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
-       resource['location'] = remove_slashes(log.resource.event.location)
+       resource['location'] = jsonify_location(log.resource.event.location)
        resource['start_date'] = log.resource.event.start_date
        resource['grabbers_counts'] = log.resource.wallets.size
 
      when 'SpecialOffer'
        resource['title'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
-       resource['location'] = remove_slashes(log.resource.location)
+       resource['location'] = jsonify_location(log.resource.location)
        resource['start_date'] = log.resource.date
        resource['grabbers_counts'] = log.resource.wallets.size
 
      when 'Competition'
        resource['title'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
-       resource['location'] = remove_slashes(log.resource.location)
+       resource['location'] = jsonify_location(log.resource.location)
        resource['validity'] = log.resource.validity_time
 
      when 'OfferForwarding'
