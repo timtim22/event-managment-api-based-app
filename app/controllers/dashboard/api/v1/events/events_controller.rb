@@ -12,15 +12,71 @@
   api :GET, 'dashboard/api/v1/get-list', 'Get all events'
 
   def index
+    @event = []
+    request_user.events.where(status: "draft").left_joins(:child_events).merge(ChildEvent.where(id: nil)).order(start_date: 'ASC').each do |event|
+      @event << {
+        "id" => event.id,
+        "title" => event.title,
+        "image" => event.image,
+        "event_type"  => event.event_type,
+        "price_type"  => event.price_type,
+        "location"  => jsonify_location(event.location),
+        "start_date"  => event.start_date,
+        "end_date"  => event.end_date,
+        "going"  => "",
+        "maybe"  => "",
+        "get_demographics" => "",
+        "event_status" => event.status,
+        "parent_event_id" => "" ,
+        "price" =>  "" ,
+        "status" =>  "" ,
+        "qr_code" => "",
+        "pass_id" => ""
+      }
+    end
 
-    @events = request_user.child_events.order(start_date: 'ASC').map {|e| get_dashboard_child_event_object(e) }
+    @event << request_user.child_events.order(start_date: 'ASC').each do |event|
+      qr = []
+       if !event.event.passes.blank?
+         event.event.passes.map {|p| qr.push(p.qr_code) }
+       end
+    case
+    when event.start_date.to_date == Date.today
+    status =  "Now On"
+    when event.start_date.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door" || event.price_type == "free_event"
+      status =  event.going_interest_levels.size.to_s + " Going"  
+    when event.start_date.to_date > Date.today && event.price_type == "buy"
+      status =  event.event.tickets.map { |e| e.wallets.size.to_s}.join(",") + " Tickets Gone"
+    when event.start_date.to_date < Date.today
+     status = "Event Over"
+    end
+    
+      @event << {
+        "id" => event.id,
+        "title" => event.title,
+        "image" => event.event.image,
+        "event_type"  => event.event_type,
+        "price_type"  => event.price_type,
+        "location"  => jsonify_location(event.location),
+        "start_date"  => event.start_date,
+        "end_date"  => event.end_date,
+        "going"  => event.going_interest_levels.size,
+        "maybe"  => event.interested_interest_levels.size,
+        "get_demographics" => get_demographics(event),
+        "event_status" => event.event.status,
+        "parent_event_id" => event.event.id,
+        "price" => get_price(event.event),
+        "status" => status,
+        "qr_code" => qr,
+        "pass_id" => event.event.passes.map { |e| e.id}.to_sentence
+      }
+    end
     render json: {
       code: 200,
       success: true,
       message: '',
       data: {
-        events: @events
-      }
+        event: @event      }
     }
   end
 
