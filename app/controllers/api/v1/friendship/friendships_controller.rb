@@ -102,22 +102,22 @@ else
 end
 end
 
-api :POST, '/api/v1/check-request', 'check request status whether sent or not'
-param :friend_id, :number, :desc => "Friend ID", :required => true
+# api :POST, '/api/v1/check-request', 'check request status whether sent or not'
+# param :friend_id, :number, :desc => "Friend ID", :required => true
 
-def check_request
-   sender = request_user
-   friend = User.find(params[:friend_id]);
-   status = request_status(sender,friend)
-   render json: {
-     code: 200,
-     success: true,
-     message: '',
-     data: {
-       status: status
-     }
-   }
-end
+# def check_request
+#    sender = request_user
+#    friend = User.find(params[:friend_id]);
+#    status = request_status(sender,friend)
+#    render json: {
+#      code: 200,
+#      success: true,
+#      message: '',
+#      data: {
+#        status: status
+#      }
+#    }
+# end
 
 api :GET, '/api/v1/friendship/friend-requests', 'To view all friend requests - Token is reqiured'
 
