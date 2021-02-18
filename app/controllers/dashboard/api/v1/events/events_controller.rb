@@ -35,7 +35,7 @@
       }
     end
 
-    @event << request_user.child_events.order(start_date: 'ASC').each do |event|
+    request_user.child_events.order(start_date: 'ASC').each do |event|
       qr = []
        if !event.event.passes.blank?
          event.event.passes.map {|p| qr.push(p.qr_code) }
