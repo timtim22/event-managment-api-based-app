@@ -32,7 +32,8 @@
         "price" =>  "" ,
         "event_phase_status" =>  "" ,
         "qr_code" => "",
-        "pass_id" => ""
+        "pass_id" => "",
+        "active_tab" => "details"
       }
     end
 
@@ -51,6 +52,22 @@
         when event.start_date.to_date < Date.today
          status = "Event Over"
         end
+
+        case 
+        when event.start_date == ""
+          active_tab = "details"
+        when event.event.tickets.empty? || event.event.price_type == "free_event"
+          active_tab = "times"
+        when event.event.sponsors.empty?
+          active_tab = "admission"
+        when event.event.event_attachments.empty?
+          active_tab = "sponsors"
+        when event.event.event_forwarding == nil || event.event.allow_chat == nil
+          active_tab = "media"
+        when event.event.event_forwarding.present? || event.event.present?
+          active_tab = "social"
+        end
+        
       @event << {
         "id" => event.id,
         "title" => event.title,
@@ -68,7 +85,8 @@
         "price" => get_price(event.event),
         "event_phase_status" => status,
         "qr_code" => qr,
-        "pass_id" => event.event.passes.map { |e| e.id}.to_sentence
+        "pass_id" => event.event.passes.map { |e| e.id}.to_sentence,
+        "active_tab" => active_tab
       }
     end
     render json: {
@@ -317,23 +335,23 @@
   # param :allow_chat, ['true', 'false'], :desc => "Title of the competition", :required => true
   # param :event_forwarding, ['true', 'false'], :desc => "Title of the competition", :required => true
   # #param :location, :number, :desc => "Title of the competition", :required => true
-   param :free, Hash, :desc => "One of the admission resource is required", :required => true  do
-    param :title, String, 'Title of the free Ticket'
-    param :quantity, :number, 'Quantity of the free tickets'
-    param :per_head, :number, 'Per Head'
-  end
+  #  param :free, Hash, :desc => "One of the admission resource is required", :required => true  do
+  #   param :title, String, 'Title of the free Ticket'
+  #   param :quantity, :number, 'Quantity of the free tickets'
+  #   param :per_head, :number, 'Per Head'
+  # end
 
-   param :paid, Hash, :desc => "One of the admission resource is required", :required => true  do
-    param :title, String, 'Title of the free Ticket'
-    param :quantity, :number, 'Quantity of the free tickets'
-    param :per_head, :number, 'Per Head'
-    param :price, :decimal, 'Price of the paid ticket'
-  end
+  #  param :paid, Hash, :desc => "One of the admission resource is required", :required => true  do
+  #   param :title, String, 'Title of the free Ticket'
+  #   param :quantity, :number, 'Quantity of the free tickets'
+  #   param :per_head, :number, 'Per Head'
+  #   param :price, :decimal, 'Price of the paid ticket'
+  # end
 
-  param :pay_at_door, Hash, :desc => "One of the admission resource is required", :required => true  do
-    param :start_price, :decimal, 'Start Price of the pay at door ticket'
-    param :end_price, :decimal, 'End Price of the pay at door ticket'
-  end
+  # param :pay_at_door, Hash, :desc => "One of the admission resource is required", :required => true  do
+  #   param :start_price, :decimal, 'Start Price of the pay at door ticket'
+  #   param :end_price, :decimal, 'End Price of the pay at door ticket'
+  # end
 
 
   def add_admission_resource
@@ -627,7 +645,8 @@
                       location_name: "",
                       event_type: @event.event_type,
                       price_type: "",
-                      price: ""
+                      price: "",
+                      status: @event.status 
                     )
                 else
                   @event.child_events.find_by(start_date: date).update!(
@@ -646,7 +665,8 @@
                     location_name: "",
                     event_type: @event.event_type,
                     price_type: "",
-                    price: ""
+                    price: "",
+                    status: @event.status 
                     )
                 end    
               end
@@ -788,6 +808,7 @@
      #     end #each
      #  end #each
      # end #blank
+      
     if !params[:event_id].blank?
       @event = Event.find(params[:event_id])
       @event.title = params[:title]
@@ -802,14 +823,13 @@
       @event.location = params[:location]
       @event.location_name = ""
       @event.event_type = params[:event_type]
-      # @event.qr_code = generate_code
       @event.category_ids = params[:category_ids]
       @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
-      # @event.terms_conditions = params[:terms_conditions]
       @event.quantity = ""
       @event.is_repetive = ""
       @event.frequency = ""
       @event.price = ""
+      @event.status = "draft"
     else
       @event = request_user.events.new
       @event.title = params[:title]
@@ -824,18 +844,20 @@
       @event.location = params[:location]
       @event.location_name = ""
       @event.event_type = params[:event_type]
-      # @event.qr_code = generate_code
       @event.category_ids = params[:category_ids]
       @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
-      # @event.terms_conditions = params[:terms_conditions]
       @event.quantity = ""
       @event.is_repetive = ""
       @event.frequency = ""
       @event.price = ""
-      @event.status = "draft"
+      @event.status = "draft"      
     end
 
+    # @event = []
+
     if @event.save
+      # @event = []
+      # @event << {"active_tab" => "details"}
       # params[:event_dates].map { |date| @event.child_events.create!(
       #       user_id: request_user.id,
       #       name: params[:name],
