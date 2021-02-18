@@ -161,13 +161,13 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
   when event.start_date.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door" || event.price_type == "free_event"
     status =  event.going_interest_levels.size.to_s + " Going"  
   when event.start_date.to_date > Date.today && event.price_type == "buy"
-    status =  event.event.tickets.map { |e| e.wallets}.size.to_s + " Tickets Gone"
+    status =  event.event.tickets.map { |e| e.wallets.size.to_s}.join(",") + " Tickets Gone"
   when event.start_date.to_date < Date.today
    status = "Event Over"
   end
   e = {
     "id" => event.id,
-    "name" => event.title,
+    "name" => event.name,
     "image" => event.event.image,
     "event_type"  => event.event_type,
     "price_type"  => event.price_type,
@@ -187,8 +187,5 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
 
 
  end
-
-
-
 end
 
