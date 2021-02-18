@@ -130,15 +130,16 @@ Rails.application.routes.draw do
       post '/delete-event-comments' => 'comments#delete_event_comments'
       post '/comments' => "comments#comments"
     end
+    
 
 
    namespace :notifications do
-     post "/read-notification" => "notifications#read_notification"
-     get '/send-events-reminder' => "notifications#send_events_reminder"
-     get '/get-all-notifications' => "notifications#index"
-     get '/mark-as-read' => "notifications#mark_as_read"
+     get '/get-list' => "notifications#index"
+     post "/read" => "notifications#read"
      post '/delete' => "notifications#delete_notification"
+     get '/mark-as-read' => "notifications#mark_as_read" 
    end
+
 
    namespace :friendship do
       post '/send-request' => "friendships#send_request"
