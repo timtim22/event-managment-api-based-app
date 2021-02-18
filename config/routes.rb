@@ -103,7 +103,7 @@ Rails.application.routes.draw do
 
 
       namespace :special_offers do
-        post '/get-list' => "special_offers#get_list"
+        get '/get-list' => "special_offers#get_list"
         post '/create-impression' => "special_offers#create_impression"
         post '/redeem' => "special_offers#redeem_it"
         post '/show' => "special_offers#show" 
