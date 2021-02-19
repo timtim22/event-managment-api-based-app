@@ -62,7 +62,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
 
           @event = {
             'id' => e.id,
-            'name' => e.title,
+            'title' => e.title,
             'description' => e.description,
             'start_date' => get_date_time_mobile(e.start_date),
             'end_date' => get_date_time_mobile(e.end_date),
