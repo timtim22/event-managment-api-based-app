@@ -797,9 +797,10 @@ end
  private
 
  def get_date_time(date, time)
-    d = Date.parse(date).strftime("%Y-%m-%d")
-    t = Time.parse(time).strftime("%H:%M:%S")
-    datetime = d + "T" + t + ".000Z"
+    # d = Date.parse(date).strftime("%Y-%m-%d")
+    # t = Time.parse(time).strftime("%H:%M:%S")
+    # datetime = d + "T" + t + ".000Z"
+    "2021-02-19T06:00:00.000Z"
  end
 
  def is_added_to_wallet?(pass_id)
