@@ -216,7 +216,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
 	# end
 
   api :POST, '/api/v1/events/report-event', 'To repot an event'
-  param :event_id, Integer, :desc => "Event ID", :required => true
+  param :event_id, String, :desc => "Event ID", :required => true
   param :reason, String, :desc => "Reason for reporting an event", :required => true
 
 
