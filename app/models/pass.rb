@@ -20,5 +20,5 @@ class Pass < ApplicationRecord
 
   scope :not_expired, -> { where(['validity > ?', DateTime.now]) }
   scope :expired, -> { where(['validity < ?', DateTime.now]) }
-  scope :sort_by_date, -> { order(valid_to: 'ASC') }
+  scope :sort_by_date, -> { order(validity: 'ASC') }
 end
