@@ -66,7 +66,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
             'description' => e.description,
             'start_date' => get_date_time_mobile(e.start_date),
             'end_date' => get_date_time_mobile(e.end_date),
-            'sart_time' => get_date_time_mobile(e.start_date),
+            'start_time' => get_date_time_mobile(e.start_date),
             'end_time' => get_date_time_mobile(e.end_date),
             'price' => get_price(e.event), # check for price if it is zero
             'price_type' => e.event.price_type,
@@ -335,7 +335,7 @@ private
         "location" => jsonify_location(child_event.location),
         "start_date" => get_date_time_mobile(child_event.start_date),
         "end_date" => get_date_time_mobile(child_event.end_date),
-        "strat_time" => get_date_time_mobile(child_event.start_date),
+        "start_time" => get_date_time_mobile(child_event.start_date),
         "end_time" => get_date_time_mobile(child_event.end_date),
         "over_18" => child_event.event.over_18,
         "price_type" => child_event.event.price_type,
