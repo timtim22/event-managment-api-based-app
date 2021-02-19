@@ -334,11 +334,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
 
   private
 
- def get_date_time(date, time)
-    d = date.strftime("%Y-%m-%d")
-    t = time.strftime("%H:%M:%S")
-    datetime = d + "T" + t + ".000Z"
- end
+
    def force_json
      request.format = :json
    end
