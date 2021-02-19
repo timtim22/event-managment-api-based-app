@@ -360,7 +360,7 @@ class Api::V1::Bookings::PaymentsController < Api::V1::ApiMasterController
          @payable = params[:total_price]
 
          application_fee = calculate_application_fee(@payable.to_i,application_fee_percent).ceil
-      if @ticket.user.connected_account_id != ''
+      if @ticket.user.business_profile.connected_account_id != ''
         intent = Stripe::PaymentIntent.create({
           amount: @payable.to_i * 100,
           currency: 'EUR', #later changeable, will come from admin dashboard

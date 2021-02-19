@@ -136,7 +136,7 @@ def get_live_event_data
           ticket_title:  "",
           quantity:  "",
           paid:  "",
-          is_ambassador:  going.user.profile.is_ambassador,
+          is_ambassador:  is_ambassador?(going.user),
           type:  "",
           check_in_way:  "",
           check_in_time:  ""
@@ -154,7 +154,7 @@ def get_live_event_data
           ticket_title:  going.offer.title,
           quantity:  going.user.redemptions.size,
           paid:  get_redem_price(going),
-          is_ambassador:  going.user.profile.is_ambassador,
+          is_ambassador:  is_ambassador?(going.user),
           type:  get_redemption_type(going),
           check_in_way:  "QR",
           check_in_time:  going.created_at
@@ -215,7 +215,7 @@ def get_child_event_attendees_stats
               ticket_title:  "",
               quantity:  "",
               paid:  "",
-              is_ambassador:  going.user.profile.is_ambassador,
+              is_ambassador:  is_ambassador?(going.user),
               type:  "",
               check_in_way:  "",
               check_in_time:  ""
@@ -231,7 +231,7 @@ def get_child_event_attendees_stats
               ticket_title:  going.ticket.title,
               quantity:  going.quantity,
               paid:  going.price,
-              is_ambassador:  going.user.profile.is_ambassador,
+              is_ambassador:  is_ambassador?(going.user),
               type:  "",
               check_in_way:  "",
               check_in_time:  ""
@@ -265,7 +265,7 @@ def get_child_event_attendees_stats
               ticket_title:  "",
               quantity:  "",
               paid:  "",
-              is_ambassador:  going.user.profile.is_ambassador,
+              is_ambassador:  is_ambassador?(going.user),
               type:  "",
               check_in_way:  "",
               check_in_time:  ""
@@ -281,7 +281,7 @@ def get_child_event_attendees_stats
               ticket_title:  going.ticket.title,
               quantity:  going.quantity,
               paid:  going.price,
-              is_ambassador:  going.user.profile.is_ambassador,
+              is_ambassador:  is_ambassador?(going.user),
               type:  "",
               check_in_way:  "",
               check_in_time:  ""
@@ -316,7 +316,7 @@ def get_child_event_attendees_stats
               ticket_title:  "",
               quantity:  "",
               paid:  "",
-              is_ambassador:  going.user.profile.is_ambassador,
+              is_ambassador:  is_ambassador?(going.user),
               check_in_way:  "",
               check_in_time:  ""
             }
@@ -331,7 +331,7 @@ def get_child_event_attendees_stats
               ticket_title:  going.ticket.title,
               quantity:  going.quantity,
               paid:  going.price,
-              is_ambassador:  going.user.profile.is_ambassador,
+              is_ambassador:  is_ambassador?(going.user),
               type:  "",
               check_in_way:  "",
               check_in_time:  ""

@@ -155,7 +155,7 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
            @share = OfferShare.find_by(offer_id: @special_offer.id)
           end
           @ambassador = @share.user
-          if @ambassador.profile.is_ambassador ==  true #if user is an ambassador
+          if is_ambassador?(@ambassador)#if user is an ambassador
           @ambassador.profile.update!(earning: '3') #should be change when ambassador schema/program will be updated..to_i + @special_offer.ambassador_rate)
           end
         end

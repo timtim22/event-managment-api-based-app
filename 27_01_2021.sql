@@ -14435,7 +14435,7 @@ COPY public.user_settings (id, user_id, name, resource_id, is_on, created_at, up
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: mygo_dev
 --
 
-COPY public.users (id, email, verification_code, avatar, phone_number, app_user, web_user, phone_verified, stripe_state, connected_account_id, is_email_verified, password_digest, created_at, updated_at, location_enabled) FROM stdin;
+COPY public.users (id, email, verification_code, avatar, phone_number, app_user, web_user, phone_verified, business_profile.stripe_state, connected_account_id, is_email_verified, password_digest, created_at, updated_at, location_enabled) FROM stdin;
 64	cocomygo@gmail.com	44bb067c5d0d54b863f3	c3b8a7a5-1860-425a-8383-02d0206ee221.jpg	+353834448272	f	t	f	59f2caab003db3a6e061		f	$2a$12$rx9qHxJoV/xNyiR9lyYctutLZTDjwEaHOLYKr9KkawfXUocxyhUwK	2020-10-24 06:43:24.795654	2020-10-24 06:43:44.175313	t
 65	choicemusicprizemygo@gmail.com	e7d3837ad7de6ff166de	d56cbc70-f427-4532-9d18-150b1d738672.jpg	+353834448272	f	t	f	cbf3518e20f897711654		f	$2a$12$0xaTylmwUjDQP5kBPoxrbu1MZzcfI6ZZrvDyl57.dScFFvCy7rj8q	2020-10-24 06:59:22.942807	2020-10-24 06:59:57.080724	t
 87	nouman.saeed@mygo.io	fd3c7155e5a588eaddcc	614e7c7e-99ad-4da6-bbb1-8245411296a0.jpeg	+923157682557	t	f	f	42b3947d6a19b4eefb8d		f	\N	2020-11-28 07:32:16.478202	2020-11-28 07:32:16.478202	t

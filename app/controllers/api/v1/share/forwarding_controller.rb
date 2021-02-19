@@ -41,7 +41,7 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
         end
 
 
-        @offer_forward = OfferForwarding.create!(user_id: request_user.id, is_ambassador: request_user.profile.is_ambassador, recipient_id: id, offer_type:params[:offer_type], offer_id: params[:offer_id])
+        @offer_forward = OfferForwarding.create!(user_id: request_user.id, is_ambassador: is_ambassador?(request_user), recipient_id: id, offer_type:params[:offer_type], offer_id: params[:offer_id])
 
        if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{term + @offer.title}", notifiable: @offer,resource: @offer_forward, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{to_underscore_case(@offer.class.name)}_forwarded")
 
@@ -199,7 +199,7 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
           end
 
 
-          @offer_share = OfferShare.create!(user_id: @sender.id, is_ambassador: @sender.profile.is_ambassador, recipient_id: request_user.id, offer_type:params[:offer_type], offer_id: params[:offer_id], business: @offer.user)
+          @offer_share = OfferShare.create!(user_id: @sender.id, is_ambassador: is_ambassador?(@sender), recipient_id: request_user.id, offer_type:params[:offer_type], offer_id: params[:offer_id], business: @offer.user)
 
           if notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " has shared with you #{term + @offer.title}", notifiable: @offer, resource: @offer_share, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{to_underscore_case(@offer.class.name)}_shared")
 

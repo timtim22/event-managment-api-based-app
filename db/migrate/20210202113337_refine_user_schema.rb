@@ -1,9 +1,7 @@
 class RefineUserSchema < ActiveRecord::Migration[5.2]
   def change
-    # remove_column :users, :app_user
-    # remove_column :users, :web_user
-    remove_column :users, :stripe_state
-    remove_column :users, :connected_account_id
+    # business_profile.connected_account_id:app_user
+    # business_profile.connected_account_id:web_user
     remove_column :profiles, :location
     remove_column :profiles, :lat
     remove_column :profiles, :lng

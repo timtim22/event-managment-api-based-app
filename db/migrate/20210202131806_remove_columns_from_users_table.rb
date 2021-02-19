@@ -1,18 +1,18 @@
 class RemoveColumnsFromUsersTable < ActiveRecord::Migration[5.2]
   def change
-    remove_column :users, :dob
-    remove_column :users, :gender
-    remove_column :users, :is_email_verified
+    business_profile.connected_account_id:dob
+    business_profile.connected_account_id:gender
+    business_profile.connected_account_id:is_email_verified
     remove_column :profiles, :is_email_subscribed
 
-    remove_column :users, :phone_verified
-    remove_column :users, :verification_code
-    remove_column :users, :facebook
-    remove_column :users, :linkedin
-    remove_column :users, :twitter
-    remove_column :users, :snapchat
-    remove_column :users, :youtube
-    remove_column :users, :instagram
+    business_profile.connected_account_id:phone_verified
+    business_profile.connected_account_id:verification_code
+    business_profile.connected_account_id:facebook
+    business_profile.connected_account_id:linkedin
+    business_profile.connected_account_id:twitter
+    business_profile.connected_account_id:snapchat
+    business_profile.connected_account_id:youtube
+    business_profile.connected_account_id:instagram
     
   end
 end

@@ -4,8 +4,8 @@ class Admin::PaymentsController < Admin::AdminMasterController
   Stripe.api_key = ENV['STRIPE_API_KEY']
 
   def add_payment_account
-   if current_user.connected_account_id == ''
-   @oauth_url = "https://connect.stripe.com/oauth/authorize?client_id=#{ENV['STRIPE_CLIENT_ID']}&state=#{current_user.stripe_state}&scope=read_write&response_type=code&stripe_user[email]=#{current_user.email}&stripe_user[url]=#{ENV['BASE_URL']}/stripe/oauth"
+   if current_user.business_profile.connected_account_id == ''
+   @oauth_url = "https://connect.stripe.com/oauth/authorize?client_id=#{ENV['STRIPE_CLIENT_ID']}&state=#{current_user.business_profile.stripe_state}&scope=read_write&response_type=code&stripe_user[email]=#{current_user.email}&stripe_user[url]=#{ENV['BASE_URL']}/stripe/oauth"
    else 
     flash.now[:notice] = 'Your payment account has already been added.'
     render :oauth_success_page
@@ -95,7 +95,7 @@ class Admin::PaymentsController < Admin::AdminMasterController
           payment_intent: payment_intent,
           amount: refund_amount.to_i,
           refund_application_fee: true,
-        }, {stripe_account: @refund_request.ticket.user.connected_account_id})
+        }, {stripe_account: @refund_request.ticket.user.business_profile.connected_account_id})
 
         if @refund_request.update!(status: "approved", stripe_refund_response: refund)
 
@@ -176,7 +176,7 @@ class Admin::PaymentsController < Admin::AdminMasterController
 
   def state_matches?(state_parameter)
     # Load the same state value that you randomly generated for your OAuth link.
-    saved_state = current_user.stripe_state  
+    saved_state = current_user.business_profile.stripe_state  
     saved_state == state_parameter
   end
 

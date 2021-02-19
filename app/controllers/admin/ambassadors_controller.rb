@@ -18,9 +18,9 @@ class Admin::AmbassadorsController < Admin::AdminMasterController
   end
 
   def remove
-    ambassador = AmbassadorRequest.find(params[:id])
-    ambassador.status = 'rejected'
-    ambassador.user.profile.update!(is_ambassador: false)
+    ambassador_request = AmbassadorRequest.find(params[:id])
+    ambassador_request.status = 'rejected'
+    #ambassador.user.profile.update!(is_ambassador: false) to be handled next
     if ambassador.save
       flash[:notice]  = "Ambassador successfully removed."
       redirect_to admin_ambassadors_path
