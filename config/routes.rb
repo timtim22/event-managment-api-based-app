@@ -52,7 +52,7 @@ Rails.application.routes.draw do
         post "/get-event-stats" => "analytics#get_event_stats"
         post '/get-business-newsfeeds' => 'business_dashboard#get_business_news_feeds'
         post '/events/show' => 'business_dashboard#show_event'
-        get '/get-dashbord' => 'business_dashboard#home'
+        get '/get-dashboard' => 'business_dashboard#home'
         post '/get-events' => 'business_dashboard#get_events'
         post '/get-special-offers' => 'business_dashboard#get_special_offers'
         post '/get-competitions' => 'business_dashboard#get_competitions'
