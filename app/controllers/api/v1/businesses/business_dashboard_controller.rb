@@ -13,9 +13,9 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
       "id" => business.id,
       "profile_name" => business.business_profile.profile_name,
       "avatar" => business.avatar,
-      "about" => business.business_about,
+      "about" => business.about,
       "unread_messages_count" => business.incoming_messages.unread.size,
-      "address" => jsonify_location(business.business_profile.address),
+      "address" => jsonify_location(business.location),
       "social" => business.social_media,
       "news_feeds" => business.news_feeds,
       "followers_count" =>  business.followers.size

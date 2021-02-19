@@ -212,7 +212,7 @@ def subscribe
 render json: true
 end
 
-  api :GET, '/api/v1/chat/chat-people', 'Get People who chatted'
+  api :GET, '/api/v1/chats/chat-people', 'Get People who chatted'
 
 def chat_people
 
@@ -243,7 +243,7 @@ def chat_people
 }
 end
 
-  api :POST, '/api/v1/chat/clear-conversation', 'Clear conversation with specific user'
+  api :POST, '/api/v1/chats/clear-conversation', 'Clear conversation with specific user'
   param :user_id, :number, :desc => "The user ID (perons id you want to clear conversation)", :required => true
 
 

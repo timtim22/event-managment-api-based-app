@@ -62,10 +62,12 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
 
           @event = {
             'id' => e.id,
-            'name' => e.title,
+            'title' => e.title,
             'description' => e.description,
-            'start_date' => e.start_date,
-            'end_date' => e.end_date,
+            'start_date' => get_date_time_mobile(e.start_date),
+            'end_date' => get_date_time_mobile(e.end_date),
+            'start_time' => get_date_time_mobile(e.start_date),
+            'end_time' => get_date_time_mobile(e.end_date),
             'price' => get_price(e.event), # check for price if it is zero
             'price_type' => e.event.price_type,
             'event_type' => e.event_type,
@@ -214,7 +216,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
 	# end
 
   api :POST, '/api/v1/events/report-event', 'To repot an event'
-  param :event_id, Integer, :desc => "Event ID", :required => true
+  param :event_id, String, :desc => "Event ID", :required => true
   param :reason, String, :desc => "Reason for reporting an event", :required => true
 
 
@@ -305,11 +307,6 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
 
 private
 
- def get_date_time(date, time)
-    d = date.strftime("%Y-%m-%d")
-    t = time.strftime("%H:%M:%S")
-    datetime = d + "T" + t + ".000Z"
- end
 
 
 
@@ -336,8 +333,10 @@ private
         "title" => child_event.event.title,
         "description" => child_event.event.description,
         "location" => jsonify_location(child_event.location),
-        "start_date" => child_event.start_date,
-        "end_date" => child_event.end_date,
+        "start_date" => get_date_time_mobile(child_event.start_date),
+        "end_date" => get_date_time_mobile(child_event.end_date),
+        "start_time" => get_date_time_mobile(child_event.start_date),
+        "end_time" => get_date_time_mobile(child_event.end_date),
         "over_18" => child_event.event.over_18,
         "price_type" => child_event.event.price_type,
         "price" => get_price(child_event.event).to_s,

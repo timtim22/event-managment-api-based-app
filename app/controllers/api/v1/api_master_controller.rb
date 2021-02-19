@@ -283,6 +283,13 @@ class Api::V1::ApiMasterController < ApplicationController
      !w.blank?
    end
 
+ def get_date_time_mobile(date)
+    d = date.to_date.strftime("%Y-%m-%d")
+    t = date.to_time.strftime("%H:%M:%S")
+    datetime = d + "T" + t + ".000Z"
+ end
+
+
 
 
    def create_impression

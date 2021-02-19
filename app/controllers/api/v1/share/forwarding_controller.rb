@@ -309,7 +309,7 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
 
   ################################# Event ##########################################33
 
-  api :POST, '/api/v1/events/forward', 'To forward an event'
+  api :POST, '/api/v1/share/forward-event', 'To forward an event'
   # param :event_id, :number, :desc => "Event ID", :required => true
   # param :user_ids, :number, :desc => "User IDs (1,2,3)", :required => true
 

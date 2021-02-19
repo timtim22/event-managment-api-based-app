@@ -23,9 +23,9 @@ class Competition < ApplicationRecord
   validates :validity, presence: true
 
 
-  scope :not_expired, -> { where(['validity > ?', DateTime.now]) }
-  scope :expired, -> { where(['validity < ?', DateTime.now]) }
-  scope :sort_by_date, -> { order(validity: 'ASC') }
+  scope :not_expired, -> { where(['end_date > ?', DateTime.now]) }
+  scope :expired, -> { where(['end_date < ?', DateTime.now]) }
+  scope :sort_by_date, -> { order(end_date: 'ASC') }
 
   #will automatically format price but db key and fuc name should be same
 def price

@@ -329,7 +329,7 @@ end
    end
 
 
-  api :get, '/api/v1/events/get-commented-events', 'Get comment events'
+  api :get, '/api/v1/events/comments/get-commented-events', 'Get comment events'
 
    def get_commented_events
      @events = []
