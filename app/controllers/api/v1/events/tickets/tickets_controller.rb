@@ -55,7 +55,7 @@ class Api::V1::Events::Tickets::TicketsController < Api::V1::ApiMasterController
 
 
   api :POST, '/api/v1/events/tickets/get-list', 'Get event tickets list'
-  param :event_id, Integer, :desc => "Event ID", :required => true
+  param :event_id, String, :desc => "Event ID", :required => true
 
   def get_tickets
     if !params[:event_id].blank?

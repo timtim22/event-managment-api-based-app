@@ -323,6 +323,9 @@ returns array_of: :get_competitions, code: 200, desc: 'This api will return the 
             'title' => e.title,
             'description' => e.description,
             'start_date' => get_date_time_mobile(e.start_date),
+            'end_date' => get_date_time_mobile(e.start_date),
+            'start_time' => get_date_time_mobile(e.start_date),
+            'end_time' => get_date_time_mobile(e.start_date),
             'creation_date' => e.created_at,
             'end_date' => e.end_date,
             'price' => get_price(e.event), # check for price if it is zero
