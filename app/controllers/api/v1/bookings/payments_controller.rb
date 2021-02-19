@@ -365,9 +365,9 @@ class Api::V1::Bookings::PaymentsController < Api::V1::ApiMasterController
           amount: @payable.to_i * 100,
           currency: 'EUR', #later changeable, will come from admin dashboard
           application_fee_amount:  application_fee,
-        }, stripe_account: @ticket.user.connected_account_id)
+        }, stripe_account: @ticket.user.business_profile.connected_account_id)
 
-        #save in db as well
+        #save in db as well:
 
         @transaction = Transaction.create!(user_id: request_user.id, ticket_id: @ticket.id, payment_intent: intent, payee_id: @ticket.user.id, amount: @payable)
 
@@ -379,7 +379,7 @@ class Api::V1::Bookings::PaymentsController < Api::V1::ApiMasterController
         client_secret: intent.client_secret,
         publish_key: ENV['STRIPE_PUBLISH_KEY'],
         transaction_id: @transaction.id,
-        account_id: @ticket.user.connected_account_id
+        account_id: @ticket.user.business_profile.connected_account_id
       }
     }
   else
