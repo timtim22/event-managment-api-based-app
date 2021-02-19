@@ -1,7 +1,7 @@
 class Api::V1::Users::Settings::SettingsController < Api::V1::ApiMasterController
   before_action :authorize_request
 
-  api :POST, '/api/v1/user/settings/update', 'To update a user profile global settings'
+  api :POST, '/api/v1/users/settings/update', 'To update a user profile global settings'
   param :is_on, ['true', 'false'], :desc => "True/False", :required => true
   param :name, String, :desc => "Name", :required => true
 

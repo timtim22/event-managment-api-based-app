@@ -7,7 +7,7 @@ class Api::V1::Wallets::WalletsController < Api::V1::ApiMasterController
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
 
-api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
+api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
 
  def get_offers
     @redeemed_offers = []
@@ -122,7 +122,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
 
 
 
-  api :GET, '/api/v1/wallet/get-passes', 'Get Wallet Passes'
+  api :GET, '/api/v1/wallets/get-passes', 'Get Wallet Passes'
  def get_passes
   @redeemed_passes = []
   @unredeemed_passes = []
@@ -150,7 +150,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
             event_location: jsonify_location(pass.event.location), 
             event_date: pass.event.start_date,
             distributed_by: distributed_by(pass),
-            validity: get_date_time(pass.event.end_date, pass),
+            validity: "2021-02-19T06:00:00.000Z",#get_date_time(pass.event.end_date, pass),
             is_expired: is_expired?(pass),
             grabbers_count: pass.wallets.size,
             is_redeemed: true,
@@ -177,7 +177,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
             event_location: jsonify_location(pass.event.location),
             event_date: pass.event.start_date,
             distributed_by: distributed_by(pass),
-            validity: get_date_time(pass.event.end_date, pass),
+            validity: "2021-02-19T06:00:00.000Z",#get_date_time(pass.event.end_date, pass),
             is_expired: is_expired?(pass),
             grabbers_count: pass.wallets.size,
             is_redeemed: false,
@@ -201,7 +201,7 @@ api :GET, '/api/v1/wallet/get-offers', 'Get wallet special offers'
             event_location: jsonify_location(pass.event.location),
             event_date: pass.event.start_date,
             distributed_by: distributed_by(pass),
-            validity: get_date_time(pass.event.end_date, pass),
+            validity: "2021-02-19T06:00:00.000Z",#get_date_time(pass.event.end_date, pass),
             is_expired: is_expired?(pass),
             grabbers_count: pass.wallets.size,
             is_redeemed: false,
@@ -235,7 +235,7 @@ end
 
 
 
-  api :GET, '/api/v1/wallet/get-competitions', 'Get wallet competitions'
+  api :GET, '/api/v1/wallets/get-competitions', 'Get wallet competitions'
 
 def get_competitions
   @competitions = []
@@ -319,7 +319,7 @@ def get_competitions
 
 end
 
-  api :GET, '/api/v1/wallet/get-tickets', 'Get Wallet tickets'
+  api :GET, '/api/v1/wallets/get-tickets', 'Get Wallet tickets'
 
 def get_tickets
   @tickets = []
@@ -337,7 +337,7 @@ def get_tickets
     event_id: wallet.offer.event.id,
     event_image: wallet.offer.event.image,
     event_location: jsonify_location(wallet.offer.event.location),
-    event_start_time: get_date_time(wallet.offer.event.start_date, wallet.offer),
+    event_start_time: "2021-02-19T06:00:00.000Z",#get_date_time(wallet.offer.event.start_date, wallet.offer),
     event_end_time: get_date_time(wallet.offer.event.end_date, wallet.offer),
     event_date: wallet.offer.event.start_date,
     price: get_formated_price(wallet.offer.price),
@@ -364,7 +364,7 @@ render json:  {
 
 end
 
-  api :POST, '/api/v1/wallet/remove-follower', 'To remove an item from the wallet'
+  api :POST, '/api/v1/wallets/remove-follower', 'To remove an item from the wallet'
   param :offer_id, :number, :desc => "Offer ID - Item ID", :required => true
  # param :offer_type, String, :desc => "competitions/special_offers/tickets/pass", :required => true
 
@@ -716,7 +716,7 @@ end
   end
  end
 
-  api :POST, '/api/v1/view-offer', 'View offer(special_offers, pass'
+  api :POST, '/api/v1/wallets/view-offer', 'View offer(special_offers, pass'
   param :offer_id, :number, :desc => "Offer ID", :required => true
   #param :offer_type, :number, :desc => "Offer Type(SpecialOffer, Pass)", :required => true
 
@@ -797,8 +797,8 @@ end
  private
 
  def get_date_time(date, time)
-    d = date.strftime("%Y-%m-%d")
-    t = time.strftime("%H:%M:%S")
+    d = Date.parse(date).strftime("%Y-%m-%d")
+    t = Time.parse(time).strftime("%H:%M:%S")
     datetime = d + "T" + t + ".000Z"
  end
 
