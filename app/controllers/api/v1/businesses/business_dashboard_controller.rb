@@ -59,7 +59,7 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
       @events << {
         'id' => e.id,
         'title' => e.title,
-        'start_date' => e.start_date,
+        'start_date' => get_date_time_mobile(e.start_date),
         'end_date' => e.end_date,
         'image' => e.event.image,
         'location' => jsonify_location(e.location),
@@ -190,7 +190,7 @@ returns array_of: :get_competitions, code: 200, desc: 'This api will return the 
         description: competition.description,
         location: jsonify_location(competition.location),
         image: competition.image,
-        start_date: competition.start_date,
+        start_date: get_date_time_mobile(competition.start_date),
         creation_date: competition.created_at, 
         end_date: competition.end_date,
         creator_name: get_full_name(competition.user),
@@ -278,7 +278,7 @@ returns array_of: :get_competitions, code: 200, desc: 'This api will return the 
             title: pass.title,
             host_name: get_full_name(e.user),
             host_image: e.user.avatar,
-            event_name: e.title,
+            event_title: e.title,
             event_image: e.image,
             event_location: jsonify_location(e.location),
             event_date: e.start_date,
@@ -301,7 +301,7 @@ returns array_of: :get_competitions, code: 200, desc: 'This api will return the 
           description: pass.description,
           host_name: get_full_name(e.user),
           host_image: e.user.avatar,
-          event_name: e.title,
+          event_title: e.title,
           event_image: e.image,
           event_location: jsonify_location(e.location),
           event_date: e.start_date,
@@ -318,9 +318,9 @@ returns array_of: :get_competitions, code: 200, desc: 'This api will return the 
 
           @event = {
             'id' => e.id,
-            'name' => e.title,
+            'title' => e.title,
             'description' => e.description,
-            'start_date' => e.start_date,
+            'start_date' => get_date_time_mobile(e.start_date),
             'creation_date' => e.created_at,
             'end_date' => e.end_date,
             'price' => get_price(e.event), # check for price if it is zero

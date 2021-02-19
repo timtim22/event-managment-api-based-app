@@ -53,20 +53,7 @@
          status = "Event Over"
         end
 
-        case 
-        when event.start_date == ""
-          active_tab = "details"
-        when event.event.tickets.empty? || event.event.price_type == "free_event"
-          active_tab = "times"
-        when event.event.sponsors.empty?
-          active_tab = "admission"
-        when event.event.event_attachments.empty?
-          active_tab = "sponsors"
-        when event.event.event_forwarding == nil || event.event.allow_chat == nil
-          active_tab = "media"
-        when event.event.event_forwarding.present? || event.event.present?
-          active_tab = "social"
-        end
+
         
       @event << {
         "id" => event.id,
@@ -85,8 +72,7 @@
         "price" => get_price(event.event),
         "event_phase_status" => status,
         "qr_code" => qr,
-        "pass_id" => event.event.passes.map { |e| e.id}.to_sentence,
-        "active_tab" => active_tab
+        "pass_id" => event.event.passes.map { |e| e.id}.to_sentence
       }
     end
     render json: {
@@ -145,6 +131,21 @@
    status = "Event Over"
   end
 
+  case 
+  when e.start_date == ""
+    active_tab = "details"
+  when e.tickets.empty? || e.price_type == "free_event"
+    active_tab = "times"
+  when e.sponsors.empty?
+    active_tab = "admission"
+  when e.event_attachments.empty?
+    active_tab = "sponsors"
+  when e.event_forwarding == nil || e.allow_chat == nil
+    active_tab = "media"
+  when e.event_forwarding.present? || e.present?
+    active_tab = "social"
+  end
+
    @event = {
      'id' => e.id,
      'title' => e.title,
@@ -179,6 +180,7 @@
      "status" => status,
      'repeatEndDate' => e.child_events.maximum('start_date'),
      'pass_id' => e.passes.map { |e| e.id }.to_sentence,
+     "active_tab" => active_tab,
      "event_dates" => e.child_events.map {|ch| 
         {
           id: ch.id,

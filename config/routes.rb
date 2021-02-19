@@ -312,6 +312,7 @@ end
         get '/get-categories' => 'events#get_categories'
         get '/get-list' => 'events#index'
         post '/publish-event' => 'events#publish_event'
+        post '/show' => 'events#show'
       end
 
         resources :news_feeds
