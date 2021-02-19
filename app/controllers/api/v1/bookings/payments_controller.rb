@@ -8,7 +8,7 @@ class Api::V1::Bookings::PaymentsController < Api::V1::ApiMasterController
   Stripe.api_key = ENV['STRIPE_API_KEY']
 
   api :POST, '/api/v1/bookings/purchase-ticket', 'Purchase Ticket'
-  param :ticket_id, Integer, :desc => "Ticket ID", :required => true
+  param :ticket_id, :number, :desc => "Ticket ID", :required => true
   param :ticket_type, String, :desc => "Type of the ticket", :required => true
   #param :status, ['True', 'False'], :desc => "successful/failed", :required => true
   # param :stripe_response, String, :desc => "Stripe response", :required => true
@@ -349,8 +349,8 @@ class Api::V1::Bookings::PaymentsController < Api::V1::ApiMasterController
 
   api :POST, '/api/v1/bookings/create-payment-intent', 'Create payment intent on stripe and get creds'
  param :total_price, String, :desc => "Total Price", :required => true
-  param :ticket_id, Integer, :desc => "Ticket ID", :required => true
-  param :quantity, Integer, :desc => "Quantity of the tickets", :required => true
+  param :ticket_id, :number, :desc => "Ticket ID", :required => true
+  param :quantity, String, :desc => "Quantity of the tickets", :required => true
 
   def create_payment_intent
       if !params[:total_price].blank? && !params[:ticket_id].blank? && !params[:quantity].blank?
@@ -410,7 +410,7 @@ class Api::V1::Bookings::PaymentsController < Api::V1::ApiMasterController
 
 
   api :POST, '/api/v1/bookings/place-refund-request', 'Place a refund request'
-  param :ticket_id, Integer, :desc => "Ticket ID", :required => true
+  param :ticket_id, :number, :desc => "Ticket ID", :required => true
 
   def place_refund_request
     if !params[:ticket_id].blank?
