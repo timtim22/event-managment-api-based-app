@@ -150,7 +150,7 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             event_location: jsonify_location(pass.event.location), 
             event_date: pass.event.start_date,
             distributed_by: distributed_by(pass),
-            validity: "2021-02-19T06:00:00.000Z",#get_date_time(pass.event.end_date, pass),
+            validity: get_date_time(pass.event.end_date, pass),
             is_expired: is_expired?(pass),
             grabbers_count: pass.wallets.size,
             is_redeemed: true,
@@ -177,7 +177,7 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             event_location: jsonify_location(pass.event.location),
             event_date: pass.event.start_date,
             distributed_by: distributed_by(pass),
-            validity: "2021-02-19T06:00:00.000Z",#get_date_time(pass.event.end_date, pass),
+            validity: get_date_time(pass.event.end_date, pass),
             is_expired: is_expired?(pass),
             grabbers_count: pass.wallets.size,
             is_redeemed: false,
@@ -201,7 +201,7 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             event_location: jsonify_location(pass.event.location),
             event_date: pass.event.start_date,
             distributed_by: distributed_by(pass),
-            validity: "2021-02-19T06:00:00.000Z",#get_date_time(pass.event.end_date, pass),
+            validity: get_date_time(pass.event.end_date, pass),
             is_expired: is_expired?(pass),
             grabbers_count: pass.wallets.size,
             is_redeemed: false,
@@ -337,8 +337,8 @@ def get_tickets
     event_id: wallet.offer.event.id,
     event_image: wallet.offer.event.image,
     event_location: jsonify_location(wallet.offer.event.location),
-    event_start_time: "2021-02-19T06:00:00.000Z",#get_date_time(wallet.offer.event.start_date, wallet.offer),
-    event_end_time: get_date_time(wallet.offer.event.end_date, wallet.offer),
+    event_start_time: get_date_time(wallet.offer.event.start_date, wallet.offer),
+    event_end_time: "2021-02-19T06:00:00.000Z",#get_date_time(wallet.offer.event.end_date, wallet.offer),
     event_date: wallet.offer.event.start_date,
     price: get_formated_price(wallet.offer.price),
     quantity: wallet.offer.quantity,
@@ -797,10 +797,9 @@ end
  private
 
  def get_date_time(date, time)
-    # d = Date.parse(date).strftime("%Y-%m-%d")
-    # t = Time.parse(time).strftime("%H:%M:%S")
-    # datetime = d + "T" + t + ".000Z"
-    "2021-02-19T06:00:00.000Z"
+    d = date.strftime("%Y-%m-%d")
+    t = time.strftime("%H:%M:%S")
+    datetime = d + "T" + t + ".000Z"
  end
 
  def is_added_to_wallet?(pass_id)
