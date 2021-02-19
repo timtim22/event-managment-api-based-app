@@ -358,7 +358,7 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
               "friend_id": notification.resource.user.id,
               "event_name": notification.resource.child_event.title,
               "event_start_date": notification.resource.child_event.start_date,
-              "event_location": notification.resource.child_event.location,
+              "event_location": jsonify_location(notification.resource.child_event.location),
               "actor_image": notification.actor.avatar,
               "notifiable_id": notification.notifiable_id,
               "notifiable_type": notification.notifiable_type,
@@ -468,7 +468,7 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
                 "business_name": get_full_name(notification.resource.child_event.user),
                 "event_name": notification.resource.event.title,
                 "event_id": notification.resource.event.id,
-                "event_location": notification.resource.event.location,
+                "event_location": jsonify_location(notification.resource.event.location),
                 "event_start_date": notification.resource.event.start_date,
                 "friend_name": get_full_name(notification.resource.user)
                }
@@ -593,6 +593,10 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
           }
         end
      end
+
+
+
+
 
   api :POST, '/api/v1/get-location', 'Get location of the target user'
   #param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true

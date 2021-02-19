@@ -118,7 +118,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
       "image" => event.event.image,
       "name" => event.title,
       "description" => event.description,
-      "location" => insert_space_after_comma(event.location),
+      "location" => jsonify_location(event.location),
       "start_date" => event.end_date,
       "end_date" => event.end_date,
       "over_18" => event.over_18,
