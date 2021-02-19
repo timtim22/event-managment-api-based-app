@@ -82,10 +82,10 @@ Rails.application.routes.draw do
           end
 
           namespace :comments do
-            post '/post-comment' => "comments#create"
+            post '/post' => "comments#create"
             get '/get-commented-events' => "comments#get_commented_events"
             post '/comments-mark-as-read' => "comments#mark_as_read"
-            post '/delete-event-comments' => 'comments#delete_event_comments'
+            post '/delete' => 'comments#delete_event_comments'
             post '/comments' => "comments#get_event_comments"
           end
       
@@ -125,8 +125,6 @@ Rails.application.routes.draw do
       post '/mark-as-read' => "chats#mark_as_read"
       post '/clear-conversation' => 'chats#clear_conversation'
       post '/clear-chat' => 'chats#clear_chat'
-      post '/delete-event-comments' => 'comments#delete_event_comments'
-      post '/comments' => "comments#comments"
     end
 
 
@@ -355,10 +353,5 @@ end
     end
    end
 
-   namespace :business do
-   end
-
-   namespace :college_society do
-   end
 
  end

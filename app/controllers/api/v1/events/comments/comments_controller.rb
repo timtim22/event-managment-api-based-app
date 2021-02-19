@@ -6,8 +6,8 @@ class Api::V1::Events::Comments::CommentsController < Api::V1::ApiMasterControll
   require 'action_view/helpers'
   include ActionView::Helpers::DateHelper
 
-  api :POST, '/api/v1/events/post-comment', 'Post event based comment'
-  param :event_id, Integer, :desc => "Event ID", :required => true
+  api :POST, '/api/v1/events/post', 'Post event based comment'
+  param :event_id, :number, :desc => "Event ID", :required => true
   param :comment, String, :desc => "Comment", :required => true
   # param :is_reply, String, :desc => "True/False", :required => true
 
@@ -375,7 +375,7 @@ end
      }
    end
 
-  api :POST, '/api/v1/events/delete-event-comments', 'Delete Comment Events'
+  api :POST, '/api/v1/events/comments/delete', 'Delete all comments of an event'
   param :event_id, :number, :desc => "Event ID", :required => true
 
    def delete_event_comments
