@@ -95,11 +95,7 @@ class Api::V1::ApiMasterController < ApplicationController
     end
 
     def is_competition_over?(competition)
-      if competition.end_date > DateTime.now
-        false
-      else
-        true
-      end
+       competition.end_date < DateTime.now
     end
 
 

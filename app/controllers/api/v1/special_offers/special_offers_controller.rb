@@ -124,7 +124,7 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
 
 
  
-  api :POST, '/api/v1/special-offers/redeem', 'Redeem a special offer'
+  api :POST, '/api/v1/special_offers/redeem', 'Redeem a special offer'
   param :offer_id, Integer, :desc => "ID of the special offer", :required => true
   param :qr_code, Integer, :desc => "QR code of the special offer", :required => true
 
