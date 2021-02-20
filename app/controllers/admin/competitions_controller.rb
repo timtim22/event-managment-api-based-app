@@ -104,15 +104,11 @@ class Admin::CompetitionsController < Admin::AdminMasterController
         @competition.description = params[:description]
         @competition.start_date = params[:start_date]
         @competition.end_date = params[:end_date]
-        @competition.price = params[:price]
         @competition.start_time = params[:start_time]
         @competition.end_time = params[:end_time]
         @competition.image = params[:image]
-        @competition.validity = string_to_DateTime(params[:validity])
         @competition.host = params[:host]
-        @competition.validity_time = params[:end_time]
         @competition.terms_conditions = params[:terms_conditions]
-        @competition.location = location
     if @competition.save
       #create_activity("updated competition", @competition, "Competition", admin_competition_path(@competition),@competition.title, 'patch')
       redirect_to admin_competitions_path, notice: "Competition updated successfully."
