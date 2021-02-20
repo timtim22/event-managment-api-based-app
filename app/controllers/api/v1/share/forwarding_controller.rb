@@ -164,6 +164,9 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
     end
    end
 
+
+   
+
    def share_offer
     if !params[:offer_shared].blank? && params[:offer_shared] ==  'true'
       if !params[:sender_token].blank? && !params[:offer_id].blank? && !params[:offer_type].blank?

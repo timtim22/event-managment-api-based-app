@@ -17,10 +17,9 @@ class Competition < ApplicationRecord
   validates :end_date, presence: true
   validates :start_time, presence: true
   validates :end_time, presence: true
-  validates :validity_time, presence: true
   validates :description, presence: true
-  validates :location, presence: true
-  validates :validity, presence: true
+ 
+
 
 
   scope :not_expired, -> { where(['end_date > ?', DateTime.now]) }
