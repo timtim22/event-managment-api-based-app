@@ -125,16 +125,16 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
 
  
   api :POST, '/api/v1/special_offers/redeem', 'Redeem a special offer'
-  param :offer_id, Integer, :desc => "ID of the special offer", :required => true
-  param :qr_code, Integer, :desc => "QR code of the special offer", :required => true
+  param :redeem_code, String, :desc => "ID of the special offer", :required => true
+
 
 
   def redeem_it
-    if !params[:qr_code].blank? && !params[:offer_id].blank?
+    if !params[:redeem_code].blank? && !params[:offer_id].blank?
      @special_offer = SpecialOffer.find(params[:offer_id])
        @check = Redemption.where(offer_id: params[:offer_id]).where(offer_type: 'SpecialOffer').where(user_id: request_user.id)
    if @check.blank?
-    if(@special_offer && @special_offer.qr_code == params[:qr_code].to_s)
+    if(@special_offer && @special_offer.qr_code == params[:redeem_code].to_s)
       if  @redemption = Redemption.create!(:user_id =>  request_user.id, offer_id: @special_offer.id, code: params[:qr_code], offer_type: 'SpecialOffer')
 
         # resource should be parent resource in case of api so that event id should be available in order to show event based interest level.
