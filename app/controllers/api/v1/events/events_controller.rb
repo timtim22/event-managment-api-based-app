@@ -338,7 +338,7 @@ private
         "start_time" => get_date_time_mobile(child_event.start_date),
         "end_time" => get_date_time_mobile(child_event.end_date),
         "over_18" => child_event.event.over_18,
-        "price_type" => child_event.event.price_type,
+        "price_type" => child_event.price_type,
         "price" => get_price(child_event.event).to_s,
         "has_passes" => has_passes?(child_event.event),
         "all_passes_added_to_wallet" => all_pass_added,
