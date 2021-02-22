@@ -16,13 +16,6 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
     def get_past_competitions
     @competitions = []
     Competition.page(params[:page]).per(20).expired.order(created_at: 'DESC').each do |competition|
-      location = {
-        "name" => competition.location,
-        "geometry" => {
-          "lat" => competition.lat,
-          'lng' => competition.lng
-        }
-     }
 
      winners = []
      competition.competition_winners.each do |winner|
@@ -37,7 +30,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
        id: competition.id,
        title: competition.title,
        image: competition.image.url,
-       location: location,
+       location: competition.location,
        draw_date: competition.end_date.strftime("%a %d %b %y%:z "),
        views: 0,
        entries: competition.registrations.size,
@@ -75,27 +68,14 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
   def show
    comp = Competition.find(params[:id])
 
-   location = {
-   "name" => comp.location,
-   "geometry" => {
-     "lat" => comp.lat,
-     'lng' => comp.lng
-       }
-     }
-
      @competition = {
        'id' => comp.id,
        'title' => comp.title,
        'description' => comp.description,
        'image' => comp.image,
        'start_date' => comp.start_date,
-       'end_date' => comp.end_date,
-       'start_time' => comp.start_time,
-       'end_time' => comp.end_time,
        'location' => comp.location,
-       'validity' => comp.validity,
-       'validity_time' => comp.validity_time,
-       'price' => comp.price,
+       'end_date' => comp.end_date,
        'terms_conditions' => comp.terms_conditions,
        'winner' => comp.competition_winners.size
 
@@ -131,20 +111,12 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
     @competition = request_user.competitions.new
     @competition.title = params[:title]
     @competition.description = params[:description]
-    @competition.start_date = params[:start_date]
-    @competition.end_date = params[:end_date]
-    @competition.start_time = params[:start_time]
-    @competition.end_time = params[:end_time]
-    @competition.validity = params[:validity]
-    @competition.validity_time = params[:validity_time]
+    @competition.start_date = get_date_time(params[:start_date].to_date, params[:start_time])
+    @competition.end_date = get_date_time(params[:end_date].to_date, params[:end_time])
     @competition.image = params[:image]
-    @competition.price = params[:price]
     @competition.terms_conditions = params[:terms_conditions]
-    if !params[:location].blank?
-      @competition.location = params[:location][:name]
-      @competition.lat = params[:location][:geometry][:lat]
-      @competition.lng = params[:location][:geometry][:lng]
-    end
+    @competition.number_of_winner = params[:number_of_winner]
+    @competition.competition_forwarding = params[:competition_forwarding]
 
     if @competition.save
       @pubnub = Pubnub.new(
@@ -197,7 +169,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
             code: 200,
             success: true,
             message: 'Competition created successfully.',
-            data: nil
+            data: @competition
           }
     else
     render json: {
@@ -210,7 +182,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
     end
   end
 
-  api :POST, '/dashboard/api/v1/competitions', 'To update competition'
+  api :PUT, '/dashboard/api/v1/competitions', 'To update competition'
   # param :id, String, :desc => "ID of the competition", :required => true
   # param :title, String, :desc => "Title of the competition", :required => true
   # param :description, String, :desc => "Description of the competition", :required => true
@@ -230,20 +202,12 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
     @competition = Competition.find(params[:id])
     @competition.title = params[:title]
     @competition.description = params[:description]
-    @competition.start_date = params[:start_date]
-    @competition.end_date = params[:end_date]
-    @competition.start_time = params[:start_time]
-    @competition.end_time = params[:end_time]
-    @competition.validity = params[:validity]
-    @competition.validity_time = params[:validity_time]
+    @competition.start_date = get_date_time(params[:start_date].to_date, params[:start_time])
+    @competition.end_date = get_date_time(params[:end_date].to_date, params[:end_time])
     @competition.image = params[:image]
-    @competition.price = params[:price]
     @competition.terms_conditions = params[:terms_conditions]
-    if !params[:location].blank?
-      @competition.location = params[:location][:name]
-      @competition.lat = params[:location][:geometry][:lat]
-      @competition.lng = params[:location][:geometry][:lng]
-    end
+    @competition.number_of_winner = params[:number_of_winner]
+    @competition.competition_forwarding = params[:competition_forwarding]
 
     if @competition.save
       @pubnub = Pubnub.new(
@@ -296,7 +260,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
                 code: 200,
                 success: true,
                 message: 'Competition updated successfully.',
-                data: nil
+                data: @competition
               }
     else
         render json: {
@@ -343,6 +307,12 @@ end
 
   private
 
+
+ def get_date_time(date, time)
+    d = date.strftime("%Y-%b-%d")
+    t = time.to_time.strftime("%H:%M:%S")
+    datetime = d + " " + t
+ end
 
   def competition_params
 		params.permit(:title,:user_id,:description, :terms_conditions, :start_date,:end_date,:price,:start_time, :end_time,:image,:validity,:validity_time,:lat,:lng,:location,:host)

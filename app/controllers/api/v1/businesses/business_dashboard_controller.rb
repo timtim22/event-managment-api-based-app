@@ -7,6 +7,7 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
   include ActionView::Helpers::DateHelper
 
 
+ api :get, '/api/v1/businesses/get-dashboard', 'To get a business events'
 
   def home
     profile = {
@@ -38,6 +39,8 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
     property :title, String, desc: 'Event title'
     property :start_date, String, desc: 'Event start date'
     property :end_date, String, desc: 'Event end date'
+    property :start_time, String, desc: 'Event start time'
+    property :end_time, String, desc: 'Event end time'
     property :image, String, desc: 'Event image'
     property :location, String, desc: 'Event location'
     property :price, String, desc: 'Event ticket price'
@@ -47,7 +50,7 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
   end
 
 
-  api :POST, '/api/v1/businesses/get_events', 'To get a business events'
+  api :POST, '/api/v1/businesses/get-events', 'To get a business events'
   param :business_id, String, :desc => "User ID", :required => true
   returns array_of: :get_events, code: 200, desc: 'This api will return the following response.' 
 
@@ -61,7 +64,7 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
         'title' => e.title,
         'start_date' => get_date_time_mobile(e.start_date),
         'end_date' => get_date_time_mobile(e.end_date),
-        'start_time' => get_date_time_mobile(e.end_date),
+        'start_time' => get_date_time_mobile(e.start_date),
         'end_time' => get_date_time_mobile(e.end_date),
         'image' => e.event.image,
         'location' => jsonify_location(e.location),
@@ -112,6 +115,7 @@ end
 api :POST, '/api/v1/businesses/get-special-offers', 'To get a business special offers'
 param :business_id, String, :desc => "User ID", :required => true
 returns array_of: :get_special_offers, code: 200, desc: 'This api will return the following response.' 
+
 
   def get_special_offers
     if !params[:business_id].blank?
@@ -172,7 +176,6 @@ returns array_of: :get_special_offers, code: 200, desc: 'This api will return th
   property :creator_image, String, desc: 'Competition business avatar'
   property :end_date, String, desc: 'Competition end date'
   property :terms_conditions, String, desc: 'Competition terms and conditions'
-
 end  
 
 
@@ -261,8 +264,46 @@ returns array_of: :get_competitions, code: 200, desc: 'This api will return the 
     end
   end
 
+ def_param_group :show_event do
+  property :id, String, desc: 'Primary key'
+  property :title, String, desc: 'event title'
+  property :description, String, desc: 'event description'
+  property :start_date, String, desc: 'event start date'
+  property :end_date, String, desc: 'event end date'
+  property :start_time, String, desc: 'event start time'
+  property :end_time, String, desc: 'event end time'
+  property :creation_date, String, desc: 'Competition created at'
+  property :price, String, desc: 'event price'
+  property :price_type, String, desc: 'event price type'
+  property :event_type, String, desc: 'event event type'
+  property :additional_media, String, desc: 'event additional_media'
+  property :location, String, desc: 'event location'
+  property :image, String, desc: 'event image'
+  property :is_interested, String, desc: 'event is_interested'
+  property :is_going, String, desc: 'event is_going'
+  property :is_followed, String, desc: 'event is_followed'
+  property :interest_count, String, desc: 'event interest_count'
+  property :going_count, String, desc: 'event going_count'
+  property :demographics, String, desc: 'event demographics'
+  property :going_users, String, desc: 'event going_users'
+  property :interested_users, String, desc: 'event interested_users'
+  property :creator_name, String, desc: 'event creator name'
+  property :creator_id, String, desc: 'event creator id'
+  property :creator_image, String, desc: 'event creator image'
+  property :categories, String, desc: 'event categories'
+  property :sponsors, String, desc: 'event sponsors'
+  property :mute_chat, String, desc: 'event mute_chat'
+  property :mute_notifications, String, desc: 'event mute_notifications'
+  property :forwards_count, String, desc: 'event forwards_count'
+  property :comments_count, String, desc: 'event comments_count'
+  property :has_passes, String, desc: 'event passes'
+  property :all_passes_added_to_wallet, String, desc: 'event passes add to wallet'
+end  
 
 
+  api :POST, '/api/v1/businesses/events/show', 'To view event'
+  param :event_id, String, :desc => "Event ID", :required => true
+  returns array_of: :show_event, code: 200, desc: 'This api will return the following response.'
 
   def show_event
     if !params[:event_id].blank?
@@ -323,11 +364,10 @@ returns array_of: :get_competitions, code: 200, desc: 'This api will return the 
             'title' => e.title,
             'description' => e.description,
             'start_date' => get_date_time_mobile(e.start_date),
-            'end_date' => get_date_time_mobile(e.start_date),
+            'end_date' => get_date_time_mobile(e.end_date),
             'start_time' => get_date_time_mobile(e.start_date),
-            'end_time' => get_date_time_mobile(e.start_date),
+            'end_time' => get_date_time_mobile(e.end_date),
             'creation_date' => e.created_at,
-            'end_date' => e.end_date,
             'price' => get_price(e.event), # check for price if it is zero
             'price_type' => e.event.price_type,
             'event_type' => e.event_type,
@@ -349,7 +389,6 @@ returns array_of: :get_competitions, code: 200, desc: 'This api will return the 
             'sponsors' => e.event.sponsors,
             "mute_chat" => get_mute_chat_status(e),
             "mute_notifications" => get_mute_notifications_status(e),
-            "terms_and_conditions" => e.terms_conditions,
             "forwards_count" => e.event_forwardings.count,
             "comments_count" => e.comments.size + e.comments.map {|c| c.replies.size }.sum,
             "has_passes" => has_passes?(e.event),
@@ -379,23 +418,23 @@ returns array_of: :get_competitions, code: 200, desc: 'This api will return the 
 
 
   
-  def_param_group :get_other_business_profile do
-    property :id, String, desc: 'id'
-    property :profile_name, String, desc: 'profile_name'
-    property :first_name, String, desc: 'first_name'
-    property :last_name, String, desc: 'last_name'
-    property :avatar, String, desc: 'avatar'
-    property :location, String, desc: 'location'
-    property :social, String, desc: 'social links'
-    property :website, String, desc: 'website'
-    property :news_feeds, Hash, desc: 'news_feeds'
-    property :followers_count, Integer, desc: 'followers_count'
-    property :events_count, String, desc: 'events_count'
-    property :offers_count, String, desc: 'offers_count'
-    property :competitions_count, String, desc: 'competitions_count'
-    property :ambassador_request_status, String, desc: 'ambassador_request_status'
-    property :is_ambassador, String, desc: 'is_ambassador'
-  end
+  # def_param_group :get_other_business_profile do
+  #   property :id, String, desc: 'id'
+  #   property :profile_name, String, desc: 'profile_name'
+  #   property :first_name, String, desc: 'first_name'
+  #   property :last_name, String, desc: 'last_name'
+  #   property :avatar, String, desc: 'avatar'
+  #   property :location, String, desc: 'location'
+  #   property :social, String, desc: 'social links'
+  #   property :website, String, desc: 'website'
+  #   property :news_feeds, Hash, desc: 'news_feeds'
+  #   property :followers_count, Integer, desc: 'followers_count'
+  #   property :events_count, String, desc: 'events_count'
+  #   property :offers_count, String, desc: 'offers_count'
+  #   property :competitions_count, String, desc: 'competitions_count'
+  #   property :ambassador_request_status, String, desc: 'ambassador_request_status'
+  #   property :is_ambassador, String, desc: 'is_ambassador'
+  # end
 
 
   

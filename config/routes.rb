@@ -116,6 +116,7 @@ Rails.application.routes.draw do
         get '/get-winner' => 'competitions#get_winner_and_notify'
         post '/create-impression' => "competitions#create_view"
         post "/single" => "competitions#competition_single"
+        post "/businesses-competitions" => "competitions#get_business_competitions"
      end 
 
     namespace :chats do
@@ -322,6 +323,7 @@ end
 
         resources :competitions
         patch 'dashboard/api/v1/competitions/:id', to: 'competition#update'
+        
         resources :special_offers
         get "/get-my-events" => "events#get_my_events"
         post "/delete-resource" => "events#delete_resource"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_18_131433) do
+ActiveRecord::Schema.define(version: 2021_02_22_073118) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -155,10 +155,6 @@ ActiveRecord::Schema.define(version: 2021_02_18_131433) do
     t.string "image", default: ""
     t.datetime "start_date"
     t.datetime "end_date"
-    t.datetime "start_time"
-    t.datetime "end_time"
-    t.string "host", default: ""
-    t.string "placeholder", default: "http://placehold.it/900x300"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "terms_conditions", default: ""

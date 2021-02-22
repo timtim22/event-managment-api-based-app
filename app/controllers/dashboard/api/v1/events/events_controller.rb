@@ -423,9 +423,9 @@
             when "free"
                 resource[:fields].each do |f|
                  if f.include? "id"
-                    @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions],  user: request_user, ticket_type: 'free', price: 0)
+                    @ticket = @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head],  user: request_user, ticket_type: 'free', price: 0)
                   else
-                    @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions],  user: request_user, ticket_type: 'free', price: 0)
+                    @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head],  user: request_user, ticket_type: 'free', price: 0)
                   end
                 end #each
                 @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free_ticketed_event", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
@@ -435,13 +435,13 @@
                 tickets_done = false
                 resource[:fields].each do |f|
                   if f.include? "id"
-                    if @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
+                    if @event.tickets.find(f[:id]).update!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: 'buy')
                       tickets_done = true
                     else
                       tickets_done = false
                     end
                   else
-                    if @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'buy')  
+                    if @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], price: f[:price], user: request_user, ticket_type: 'buy')  
                       tickets_done = true
                     else
                       tickets_done = false
@@ -456,7 +456,7 @@
               when 'pay_at_door'
                 resource[:fields].each do |f|
                   if f.include? "id"
-                    @ticket = @event.tickets.find(f[:id]).update!(start_price: f[:start_price], quantity: f[:quantity], end_price: f[:end_price], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'pay_at_door')
+                    @ticket = @event.tickets.find(f[:id]).update!(start_price: f[:start_price], quantity: f[:quantity], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
                   else
                     @ticket = @event.tickets.create!(start_price: f[:start_price], quantity: f[:quantity], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
                   end  
@@ -468,13 +468,13 @@
                 passes_done = false
                 resource[:fields].each do |f|
                 if f.include? "id"
-                    if @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], terms_conditions: f[:terms_conditions],  ambassador_rate: f[:ambassador_rate], qr_code: generate_code)
+                    if @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity],  ambassador_rate: f[:ambassador_rate], qr_code: generate_code)
                       passes_done = true
                     else
                       passes_done = false
                     end
                 else
-                      if @event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], terms_conditions: f[:terms_conditions],  ambassador_rate: f[:ambassador_rate], qr_code: generate_code)
+                      if @event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], qr_code: generate_code)
                         passes_done = true
                       else
                         passes_done = false

@@ -489,14 +489,10 @@ class ApplicationController < ActionController::Base
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        location: jsonify_location(competition.location),
         start_date: competition.start_date,
         end_date: competition.end_date,
-        start_time: competition.start_time,
-        end_time: competition.end_time,
-        price: competition.price,
-        lat: competition.lat,
-        lng: competition.lng,
+        start_time: competition.start_date,
+        end_time: competition.end_date,
         image: competition.image.url,
         is_entered: is_entered_competition?(competition.id),
         participants_stats: get_participants_stats(competition),
@@ -506,7 +502,7 @@ class ApplicationController < ActionController::Base
         total_entries_count: get_entry_count(request_user, competition),
         issued_by: get_full_name(competition.user),
         is_followed: is_followed(competition.user),
-        validity: competition.validity.strftime(get_time_format),
+        validity: competition.end_date.strftime(get_time_format),
         terms_and_conditions: competition.terms_conditions
     }
   end
