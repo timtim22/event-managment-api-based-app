@@ -81,7 +81,7 @@ class Dashboard::Api::V1::PassesController < Dashboard::Api::V1::ApiMasterContro
            @share = OfferShare.find_by(offer_id: @pass.id)
           end
           @ambassador = @share.user
-          if @ambassador.is_ambassador ==  true #if user is an ambassador
+          if is_ambassador?(@ambassador)  #if user is an ambassador
           @ambassador.earning = @ambassador.earning + @pass.ambassador_rate.to_i
           @ambassador.save
           end

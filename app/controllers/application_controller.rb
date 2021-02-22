@@ -299,7 +299,7 @@ class ApplicationController < ActionController::Base
 
   def get_event_object(event)
      location = {
-       "name" => event.location,
+       "title" => event.title,
        "geometry" => {
           "lat" => event.lat,
           "lng" => event.lng

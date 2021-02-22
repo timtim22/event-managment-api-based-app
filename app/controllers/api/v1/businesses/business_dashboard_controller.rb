@@ -46,7 +46,6 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
     property :price, String, desc: 'Event ticket price'
     property :price_type, String, desc: 'Event ticket price type'
     property :has_passes, [true, false], desc: 'True if an event has passes'
-
   end
 
 
@@ -179,7 +178,7 @@ returns array_of: :get_special_offers, code: 200, desc: 'This api will return th
 end  
 
 
-api :POST, '/api/v1/businesses/get-special-offers', 'To get a business competitions list'
+api :POST, '/api/v1/businesses/get-competitions', 'To get a business competitions list'
 param :business_id, String, :desc => "User ID", :required => true
 returns array_of: :get_competitions, code: 200, desc: 'This api will return the following response.' 
 
@@ -236,7 +235,7 @@ returns array_of: :get_competitions, code: 200, desc: 'This api will return the 
 
 
 
-  api :POST, '/api/v1/businesses/get_business_news_feeds', 'To get a business news feeds list'
+  api :POST, '/api/v1/businesses/get-news-feeds', 'To get a business news feeds list'
   param :business_id, String, :desc => "User ID", :required => true
   returns array_of: :get_business_news_feeds, code: 200, desc: 'This api will return the following response.'
 

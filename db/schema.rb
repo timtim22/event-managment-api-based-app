@@ -60,7 +60,7 @@ ActiveRecord::Schema.define(version: 2021_02_22_073118) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "display_name"
-    t.string "stripe_state", default: "rendom_string"
+    t.string "business_profile.stripe_state", default: "rendom_string"
     t.string "connected_account_id", default: ""
     t.index ["user_id"], name: "index_business_profiles_on_user_id"
   end

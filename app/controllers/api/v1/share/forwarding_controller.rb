@@ -41,7 +41,7 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
         end
 
 
-        @offer_forward = OfferForwarding.create!(user_id: request_user.id, is_ambassador: request_user.profile.is_ambassador, recipient_id: id, offer_type:params[:offer_type], offer_id: params[:offer_id])
+        @offer_forward = OfferForwarding.create!(user_id: request_user.id, is_ambassador: is_ambassador?(request_user), recipient_id: id, offer_type:params[:offer_type], offer_id: params[:offer_id])
 
        if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " has sent you #{term + @offer.title}", notifiable: @offer,resource: @offer_forward, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{to_underscore_case(@offer.class.name)}_forwarded")
 
@@ -164,6 +164,9 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
     end
    end
 
+
+   
+
    def share_offer
     if !params[:offer_shared].blank? && params[:offer_shared] ==  'true'
       if !params[:sender_token].blank? && !params[:offer_id].blank? && !params[:offer_type].blank?
@@ -199,7 +202,7 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
           end
 
 
-          @offer_share = OfferShare.create!(user_id: @sender.id, is_ambassador: @sender.profile.is_ambassador, recipient_id: request_user.id, offer_type:params[:offer_type], offer_id: params[:offer_id], business: @offer.user)
+          @offer_share = OfferShare.create!(user_id: @sender.id, is_ambassador: is_ambassador?(@sender), recipient_id: request_user.id, offer_type:params[:offer_type], offer_id: params[:offer_id], business: @offer.user)
 
           if notification = Notification.create!(recipient: @recipient, actor: @sender, action: get_full_name(@sender) + " has shared with you #{term + @offer.title}", notifiable: @offer, resource: @offer_share, url: "/admin/users/#{@recipient.id}", notification_type: 'mobile', action_type: "#{to_underscore_case(@offer.class.name)}_shared")
 
@@ -358,7 +361,7 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
               "friend_id": notification.resource.user.id,
               "event_name": notification.resource.child_event.title,
               "event_start_date": notification.resource.child_event.start_date,
-              "event_location": notification.resource.child_event.location,
+              "event_location": jsonify_location(notification.resource.child_event.location),
               "actor_image": notification.actor.avatar,
               "notifiable_id": notification.notifiable_id,
               "notifiable_type": notification.notifiable_type,
@@ -468,7 +471,7 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
                 "business_name": get_full_name(notification.resource.child_event.user),
                 "event_name": notification.resource.event.title,
                 "event_id": notification.resource.event.id,
-                "event_location": notification.resource.event.location,
+                "event_location": jsonify_location(notification.resource.event.location),
                 "event_start_date": notification.resource.event.start_date,
                 "friend_name": get_full_name(notification.resource.user)
                }
@@ -593,6 +596,10 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
           }
         end
      end
+
+
+
+
 
   api :POST, '/api/v1/get-location', 'Get location of the target user'
   #param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true

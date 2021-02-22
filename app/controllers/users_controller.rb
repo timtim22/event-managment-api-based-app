@@ -15,7 +15,7 @@ class UsersController < ApplicationController
       @user.email = params[:email]
       @user.password = params[:password]
       @user.verification_code = generate_code
-      @user.stripe_state = generate_code
+      @user.business_profile.stripe_state = generate_code
       if params[:avatar].blank? 
          @user.remote_avatar_url = get_dummy_avatar 
        else

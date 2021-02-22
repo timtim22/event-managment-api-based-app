@@ -50,7 +50,7 @@ Rails.application.routes.draw do
         post '/get-offer-stats' => 'analytics#get_offer_stats'
         post '/get-competition-stats' => 'analytics#get_competition_stats' 
         post "/get-event-stats" => "analytics#get_event_stats"
-        post '/get-business-newsfeeds' => 'business_dashboard#get_business_news_feeds'
+        post '/get-news-feeds' => 'business_dashboard#get_business_news_feeds'
         post '/events/show' => 'business_dashboard#show_event'
         get '/get-dashboard' => 'business_dashboard#home'
         post '/get-events' => 'business_dashboard#get_events'

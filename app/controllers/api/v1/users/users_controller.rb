@@ -104,23 +104,21 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     @user.about = params[:about]
     @user.password = params[:password]
     @user.uuid = generate_uuid
-    if @user.save
-         location = ""
-         about = ""
-         dob = ""
-         gender  = ""
-      if !@user.about.blank? then about = @user.about else  about = "" end
-      if !@user.location.blank? then location = @user.location else location = "" end
-      if !@user.profile.dob.blank? then dob = @user.profile.dob else dob =  "" end
-      if !@user.profile.gender.blank? then gender  = @user.profile.gender else gender =  "" end
-
-      @profile = Profile.new
+    @profile = Profile.new
       @profile.dob = params[:dob]
       @profile.user = @user
       @profile.first_name = params[:first_name]
       @profile.last_name = params[:last_name]
       @profile.gender = if !params[:gender].blank? then params[:gender] else "" end
-      @profile.save
+    if @user.save && @profile.save
+      location = ""
+      about = ""
+      dob = ""
+      gender  = ""
+      if !@user.about.blank? then about = @user.about else  about = "" end
+      if !@user.location.blank? then location = @user.location else location = "" end
+      if !@user.profile.dob.blank? then dob = @user.profile.dob else dob =  "" end
+      if !@user.profile.gender.blank? then gender  = @user.profile.gender else gender =  "" end
       @profile_data = {}
       @profile_data['id'] = @user.id
       @profile_data["first_name"] = @user.profile.first_name
@@ -703,7 +701,7 @@ end
         "name" => event.title,
         "start_date" => event.start_date,
         "end_date" => event.end_date,
-        "location" => event.location,
+        "location" => jsonify_location(event.location),
         "event_type" => event.event_type,
         "image" => event.image,
         "price_type" => event.price_type,
