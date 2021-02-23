@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_22_073118) do
+ActiveRecord::Schema.define(version: 2021_02_22_114757) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -60,7 +60,7 @@ ActiveRecord::Schema.define(version: 2021_02_22_073118) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "display_name"
-    t.string "business_profile.stripe_state", default: "rendom_string"
+    t.string "stripe_state", default: "rendom_string"
     t.string "connected_account_id", default: ""
     t.index ["user_id"], name: "index_business_profiles_on_user_id"
   end
@@ -96,8 +96,6 @@ ActiveRecord::Schema.define(version: 2021_02_22_073118) do
   create_table "child_events", force: :cascade do |t|
     t.integer "event_id"
     t.string "title", default: ""
-    t.string "start_date", default: ""
-    t.string "end_date", default: ""
     t.datetime "terms_conditions"
     t.text "description", default: ""
     t.string "location", default: ""
@@ -122,6 +120,8 @@ ActiveRecord::Schema.define(version: 2021_02_22_073118) do
     t.string "location_name", default: "no_location"
     t.string "venue", default: ""
     t.string "status", default: ""
+    t.datetime "start_time"
+    t.datetime "end_time"
     t.index ["event_id"], name: "index_child_events_on_event_id"
   end
 
@@ -161,6 +161,8 @@ ActiveRecord::Schema.define(version: 2021_02_22_073118) do
     t.boolean "over_18", default: true
     t.integer "number_of_winner"
     t.boolean "competition_forwarding", default: false
+    t.datetime "start_time"
+    t.datetime "end_time"
     t.index ["user_id"], name: "index_competitions_on_user_id"
   end
 
@@ -205,8 +207,6 @@ ActiveRecord::Schema.define(version: 2021_02_22_073118) do
   create_table "events", force: :cascade do |t|
     t.integer "user_id"
     t.string "title", default: ""
-    t.string "start_date", default: ""
-    t.string "end_date", default: ""
     t.text "description", default: ""
     t.string "location", default: ""
     t.boolean "over_18", default: true
@@ -236,6 +236,8 @@ ActiveRecord::Schema.define(version: 2021_02_22_073118) do
     t.string "location_name", default: "no_location"
     t.string "redeem_code", default: ""
     t.string "venue", default: ""
+    t.datetime "start_time"
+    t.datetime "end_time"
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
