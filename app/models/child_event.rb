@@ -3,6 +3,7 @@ class ChildEvent < ApplicationRecord
  belongs_to :user
  scope :not_expired, -> { where("start_date > ?",  DateTime.now) }
  scope :sort_by_date, -> { order(start_date: 'ASC') }
+ scope :active, -> { where(stutus: "active") }
  mount_uploader :image, ImageUploader
  mount_base64_uploader :image, ImageUploader
  validates :image, file_size: { less_than: 3.megabytes }
@@ -22,5 +23,6 @@ class ChildEvent < ApplicationRecord
  has_many :event_forwardings, dependent: :destroy
  has_many :reminders, dependent: :destroy
  has_many :notifications, dependent: :destroy, as: :resource
+ 
 
 end
