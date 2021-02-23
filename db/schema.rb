@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_22_114757) do
+ActiveRecord::Schema.define(version: 2021_02_23_083923) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -238,6 +238,7 @@ ActiveRecord::Schema.define(version: 2021_02_22_114757) do
     t.string "venue", default: ""
     t.datetime "start_time"
     t.datetime "end_time"
+    t.string "qr_code", default: ""
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 

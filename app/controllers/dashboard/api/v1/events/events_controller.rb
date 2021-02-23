@@ -834,6 +834,7 @@
       @event.frequency = ""
       @event.price = ""
       @event.status = "draft"
+      @event.qr_code = generate_code
     else
       @event = request_user.events.new
       @event.title = params[:title]
@@ -854,7 +855,8 @@
       @event.is_repetive = ""
       @event.frequency = ""
       @event.price = ""
-      @event.status = "draft"      
+      @event.status = "draft"   
+      @event.qr_code = generate_code   
     end
 
     # @event = []
