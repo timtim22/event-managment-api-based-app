@@ -33,7 +33,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
           "event_name": notification.resource.title,
           "event_id": notification.resource.id,
           "event_location": jsonify_location(notification.resource.location),
-          "event_start_date": notification.resource.start_date
+          "event_start_date": notification.resource.start_time
         }
 
       when "create_competition"
@@ -77,7 +77,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
             "business_name": get_full_name(notification.resource.user),
             "event_name": notification.resource.event.title,
             "event_location": jsonify_location(notification.resource.event.location),
-            "event_end_date": notification.resource.event.end_date,
+            "event_end_date": notification.resource.event.end_time,
             "actor_id": notification.actor_id,
             "actor_image": notification.actor.avatar,
             "notifiable_id": notification.notifiable_id,
@@ -95,7 +95,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
             "friend_name": get_full_name(notification.resource.user),
             "event_name": notification.resource.child_event.title,
             "event_id": notification.resource.child_event.id,
-            "event_start_date": get_date_time_mobile(notification.resource.child_event.start_date),
+            "event_start_date": notification.resource.child_event.start_time,
             "event_location": jsonify_location(notification.resource.child_event.location),
             "actor_id": notification.actor_id,
             "actor_image": notification.actor.avatar,
@@ -115,7 +115,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
             "friend_name": get_full_name(notification.resource.user),
             "event_name": notification.resource.child_event.title,
             "event_id": notification.resource.child_event.id,
-            "event_start_date": get_date_time_mobile(notification.resource.child_event.start_date),
+            "event_start_date": notification.resource.child_event.start_time,
             "event_location": jsonify_location(notification.resource.child_event.location), 
             "actor_id": notification.actor_id,
             "actor_image": notification.actor.avatar,
@@ -179,7 +179,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
           "competition_id": notification.resource.offer.id,
           "competition_name": notification.resource.offer.title,
           "competition_host": get_full_name(notification.resource.offer.user),
-          "competition_draw_date": notification.resource.offer.end_date,
+          "competition_draw_date": notification.resource.offer.end_time,
           "user_id": notification.resource.user.id,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
@@ -196,7 +196,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
             "id": notification.id,
             "friend_name": get_full_name(notification.resource.user),
             "event_name": notification.resource.offer.event.title,
-            "event_start_date": get_date_time_mobile(notification.resource.offer.event.start_date),
+            "event_start_date": notification.resource.offer.event.start_time,
             "pass_id": notification.resource.offer.id,
             "event_location": jsonify_location(notification.resource.offer.event.location),
             "user_id": notification.resource.offer.user.id,
@@ -269,7 +269,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
           "competition_id": notification.resource.event.id,
           "competition_name": notification.resource.event.title,
           "business_name": get_full_name(notification.resource.event.user),
-          "draw_date": notification.resource.event.end_date,
+          "draw_date": notification.resource.event.end_time,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,
@@ -365,9 +365,9 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
           "event_name": notification.resource.title,
           "event_id": notification.resource.id,
           "event_location": jsonify_location(notification.resource.location),
-          "event_start_date": get_date_time_mobile(notification.resource.start_date),
-          "event_start_time": get_date_time_mobile(notification.resource),
-          "event_end_time": get_date_time_mobile(notification.resource),
+          "event_start_date": notification.resource.start_time,
+          "event_start_time": notification.resource.start_time,
+          "event_end_time": notification.resource.end_time,
           "event_type": notification.resource.event_type,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
@@ -384,9 +384,9 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
           "event_name": notification.resource.title,
           "event_id": notification.resource.id,
           "event_location": jsonify_location(notification.resource.location),
-          "event_start_date": get_date_time_mobile(notification.resource.start_date),
-          "event_start_time": get_date_time_mobile(notification.resource),
-          "event_end_time": get_date_time_mobile(notification.resource),
+          "event_start_date": notification.resource.start_time,
+          "event_start_time": notification.resource.start_time,
+          "event_end_time": notification.resource.end_time,
           "event_type": notification.resource.event_type,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
@@ -403,9 +403,9 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
           "event_name": notification.resource.title,
           "event_id": notification.resource.id,
           "event_location": jsonify_location(notification.resource.location),
-          "event_start_date": get_date_time_mobile(notification.resource.start_date),
-          "event_start_time": get_date_time_mobile(notification.resource),
-          "event_end_time": get_date_time_mobile(notification.resource),
+          "event_start_date": notification.resource.start_time,
+          "event_start_time": notification.resource.start_time,
+          "event_end_time": notification.resource.end_time,
           "event_type": notification.resource.event_type,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
@@ -431,7 +431,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
             "action_type": notification.action_type,
             "created_at": notification.created_at,
             "is_read": !notification.read_at.nil?,
-            "event_start_date": get_date_time_mobile(notification.resource.offer.event.start_date)
+            "event_start_date": notification.resource.offer.event.start_time
             }
 
           when "special_offer_forwarded"
@@ -473,7 +473,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
                   "friend_name": get_full_name(notification.resource.user),
                   "friend_id": notification.resource.user.id,
                   "event_name": notification.resource.child_event.title,
-                  "event_start_date": get_date_time_mobile(notification.resource.child_event.start_date),
+                  "event_start_date": notification.resource.child_event.start_time,
                   "event_location": jsonify_location(notification.resource.child_event.location),
                   "actor_image": notification.actor.avatar,
                   "notifiable_id": notification.notifiable_id,
@@ -499,7 +499,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
                     "action_type": notification.action_type,
                     "created_at": notification.created_at,
                     "is_read": !notification.read_at.nil?,
-                    "event_start_date": get_date_time_mobile(notification.resource.offer.event.start_date)
+                    "event_start_date": notification.resource.offer.event.start_time
                     }
 
                   when "special_offer_shared"
@@ -550,7 +550,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
                           "event_name": notification.resource.child_event.title,
                           "event_id": notification.resource.child_event.id,
                           "event_location": jsonify_location(notification.resource.child_event.location),
-                          "event_start_date": get_date_time_mobile(notification.resource.child_event.start_date),
+                          "event_start_date": notification.resource.child_event.start_time,
                           "friend_name": get_full_name(notification.resource.user)
                         }
 
