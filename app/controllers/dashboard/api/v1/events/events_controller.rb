@@ -14,7 +14,7 @@
   def index
     @event = []
     #to show draft parent events in listing
-    request_user.events.where(status: "draft").left_joins(:child_events).merge(ChildEvent.where(id: nil)).order(start_date: 'ASC').each do |event|
+    request_user.events.where(status: "draft").left_joins(:child_events).merge(ChildEvent.where(id: nil)).order(start_time: 'ASC').each do |event|
       @event << {
         "id" => event.id,
         "title" => event.title,
@@ -22,8 +22,10 @@
         "event_type"  => event.event_type,
         "price_type"  => event.price_type,
         "location"  => jsonify_location(event.location),
-        "start_date"  => event.start_date,
-        "end_date"  => event.end_date,
+        "start_date"  => event.start_time,
+        "end_date"  => event.end_time,
+        "start_time"  => event.start_time,
+        "end_time"  => event.end_time,
         "going"  => "",
         "maybe"  => "",
         "get_demographics" => "",
@@ -37,19 +39,15 @@
       }
     end
 
-    request_user.child_events.order(start_date: 'ASC').each do |event|
-      qr = []
-       if !event.event.passes.blank?
-         event.event.passes.map {|p| qr.push(p.qr_code) }
-       end
+    request_user.child_events.order(start_time: 'ASC').each do |event|
         case
-        when event.start_date.to_date == Date.today
+        when event.start_time.to_date == Date.today
         status =  "Now On"
-        when event.start_date.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door" || event.price_type == "free_event"
+        when event.start_time.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door" || event.price_type == "free_event"
           status =  event.going_interest_levels.size.to_s + " Going"  
-        when event.start_date.to_date > Date.today && event.price_type == "buy"
+        when event.start_time.to_date > Date.today && event.price_type == "buy"
           status =  event.event.tickets.map { |e| e.wallets.size.to_s}.join(",") + " Tickets Gone"
-        when event.start_date.to_date < Date.today
+        when event.start_time.to_date < Date.today
          status = "Event Over"
         end
 
@@ -62,8 +60,10 @@
         "event_type"  => event.event_type,
         "price_type"  => event.price_type,
         "location"  => jsonify_location(event.location),
-        "start_date"  => event.start_date,
-        "end_date"  => event.end_date,
+        "start_date"  => event.start_time,
+        "end_date"  => event.end_time,
+        "start_time"  => event.start_time,
+        "end_time"  => event.end_time,
         "going"  => event.going_interest_levels.size,
         "maybe"  => event.interested_interest_levels.size,
         "get_demographics" => get_demographics(event),
@@ -71,7 +71,7 @@
         "parent_event_id" => event.event.id,
         "price" => get_price(event.event),
         "event_phase_status" => status,
-        "qr_code" => qr,
+        "qr_code" => event.event.qr_code,
         "pass_id" => event.event.passes.map { |e| e.id}.to_sentence
       }
     end
@@ -116,23 +116,19 @@
      }
     end#each
    end
-    qr = []
-     if !e.passes.blank?
-       e.passes.map {|p| qr.push(p.qr_code) }
-     end
   case
-  when e.start_date.to_date == Date.today
+  when e.start_time.to_date == Date.today
   status =  "Now On"
-  when e.start_date.to_date > Date.today && e.price_type == "free_ticketed_event" || e.price_type == "pay_at_door" || e.price_type == "free_event"
+  when e.start_time.to_date > Date.today && e.price_type == "free_ticketed_event" || e.price_type == "pay_at_door" || e.price_type == "free_event"
     status =  e.going_interest_levels.size.to_s + " Going"  
-  when e.start_date.to_date > Date.today && e.price_type == "buy"
+  when e.start_time.to_date > Date.today && e.price_type == "buy"
     status =  e.tickets.map { |e| e.wallets}.size.to_s + " Tickets Gone"
-  when e.start_date.to_date < Date.today
+  when e.start_time.to_date < Date.today
    status = "Event Over"
   end
 
   case 
-  when e.start_date == ""
+  when e.start_time == ""
     active_tab = "details"
   when e.tickets.empty? || e.price_type == "free_event"
     active_tab = "times"
@@ -149,8 +145,8 @@
    @event = {
      'id' => e.id,
      'title' => e.title,
-     'start_date' => e.start_date,
-     'end_date' => e.end_date,
+     'start_time' => e.start_time,
+     'end_time' => e.end_time,
      'image' => e.image.url,
      'location' => jsonify_location(e.location),
      'description' => e.description,
@@ -172,19 +168,19 @@
      "price" => get_price(e),
      'is_repetive' => e.is_repetive,
      'frequency' => e.frequency,
-     "qr_code" => qr,
+     "qr_code" => e.qr_code,
      'max_attendees' => e.max_attendees,
      "get_demographics" => get_demographics(e),
      "going" => e.going_interest_levels.size,
      "maybe" => e.interested_interest_levels.size,
      "status" => status,
-     'repeatEndDate' => e.child_events.maximum('start_date'),
+     'repeatEndDate' => e.child_events.maximum('start_time'),
      'pass_id' => e.passes.map { |e| e.id }.to_sentence,
      "active_tab" => active_tab,
      "event_dates" => e.child_events.map {|ch| 
         {
           id: ch.id,
-          date: ch.start_date.to_date
+          date: ch.start_time.to_date
         }
 
       },
@@ -217,13 +213,6 @@
     request_user.events.page(params[:page]).per(20).each do |e|
       sponsors = []
       additional_media = []
-      location = {
-        "name" => e.location,
-        "geometry" => {
-          "lat" => e.lat,
-          'lng' => e.lng
-        }
-      }
 
       admission_resources = {
         "ticketes" => e.tickets,
@@ -251,8 +240,8 @@
       @events << {
         'id' => e.id,
         'name' => e.title,
-        'start_date' => e.start_date,
-        'end_date' => e.end_date,
+        'start_date' => e.start_time,
+        'end_date' => e.end_time,
         'image' => e.image.url,
         'location' => jsonify_location(location),
         'description' => e.description,
@@ -303,7 +292,7 @@
       @events << {
         'id' => e.id,
         'title' => e.title,
-        'date' => e.start_date,
+        'date' => e.start_time,
         'image' => e.image.url,
         "terms_conditions" => e.terms_conditions,
         'creator_name' => e.user.business_profile.profile_name,
@@ -456,9 +445,9 @@
               when 'pay_at_door'
                 resource[:fields].each do |f|
                   if f.include? "id"
-                    @ticket = @event.tickets.find(f[:id]).update!(start_price: f[:start_price], quantity: f[:quantity], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
+                    @ticket = @event.tickets.find(f[:id]).update!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
                   else
-                    @ticket = @event.tickets.create!(start_price: f[:start_price], quantity: f[:quantity], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
+                    @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], user: request_user, ticket_type: 'pay_at_door')
                   end  
                 end #each
                 @event.update!(price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"], price_type: "pay_at_door", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
@@ -468,13 +457,13 @@
                 passes_done = false
                 resource[:fields].each do |f|
                 if f.include? "id"
-                    if @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity],  ambassador_rate: f[:ambassador_rate], qr_code: generate_code)
+                    if @event.passes.find(f[:id]).update!(user: request_user, title: f[:title], quantity: f[:quantity], validity: "",  ambassador_rate: "", per_head: f[:per_head])
                       passes_done = true
                     else
                       passes_done = false
                     end
                 else
-                      if @event.passes.create!(user: request_user, title: f[:title], valid_from: f[:valid_from], valid_to: f[:valid_to], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], qr_code: generate_code)
+                      if @event.passes.create!(user: request_user, title: f[:title], quantity: f[:quantity], ambassador_rate: "" , per_head: f[:per_head], validity: "")
                         passes_done = true
                       else
                         passes_done = false
@@ -622,25 +611,24 @@
   def add_times
     if !params[:event_id].blank?
       @event = Event.find(params[:event_id])
-      @event.start_date = get_date_time(params[:start_date].to_date, params[:start_time])
-      @event.end_date = get_date_time(params[:end_date].to_date, params[:end_time])
+      @event.start_time = get_date_time(params[:start_date].to_date, params[:start_time])
+      @event.end_time = get_date_time(params[:end_date].to_date, params[:end_time])
       @event.frequency = params[:frequency]
       @event.is_repetive = params[:is_repetive]
         if @event.save
-            @event.child_events.where.not(start_date: params[:event_dates]).destroy_all
+            @event.child_events.where.not(start_time: params[:event_dates]).destroy_all
               params[:event_dates].each do |date|
-                ch = @event.child_events.where(start_date: date).first
+                ch = @event.child_events.where(start_time: date).first
                 if ch.blank?
                   @event.child_events.create!(
                       user_id: request_user.id,
                       title: @event.title,
                       venue: @event.venue,
                       image: @event.image,
-                      start_date: get_date_time(date.to_date, params[:start_time]),
-                      end_date: get_date_time(date.to_date, params[:end_time]),
+                      start_time: date.to_date,
+                      end_time: date.to_date,
                       first_cat_id: @event.first_cat_id,
                       description: @event.description,
-                      # terms_conditions: params[:terms_conditions],
                       allow_chat: "",
                       event_forwarding: "" ,
                       location: jsonify_location(@event.location),
@@ -651,16 +639,15 @@
                       status: @event.status 
                     )
                 else
-                  @event.child_events.find_by(start_date: date).update!(
+                  @event.child_events.find_by(start_time: date).update!(
                     user_id: request_user.id,
                     title: @event.title,
                     venue: @event.venue,
                     image: @event.image,
-                    start_date: get_date_time(date.to_date, params[:start_time]),
-                    end_date: get_date_time(date.to_date, params[:end_time]),
+                    start_time: @event.start_time,
+                    end_time: @event.end_time,
                     first_cat_id: @event.first_cat_id,
                     description: @event.description,
-                    # terms_conditions: params[:terms_conditions],
                     allow_chat: "",
                     event_forwarding: "" ,
                     location: jsonify_location(@event.location),
@@ -815,8 +802,8 @@
       @event = Event.find(params[:event_id])
       @event.title = params[:title]
       @event.image = params[:image]
-      @event.start_date = ""
-      @event.end_date = ""
+      @event.start_time = ""
+      @event.end_time = ""
       @event.venue = params[:venue]
       @event.over_18 = params[:over_18]
       @event.description = params[:description]
@@ -832,12 +819,13 @@
       @event.frequency = ""
       @event.price = ""
       @event.status = "draft"
+      @event.qr_code = generate_code
     else
       @event = request_user.events.new
       @event.title = params[:title]
       @event.image = params[:image]
-      @event.start_date = ""
-      @event.end_date = ""
+      @event.start_time = ""
+      @event.end_time = ""
       @event.venue = params[:venue]
       @event.over_18 = params[:over_18]
       @event.description = params[:description]
@@ -852,107 +840,14 @@
       @event.is_repetive = ""
       @event.frequency = ""
       @event.price = ""
-      @event.status = "draft"      
+      @event.status = "draft"   
+      @event.qr_code = generate_code   
     end
 
     # @event = []
 
     if @event.save
-      # @event = []
-      # @event << {"active_tab" => "details"}
-      # params[:event_dates].map { |date| @event.child_events.create!(
-      #       user_id: request_user.id,
-      #       name: params[:name],
-      #       image: params[:image],
-      #       start_date: "",
-      #       end_date: "",
-      #       over_18: params[:over_18],
-      #       first_cat_id: params[:category_ids].first,
-      #       description: params[:description],
-      #       # terms_conditions: params[:terms_conditions],
-      #       allow_chat: "",
-      #       event_forwarding: "" ,
-      #       location: params[:location],
-      #       location_name: params[:location][:full_address],
-      #       event_type: params[:event_type],
-      #       price_type: "",
-      #       price: ""
-      #     )}
-
         success = true
-
-      # if params[:price_type] == "free_event"
-      #     @event.update!(price_type: "free_event", price: 0.00)
-      #     @event.child_events.map { |e| e.update!(price_type: "free_event", price: 0.00) }
-      # # Admisssion sectiion
-      # else !params[:admission_resources].blank?
-      #   params[:admission_resources].each do |resource|
-
-
-      #   case resource[:name]
-      #   when "free"
-      #       resource[:fields].each do |f|
-      #        @ticket = @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'free', price: 0)
-      #       end #each
-      #       @event.update!(price: 0.00, start_price: 0.00, end_price: 0.00, price_type: "free_ticketed_event", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
-      #       @event.child_events.map { |e| e.update!(price_type: "free_ticketed_event", price: 0.00, start_price: 0.00, end_price: 0.00,) }
-      #    when 'buy'
-      #       prices = []
-      #       tickets_done = false
-      #       resource[:fields].each do |f|
-      #        if @event.tickets.create!(title: f[:title], quantity: f[:quantity], per_head: f[:per_head], terms_conditions: f[:terms_conditions], price: f[:price], user: request_user, ticket_type: 'buy')
-      #        prices.push(f[:price])
-      #        tickets_done = true
-      #        else
-      #         tickets_done = false
-      #        end
-      #       end #each
-      #        if tickets_done
-      #        @event.update!(price: prices.max, start_price: 0.00, end_price: 0.00, price_type: "buy", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
-      #        @event.child_events.map { |e| e.update!(price_type: "buy", price: prices.max, start_price: 0.00, end_price: 0.00) }
-      #        end
-      #     when 'pay_at_door'
-      #       resource[:fields].each do |f|
-      #        @ticket = @event.tickets.create!(start_price: f[:start_price], end_price: f[:end_price], quantity: f[:quantity], terms_conditions: f[:terms_conditions], user: request_user, ticket_type: 'pay_at_door')
-      #       end #each
-      #       @event.update!(price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"], price_type: "pay_at_door", max_attendees: @event.tickets.map { |e| e.quantity}.sum)
-      #       @event.child_events.map { |e| e.update!(price_type: "pay_at_door", price: 0.00, start_price: resource[:fields][0] ["start_price"], end_price:resource[:fields][0] ["end_price"]) }
-
-      #     when 'pass'
-      #       passes_done = false
-      #       resource[:fields].each do |f|
-      #      if @event.passes.create!(user: request_user, title: f[:title], validity: f[:valid_to], quantity: f[:quantity], ambassador_rate: f[:ambassador_rate], per_head: f[:per_head])
-      #        passes_done = true
-      #      else
-      #       passes_done = false
-      #      end  
-      #     end #each
-      #     if passes_done 
-      #       @event.update!(pass: 'true')
-      #       @event.child_events.map {|ch| ch.update!(pass: 'true') }
-      #     end
-      #     else
-      #       @error_messages.push('invalid resource type is submitted.')
-      #     end
-      #   end #each
-      # end#if
-
-
-    #save attachement if there is any
-    # if !params[:event_attachments].blank?
-    #   params[:event_attachments].each do |attachment|
-    #     @event_attachment = @event.event_attachments.new(:media => attachment[:media], media_type: 'image')
-    #     @event_attachment.save
-    #    end
-    #   end #if
-
-    #   #save sponsers if there is any
-    #   if !params[:sponsors].blank?
-    #     params[:sponsors].each do |sponsor|
-    #     @event_sponsor = @event.sponsors.create!(:external_url => sponsor[:external_url],:sponsor_image => sponsor[:sponsor_image])
-    #     end #each
-    #   end#if
-
     end#if
 
      if success
