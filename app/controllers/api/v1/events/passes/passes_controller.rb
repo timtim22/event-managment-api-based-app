@@ -1,7 +1,7 @@
 class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
 
   api :POST, '/api/v1/events/passes/get-list', 'Get a single pass'
-  param :event_id, Integer, :desc => "ID of the event", :required => true
+  param :event_id, :number, :desc => "ID of the event", :required => true
 
 
   def index
