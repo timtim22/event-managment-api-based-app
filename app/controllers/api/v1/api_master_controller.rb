@@ -105,9 +105,9 @@ class Api::V1::ApiMasterController < ApplicationController
       @interested_followers_or_friends = []
       @interested_others = []
         @key = "interested_friends"
-      if request_user && request_user.app_user == true
+      if request_user && request_user.mobile_user == true
         @key = "interested_friends"
-      elsif request_user && request_user.web_user == true
+      elsif request_user && request_user.mobile_user == fakse
         @key = "interested_followers"
       end
       event.interested_users.uniq.each do |user|
@@ -119,7 +119,7 @@ class Api::V1::ApiMasterController < ApplicationController
                 @interested_others.push(get_user_object(user))
               end
           end
-          elsif request_user && request_user.web_user == true
+          elsif request_user && request_user.mobile_user == false
             if request_user.followers.include? user
               @interested_followers_or_friends.push(get_user_object(user))
             else

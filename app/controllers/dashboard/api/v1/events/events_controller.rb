@@ -14,7 +14,7 @@
   def index
     @event = []
     #to show draft parent events in listing
-    request_user.events.where(status: "draft").left_joins(:child_events).merge(ChildEvent.where(id: nil)).order(start_date: 'ASC').each do |event|
+    request_user.events.where(status: "draft").left_joins(:child_events).merge(ChildEvent.where(id: nil)).order(start_time: 'ASC').each do |event|
       @event << {
         "id" => event.id,
         "title" => event.title,
@@ -39,19 +39,15 @@
       }
     end
 
-    request_user.child_events.order(start_date: 'ASC').each do |event|
-      qr = []
-       if !event.event.passes.blank?
-         event.event.passes.map {|p| qr.push(p.qr_code) }
-       end
+    request_user.child_events.order(start_time: 'ASC').each do |event|
         case
-        when event.start_date.to_date == Date.today
+        when event.start_time.to_date == Date.today
         status =  "Now On"
-        when event.start_date.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door" || event.price_type == "free_event"
+        when event.start_time.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door" || event.price_type == "free_event"
           status =  event.going_interest_levels.size.to_s + " Going"  
-        when event.start_date.to_date > Date.today && event.price_type == "buy"
+        when event.start_time.to_date > Date.today && event.price_type == "buy"
           status =  event.event.tickets.map { |e| e.wallets.size.to_s}.join(",") + " Tickets Gone"
-        when event.start_date.to_date < Date.today
+        when event.start_time.to_date < Date.today
          status = "Event Over"
         end
 
@@ -75,7 +71,7 @@
         "parent_event_id" => event.event.id,
         "price" => get_price(event.event),
         "event_phase_status" => status,
-        "qr_code" => qr,
+        "qr_code" => event.event.qr_code,
         "pass_id" => event.event.passes.map { |e| e.id}.to_sentence
       }
     end
@@ -120,10 +116,6 @@
      }
     end#each
    end
-    qr = []
-     if !e.passes.blank?
-       e.passes.map {|p| qr.push(p.qr_code) }
-     end
   case
   when e.start_time.to_date == Date.today
   status =  "Now On"
@@ -176,7 +168,7 @@
      "price" => get_price(e),
      'is_repetive' => e.is_repetive,
      'frequency' => e.frequency,
-     "qr_code" => qr,
+     "qr_code" => e.qr_code,
      'max_attendees' => e.max_attendees,
      "get_demographics" => get_demographics(e),
      "going" => e.going_interest_levels.size,
@@ -221,13 +213,6 @@
     request_user.events.page(params[:page]).per(20).each do |e|
       sponsors = []
       additional_media = []
-      location = {
-        "name" => e.location,
-        "geometry" => {
-          "lat" => e.lat,
-          'lng' => e.lng
-        }
-      }
 
       admission_resources = {
         "ticketes" => e.tickets,
@@ -307,7 +292,7 @@
       @events << {
         'id' => e.id,
         'title' => e.title,
-        'date' => e.start_date,
+        'date' => e.start_time,
         'image' => e.image.url,
         "terms_conditions" => e.terms_conditions,
         'creator_name' => e.user.business_profile.profile_name,

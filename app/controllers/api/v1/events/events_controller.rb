@@ -25,7 +25,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
             event_title: e.title,
             event_image: e.image,
             event_location: e.location,
-            event_date: e.start_date,
+            event_date: e.start_time,
             is_added_to_wallet: is_added_to_wallet?(pass.id),
             validity: pass.validity.strftime(get_time_format),
             grabbers_count: pass.wallets.size,
@@ -46,9 +46,9 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
           event_title: e.title,
           event_image: e.image,
           event_location: e.location,
-          event_date: e.start_date,
+          event_date: e.start_time,
           event_location: e.location,
-          event_date: e.start_date,
+          event_date: e.start_time,
           is_added_to_wallet: is_added_to_wallet?(pass.id),
           validity: pass.validity.strftime(get_time_format),
           grabbers_count: pass.wallets.size,
@@ -64,10 +64,10 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
             'id' => e.id,
             'title' => e.title,
             'description' => e.description,
-            'start_date' => get_date_time_mobile(e.start_date),
-            'end_date' => get_date_time_mobile(e.end_date),
-            'start_time' => get_date_time_mobile(e.start_date),
-            'end_time' => get_date_time_mobile(e.end_date),
+            'start_date' => e.start_time,
+            'end_date' => e.end_time,
+            'start_time' => e.start_time,
+            'end_time' => e.end_time,
             'price' => get_price(e.event), # check for price if it is zero
             'price_type' => e.event.price_type,
             'event_type' => e.event_type,
@@ -283,7 +283,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
   def get_map_events
     if !params[:date].blank?
       date = Date.parse(params[:date])
-      @events = ChildEvent.where(start_date:  date.midnight..date.end_of_day)
+      @events = ChildEvent.where(start_time:  date.midnight..date.end_of_day)
       events  = @events.map {|event| get_map_event_object(event) }
       render json: {
         code: 200,
@@ -333,10 +333,10 @@ private
         "title" => child_event.event.title,
         "description" => child_event.event.description,
         "location" => jsonify_location(child_event.location),
-        "start_date" => get_date_time_mobile(child_event.start_date),
-        "end_date" => get_date_time_mobile(child_event.end_date),
-        "start_time" => get_date_time_mobile(child_event.start_date),
-        "end_time" => get_date_time_mobile(child_event.end_date),
+        "start_date" => child_event.start_time,
+        "end_date" => child_event.end_time,
+        "start_time" => child_event.start_time,
+        "end_time" => child_event.end_time,
         "over_18" => child_event.event.over_18,
         "price_type" => child_event.price_type,
         "price" => get_price(child_event.event).to_s,

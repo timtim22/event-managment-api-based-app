@@ -402,8 +402,8 @@ class ApplicationController < ActionController::Base
     object = {
       "id" => event.id,
       "name" => event.title,
-      "start_date" => event.start_date,
-      "end_date" => event.end_date,
+      "start_date" => event.start_time,
+      "end_date" => event.end_time,
       "start_time" => event.start_time,
       "end_time" => event.end_time,
       "event_type" => event.event_type,
@@ -426,8 +426,8 @@ class ApplicationController < ActionController::Base
       "event_dates" => event.child_events.map {|ch| 
         {
           id: ch.id,
-          start_date: ch.start_date.to_date,
-          end_date: ch.end_date.to_date
+          start_date: ch.start_time.to_date,
+          end_date: ch.end_time.to_date
         }
 
       }
