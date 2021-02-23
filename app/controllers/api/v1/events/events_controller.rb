@@ -283,7 +283,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
   def get_map_events
     if !params[:date].blank?
       date = Date.parse(params[:date])
-      @events = ChildEvent.active.where(start_date:  date.midnight..date.end_of_day)
+      @events = ChildEvent.active.where(start_time:  date.midnight..date.end_of_day)
       events  = @events.map {|event| get_map_event_object(event) }
       render json: {
         code: 200,
