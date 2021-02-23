@@ -85,7 +85,7 @@ class User < ApplicationRecord
 
   scope :mobile_users, -> { where(mobile_user: true) }
   scope :business_users, -> { where(mobile_user: false) }
-
+  scope :active, -> {where(status: "active")}
 
   # validates :is_subscribed, presence: true
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }, on: :create
