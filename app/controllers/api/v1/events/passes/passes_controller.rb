@@ -27,6 +27,7 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
               event_date:@event.start_time,
               is_added_to_wallet: is_added_to_wallet?(pass.id),
               grabbers_count: pass.wallets.size,
+              validity: pass.event.start_time,
               description: pass.description,
               issued_by: get_full_name(pass.user),
               redeem_count: get_redeem_count(pass),
@@ -49,6 +50,7 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
             grabbers_count: pass.wallets.size,
             description: pass.description,
             issued_by: get_full_name(pass.user),
+            validity: pass.event.start_time,
             redeem_count: get_redeem_count(pass),
             quantity: pass.quantity
           }
@@ -92,6 +94,7 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
         event_location: jsonify_location(pass.event.location),
         event_date:pass.event.start_time,
         is_added_to_wallet: is_added_to_wallet?(pass.id),
+        validity: pass.event.start_time,
         grabbers_count: pass.wallets.size,
         description: pass.description,
         issued_by: get_full_name(pass.user),
