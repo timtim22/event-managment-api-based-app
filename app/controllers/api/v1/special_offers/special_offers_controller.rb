@@ -1,5 +1,5 @@
 class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterController
-  before_action :authorize_request, except: ['index','show']
+  before_action :authorize_request, except: ['get_list','show']
 
 
 
