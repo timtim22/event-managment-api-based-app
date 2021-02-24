@@ -95,7 +95,7 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
   # param :password, String, :desc => "Password"
 
   def create_user
-    required_fields = ['profile_name', 'contact_name','location', 'display_name', 'phone_number', 'email', 'password','is_charity', 'about']
+    required_fields = ['profile_name', 'contact_name','location', 'display_name', 'phone_number', 'email', 'role_id', 'password','is_charity', 'about']
     errors = []
     required_fields.each do |field|
       if params[field.to_sym].blank?
