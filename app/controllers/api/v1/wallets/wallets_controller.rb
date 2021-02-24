@@ -51,7 +51,7 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
         quantity: offer.quantity
        }
 
-      elsif  is_expired?(offer)
+      elsif  offer_expired?(offer)
         @expired_offers << {
         id: offer.id,
         title: offer.title,
