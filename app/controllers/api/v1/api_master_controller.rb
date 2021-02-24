@@ -123,7 +123,7 @@ class Api::V1::ApiMasterController < ApplicationController
         @key = "interested_friends"
       if request_user && request_user.mobile_user == true
         @key = "interested_friends"
-      elsif request_user && request_user.mobile_user == fakse
+      elsif request_user && request_user.mobile_user == false
         @key = "interested_followers"
       end
       event.interested_users.uniq.each do |user|
