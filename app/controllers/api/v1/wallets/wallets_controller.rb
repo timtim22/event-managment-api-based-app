@@ -150,7 +150,7 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             event_location: jsonify_location(pass.event.location), 
             event_date: pass.event.start_time,
             distributed_by: distributed_by(pass),
-            validity: get_date_time(pass.event.end_time, pass),
+            validity: pass.event.end_time,
             is_expired: "",
             grabbers_count: pass.wallets.size,
             is_redeemed: true,
@@ -201,7 +201,7 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             event_location: jsonify_location(pass.event.location),
             event_date: pass.event.start_time,
             distributed_by: distributed_by(pass),
-            validity: get_date_time(pass.event.end_time, pass),
+            validity: pass.event.end_time,
             is_expired: "" ,
             grabbers_count: pass.wallets.size,
             is_redeemed: false,
@@ -330,7 +330,7 @@ def get_tickets
     event_image: wallet.offer.event.image,
     event_location: jsonify_location(wallet.offer.event.location),
     event_start_time: wallet.offer.event.start_time,
-    event_end_time: "2021-02-19T06:00:00.000Z",#get_date_time(wallet.offer.event.end_date, wallet.offer),
+    event_end_time: wallet.offer.event.end_date,
     event_date: wallet.offer.event.start_time,
     price: get_formated_price(wallet.offer.price),
     quantity: wallet.offer.quantity,
@@ -788,11 +788,6 @@ end
 
  private
 
- def get_date_time(date, time)
-    d = date.strftime("%Y-%m-%d")
-    t = time.strftime("%H:%M:%S")
-    datetime = d + "T" + t + ".000Z"
- end
 
  def is_added_to_wallet?(pass_id)
   wallet = request_user.wallets.where(offer_id: pass_id).where(offer_type: 'Pass')
