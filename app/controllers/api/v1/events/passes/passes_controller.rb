@@ -81,7 +81,7 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
   end
 
     api :POST, '/api/v1/events/passes/show', 'View a pass'
-    param :pass_id, Integer, :desc => "ID of the pass", :required => true
+    param :pass_id, :number, :desc => "ID of the pass", :required => true
 
 
   def pass_single
