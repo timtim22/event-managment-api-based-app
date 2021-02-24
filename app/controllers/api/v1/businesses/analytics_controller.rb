@@ -86,10 +86,10 @@ class Api::V1::Businesses::AnalyticsController < Api::V1::ApiMasterController
               @event_stats = {
                   "event_id" => event.id,
                   "name" => event.title,
-                  "start_date" => get_date_time_mobile(event.start_date),
-                  "end_date" => get_date_time_mobile(event.end_date),
-                  "start_time" => get_date_time_mobile(event.start_date),
-                  "end_time" => get_date_time_mobile(event.end_date),
+                  "start_date" => get_date_time_mobile(event.start_time),
+                  "end_date" => get_date_time_mobile(event.end_time),
+                  "start_time" => get_date_time_mobile(event.start_time),
+                  "end_time" => get_date_time_mobile(event.end_time),
                   "location" => jsonify_location(event.location),
                   "event_type" => event.event_type,
                   "image" => event.image,
@@ -287,7 +287,7 @@ class Api::V1::Businesses::AnalyticsController < Api::V1::ApiMasterController
             winner_id: c.user.id
         }},
         draw_date: competition.end_date,
-        start_date: competition.start_date,
+        start_date: competition.start_time,
         creation_date: competition.created_at,
         end_date: competition.end_date,
         total_entries_count: competition.registrations.size,

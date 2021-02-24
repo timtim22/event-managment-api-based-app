@@ -18,11 +18,13 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
               @event << {
                   "id" => event.id,
                   "image" => event.event.image,
-                  "name" => event.title,
+                  "title" => event.title,
                   "description" => event.description,
                   "location" => jsonify_location(event.location),
-                  "start_date" => event.start_date,
-                  "end_date" => event.end_date,
+                  "start_date" => event.start_time,
+                  "end_date" => event.end_time,
+                  "event_start_time" => event.start_time,
+                  "event_end_time" => event.end_time,
                   "over_18" => event.over_18,
                   "price_type" => event.price_type,
                   "price" => get_price(event.event),
@@ -49,7 +51,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                   image: competition.image.url,
                   is_added_to_wallet: added_to_wallet?(request_user, competition),
                   total_entries_count: get_entry_count(request_user, competition),
-                  validity: competition.validity.strftime(get_time_format)
+                  validity: competition.end_date
                   }
             end
               render json: {
@@ -60,32 +62,33 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
             }
           when params[:resource_type] == "Pass"
             @passes = []
-            passes = Pass.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).not_expired.per(10).order(created_at: "ASC")
+            passes = Pass.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
               if !passes.blank?
                       passes.each do |pass|
                        if request_user
                         if !is_removed_pass?(request_user, pass)
                           @passes << {
                             id: pass.id,
-                            event_name:pass.event.title,
-                            event_name:pass.title,
+                            event_title:pass.event.title,
+                            pass_title:pass.title,
                             pass_type: pass.pass_type,
                             host_image:pass.event.user.avatar,
                             event_image:pass.event.image,
                             is_added_to_wallet: added_to_wallet?(request_user, pass),
-                            validity: pass.validity.strftime(get_time_format),
+                            validity: pass.event.end_time,
                             is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id)
                           }
                         end
                       else
                         @passes << {
                             id: pass.id,
-                            event_name:pass.event.title,
+                            event_title:pass.event.title,
+                            pass_title:pass.title,
                             pass_type: pass.pass_type,
                             host_image:pass.event.user.avatar,
                             event_image:pass.event.image,
                             is_added_to_wallet: added_to_wallet?(request_user, pass),
-                            validity: pass.validity.strftime(get_time_format),
+                            validity: pass.event.end_time,
                             is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id)
                         }
                        end

@@ -74,7 +74,7 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
 
 
   api :POST, '/api/v1/special-offers/show', 'Get a single special offer'
-  param :special_offer_id, Integer, :desc => "ID of the special offer", :required => true
+  param :special_offer_id, :number, :desc => "ID of the special offer", :required => true
 
   def show
    if !params[:special_offer_id].blank?
