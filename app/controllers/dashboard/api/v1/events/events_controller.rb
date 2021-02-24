@@ -693,6 +693,7 @@
     if !params[:event_id].blank?
       @event = Event.find(params[:event_id])
       @event.status = "active"
+      @event.child_events.all.update(status: "active")
 
       if @event.save
         render json:  {
