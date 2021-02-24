@@ -86,7 +86,23 @@ class Api::V1::ApiMasterController < ApplicationController
       end
       end
 
-     def is_expired?(offer)
+     def offer_expired?(offer)
+      if offer.validity > DateTime.now
+        false
+      else
+        true
+      end
+    end
+
+     def pass_expired?(offer)
+      if offer.event.end_time > DateTime.now
+        false
+      else
+        true
+      end
+    end
+
+     def competition_expired?(offer)
       if offer.end_date > DateTime.now
         false
       else
