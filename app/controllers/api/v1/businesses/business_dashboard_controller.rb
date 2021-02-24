@@ -192,7 +192,6 @@ returns array_of: :get_competitions, code: 200, desc: 'This api will return the 
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        location: jsonify_location(competition.location),
         image: competition.image,
         start_date: get_date_time_mobile(competition.start_date),
         creation_date: competition.created_at, 
@@ -200,7 +199,7 @@ returns array_of: :get_competitions, code: 200, desc: 'This api will return the 
         creator_name: get_full_name(competition.user),
         creator_image: competition.user.avatar,
         terms_conditions: competition.terms_conditions,
-        validity: competition.validity.strftime(get_time_format)
+        validity: competition.end_date.strftime(get_time_format)
       }
     end #each
 
