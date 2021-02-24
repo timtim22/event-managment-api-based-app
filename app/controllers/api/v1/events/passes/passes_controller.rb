@@ -127,7 +127,7 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
    end
 
   api :POST, '/api/v1/events/passes/redeem', 'To redeem a pass'
-  param :pass_id, Integer, :desc => "pass id", :required => true
+  param :pass_id, :number, :desc => "pass id", :required => true
   param :qr_code, String, :desc => "Redeem Code", :required => true
 
   def redeem_it

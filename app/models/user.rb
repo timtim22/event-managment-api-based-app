@@ -94,7 +94,7 @@ class User < ApplicationRecord
   :length => { :minimum => 10, :maximum => 15 }, format: { with: /(^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0-9\-\s]{10}$)/ }
 
   # validates :password,
-  #                      :confirmation => true,
+  #                      :confirmation => true,rak
   #                      :on => :create,
   #                      :length => {:within => 8..40},
   #                      :format => {message: 'should contain at least one lower character and a special character.', with: /\A(?=.*[a-z])(?=.*[[:^alnum:]]) /x}
