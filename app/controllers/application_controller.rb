@@ -445,7 +445,7 @@ class ApplicationController < ActionController::Base
       event_location: jsonify_location(pass.event.location),
       event_start_time: pass.event.start_time,
       event_end_time: pass.event.end_time,
-      event_date: pass.event.start_date,
+      event_date: pass.event.start_time,
       distributed_by: distributed_by(pass),
       is_added_to_wallet: is_added_to_wallet?(pass.id),
       validity: pass.validity.strftime(get_time_format).to_s,
@@ -489,10 +489,10 @@ class ApplicationController < ActionController::Base
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        start_date: competition.start_date,
-        end_date: competition.end_date,
-        start_time: competition.start_date,
-        end_time: competition.end_date,
+        start_date: competition.start_time,
+        end_date: competition.end_time,
+        start_time: competition.start_time,
+        end_time: competition.end_time,
         image: competition.image.url,
         is_entered: is_entered_competition?(competition.id),
         participants_stats: get_participants_stats(competition),
@@ -502,7 +502,7 @@ class ApplicationController < ActionController::Base
         total_entries_count: get_entry_count(request_user, competition),
         issued_by: get_full_name(competition.user),
         is_followed: is_followed(competition.user),
-        validity: competition.end_date.strftime(get_time_format),
+        validity: competition.end_time.strftime(get_time_format),
         terms_and_conditions: competition.terms_conditions
     }
   end
@@ -574,7 +574,7 @@ class ApplicationController < ActionController::Base
           event_name: pass.event.title,
           event_image: pass.event.image,
           event_location: jsonify_location(pass.event.location),
-          event_date: pass.event.start_date,
+          event_date: pass.event.start_time,
           distributed_by: distributed_by(pass),
           is_added_to_wallet: is_added_to_wallet?(pass.id),
           validity: pass.validity.strftime(get_time_format).to_s,
@@ -1152,7 +1152,7 @@ end
   end
 
   def array_sort_by_date(array)
-    array.sort_by { |h| h["start_date"].split('/').reverse }
+    array.sort_by { |h| h["start_time"].split('/').reverse }
   end
 
   def string_to_boolean(str)

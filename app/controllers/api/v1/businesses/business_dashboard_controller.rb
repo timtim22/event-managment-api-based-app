@@ -37,8 +37,8 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
   def_param_group :get_events do
     property :id, String, desc: 'Primary key'
     property :title, String, desc: 'Event title'
-    property :start_date, String, desc: 'Event start date'
-    property :end_date, String, desc: 'Event end date'
+    property :start_time, String, desc: 'Event start date'
+    property :end_time, String, desc: 'Event end date'
     property :start_time, String, desc: 'Event start time'
     property :end_time, String, desc: 'Event end time'
     property :image, String, desc: 'Event image'
@@ -61,10 +61,10 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
       @events << {
         'id' => e.id,
         'title' => e.title,
-        'start_date' => get_date_time_mobile(e.start_date),
-        'end_date' => get_date_time_mobile(e.end_date),
-        'start_time' => get_date_time_mobile(e.start_date),
-        'end_time' => get_date_time_mobile(e.end_date),
+        'start_date' => get_date_time_mobile(e.start_time),
+        'end_date' => get_date_time_mobile(e.end_time),
+        'start_time' => get_date_time_mobile(e.start_time),
+        'end_time' => get_date_time_mobile(e.end_time),
         'image' => e.event.image,
         'location' => jsonify_location(e.location),
         'price' => get_price(e.event),
@@ -102,7 +102,7 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
   property :location, String, desc: 'Offer location'
   property :terms_conditions, String, desc: 'Offer terms and conditions'
   property :creator_name, String, desc: 'Offer business name'
-  property :start_time, String, desc: 'The time at which the Offer starts'
+  property :start_date, String, desc: 'The time at which the Offer starts'
   property :creation_date, String, desc: 'Offer created at date'
   property :end_date, String, desc: 'Offer end date'
   property :end_time, String, desc: 'Offer end time'
@@ -168,7 +168,7 @@ returns array_of: :get_special_offers, code: 200, desc: 'This api will return th
   property :title, String, desc: 'Competition title'
   property :validity, String, desc: 'Competition validity'
   property :description, String, desc: 'Competition description'
-  property :start_date, String, desc: 'Competition start date'
+  property :start_time, String, desc: 'Competition start date'
   property :creation_date, String, desc: 'Competition created at'
   property :image, String, desc: 'Competition image'
   property :creator_name, String, desc: 'Competition business name'
@@ -267,8 +267,8 @@ returns array_of: :get_competitions, code: 200, desc: 'This api will return the 
   property :id, String, desc: 'Primary key'
   property :title, String, desc: 'event title'
   property :description, String, desc: 'event description'
-  property :start_date, String, desc: 'event start date'
-  property :end_date, String, desc: 'event end date'
+  property :start_time, String, desc: 'event start date'
+  property :end_time, String, desc: 'event end date'
   property :start_time, String, desc: 'event start time'
   property :end_time, String, desc: 'event end time'
   property :creation_date, String, desc: 'Competition created at'
@@ -323,7 +323,7 @@ end
             event_title: e.title,
             event_image: e.image,
             event_location: jsonify_location(e.location),
-            event_date: e.start_date,
+            event_date: e.start_time,
             is_added_to_wallet: is_added_to_wallet?(pass.id),
             validity: pass.validity.strftime(get_time_format),
             grabbers_count: pass.wallets.size,
@@ -346,7 +346,7 @@ end
           event_title: e.title,
           event_image: e.image,
           event_location: jsonify_location(e.location),
-          event_date: e.start_date,
+          event_date: e.start_time,
           is_added_to_wallet: is_added_to_wallet?(pass.id),
           validity: pass.validity.strftime(get_time_format),
           grabbers_count: pass.wallets.size,
@@ -362,10 +362,10 @@ end
             'id' => e.id,
             'title' => e.title,
             'description' => e.description,
-            'start_date' => get_date_time_mobile(e.start_date),
-            'end_date' => get_date_time_mobile(e.end_date),
-            'start_time' => get_date_time_mobile(e.start_date),
-            'end_time' => get_date_time_mobile(e.end_date),
+            'start_date' => get_date_time_mobile(e.start_time),
+            'end_date' => get_date_time_mobile(e.end_time),
+            'start_time' => get_date_time_mobile(e.start_time),
+            'end_time' => get_date_time_mobile(e.end_time),
             'creation_date' => e.created_at,
             'price' => get_price(e.event), # check for price if it is zero
             'price_type' => e.event.price_type,

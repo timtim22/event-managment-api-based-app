@@ -72,8 +72,8 @@ class Api::V1::Events::Tickets::TicketsController < Api::V1::ApiMasterController
            per_head: ticket.per_head,
            event_title: ticket.event.title,
            event_location: jsonify_location(ticket.event.location),
-           event_date: ticket.event.start_date,
-           validity: ticket.event.end_date,
+           event_date: ticket.event.start_time,
+           validity: ticket.event.end_time,
            is_expired: event_expired?(ticket.event)
          }
        end

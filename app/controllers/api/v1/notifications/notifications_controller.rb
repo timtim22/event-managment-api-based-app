@@ -269,7 +269,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
           "competition_id": notification.resource.event.id,
           "competition_name": notification.resource.event.title,
           "business_name": get_full_name(notification.resource.event.user),
-          "draw_date": notification.resource.event.end_time,
+          "draw_date": notification.resource.event.end_date,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,

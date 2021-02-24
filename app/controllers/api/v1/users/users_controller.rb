@@ -546,7 +546,7 @@ end
        resource['name'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
        resource['location'] = jsonify_location(log.resource.location)
-       resource['start_date'] = log.resource.start_date
+       resource['start_date'] = log.resource.start_time
        resource['interested_people_count'] = log.resource.interest_levels.size
 
       when 'FriendRequest'
@@ -566,7 +566,7 @@ end
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
         resource['location'] = jsonify_location(log.resource.event.location)
-        resource['start_date'] = log.resource.event.start_date
+        resource['start_date'] = log.resource.event.start_time
         resource['grabbers_counts'] = log.resource.wallets.size
 
       when 'SpecialOffer'
@@ -626,8 +626,8 @@ end
     property :title, String, desc: 'title of the event'
     property :description, String, desc: 'description'
     property :location, String, desc: 'location'
-    property :start_date, String, desc: 'start date and time'
-    property :end_date, String, desc: 'end date and time'
+    property :start_time, String, desc: 'start date and time'
+    property :end_time, String, desc: 'end date and time'
     property :over_18, String, desc: 'true or false'
     property :price_type, String, desc: 'price type of the event'
     property :price, String, desc: 'price of the event'
@@ -674,8 +674,8 @@ end
     property :event_type, String, desc: 'event type'
     property :additional_media, String, desc: 'additional_media'
     property :location, String, desc: 'location'
-    property :start_date, String, desc: 'start date and time'
-    property :end_date, String, desc: 'end date and time'
+    property :start_time, String, desc: 'start date and time'
+    property :end_time, String, desc: 'end date and time'
     property :over_18, String, desc: 'true or false'
     property :price_type, String, desc: 'price type of the event'
     property :price, String, desc: 'price of the event'
@@ -699,8 +699,8 @@ end
       attending << {
         "event_id" => event.id,
         "name" => event.title,
-        "start_date" => event.start_date,
-        "end_date" => event.end_date,
+        "start_date" => event.start_time,
+        "end_date" => event.end_time,
         "location" => jsonify_location(event.location),
         "event_type" => event.event_type,
         "image" => event.image,
@@ -745,7 +745,7 @@ end
       resource['name'] = log.resource.title
       resource['host_name'] = get_full_name(log.resource.user)
       resource['location'] = jsonify_location(log.resource.location)
-      resource['start_date'] = log.resource.start_date
+      resource['start_date'] = log.resource.start_time
       resource['interested_people_count'] = log.resource.interest_levels.size
 
      when 'FriendRequest'
@@ -765,7 +765,7 @@ end
        resource['title'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
        resource['location'] = jsonify_location(log.resource.event.location)
-       resource['start_date'] = log.resource.event.start_date
+       resource['start_date'] = log.resource.event.start_time
        resource['grabbers_counts'] = log.resource.wallets.size
 
      when 'SpecialOffer'

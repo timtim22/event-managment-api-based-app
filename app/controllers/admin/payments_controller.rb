@@ -74,7 +74,7 @@ class Admin::PaymentsController < Admin::AdminMasterController
   def approve_refund
    @refund_request = RefundRequest.find(params[:id])
      if @refund_request.status == "pending" or @refund_request.status == "rejected"
-      event_date = Ticket.find(@refund_request.ticket_id).event.start_date.to_date
+      event_date = Ticket.find(@refund_request.ticket_id).event.start_time.to_date
 
       diff_in_days = difference_in_days(@refund_request.created_at.to_date, event_date)
       
