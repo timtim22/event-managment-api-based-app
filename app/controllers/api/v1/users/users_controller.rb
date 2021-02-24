@@ -579,7 +579,7 @@ end
       when 'Competition'
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
-        resource['validity'] = log.resource.end_time
+        resource['validity'] = log.resource.end_date
 
       when 'OfferForwarding'
         resource['title'] = log.resource.offer.title
