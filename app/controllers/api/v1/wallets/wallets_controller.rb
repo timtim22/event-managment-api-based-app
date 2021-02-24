@@ -330,7 +330,7 @@ def get_tickets
     event_image: wallet.offer.event.image,
     event_location: jsonify_location(wallet.offer.event.location),
     event_start_time: wallet.offer.event.start_time,
-    event_end_time: wallet.offer.event.end_date,
+    event_end_time: wallet.offer.event.end_time,
     event_date: wallet.offer.event.start_time,
     price: get_formated_price(wallet.offer.price),
     quantity: wallet.offer.quantity,
