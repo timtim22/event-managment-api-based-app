@@ -1273,6 +1273,7 @@ end
   helper_method :is_business
   helper_method :mobile_users
   helper_method :business_users
+  helper_method :is_mobile_user?
 
 
 end
