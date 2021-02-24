@@ -251,7 +251,7 @@ def get_competitions
 
   @sorted_competitions.uniq.each do |competition|
   
-    if is_expired?(competition)
+    if competition_expired?(competition)
     @expired_competitions << {
       id: competition.id,
       title: competition.title,
