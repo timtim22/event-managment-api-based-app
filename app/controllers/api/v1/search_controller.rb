@@ -73,7 +73,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                             host_image:pass.event.user.avatar,
                             event_image:pass.event.image,
                             is_added_to_wallet: added_to_wallet?(request_user, pass),
-                            validity: pass.event.end_time
+                            validity: pass.event.end_time,
                             is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id)
                           }
                         end
