@@ -23,6 +23,8 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                   "location" => jsonify_location(event.location),
                   "start_date" => event.start_time,
                   "end_date" => event.end_time,
+                  "event_start_time" => event.start_time,
+                  "event_end_time" => event.end_time,
                   "over_18" => event.over_18,
                   "price_type" => event.price_type,
                   "price" => get_price(event.event),

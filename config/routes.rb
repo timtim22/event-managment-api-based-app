@@ -267,7 +267,7 @@ namespace :admin do
   get '/payments/reject-refund' => "payments#reject_refund"
   get '/send-vip-pass' => "passes#send_vip_pass_page"
   post '/send-vip-pass' => "passes#send_vip_pass"
-  post '/delete-resource' => 'events#delete_resource'
+  
 
   resources :news_feeds
   resources :categories
@@ -312,6 +312,7 @@ end
         get '/get-list' => 'events#index'
         post '/publish-event' => 'events#publish_event'
         post '/show' => 'events#show'
+        post '/delete-resource' => 'events#delete_resource'
       end
 
         resources :news_feeds
