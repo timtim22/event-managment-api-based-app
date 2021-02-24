@@ -23,8 +23,8 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                   "location" => jsonify_location(event.location),
                   "start_date" => event.start_time,
                   "end_date" => event.end_time,
-                  "event_start_time" => event.start_time,
-                  "event_end_time" => event.end_time,
+                  "start_time" => event.start_time,
+                  "end_time" => event.end_time,
                   "over_18" => event.over_18,
                   "price_type" => event.price_type,
                   "price" => get_price(event.event),
@@ -173,6 +173,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                 gender: profile.gender,
                 is_request_sent: request_status(request_user, profile.user)['status'],
                 role: profile.user.role_ids,
+                is_ambassador: is_ambassador?(profile.user),
                 is_my_friend: is_my_friend?(profile.user),
                 mutual_friends_count: get_mutual_friends(request_user, profile.user).size
               }
@@ -203,6 +204,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
               is_request_sent: false,
               is_my_following: is_my_following?(profile.user),
               role: profile.user.role_ids,
+              is_ambassador: is_ambassador?(profile.user),
               is_my_friend: false,
               mutual_friends_count: 0,
               total_followers_count: profile.user.followers.size

@@ -197,7 +197,7 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             title: pass.title,
             host_name: get_full_name(pass.event.user),
             host_image: pass.event.user.avatar,
-            event_name: pass.event.title,
+            event_title: pass.event.title,
             event_id: pass.event.id,
             event_image: pass.event.image,
             event_location: jsonify_location(pass.event.location),
