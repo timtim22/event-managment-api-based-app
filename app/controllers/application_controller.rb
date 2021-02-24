@@ -1245,7 +1245,14 @@ end
 
 
 def jsonify_location(location)
-   l = ""
+   l = {
+       "short_address" => "",
+       "geometry" => {
+          "lat" => "",
+          "lng" => ""
+          },
+       "full_address" => ""
+     }
   if location.include? "=>" 
     l = JSON.parse(location.gsub("=>", ":").gsub(":nil,", ":null,"))
   elsif location.include? '":'
