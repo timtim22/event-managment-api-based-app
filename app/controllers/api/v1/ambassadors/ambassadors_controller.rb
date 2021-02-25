@@ -79,7 +79,7 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
     @offers = []
     User.businesses_list.each do |business|
    if !business.passes.blank?
-      business.passes.not_expired.order(created_at: 'DESC').each do |pass|
+      business.passes.upcoming.order(created_at: 'DESC').each do |pass|
         @passes << {
           id: pass.id,
           type: 'pass',
@@ -111,7 +111,7 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
       end #not empty
 
       if !business.special_offers.blank?
-        business.special_offers.not_expired.order(created_at: 'DESC').each do |offer|
+        business.special_offers.upcoming.order(created_at: 'DESC').each do |offer|
         @special_offers << {
           id: offer.id,
           type: 'special_offer',
@@ -175,7 +175,7 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
     @offers = []
     @businesses.each do |business|
       if !business.passes.blank?
-      business.passes.not_expired.order(created_at: 'DESC').each do |pass|
+      business.passes.upcoming.order(created_at: 'DESC').each do |pass|
         @offers << {
           id: pass.id,
           type: 'pass',
@@ -206,7 +206,7 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
       end #not empty
 
       if !business.special_offers.blank?
-        business.special_offers.not_expired.order(created_at: 'DESC').each do |offer|
+        business.special_offers.upcoming.order(created_at: 'DESC').each do |offer|
         @offers << {
           id: offer.id,
           type: 'special_offer',

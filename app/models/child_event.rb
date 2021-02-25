@@ -2,7 +2,8 @@ class ChildEvent < ApplicationRecord
  belongs_to :event
  belongs_to :user
 
- scope :not_expired, -> { where("start_time > ?",  DateTime.now) }
+ scope :upcoming, -> { where("start_time > ?",  Date.today) }
+ scope :passed, -> { where("start_time < ?",  Date.today) }
  scope :sort_by_date, -> { order(start_time: 'ASC') }
  scope :active, -> { where(status: "active") }
  

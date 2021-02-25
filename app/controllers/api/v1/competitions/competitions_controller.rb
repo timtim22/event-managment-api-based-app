@@ -12,7 +12,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
     @competitions = []
     if request_user
 
-    Competition.page(params[:page]).per(20).not_expired.order(created_at: 'DESC').each do |competition|
+    Competition.page(params[:page]).per(20).upcoming.order(created_at: 'DESC').each do |competition|
       if !is_removed_competition?(request_user, competition) && showability?(request_user, competition) == true
         @competitions << {
         id: competition.id,
@@ -37,7 +37,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
      end
     end #each
   else
-    Competition.not_expired.order(created_at: 'DESC').each do |competition|
+    Competition.upcoming.order(created_at: 'DESC').each do |competition|
       @competitions << {
       id: competition.id,
       title: competition.title,
@@ -535,7 +535,7 @@ end
   def get_business_competitions
     if !params[:business_id].blank?
       business = User.find(params[:business_id])
-      competitions = business.competitions.not_expired.map {|competition| get_competition_object(competition) }
+      competitions = business.competitions.upcoming.map {|competition| get_competition_object(competition) }
        render json: {
          code: 200,
          success:true,

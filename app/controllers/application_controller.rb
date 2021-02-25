@@ -563,7 +563,7 @@ class ApplicationController < ActionController::Base
     @offers = []
     @businesses.each do |business|
       if !business.passes.blank?
-      business.passes.not_expired.order(created_at: 'DESC').each do |pass|
+      business.passes.upcoming.order(created_at: 'DESC').each do |pass|
         @offers << {
           id: pass.id,
           type: 'pass',
@@ -596,7 +596,7 @@ class ApplicationController < ActionController::Base
       end #not empty
 
       if !business.special_offers.blank?
-        business.special_offers.not_expired.order(created_at: 'DESC').each do |offer|
+        business.special_offers.upcoming.order(created_at: 'DESC').each do |offer|
         @offers << {
           id: offer.id,
           type: 'special_offer',
