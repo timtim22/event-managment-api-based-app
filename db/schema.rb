@@ -234,7 +234,7 @@ ActiveRecord::Schema.define(version: 2021_02_24_100735) do
     t.integer "max_attendees", default: 1
     t.integer "quantity"
     t.string "location_name", default: "no_location"
-    t.string "redeem_code", default: ""
+    t.string "qr_code", default: ""
     t.string "venue", default: ""
     t.datetime "start_time"
     t.datetime "end_time"
