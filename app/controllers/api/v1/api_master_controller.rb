@@ -171,6 +171,8 @@ class Api::V1::ApiMasterController < ApplicationController
         'location' => jsonify_location(event.location),
         "start_date" => event.start_time,
         "end_date" => event.end_time,
+        "start_time" => event.start_time,
+        "end_time" => event.end_time,
         "over_18" => event.event.over_18,
         "price_type" => event.price_type,
         "price" => get_price(event.event).to_s,
