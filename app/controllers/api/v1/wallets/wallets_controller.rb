@@ -336,7 +336,7 @@ def get_tickets
     event_start_time: wallet.offer.event.start_time,
     event_end_time: wallet.offer.event.end_time,
     event_date: wallet.offer.event.start_time,
-    price: get_formated_price(wallet.offer.price),
+    price: wallet.offer.price,
     quantity: wallet.offer.quantity,
     purchased_quantity: wallet.quantity,
     per_head: wallet.offer.per_head,
