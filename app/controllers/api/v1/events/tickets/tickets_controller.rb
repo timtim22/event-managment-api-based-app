@@ -1,12 +1,12 @@
 class Api::V1::Events::Tickets::TicketsController < Api::V1::ApiMasterController
 
   api :POST, '/api/v1/events/tickets/redeem', 'Redeem Ticket'
-  param :event_id, :number, :desc => "Event ID", :required => true
+  param :ticket_id, :number, :desc => "Event ID", :required => true
   param :qr_code, String, :desc => "Redeem code", :required => true
 
   def redeem_it
-    if !params[:qr_code].blank? && !params[:event_id].blank?
-     @ticket = Ticket.find_by(event_id: params[:event_id])
+    if !params[:qr_code].blank? && !params[:ticket_id].blank?
+     @ticket = Ticket.find(params[:ticket_id])
      @check  = Redemption.where(offer_id: @ticket.id).where(offer_type: 'Ticket').where(user_id: request_user.id)
      if @check.blank?
     if(@ticket && @ticket.event.qr_code == params[:qr_code].to_s)
