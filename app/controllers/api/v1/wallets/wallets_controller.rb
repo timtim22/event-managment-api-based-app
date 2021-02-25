@@ -340,6 +340,7 @@ def get_tickets
     quantity: wallet.offer.quantity,
     purchased_quantity: wallet.quantity,
     per_head: wallet.offer.per_head,
+    ticket_type: wallet.offer.ticket_type,
     is_redeemed: is_redeemed(wallet.offer.id, "Ticket", request_user.id),
     redeem_time: redeem_time(wallet.offer.id, "Ticket", request_user.id),
     validity: wallet.offer.event.end_time,
