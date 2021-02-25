@@ -326,7 +326,7 @@ def get_tickets
     title: wallet.offer.title,
     host_name: get_full_name(wallet.offer.event.user),
     host_image: wallet.offer.event.user.avatar,
-    event_name: wallet.offer.event.title,
+    event_title: wallet.offer.event.title,
     event_description: wallet.offer.event.description,
     event_terms_conditions: wallet.offer.event.terms_conditions,
     going_count: wallet.offer.event.going_interest_levels.size,
