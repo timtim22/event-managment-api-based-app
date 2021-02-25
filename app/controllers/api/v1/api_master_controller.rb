@@ -166,6 +166,7 @@ class Api::V1::ApiMasterController < ApplicationController
         "id" => event.id,
         "image" => event.event.image,
         "title" => event.title,
+        "venue" => event.venue,
         "description" => event.description,
         'location' => jsonify_location(event.location),
         "start_date" => event.start_time,

@@ -61,6 +61,7 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
       @events << {
         'id' => e.id,
         'title' => e.title,
+        'venue' => e.venue,
         'start_date' => get_date_time_mobile(e.start_time),
         'end_date' => get_date_time_mobile(e.end_time),
         'start_time' => get_date_time_mobile(e.start_time),
@@ -361,6 +362,7 @@ end
           @event = {
             'id' => e.id,
             'title' => e.title,
+            'venue' => e.venue,
             'description' => e.description,
             'start_date' => get_date_time_mobile(e.start_time),
             'end_date' => get_date_time_mobile(e.end_time),

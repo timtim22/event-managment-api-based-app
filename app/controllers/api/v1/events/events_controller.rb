@@ -74,6 +74,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
             'additional_media' => e.event.event_attachments,
             'location' => jsonify_location(e.location),
             'image' => e.event.image,
+            'venue' => e.event.venue,
             'is_interested' => is_interested?(e),
             'is_going' => is_attending?(e),
             'is_followed' => is_followed(e.user),
@@ -329,6 +330,7 @@ private
         end
       e = {
         "id" => child_event.id,
+        "venue" => child_event.venue,
         "image" => child_event.event.image,
         "title" => child_event.event.title,
         "description" => child_event.event.description,
