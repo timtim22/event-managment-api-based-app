@@ -1,9 +1,11 @@
 class ChildEvent < ApplicationRecord
  belongs_to :event
  belongs_to :user
+
  scope :not_expired, -> { where("start_time > ?",  DateTime.now) }
  scope :sort_by_date, -> { order(start_time: 'ASC') }
  scope :active, -> { where(status: "active") }
+ 
  mount_uploader :image, ImageUploader
  mount_base64_uploader :image, ImageUploader
  validates :image, file_size: { less_than: 3.megabytes }

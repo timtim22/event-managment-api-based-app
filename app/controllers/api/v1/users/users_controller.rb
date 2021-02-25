@@ -1052,7 +1052,7 @@ private
   end
 
   def user_params
-    params.permit(:first_name,:last_name,:avatar, :email,:phone_number,:email, :dob, :app_user,:image_link)
+    params.permit(:first_name,:last_name,:avatar, :email,:phone_number,:email, :dob,:image_link)
   end
 
   def profile_params
