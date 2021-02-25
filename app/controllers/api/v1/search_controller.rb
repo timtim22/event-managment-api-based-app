@@ -172,7 +172,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                 dob: profile.dob,
                 gender: profile.gender,
                 is_request_sent: request_status(request_user, profile.user)['status'],
-                role: profile.user.role_ids,
+                role: profile.user.roles.map {|e| e.name} ,
                 is_ambassador: is_ambassador?(profile.user),
                 is_my_friend: is_my_friend?(profile.user),
                 mutual_friends_count: get_mutual_friends(request_user, profile.user).size

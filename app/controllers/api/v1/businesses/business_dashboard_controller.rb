@@ -200,7 +200,12 @@ returns array_of: :get_competitions, code: 200, desc: 'This api will return the 
         creator_name: get_full_name(competition.user),
         creator_image: competition.user.avatar,
         terms_conditions: competition.terms_conditions,
-        validity: competition.end_date.strftime(get_time_format)
+        validity: competition.end_date.strftime(get_time_format),
+        total_entries_count: get_entry_count(request_user, competition),
+        is_followed: is_followed(competition.user),
+        issued_by: get_full_name(competition.user),
+        is_entered: is_entered_competition?(competition.id),
+        creator_id: competition.user.id
       }
     end #each
 

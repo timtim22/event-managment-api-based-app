@@ -801,27 +801,45 @@
      # end #blank
       
     if !params[:event_id].blank?
-      @event = Event.find(params[:event_id])
-      @event.title = params[:title]
-      @event.image = params[:image]
-      @event.start_time = ""
-      @event.end_time = ""
-      @event.venue = params[:venue]
-      @event.over_18 = params[:over_18]
-      @event.description = params[:description]
-      @event.allow_chat = ""
-      @event.event_forwarding = ""
-      @event.location = params[:location]
-      @event.location_name = ""
-      @event.event_type = params[:event_type]
-      @event.category_ids = params[:category_ids]
-      @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
-      @event.quantity = ""
-      @event.is_repetive = ""
-      @event.frequency = ""
-      @event.price = ""
-      @event.status = "draft"
-      @event.qr_code = generate_code
+      if Event.where(id: params[:event_id]).exists?
+        @event = Event.find(params[:event_id])
+        @event.title = params[:title]
+        @event.image = params[:image]
+        @event.venue = params[:venue]
+        @event.over_18 = params[:over_18]
+        @event.description = params[:description]
+        @event.location = params[:location]
+        @event.event_type = params[:event_type]
+        @event.category_ids = params[:category_ids]
+        @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
+        @event.save
+        success = true
+
+       if success
+          render json:  {
+            code: 200,
+            success: true,
+            message: 'Event successfully created.',
+            data: {
+               event: (@event)
+            }
+          }
+        else
+          render json: {
+            code: 400,
+            success: false,
+            message: @event.errors.full_messages,
+            data: nil
+          }
+        end
+      else
+          render json: {
+            code: 400,
+            success: false,
+            message: "Event doesnt exist" ,
+            data: nil
+          }
+      end
     else
       @event = request_user.events.new
       @event.title = params[:title]
@@ -844,13 +862,8 @@
       @event.price = ""
       @event.status = "draft"   
       @event.qr_code = generate_code   
-    end
-
-    # @event = []
-
-    if @event.save
-        success = true
-    end#if
+      @event.save
+      success = true
 
      if success
         render json:  {
@@ -869,6 +882,10 @@
           data: nil
         }
       end
+    end
+
+
+
   end
 
 
