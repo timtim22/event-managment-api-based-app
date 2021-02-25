@@ -145,6 +145,7 @@
    @event = {
      'id' => e.id,
      'title' => e.title,
+     'venue' => e.venue,
      'start_time' => e.start_time,
      'end_time' => e.end_time,
      'image' => e.image.url,
