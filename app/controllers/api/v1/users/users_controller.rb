@@ -267,12 +267,10 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     @social.facebook = if !params[:facebook].blank? then params[:facebook] else "" end
 
   if user.save && @social.save && profile.save
-    location = ""
     about = ""
     dob = ""
     gender  = ""
  if !user.about.blank? then about = user.about else  about = "" end
- if !user.location.blank? then location = user.location else location = "" end
  if !user.profile.dob.blank? then dob = user.profile.dob else dob =  "" end
  if !user.profile.gender.blank? then gender  = user.profile.gender else gender =  "" end
    # create_activity("updated profile.", profile, "Profile")
@@ -281,7 +279,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     'first_name' => user.profile.first_name,
     'last_name' => user.profile.last_name,
     'avatar' => user.avatar,
-    "location" => location,
+    "location" => jsonify_location(user.location),
     'about' => about,
     'dob' =>  dob,
     'roles' => get_user_role_names(user),
@@ -486,17 +484,15 @@ def get_profile
   
     elsif is_business?(user)
       status = get_request_status(user.id)
-      location = ""
       about = ""
       social = []
       if !user.about.blank? then about = user.about else  about = "" end
-      if !user.location.blank? then location = user.location else location = "" end
       if !user.social_media.blank? then social = user.social_media else social = [] end
       profile = {
         'id' => user.id,
         'profile_name' => user.business_profile.profile_name,
         'avatar' => user.avatar,
-        'location' => jsonify_location(location),
+        'location' => jsonify_location(user.location),
         'about' => about,
         'roles' => get_user_role_names(user),
         'mobile' => user.phone_number,

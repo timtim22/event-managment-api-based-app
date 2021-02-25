@@ -259,7 +259,7 @@ class ApplicationController < ActionController::Base
        "social" => user.social_media,
       "is_ambassador" => is_ambassador?(user),
       "earning" => '3', #should be change when ambassador schema/program will be updated.
-       "location" => if !user.location.blank? then jsonify_location(user.location) else "" end,
+       "location" => jsonify_location(user.location),
       "device_token" => user.device_token,
       "ranking" => '3', #should be change when ambassador schema/program will be updated.,
       "gender" => user.profile.gender,
