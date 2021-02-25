@@ -649,13 +649,10 @@
                     end_time: @event.end_time,
                     first_cat_id: @event.first_cat_id,
                     description: @event.description,
-                    allow_chat: "",
-                    event_forwarding: "" ,
                     location: @event.location,
-                    location_name: "",
+                    price_type: @event.price_type,
+                    price: @event.price,
                     event_type: @event.event_type,
-                    price_type: "",
-                    price: "",
                     status: @event.status 
                     )
                 end    

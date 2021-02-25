@@ -83,10 +83,11 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
   param :terms_conditions, String, :desc => "Terms and condition of the special offer", :required => true
 
   def create
-    @special_offer = SpecialOffer.new
+    @special_offer = request_user.special_offer.new
     @special_offer.title = params[:title]
     @special_offer.description = params[:description]
-    @special_offer.date = params[:date]
+    @special_offer.end_time = params[:end_time]
+    @special_offer.time = params[:time]
     @special_offer.validity = params[:validity]
     @special_offer.ambassador_rate = params[:ambassador_rate]
     @special_offer.image = params[:image]
