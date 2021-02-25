@@ -37,7 +37,7 @@
                        
                       <% getRoles.each do |role| %>
                        <% if role.id != 1 %>
-                       <option value="<%= role.id %>"><%= role.title %></option>
+                       <option value="<%= role.id %>"><%= role.name %></option>
                        <% end %>
                        <% end %>
                     </select>
