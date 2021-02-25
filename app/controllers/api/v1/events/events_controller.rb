@@ -16,7 +16,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
           all_pass_added = false
           if request_user
             all_pass_added = has_passes?(e.event) && all_passes_added_to_wallet?(request_user, e.event.passes)
-          e.event.passes.not_expired.map { |pass|
+          e.event.passes.upcoming.map { |pass|
           if !is_removed_pass?(request_user, pass)
             @passes << {
             id: pass.id,
@@ -38,7 +38,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
         end# remove if
       } #map
       else
-        e.event.passes.not_expired.map { |pass|
+        e.event.passes.upcoming.map { |pass|
           @passes << {
           id: pass.id,
           title: pass.title,
@@ -150,7 +150,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
       end
 
       #all events 1
-      @events = ChildEvent.active.not_expired.active
+      @events = ChildEvent.active.upcoming.active
 
       #location based events 2
       @events = ChildEvent.active.active.ransack(location_name_cont: location).result(distinct: true) if !params[:location].blank?
@@ -194,7 +194,7 @@ class Api::V1::Events::EventsController < Api::V1::ApiMasterController
             #location ,pass, categories, price 14
             @events = ChildEvent.active.where("price #{operator} ?", params[:price]).where("start_price < ?", 1).where("end_price < ?", 1).where(pass: 'true').where(first_cat_id: cats_ids).or(ChildEvent.active.where(pass: "true").where(first_cat_id: cats_ids).where("price < ?", 1).where("start_price #{operator} ?", params[:price]).or(ChildEvent.active.where(pass: "true").where(first_cat_id: cats_ids).where("price < ?", 1).where("end_price #{operator} ?", params[:price]))).ransack(location_name_cont: location).result(distinct: true) if !params[:price].blank? && !params[:pass].blank? && !params[:location].blank? && !params[:categories].blank?
 
-            @response = @events.not_expired.sort_by_date.page(params[:page]).per(75).map {|event| get_simple_child_event_object(event) }
+            @response = @events.upcoming.sort_by_date.page(params[:page]).per(75).map {|event| get_simple_child_event_object(event) }
             render json: {
               code: 200,
               size: @response.size,

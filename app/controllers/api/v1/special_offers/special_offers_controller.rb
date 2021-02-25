@@ -8,7 +8,7 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
   def get_list
     @special_offers = []
     if request_user
-    SpecialOffer.page(params[:page]).per(20).not_expired.order(created_at: "DESC").each do |offer|
+    SpecialOffer.page(params[:page]).per(20).upcoming.order(created_at: "DESC").each do |offer|
      if !is_removed_offer?(request_user, offer) && !is_added_to_wallet?(offer.id)
       @special_offers << {
       id: offer.id,
@@ -36,7 +36,7 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
     end #if
     end #each
     else
-      SpecialOffer.not_expired.order(created_at: "DESC").each do |offer|
+      SpecialOffer.upcoming.order(created_at: "DESC").each do |offer|
         @special_offers << {
         id: offer.id,
         title: offer.title,

@@ -22,7 +22,7 @@ class SpecialOffer < ApplicationRecord
   mount_uploader :image, ImageUploader
   mount_base64_uploader :image, ImageUploader
 
-  scope :not_expired, -> { where(['validity > ?', DateTime.now]) }
+  scope :upcoming, -> { where(['validity > ?', DateTime.now]) }
   scope :expired, -> { where(['validity < ?', DateTime.now]) }
   scope :sort_by_date, -> { order(validity: 'ASC') }
 
