@@ -635,7 +635,7 @@
                       allow_chat: "",
                       event_forwarding: "" ,
                       location: @event.location,
-                      location_name:  jsonify_location(params[:location])["full_address"],
+                      location_name:  jsonify_location(@event.location)["full_address"],
                       event_type: @event.event_type,
                       price_type: "",
                       price: "",
