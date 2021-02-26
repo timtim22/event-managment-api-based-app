@@ -1293,7 +1293,7 @@
     def delete_event
       if !params[:event_id].blank?
       event = Event.find(params[:event_id])
-      if event.status == "cancelled"
+      if event.status != "active"
          if event.destroy
            render json: {
              code: 200,
