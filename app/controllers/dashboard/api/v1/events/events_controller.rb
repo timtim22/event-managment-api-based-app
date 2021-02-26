@@ -635,7 +635,7 @@
                       allow_chat: "",
                       event_forwarding: "" ,
                       location: @event.location,
-                      location_name:  params[:location]["full_address"],
+                      location_name:  jsonify_location(@event.location)["full_address"],
                       event_type: @event.event_type,
                       price_type: "",
                       price: "",
@@ -897,7 +897,7 @@
       @event.allow_chat = ""
       @event.event_forwarding = ""
       @event.location = params[:location]
-      @event.location_name = params[:location]["full_address"]
+      @event.location_name = jsonify_location(params[:location])["full_address"]
       @event.event_type = params[:event_type]
       @event.category_ids = params[:category_ids]
       @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
