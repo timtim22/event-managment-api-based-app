@@ -178,6 +178,8 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             event_title: pass.event.title,
             event_id: pass.event.id,
             event_image: pass.event.image,
+            event_start_time: pass.event.start_time, 
+            event_end_time: pass.event.end_time,
             pass_type: pass.pass_type,
             event_location: jsonify_location(pass.event.location),
             event_date: pass.event.start_time,
