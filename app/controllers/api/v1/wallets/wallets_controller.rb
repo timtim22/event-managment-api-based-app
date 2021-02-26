@@ -153,7 +153,7 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             event_date: pass.event.start_time,
             distributed_by: distributed_by(pass),
             validity: pass.event.end_time,
-            is_expired: pass_expired?(pass) ,
+            is_expired: pass_expired?(pass),
             grabbers_count: pass.wallets.size,
             is_redeemed: true,
             redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
@@ -161,36 +161,36 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             redeem_count: get_redeem_count(pass),
             quantity: pass.quantity,
             issued_by: get_full_name(pass.user),
-            pass_type: pass.pass_type
-
+            pass_type: pass.pass_type,
+            remaining_passes_count: get_redeem_remaining_count(pass)
           }
 
-        # elsif  is_expired?(pass)
-        #     @expired_passes << {
-        #     id: pass.id,
-        #     title: pass.title,
-        #     description: pass.description,
-        #     host_name: get_full_name(pass.event.user),
-        #     host_image: pass.event.user.avatar,
-        #     event_name: pass.event.title,
-        #     event_id: pass.event.id,
-        #     event_image: pass.event.image,
-        #     pass_type: pass.pass_type,
-        #     event_location: jsonify_location(pass.event.location),
-        #     event_date: pass.event.start_time,
-        #     distributed_by: distributed_by(pass),
-        #     validity: get_date_time(pass.event.end_time, pass),
-        #     is_expired: "" ,
-        #     grabbers_count: pass.wallets.size,
-        #     is_redeemed: false,
-        #     redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
-        #     grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
-        #     redeem_count: get_redeem_count(pass),
-        #     quantity: pass.quantity,
-        #     issued_by: get_full_name(pass.user),
-        #     pass_type: pass.pass_type
-
-        #   }
+        elsif  pass_expired?(pass)
+            @expired_passes << {
+            id: pass.id,
+            title: pass.title,
+            description: pass.description,
+            host_name: get_full_name(pass.event.user),
+            host_image: pass.event.user.avatar,
+            event_name: pass.event.title,
+            event_id: pass.event.id,
+            event_image: pass.event.image,
+            pass_type: pass.pass_type,
+            event_location: jsonify_location(pass.event.location),
+            event_date: pass.event.start_time,
+            distributed_by: distributed_by(pass),
+            validity: get_date_time(pass.event.end_time, pass),
+            is_expired: pass_expired?(pass),
+            grabbers_count: pass.wallets.size,
+            is_redeemed: false,
+            redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
+            grabbers_friends_count: pass.wallets.map {|wallet|  if (request_user.friends.include? wallet.user) then wallet.user end }.size,
+            redeem_count: get_redeem_count(pass),
+            quantity: pass.quantity,
+            issued_by: get_full_name(pass.user),
+            pass_type: pass.pass_type,
+            remaining_passes_count: get_redeem_remaining_count(pass)
+          }
         else
           @unredeemed_passes << {
             id: pass.id,
@@ -214,7 +214,8 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             redeem_count: get_redeem_count(pass),
             quantity: pass.quantity,
             issued_by: get_full_name(pass.user),
-            pass_type: pass.pass_type
+            pass_type: pass.pass_type,
+            remaining_passes_count: get_redeem_remaining_count(pass)
           }
            end #if
          

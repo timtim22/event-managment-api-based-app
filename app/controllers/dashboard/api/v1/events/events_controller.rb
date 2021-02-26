@@ -1287,7 +1287,7 @@
     end
     end
 
-  api :POST, 'dashboard/api/v1/delete-event', 'To delete the event'
+  api :POST, 'dashboard/api/v1/events/delete-event', 'To delete the event'
   param :event_id, :number, :desc => "ID of the event", :required => true
 
     def delete_event
@@ -1313,7 +1313,7 @@
         render json: {
           code: 400,
           success: false,
-          message: 'In order to delete event first it needs to be cancelled.',
+          message: 'Event status need to be cancel before deleting.',
           data: nil
         }
       end

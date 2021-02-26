@@ -313,6 +313,8 @@ end
         post '/publish-event' => 'events#publish_event'
         post '/show' => 'events#show'
         post '/delete-resource' => 'events#delete_resource'
+        post '/delete-event' => 'events#delete_event'
+        post '/cancel-event' => 'events#cancel_event'
       end
 
         resources :news_feeds
@@ -339,8 +341,8 @@ end
         get '/get-app-users' => 'users#get_app_users'
         post '/get-user' => 'users#get_user'
         
-        post '/cancel-event' => 'events#cancel_event'
-        post '/delete-event' => 'events#delete_event'
+        
+        
         post '/payments/create-intant' => 'payments#create_intant'
         post '/payments/confirm-payment' => 'payments#confirm_payment'
         post '/payments/get-invoice' => 'payments#get_invoice'

@@ -66,6 +66,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
             passes = Pass.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
               if !passes.blank?
                       passes.each do |pass|
+                      if !pass_expired?(pass)
                        if request_user
                         if !is_removed_pass?(request_user, pass)
                           @passes << {
@@ -77,7 +78,8 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                             event_image:pass.event.image,
                             is_added_to_wallet: added_to_wallet?(request_user, pass),
                             validity: pass.event.end_time,
-                            is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id)
+                            is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id),
+                            remaining_passes_count: get_redeem_remaining_count(pass)
                           }
                         end
                       else
@@ -90,10 +92,12 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                             event_image:pass.event.image,
                             is_added_to_wallet: added_to_wallet?(request_user, pass),
                             validity: pass.event.end_time,
-                            is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id)
+                            is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id),
+                            remaining_passes_count: get_redeem_remaining_count(pass)
                         }
                        end
                       end#each
+                    end
                     end#if
                         render json: {
                         code: 200,
