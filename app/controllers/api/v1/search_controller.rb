@@ -129,6 +129,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                     validity: offer.validity.strftime(get_time_format),
                     is_added_to_wallet: added_to_wallet?(request_user, offer),
                     is_redeemed: is_redeemed(offer.id, 'SpecialOffer', request_user.id),
+                    remaining_offers_count: get_redeem_remaining_count(offer)
                   }
                 end
               end #if
@@ -144,6 +145,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                     validity: offer.validity.strftime(get_time_format),
                     is_added_to_wallet: added_to_wallet?(request_user, offer),
                     is_redeemed: is_redeemed(offer.id, 'SpecialOffer', request_user.id),
+                    remaining_offers_count: get_redeem_remaining_count(offer)
                   }
               end
             end

@@ -48,7 +48,8 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
         terms_and_conditions: offer.terms_conditions,
         issued_by: get_full_name(offer.user),
         redeem_count: get_redeem_count(offer),
-        quantity: offer.quantity
+        quantity: offer.quantity,
+        remaining_offers_count: get_redeem_remaining_count(offer)
        }
 
       elsif  offer_expired?(offer)
@@ -74,7 +75,8 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
         terms_and_conditions: offer.terms_conditions,
         issued_by: get_full_name(offer.user),
         redeem_count: get_redeem_count(offer),
-        quantity: offer.quantity
+        quantity: offer.quantity,
+        remaining_offers_count: get_redeem_remaining_count(offer)
       }
       else
        @unredeemed_offers << {
@@ -179,7 +181,7 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             event_location: jsonify_location(pass.event.location),
             event_date: pass.event.start_time,
             distributed_by: distributed_by(pass),
-            validity: get_date_time(pass.event.end_time, pass),
+            validity: pass.event.end_time,
             is_expired: pass_expired?(pass),
             grabbers_count: pass.wallets.size,
             is_redeemed: false,
