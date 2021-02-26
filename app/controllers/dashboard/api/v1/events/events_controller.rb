@@ -649,13 +649,10 @@
                     end_time: @event.end_time,
                     first_cat_id: @event.first_cat_id,
                     description: @event.description,
-                    allow_chat: "",
-                    event_forwarding: "" ,
                     location: @event.location,
-                    location_name: "",
+                    price_type: @event.price_type,
+                    price: @event.price,
                     event_type: @event.event_type,
-                    price_type: "",
-                    price: "",
                     status: @event.status 
                     )
                 end    
@@ -697,10 +694,56 @@
       @event.child_events.all.update(status: "active")
 
       if @event.save
+
+      if !request_user.followers.blank?
+        @pubnub = Pubnub.new(
+          publish_key: ENV['PUBLISH_KEY'],
+          subscribe_key: ENV['SUBSCRIBE_KEY'],
+          uuid: @username
+          )
+        request_user.followers.each do |follower|
+           if follower.event_notifications_setting.is_on == true
+            if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created new Event '#{@event.title}'.", notifiable: @event, resource: @event, url: "/admin/events/#{@event.id}", notification_type: 'mobile', action_type: 'create_event')
+              @current_push_token = @pubnub.add_channels_to_push(
+               push_token: follower.device_token,
+               type: 'gcm',
+               add: follower.device_token
+               ).value
+
+               payload = {
+                "pn_gcm":{
+                 "notification":{
+                   "title": get_full_name(request_user),
+                   "body": @notification.action
+                 },
+                 data: {
+                  "id": @notification.id,
+                  "actor_id": @notification.actor_id,
+                  "actor_image": @notification.actor.avatar,
+                  "notifiable_id": @notification.notifiable_id,
+                  "notifiable_type": @notification.notifiable_type,
+                  "action": @notification.action,
+                  "action_type": @notification.action_type,
+                  "created_at": @notification.created_at,
+                  "body": ''
+                 }
+                }
+               }
+
+             @pubnub.publish(
+               channel: follower.device_token,
+               message: payload
+               ) do |envelope|
+                   puts envelope.status
+              end
+             end # notificatiob end
+            end #special offer setting end
+        end #each
+      end # not blank
         render json:  {
           code: 200,
           success: true,
-          message: 'Time succesfully added.',
+          message: 'Event succesfully published.',
           data: {
              event: @event
           }

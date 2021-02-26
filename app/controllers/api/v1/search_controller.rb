@@ -14,13 +14,14 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
       if !params[:search_term].blank? && !params[:resource_type].blank?
         case
           when params[:resource_type] == "Event"
-            e = ChildEvent.ransack(name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).upcoming.order(created_at: "ASC").each do |event|
+            e = ChildEvent.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).upcoming.order(created_at: "ASC").each do |event|
               @event << {
                   "id" => event.id,
                   "image" => event.event.image,
                   "title" => event.title,
                   "description" => event.description,
                   "location" => jsonify_location(event.location),
+                  "venue" => event.venue,
                   "start_date" => event.start_time,
                   "end_date" => event.end_time,
                   "start_time" => event.start_time,
