@@ -102,7 +102,8 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
         terms_and_conditions: offer.terms_conditions,
         issued_by: get_full_name(offer.user),
         redeem_count: get_redeem_count(offer),
-        quantity: offer.quantity
+        quantity: offer.quantity,
+        remaining_offers_count: get_redeem_remaining_count(offer)
        }
         end #if
      
