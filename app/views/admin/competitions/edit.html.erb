@@ -34,32 +34,23 @@
            <label for="end_date">End date</label>
            <input type="text" class="form-control date" id="end_date" name="end_date"  data-time-format="H:i" data-step="15" data-min-time="10:00" data-max-time="18:00" data-show-2400="true" value="<%= @competition.end_date %>">
         </div>
-        <div class="price_div_competition">
-        <div class="form-group">
-          <label for="price">Price </label>
-          <input type="number" class="form-control price" id="price_competition" name="price" value="<%= @competition.price %>">
-         </div>
-        </div><!-- price div-->
-        <div class="form-group">
-            <div id="time_start">
-            <label for="email">Start Time</label>
-            <input type="text" class="form-control time ui-timepicker-input" id="start_time" name="start_time" value="<%= @competition.start_time %>">
-             </div><!--time start-->
-             <div id="time_end">
-              <label for="email">End Time</label>
-              <input type="text" class="form-control time ui-timepicker-input" id="end_time" name="end_time" value="<%= @competition.end_time %>">
-            </div><!--time end-->
-        </div>
-
-         <div class="form-group" style="display:none;">
-            <label for="password_confirmation">Host</label>
-            <input type="text" class="form-control" name="host" id="host" value="<%= get_full_name(current_user) %>">
-         </div>
+       
 
          <div class="form-group">
            <label for="terms_conditions">Terms and Conditions</label>
            <textarea name="terms_conditions" class="form-control tinymce" id="terms_conditions" rows="12"><%= @competition.terms_conditions %></textarea>
         </div>
+
+        <div class="form-group">
+         <label for="terms_conditions">Competition Forwarding</label>
+         <input type="checkbox" name="competition_forwarding"/ <%= if @competition.competition_forwarding == true then "checked" else "" end %>>
+       </div>
+
+        <div class="form-group">
+        <label for="terms_conditions">Over 18</label>
+        <input type="checkbox" name="over_18" <%= if @competition.over_18 == true then "checked" else "" end %> />
+      </div>
+          
 
 
       

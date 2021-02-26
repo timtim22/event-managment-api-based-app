@@ -13,14 +13,12 @@
         <!-- Author -->
         <hr>
         <!-- Date/Time -->
-        <p><i class="fa fa-clock"></i> Posted: <%= time_ago_in_words(@competition.created_at) %> &nbsp;&nbsp;&nbsp; <i class="fa fa-map-marker"></i> <%= @competition.location %></p>
+        <p><i class="fa fa-clock"></i> Posted: <%= time_ago_in_words(@competition.created_at) %> </p>
         <hr>
         <!-- Preview Image -->
-        <% if(@competition.image.url.blank? != true) %>
+       
         <img class="img-fluid rounded competition_img" src="<%= @competition.image.url %>" alt="">
-        <% else %>
-         <img class="img-fluid rounded" src="<%= @competition.placeholder %>" alt="">
-        <% end %>
+      
         <hr>
         <!-- competition Content -->
         <p><%= @competition.description.html_safe %></p>
