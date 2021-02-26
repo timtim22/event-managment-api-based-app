@@ -148,6 +148,8 @@
      'venue' => e.venue,
      'start_time' => e.start_time,
      'end_time' => e.end_time,
+     'start_date' => e.start_time,
+     'end_date' => e.end_time,
      'image' => e.image.url,
      'location' => jsonify_location(e.location),
      'description' => e.description,

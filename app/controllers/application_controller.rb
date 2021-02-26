@@ -925,7 +925,7 @@ end
    end
 
    def get_redeem_remaining_count(resource)
-      resource.quantity.size - resource.redemptions.size
+      resource.quantity - resource.redemptions.size
    end
 
 

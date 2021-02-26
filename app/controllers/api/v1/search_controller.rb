@@ -210,7 +210,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
               is_charity: profile.is_charity,
               is_request_sent: false,
               is_my_following: is_my_following?(profile.user),
-              role: profile.user.role_ids,
+              role: profile.user.roles.map {|e| e.name},
               is_ambassador: is_ambassador?(profile.user),
               is_my_friend: false,
               mutual_friends_count: 0,

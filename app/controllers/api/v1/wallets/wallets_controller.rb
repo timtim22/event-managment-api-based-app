@@ -102,7 +102,8 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
         terms_and_conditions: offer.terms_conditions,
         issued_by: get_full_name(offer.user),
         redeem_count: get_redeem_count(offer),
-        quantity: offer.quantity
+        quantity: offer.quantity,
+        remaining_offers_count: get_redeem_remaining_count(offer)
        }
         end #if
      
@@ -174,9 +175,11 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             description: pass.description,
             host_name: get_full_name(pass.event.user),
             host_image: pass.event.user.avatar,
-            event_name: pass.event.title,
+            event_title: pass.event.title,
             event_id: pass.event.id,
             event_image: pass.event.image,
+            event_start_time: pass.event.start_time, 
+            event_end_time: pass.event.end_time,
             pass_type: pass.pass_type,
             event_location: jsonify_location(pass.event.location),
             event_date: pass.event.start_time,
@@ -490,7 +493,7 @@ end
                 data = {
                   "id": notification.id,
                   "friend_name": get_full_name(notification.resource.user),
-                  "event_name": notification.resource.offer.event.title,
+                  "event_title": notification.resource.offer.event.title,
                   "event_start_date": notification.resource.offer.event.start_time,
                   "pass_id": notification.resource.offer.id,
                   "event_location": jsonify_location(notification.resource.offer.event.location),
@@ -627,7 +630,7 @@ end
                 data = {
                   "id": notification.id,
                   "friend_name": get_full_name(notification.resource.user),
-                  "event_name": notification.resource.offer.event.title,
+                  "event_title": notification.resource.offer.event.title,
                   "event_start_date": notification.resource.offer.event.start_time,
                   "pass_id": notification.resource.offer.id,
                   "event_location": jsonify_location(notification.resource.offer.event.location),
@@ -732,7 +735,7 @@ end
       description: pass.description,
       host_name: get_full_name(pass.user),
       host_image: pass.user.avatar,
-      event_name: pass.event.title,
+      event_title: pass.event.title,
       event_image:pass.event.image,
       event_location: jsonify_location(pass.event.location),
       event_date: pass.event.start_time,
