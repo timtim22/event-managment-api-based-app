@@ -5,7 +5,7 @@
  <div class="main-panel">
   <div class="blank_page_wrapper" style="height:100%">
   <div class="row">
-  <h1><%= User.last.email %></h1>
+  <h3 style="/* margin-right: 30px; */position: relative;left: 40px;top: 30px;"><%= User.get_full_name(current_user) %></h3>
             <div class="col-md-12 grid-margin stretch-card">
             </div>
           </div>

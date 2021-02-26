@@ -287,7 +287,7 @@ class Api::V1::Businesses::AnalyticsController < Api::V1::ApiMasterController
             winner_id: c.user.id
         }},
         draw_date: competition.end_date,
-        start_date: competition.start_time,
+        start_date: competition.start_date,
         creation_date: competition.created_at,
         end_date: competition.end_date,
         total_entries_count: competition.registrations.size,
