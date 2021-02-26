@@ -105,7 +105,8 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
         description: pass.description,
         issued_by: get_full_name(pass.user),
         redeem_count: get_redeem_count(pass),
-        quantity: pass.quantity
+        quantity: pass.quantity,
+        remaining_passes_count: get_redeem_remaining_count(pass)
      }
 
      render json: {

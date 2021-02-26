@@ -924,6 +924,10 @@ end
      resource.redemptions.size
    end
 
+   def get_redeem_remaining_count(resource)
+      resource.quantity.size - resource.redemptions.size
+   end
+
 
 
    def get_token_from_user(user)
