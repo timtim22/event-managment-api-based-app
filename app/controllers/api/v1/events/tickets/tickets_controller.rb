@@ -78,12 +78,15 @@ class Api::V1::Events::Tickets::TicketsController < Api::V1::ApiMasterController
          }
        end
 
+       event_dates = @event.child_events.map {|ch| ch.start_time.to_s }
+
        render json: {
          code: 200,
          success: true,
          message: '',
          data: {
-           tickets: @tickets
+           tickets: @tickets,
+           event_dates: event_dates 
          }
        }
     else
