@@ -637,7 +637,7 @@
                       location: @event.location,
                       location_name:  jsonify_location(@event.location)["full_address"],
                       event_type: @event.event_type,
-                      price_type: "",
+                      price_type: @event.price_type,
                       price: "",
                       status: @event.status 
                     )
@@ -652,6 +652,7 @@
                     first_cat_id: @event.first_cat_id,
                     description: @event.description,
                     location: @event.location,
+                    location_name:  jsonify_location(@event.location)["full_address"],
                     price_type: @event.price_type,
                     price: @event.price,
                     event_type: @event.event_type,
@@ -857,6 +858,17 @@
         @event.event_type = params[:event_type]
         @event.category_ids = params[:category_ids]
         @event.first_cat_id =  params[:category_ids].first if params[:category_ids]
+
+        @event.child_events.all.update(
+          title: params[:title],
+          image: params[:image],
+          venue: params[:venue],
+          over_18: params[:over_18],
+          description: params[:description],
+          location: params[:location],
+          event_type: params[:event_type]
+          )
+
         @event.save
         success = true
 
@@ -1256,10 +1268,10 @@
       }
     end
 
-  api :POST, 'dashboard/api/v1/cancel-event', 'To cancel an event'
-  param :event_id, :number, :desc => "ID of the event", :required => true
+  # api :POST, 'dashboard/api/v1/cancel-event', 'To cancel an event'
+  # param :event_id, :number, :desc => "ID of the event", :required => true
 
-    def cancel_event
+  def cancel_event
 
     if !params[:event_id].blank?
       @event = Event.find(params[:event_id])
@@ -1287,47 +1299,46 @@
         data: nil
       }
     end
-    end
+  end
 
   api :POST, 'dashboard/api/v1/events/delete-event', 'To delete the event'
   param :event_id, :number, :desc => "ID of the event", :required => true
 
-    def delete_event
+  def delete_event
       if !params[:event_id].blank?
-      event = Event.find(params[:event_id])
-      if event.status != "active"
-         if event.destroy
-           render json: {
-             code: 200,
-             success: true,
-             message: 'Event successfully deleted.',
-             data: nil
-           }
-         else
+        event = Event.find(params[:event_id])
+        if event.status != "active"
+           if event.destroy
+             render json: {
+               code: 200,
+               success: true,
+               message: 'Event successfully deleted.',
+               data: nil
+             }
+           else
+            render json: {
+              code: 400,
+              message: 'Event deletion failed.',
+              data: nil
+            }
+           end
+        else
+
           render json: {
             code: 400,
-            message: 'Event deletion failed.',
+            success: false,
+            message: 'Event status need to be cancel before deleting.',
             data: nil
           }
-         end
-      else
-
-        render json: {
-          code: 400,
-          success: false,
-          message: 'Event status need to be cancel before deleting.',
-          data: nil
-        }
-      end
-  else
-    render json: {
-      code: 400,
-      success: false,
-      message: "Event ID is required",
-      data: nil
-    }
-  end
-
+        end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "Event ID is required",
+        data: nil
+      }
+    end
   end
 
  def delete_resource

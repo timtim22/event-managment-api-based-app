@@ -88,6 +88,7 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
     @special_offer.sub_title = params[:sub_title]
     @special_offer.description = params[:description]
     @special_offer.end_time = params[:end_time]
+    @special_offer.date = params[:date]
     @special_offer.time = params[:time]
     @special_offer.validity = params[:validity]
     @special_offer.ambassador_rate = params[:ambassador_rate]
@@ -170,15 +171,15 @@ def edit
 end
 
   api :POST, 'dashboard/api/v1/special_offers', 'Update special offer'
-  param :id, :number, :desc => "ID of the special offer", :required => true
-  param :title, String, :desc => "Title of the special offer", :required => true
-  param :description, String, :desc => "Description of the special offer", :required => true
-  param :date, String, :desc => "Date of the special offer", :required => true
-  param :validity, String, :desc => "Validity", :required => true
-  param :ambassador_rate, :number, :desc => "Ambassador rate of the special offer", :required => true
-  param :image, String, :desc => "Image of the special offer", :required => true
-  param :qr_code, String, :desc => "Redeem Code", :required => true
-  param :terms_conditions, String, :desc => "Terms and condition of the special offer", :required => true
+  # param :id, :number, :desc => "ID of the special offer", :required => true
+  # param :title, String, :desc => "Title of the special offer", :required => true
+  # param :description, String, :desc => "Description of the special offer", :required => true
+  # param :date, String, :desc => "Date of the special offer", :required => true
+  # param :validity, String, :desc => "Validity", :required => true
+  # param :ambassador_rate, :number, :desc => "Ambassador rate of the special offer", :required => true
+  # param :image, String, :desc => "Image of the special offer", :required => true
+  # param :qr_code, String, :desc => "Redeem Code", :required => true
+  # param :terms_conditions, String, :desc => "Terms and condition of the special offer", :required => true
  # param :id, :number, :desc => "Title of the competition", :required => true
 
 def update
@@ -187,6 +188,7 @@ def update
     @special_offer.title = params[:title]
     @special_offer.description = params[:description]
     @special_offer.date = params[:date]
+    @special_offer.time = params[:time]
     @special_offer.validity = params[:validity]
     @special_offer.ambassador_rate = params[:ambassador_rate]
     @special_offer.image = params[:image]
