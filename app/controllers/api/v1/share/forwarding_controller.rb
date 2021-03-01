@@ -678,7 +678,7 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
      
 
        api :POST, '/api/v1/share/send-location', 'Send location to list of users'
-       param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true
+       # param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true
        
 
      def send_location

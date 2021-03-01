@@ -18,7 +18,7 @@ class Pass < ApplicationRecord
  # validates :description, presence: true
   # validates :qr_code, presence: true, length: {maximum: 3}, numericality: {only_integer: true}
 
-  scope :not_expired, -> { where(['validity > ?', DateTime.now]) }
+  scope :upcoming, -> { where(['validity > ?', DateTime.now]) }
   scope :expired, -> { where(['validity < ?', DateTime.now]) }
   scope :sort_by_date, -> { order(validity: 'ASC') }
 end

@@ -1,7 +1,7 @@
 class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
 
   api :POST, '/api/v1/events/passes/get-list', 'Get a single pass'
-  param :event_id, Integer, :desc => "ID of the event", :required => true
+  param :event_id, :number, :desc => "ID of the event", :required => true
 
 
   def index
@@ -25,9 +25,11 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
               pass_type: pass.pass_type,
               event_location:jsonify_location(@event.location),
               event_date:@event.start_time,
+              event_start_time:@event.start_time,
+              event_end_time:@event.end_time,
               is_added_to_wallet: is_added_to_wallet?(pass.id),
-              validity: pass.validity.strftime(get_time_format),
               grabbers_count: pass.wallets.size,
+              validity: pass.event.start_time,
               description: pass.description,
               issued_by: get_full_name(pass.user),
               redeem_count: get_redeem_count(pass),
@@ -46,11 +48,13 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
             pass_type: pass.pass_type,
             event_location:jsonify_location(@event.location),
             event_date:@event.start_time,
+            event_start_time:@event.start_time,
+            event_end_time:@event.end_time,
             is_added_to_wallet: is_added_to_wallet?(pass.id),
-            validity: pass.validity.strftime(get_time_format),
             grabbers_count: pass.wallets.size,
             description: pass.description,
             issued_by: get_full_name(pass.user),
+            validity: pass.event.start_time,
             redeem_count: get_redeem_count(pass),
             quantity: pass.quantity
           }
@@ -77,7 +81,7 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
   end
 
     api :POST, '/api/v1/events/passes/show', 'View a pass'
-    param :pass_id, Integer, :desc => "ID of the pass", :required => true
+    param :pass_id, :number, :desc => "ID of the pass", :required => true
 
 
   def pass_single
@@ -93,14 +97,16 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
         event_image:pass.event.image,
         event_location: jsonify_location(pass.event.location),
         event_date:pass.event.start_time,
+        event_start_time: pass.event.start_time,
+        event_end_time:pass.event.end_time,
         is_added_to_wallet: is_added_to_wallet?(pass.id),
-        validity: pass.validity.strftime(get_time_format),
-        terms_and_conditions: pass.terms_conditions,
+        validity: pass.event.start_time,
         grabbers_count: pass.wallets.size,
         description: pass.description,
         issued_by: get_full_name(pass.user),
         redeem_count: get_redeem_count(pass),
-        quantity: pass.quantity
+        quantity: pass.quantity,
+        remaining_passes_count: get_redeem_remaining_count(pass)
      }
 
      render json: {
@@ -122,7 +128,7 @@ class Api::V1::Events::Passes::PassesController < Api::V1::ApiMasterController
    end
 
   api :POST, '/api/v1/events/passes/redeem', 'To redeem a pass'
-  param :pass_id, Integer, :desc => "pass id", :required => true
+  param :pass_id, :number, :desc => "pass id", :required => true
   param :qr_code, String, :desc => "Redeem Code", :required => true
 
   def redeem_it

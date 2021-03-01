@@ -269,3 +269,8 @@ D, [2021-01-29T09:56:05.091595 #791] DEBUG -- Pubnub::Event: #send_request got s
 D, [2021-01-29T09:56:05.092511 #791] DEBUG -- Pubnub::Event: Requested URI: http://ps.pndsn.com/publish/pub-c-17af7cb3-131b-4e0b-ae2a-ee82760f83d8/sub-c-e498d40e-2c96-11ea-9e12-76e5f2bf83fc/0/no_token/0/%7B%22pn_gcm%22%3A%7B%22notification%22%3A%7B%22title%22%3A%22vip%20pass%22%2C%22body%22%3A%22timtim%20has%20sent%20you%20a%20VIP%20pass%20to%20join%20their%20event.%22%7D%2C%22data%22%3A%7B%22id%22%3A1%2C%22actor_id%22%3A3%2C%22actor_image%22%3A%7B%22url%22%3A%22%2Fuploads%2Fuser%2Favatar%2F3%2Fb9809525-f658-438d-8910-f89ca7735114.png%22%7D%2C%22notifiable_id%22%3A1%2C%22notifiable_type%22%3A%22Pass%22%2C%22action%22%3A%22timtim%20has%20sent%20you%20a%20VIP%20pass%20to%20join%20their%20event.%22%2C%22action_type%22%3A%22add_pass_to_wallet%22%2C%22created_at%22%3A%222021-01-29T04%3A56%3A04.907Z%22%2C%22body%22%3A%22%22%7D%7D%7D?ortt=%7B%22t%22%3A16118961650906826%7D&pnsdk=PubNub-Ruby%2F4.2.7&seqn=1&uuid=a586f2bf-c033-44bb-a0d0-cb061ceb67b8
 D, [2021-01-29T09:56:05.170306 #791] DEBUG -- Pubnub::Event: Event#handle
 D, [2021-01-29T09:56:05.170767 #791] DEBUG -- Pubnub::Event: Firing callbacks for Pubnub::Publish
+E, [2021-02-26T15:37:43.550723 #1346] ERROR -- Pubnub: 
+D, [2021-02-26T15:42:27.914415 #2362] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-02-26T15:42:27.914597 #2362] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7
+D, [2021-02-26T15:43:10.342103 #2362] DEBUG -- Pubnub::Telementry: Initialized Telemetry
+D, [2021-02-26T15:43:10.342224 #2362] DEBUG -- Pubnub::Client: Created new Pubnub::Client instance. Version: 4.2.7

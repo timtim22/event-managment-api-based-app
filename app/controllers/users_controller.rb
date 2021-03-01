@@ -14,8 +14,6 @@ class UsersController < ApplicationController
       @user.phone_number = params[:phone_number]
       @user.email = params[:email]
       @user.password = params[:password]
-      @user.verification_code = generate_code
-      @user.business_profile.stripe_state = generate_code
       if params[:avatar].blank? 
          @user.remote_avatar_url = get_dummy_avatar 
        else
@@ -39,7 +37,7 @@ class UsersController < ApplicationController
         end
 
         if @user.save    
-          profile = BusinessProfile.create!(profile_name: params[:profile_name], contact_name: params[:contact_name], user: @user, address: params[:address], website: website, about: params[:about], vat_number: params[:vat_number], charity_number: charity_number)
+          profile = BusinessProfile.create!(profile_name: params[:profile_name],stripe_state: generate_code, contact_name: params[:contact_name], user: @user, website: website, vat_number: params[:vat_number], charity_number: charity_number)
 
           #create role
            assignment = @user.assignments.create!(role_id: params[:type])

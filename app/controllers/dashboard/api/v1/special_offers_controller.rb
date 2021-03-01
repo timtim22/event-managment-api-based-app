@@ -83,10 +83,11 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
   param :terms_conditions, String, :desc => "Terms and condition of the special offer", :required => true
 
   def create
-    @special_offer = SpecialOffer.new
+    @special_offer = request_user.special_offer.new
     @special_offer.title = params[:title]
     @special_offer.description = params[:description]
-    @special_offer.date = params[:date]
+    @special_offer.end_time = params[:end_time]
+    @special_offer.time = params[:time]
     @special_offer.validity = params[:validity]
     @special_offer.ambassador_rate = params[:ambassador_rate]
     @special_offer.image = params[:image]
@@ -108,7 +109,7 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
           )
       request_user.followers.each do |follower|
    if follower.special_offers_notifications_setting.is_on == true
-      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event')
+      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_offer')
         @current_push_token = @pubnub.add_channels_to_push(
          push_token: follower.device_token,
          type: 'gcm',
@@ -205,7 +206,7 @@ def update
           )
       request_user.followers.each do |follower|
   if follower.special_offers_notifications_setting.is_on == true
-      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event')
+      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_offer')
 
         @current_push_token = @pubnub.add_channels_to_push(
         push_token: follower.device_token,

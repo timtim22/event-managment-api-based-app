@@ -259,7 +259,7 @@ class ApplicationController < ActionController::Base
        "social" => user.social_media,
       "is_ambassador" => is_ambassador?(user),
       "earning" => '3', #should be change when ambassador schema/program will be updated.
-       "location" => if !user.location.blank? then jsonify_location(user.location) else "" end,
+       "location" => jsonify_location(user.location),
       "device_token" => user.device_token,
       "ranking" => '3', #should be change when ambassador schema/program will be updated.,
       "gender" => user.profile.gender,
@@ -426,8 +426,8 @@ class ApplicationController < ActionController::Base
       "event_dates" => event.child_events.map {|ch| 
         {
           id: ch.id,
-          start_date: ch.start_date.to_date,
-          end_date: ch.end_date.to_date
+          start_date: ch.start_time.to_date,
+          end_date: ch.end_time.to_date
         }
 
       }
@@ -489,10 +489,10 @@ class ApplicationController < ActionController::Base
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        start_date: competition.start_date,
-        end_date: competition.end_date,
-        start_time: competition.start_date,
-        end_time: competition.end_date,
+        start_date: competition.start_time,
+        end_date: competition.end_time,
+        start_time: competition.start_time,
+        end_time: competition.end_time,
         image: competition.image.url,
         is_entered: is_entered_competition?(competition.id),
         participants_stats: get_participants_stats(competition),
@@ -502,7 +502,7 @@ class ApplicationController < ActionController::Base
         total_entries_count: get_entry_count(request_user, competition),
         issued_by: get_full_name(competition.user),
         is_followed: is_followed(competition.user),
-        validity: competition.end_date.strftime(get_time_format),
+        validity: competition.end_time.strftime(get_time_format),
         terms_and_conditions: competition.terms_conditions
     }
   end
@@ -563,7 +563,7 @@ class ApplicationController < ActionController::Base
     @offers = []
     @businesses.each do |business|
       if !business.passes.blank?
-      business.passes.not_expired.order(created_at: 'DESC').each do |pass|
+      business.passes.upcoming.order(created_at: 'DESC').each do |pass|
         @offers << {
           id: pass.id,
           type: 'pass',
@@ -596,7 +596,7 @@ class ApplicationController < ActionController::Base
       end #not empty
 
       if !business.special_offers.blank?
-        business.special_offers.not_expired.order(created_at: 'DESC').each do |offer|
+        business.special_offers.upcoming.order(created_at: 'DESC').each do |offer|
         @offers << {
           id: offer.id,
           type: 'special_offer',
@@ -924,6 +924,10 @@ end
      resource.redemptions.size
    end
 
+   def get_redeem_remaining_count(resource)
+      resource.quantity - resource.redemptions.size
+   end
+
 
 
    def get_token_from_user(user)
@@ -1152,7 +1156,7 @@ end
   end
 
   def array_sort_by_date(array)
-    array.sort_by { |h| h["start_date"].split('/').reverse }
+    array.sort_by { |h| h["start_time"].split('/').reverse }
   end
 
   def string_to_boolean(str)
@@ -1245,6 +1249,14 @@ end
 
 
 def jsonify_location(location)
+   l = {
+       "short_address" => "",
+       "geometry" => {
+          "lat" => "",
+          "lng" => ""
+          },
+       "full_address" => ""
+     }
   if location.include? "=>" 
     l = JSON.parse(location.gsub("=>", ":").gsub(":nil,", ":null,"))
   elsif location.include? '":'
@@ -1265,6 +1277,7 @@ end
   helper_method :is_business
   helper_method :mobile_users
   helper_method :business_users
+  helper_method :is_mobile_user?
 
 
 end

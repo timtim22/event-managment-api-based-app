@@ -13,11 +13,14 @@ require "spec_helper"
 #     it "JSON body response contains expected recipe attributes" do
 #       json_response = JSON.parse(response.body)
 #       expect(hash_body.keys).to match_array([:id, :ingredients, :instructions])
+<<<<<<< HEAD
 #      expect(hash_body).to match({
 #      id: article.id,
 #     title: 'Hello World'
 #expect(body_as_json).to be_kind_of(Hash)
 #  })
+=======
+>>>>>>> event_change
 #     end
 #   end
  

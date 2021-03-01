@@ -119,7 +119,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
       "name" => event.title,
       "description" => event.description,
       "location" => jsonify_location(event.location),
-      "start_date" => event.end_time,
+      "start_date" => event.start_time,
       "end_date" => event.end_time,
       "over_18" => event.over_18,
       "price_type" => event.price_type,

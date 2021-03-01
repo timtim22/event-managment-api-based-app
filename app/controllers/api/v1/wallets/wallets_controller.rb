@@ -40,7 +40,7 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
         creator_name: get_full_name(offer.user),
         creator_image: offer.user.avatar,
         validity: offer.validity.strftime(get_time_format),
-        is_expired: is_expired?(offer),
+        is_expired: offer_expired?(offer),
         grabbers_count: offer.wallets.size,
         is_redeemed: is_redeemed(offer.id, 'SpecialOffer', request_user.id),
         redeem_time: redeem_time(offer.id, 'SpecialOffer', request_user.id),
@@ -48,10 +48,11 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
         terms_and_conditions: offer.terms_conditions,
         issued_by: get_full_name(offer.user),
         redeem_count: get_redeem_count(offer),
-        quantity: offer.quantity
+        quantity: offer.quantity,
+        remaining_offers_count: get_redeem_remaining_count(offer)
        }
 
-      elsif  is_expired?(offer)
+      elsif  offer_expired?(offer)
         @expired_offers << {
         id: offer.id,
         title: offer.title,
@@ -66,7 +67,7 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
         creator_name: get_full_name(offer.user),
         creator_image: offer.user.avatar,
         validity: offer.validity.strftime(get_time_format),
-        is_expired: is_expired?(offer),
+        is_expired: offer_expired?(offer),
         grabbers_count: offer.wallets.size,
         is_redeemed: is_redeemed(offer.id, 'SpecialOffer', request_user.id),
         redeem_time: redeem_time(offer.id, 'SpecialOffer', request_user.id),
@@ -74,7 +75,8 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
         terms_and_conditions: offer.terms_conditions,
         issued_by: get_full_name(offer.user),
         redeem_count: get_redeem_count(offer),
-        quantity: offer.quantity
+        quantity: offer.quantity,
+        remaining_offers_count: get_redeem_remaining_count(offer)
       }
       else
        @unredeemed_offers << {
@@ -92,7 +94,7 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
         creator_name: get_full_name(offer.user),
         creator_image: offer.user.avatar,
         validity: offer.validity.strftime(get_time_format),
-        is_expired: is_expired?(offer),
+        is_expired: offer_expired?(offer),
         grabbers_count: offer.wallets.size,
         is_redeemed: is_redeemed(offer.id, 'SpecialOffer', request_user.id),
         redeem_time: redeem_time(offer.id, 'SpecialOffer', request_user.id),
@@ -100,7 +102,8 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
         terms_and_conditions: offer.terms_conditions,
         issued_by: get_full_name(offer.user),
         redeem_count: get_redeem_count(offer),
-        quantity: offer.quantity
+        quantity: offer.quantity,
+        remaining_offers_count: get_redeem_remaining_count(offer)
        }
         end #if
      
@@ -144,14 +147,16 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             description: pass.description,
             host_name: get_full_name(pass.event.user),
             host_image: pass.event.user.avatar,
-            event_name: pass.event.title,
+            event_title: pass.event.title,
             event_id: pass.event.id,
             event_image: pass.event.image,
+            event_start_time: pass.event.start_time, 
+            event_end_time: pass.event.end_time,
             event_location: jsonify_location(pass.event.location), 
             event_date: pass.event.start_time,
             distributed_by: distributed_by(pass),
-            validity: get_date_time(pass.event.end_time, pass),
-            is_expired: is_expired?(pass),
+            validity: pass.event.end_time,
+            is_expired: pass_expired?(pass),
             grabbers_count: pass.wallets.size,
             is_redeemed: true,
             redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
@@ -159,26 +164,28 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             redeem_count: get_redeem_count(pass),
             quantity: pass.quantity,
             issued_by: get_full_name(pass.user),
-            pass_type: pass.pass_type
-
+            pass_type: pass.pass_type,
+            remaining_passes_count: get_redeem_remaining_count(pass)
           }
 
-        elsif  is_expired?(pass)
+        elsif  pass_expired?(pass)
             @expired_passes << {
             id: pass.id,
             title: pass.title,
             description: pass.description,
             host_name: get_full_name(pass.event.user),
             host_image: pass.event.user.avatar,
-            event_name: pass.event.title,
+            event_title: pass.event.title,
             event_id: pass.event.id,
             event_image: pass.event.image,
+            event_start_time: pass.event.start_time, 
+            event_end_time: pass.event.end_time,
             pass_type: pass.pass_type,
             event_location: jsonify_location(pass.event.location),
             event_date: pass.event.start_time,
             distributed_by: distributed_by(pass),
-            validity: get_date_time(pass.event.end_time, pass),
-            is_expired: is_expired?(pass),
+            validity: pass.event.end_time,
+            is_expired: pass_expired?(pass),
             grabbers_count: pass.wallets.size,
             is_redeemed: false,
             redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
@@ -186,8 +193,8 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             redeem_count: get_redeem_count(pass),
             quantity: pass.quantity,
             issued_by: get_full_name(pass.user),
-            pass_type: pass.pass_type
-
+            pass_type: pass.pass_type,
+            remaining_passes_count: get_redeem_remaining_count(pass)
           }
         else
           @unredeemed_passes << {
@@ -195,14 +202,16 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             title: pass.title,
             host_name: get_full_name(pass.event.user),
             host_image: pass.event.user.avatar,
-            event_name: pass.event.title,
+            event_title: pass.event.title,
             event_id: pass.event.id,
             event_image: pass.event.image,
             event_location: jsonify_location(pass.event.location),
             event_date: pass.event.start_time,
+            event_start_time: pass.event.start_time, 
+            event_end_time: pass.event.end_time,
             distributed_by: distributed_by(pass),
-            validity: get_date_time(pass.event.end_time, pass),
-            is_expired: is_expired?(pass),
+            validity: pass.event.end_time,
+            is_expired: pass_expired?(pass),
             grabbers_count: pass.wallets.size,
             is_redeemed: false,
             redeem_time: redeem_time(pass.id, 'Pass', request_user.id),
@@ -210,7 +219,8 @@ api :GET, '/api/v1/wallets/get-offers', 'Get wallet special offers'
             redeem_count: get_redeem_count(pass),
             quantity: pass.quantity,
             issued_by: get_full_name(pass.user),
-            pass_type: pass.pass_type
+            pass_type: pass.pass_type,
+            remaining_passes_count: get_redeem_remaining_count(pass)
           }
            end #if
          
@@ -247,24 +257,20 @@ def get_competitions
 
   @sorted_competitions.uniq.each do |competition|
   
-    if is_expired?(competition)
+    if competition_expired?(competition)
     @expired_competitions << {
       id: competition.id,
       title: competition.title,
       description: competition.description,
-      location: jsonify_location(competition.location),
       start_date: competition.start_date,
       end_date: competition.end_date,
-      start_time: competition.start_time,
-      end_time: competition.end_time,
-      price: competition.price,
-      lat: competition.lat,
-      lng: competition.lng,
+      start_time: competition.start_date,
+      end_time: competition.end_date,
       image: competition.image.url,
       is_entered: is_entered_competition?(competition.id),
       participants_stats: get_participants_stats(competition),
       creator_name: competition.user.business_profile.profile_name,
-      is_expired: is_expired?(competition),
+      is_expired: competition_expired?(competition),
       creator_image: competition.user.avatar,
       creator_id: competition.user.id,
       total_entries_count: get_entry_count(request_user, competition),
@@ -278,25 +284,21 @@ def get_competitions
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        location: jsonify_location(competition.location),
         start_date: competition.start_date,
         end_date: competition.end_date,
-        start_time: competition.start_time,
-        end_time: competition.end_time,
-        price: competition.price,
-        lat: competition.lat,
-        lng: competition.lng,
+        start_time: competition.start_date,
+        end_time: competition.end_date,
         image: competition.image.url,
         is_entered: is_entered_competition?(competition.id),
         participants_stats: get_participants_stats(competition),
         creator_name: competition.user.business_profile.profile_name,
-        is_expired: is_expired?(competition),
+        is_expired: competition_expired?(competition),
         creator_image: competition.user.avatar,
         creator_id: competition.user.id,
         total_entries_count: get_entry_count(request_user, competition),
         issued_by: get_full_name(competition.user),
         is_followed: is_followed(competition.user),
-        validity: competition.validity.strftime(get_time_format),
+        validity: competition.end_date,
         terms_and_conditions: competition.terms_conditions
        }
     end
@@ -330,20 +332,21 @@ def get_tickets
     title: wallet.offer.title,
     host_name: get_full_name(wallet.offer.event.user),
     host_image: wallet.offer.event.user.avatar,
-    event_name: wallet.offer.event.title,
+    event_title: wallet.offer.event.title,
     event_description: wallet.offer.event.description,
     event_terms_conditions: wallet.offer.event.terms_conditions,
     going_count: wallet.offer.event.going_interest_levels.size,
     event_id: wallet.offer.event.id,
     event_image: wallet.offer.event.image,
     event_location: jsonify_location(wallet.offer.event.location),
-    event_start_time: get_date_time(wallet.offer.event.start_time, wallet.offer),
-    event_end_time: "2021-02-19T06:00:00.000Z",#get_date_time(wallet.offer.event.end_time, wallet.offer),
+    event_start_time: wallet.offer.event.start_time,
+    event_end_time: wallet.offer.event.end_time,
     event_date: wallet.offer.event.start_time,
-    price: get_formated_price(wallet.offer.price),
+    price: wallet.offer.price,
     quantity: wallet.offer.quantity,
     purchased_quantity: wallet.quantity,
     per_head: wallet.offer.per_head,
+    ticket_type: wallet.offer.ticket_type,
     is_redeemed: is_redeemed(wallet.offer.id, "Ticket", request_user.id),
     redeem_time: redeem_time(wallet.offer.id, "Ticket", request_user.id),
     validity: wallet.offer.event.end_time,
@@ -399,7 +402,7 @@ def remove_offer
  end
 end
 
-  api :POST, '/api/v1/add-to-wallet', 'Add offers to your wallet'
+  api :POST, '/api/v1/wallets/add-to-wallet', 'Add offers to your wallet'
   param :offer_id, :number, :desc => "Offer ID", :required => true
   #param :offer_type, ['pass', 'special offer'], :desc => "Offer Type (SpecialOffer, Pass)", :required => true
 
@@ -475,7 +478,7 @@ end
                   "competition_id": notification.resource.offer.id,
                   "competition_name": notification.resource.offer.title,
                   "competition_host": get_full_name(notification.resource.offer.user),
-                  "competition_draw_date": notification.resource.offer.end_date,
+                  "competition_draw_date": notification.resource.offer.end_time,
                   "user_id": notification.resource.user.id,
                   "actor_image": notification.actor.avatar,
                   "notifiable_id": notification.notifiable_id,
@@ -490,7 +493,7 @@ end
                 data = {
                   "id": notification.id,
                   "friend_name": get_full_name(notification.resource.user),
-                  "event_name": notification.resource.offer.event.title,
+                  "event_title": notification.resource.offer.event.title,
                   "event_start_date": notification.resource.offer.event.start_time,
                   "pass_id": notification.resource.offer.id,
                   "event_location": jsonify_location(notification.resource.offer.event.location),
@@ -612,7 +615,7 @@ end
                   "competition_id": notification.resource.offer.id,
                   "competition_name": notification.resource.offer.title,
                   "competition_host": get_full_name(notification.resource.offer.user),
-                  "competition_draw_date": notification.resource.offer.end_date,
+                  "competition_draw_date": notification.resource.offer.end_time,
                   "user_id": notification.resource.user.id,
                   "actor_image": notification.actor.avatar,
                   "notifiable_id": notification.notifiable_id,
@@ -627,7 +630,11 @@ end
                 data = {
                   "id": notification.id,
                   "friend_name": get_full_name(notification.resource.user),
+<<<<<<< HEAD
                   "event_name": notification.resource.offer.event.title,
+=======
+                  "event_title": notification.resource.offer.event.title,
+>>>>>>> event_change
                   "event_start_date": notification.resource.offer.event.start_time,
                   "pass_id": notification.resource.offer.id,
                   "event_location": jsonify_location(notification.resource.offer.event.location),
@@ -732,14 +739,14 @@ end
       description: pass.description,
       host_name: get_full_name(pass.user),
       host_image: pass.user.avatar,
-      event_name: pass.event.title,
+      event_title: pass.event.title,
       event_image:pass.event.image,
       event_location: jsonify_location(pass.event.location),
       event_date: pass.event.start_time,
       distributed_by: distributed_by(pass),
       is_added_to_wallet: is_added_to_wallet?(pass.id),
       validity: pass.validity.strftime(get_time_format),
-      is_expired: is_expired?(pass),
+      is_expired: "" ,
       grabbers_count: pass.wallets.size,
       terms_and_conditions: pass.terms_conditions
     }
@@ -796,11 +803,6 @@ end
 
  private
 
- def get_date_time(date, time)
-    d = date.strftime("%Y-%m-%d")
-    t = time.strftime("%H:%M:%S")
-    datetime = d + "T" + t + ".000Z"
- end
 
  def is_added_to_wallet?(pass_id)
   wallet = request_user.wallets.where(offer_id: pass_id).where(offer_type: 'Pass')
