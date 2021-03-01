@@ -22,8 +22,8 @@
         "event_type"  => event.event_type,
         "price_type"  => event.price_type,
         "location"  => jsonify_location(event.location),
-        "start_date"  => event.start_date,
-        "end_date"  => event.end_date,
+        "start_date"  => event.start_time,
+        "end_date"  => event.end_time,
         "going"  => "",
         "maybe"  => "",
         "get_demographics" => "",
@@ -43,13 +43,13 @@
          event.event.passes.map {|p| qr.push(p.qr_code) }
        end
         case
-        when event.start_date.to_date == Date.today
+        when event.start_time.to_date == Date.today
         status =  "Now On"
-        when event.start_date.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door" || event.price_type == "free_event"
+        when event.start_time.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door" || event.price_type == "free_event"
           status =  event.going_interest_levels.size.to_s + " Going"  
-        when event.start_date.to_date > Date.today && event.price_type == "buy"
+        when event.start_time.to_date > Date.today && event.price_type == "buy"
           status =  event.event.tickets.map { |e| e.wallets.size.to_s}.join(",") + " Tickets Gone"
-        when event.start_date.to_date < Date.today
+        when event.start_time.to_date < Date.today
          status = "Event Over"
         end
 
@@ -62,8 +62,8 @@
         "event_type"  => event.event_type,
         "price_type"  => event.price_type,
         "location"  => jsonify_location(event.location),
-        "start_date"  => event.start_date,
-        "end_date"  => event.end_date,
+        "start_date"  => event.start_time,
+        "end_date"  => event.end_time,
         "going"  => event.going_interest_levels.size,
         "maybe"  => event.interested_interest_levels.size,
         "get_demographics" => get_demographics(event),
@@ -121,18 +121,18 @@
        e.passes.map {|p| qr.push(p.qr_code) }
      end
   case
-  when e.start_date.to_date == Date.today
+  when e.start_time.to_date == Date.today
   status =  "Now On"
-  when e.start_date.to_date > Date.today && e.price_type == "free_ticketed_event" || e.price_type == "pay_at_door" || e.price_type == "free_event"
+  when e.start_time.to_date > Date.today && e.price_type == "free_ticketed_event" || e.price_type == "pay_at_door" || e.price_type == "free_event"
     status =  e.going_interest_levels.size.to_s + " Going"  
-  when e.start_date.to_date > Date.today && e.price_type == "buy"
+  when e.start_time.to_date > Date.today && e.price_type == "buy"
     status =  e.tickets.map { |e| e.wallets}.size.to_s + " Tickets Gone"
-  when e.start_date.to_date < Date.today
+  when e.start_time.to_date < Date.today
    status = "Event Over"
   end
 
   case 
-  when e.start_date == ""
+  when e.start_time == ""
     active_tab = "details"
   when e.tickets.empty? || e.price_type == "free_event"
     active_tab = "times"
@@ -149,8 +149,8 @@
    @event = {
      'id' => e.id,
      'title' => e.title,
-     'start_date' => e.start_date,
-     'end_date' => e.end_date,
+     'start_date' => e.start_time,
+     'end_date' => e.end_time,
      'image' => e.image.url,
      'location' => jsonify_location(e.location),
      'description' => e.description,
@@ -251,8 +251,8 @@
       @events << {
         'id' => e.id,
         'name' => e.title,
-        'start_date' => e.start_date,
-        'end_date' => e.end_date,
+        'start_date' => e.start_time,
+        'end_date' => e.end_time,
         'image' => e.image.url,
         'location' => jsonify_location(location),
         'description' => e.description,
@@ -303,7 +303,7 @@
       @events << {
         'id' => e.id,
         'title' => e.title,
-        'date' => e.start_date,
+        'date' => e.start_time,
         'image' => e.image.url,
         "terms_conditions" => e.terms_conditions,
         'creator_name' => e.user.business_profile.profile_name,
@@ -622,8 +622,8 @@
   def add_times
     if !params[:event_id].blank?
       @event = Event.find(params[:event_id])
-      @event.start_date = get_date_time(params[:start_date].to_date, params[:start_time])
-      @event.end_date = get_date_time(params[:end_date].to_date, params[:end_time])
+      @event.start_time = get_date_time(params[:start_date].to_date, params[:start_time])
+      @event.end_time = get_date_time(params[:end_date].to_date, params[:end_time])
       @event.frequency = params[:frequency]
       @event.is_repetive = params[:is_repetive]
         if @event.save
@@ -815,8 +815,8 @@
       @event = Event.find(params[:event_id])
       @event.title = params[:title]
       @event.image = params[:image]
-      @event.start_date = ""
-      @event.end_date = ""
+      @event.start_time = ""
+      @event.end_time = ""
       @event.venue = params[:venue]
       @event.over_18 = params[:over_18]
       @event.description = params[:description]
@@ -836,8 +836,8 @@
       @event = request_user.events.new
       @event.title = params[:title]
       @event.image = params[:image]
-      @event.start_date = ""
-      @event.end_date = ""
+      @event.start_time = ""
+      @event.end_time = ""
       @event.venue = params[:venue]
       @event.over_18 = params[:over_18]
       @event.description = params[:description]
@@ -1088,8 +1088,8 @@
   #   @event = Event.find(params[:id])
   #   @event.title = params[:name]
   #   @event.image = params[:image]
-  #   @event.start_date = params[:start_date]
-  #   @event.end_date = params[:end_date]
+  #   @event.start_time = params[:start_date]
+  #   @event.end_time = params[:end_date]
   #   @event.over_18 = params[:over_18]
   #   @event.description = params[:description]
   #   @event.allow_chat = params[:allow_chat]

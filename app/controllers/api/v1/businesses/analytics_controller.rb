@@ -36,7 +36,7 @@ class Api::V1::Businesses::AnalyticsController < Api::V1::ApiMasterController
                 @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
               when  "overall"
                  start_date = event.created_at.to_date.to_s
-                 end_date = event.end_date.to_date.to_s
+                 end_date = event.end_time.to_date.to_s
                  @current_time_slot_dates = generate_date_range(start_date, end_date)
                  # in case of overall there should be no comparison between time slots
                  @before_current_time_slot_dates = generate_date_range(start_date, end_date)
@@ -86,10 +86,10 @@ class Api::V1::Businesses::AnalyticsController < Api::V1::ApiMasterController
               @event_stats = {
                   "event_id" => event.id,
                   "name" => event.title,
-                  "start_date" => get_date_time_mobile(event.start_date),
-                  "end_date" => get_date_time_mobile(event.end_date),
-                  "start_time" => get_date_time_mobile(event.start_date),
-                  "end_time" => get_date_time_mobile(event.end_date),
+                  "start_date" => get_date_time_mobile(event.start_time),
+                  "end_date" => get_date_time_mobile(event.end_time),
+                  "start_time" => get_date_time_mobile(event.start_time),
+                  "end_time" => get_date_time_mobile(event.end_time),
                   "location" => jsonify_location(event.location),
                   "event_type" => event.event_type,
                   "image" => event.image,
@@ -372,8 +372,8 @@ class Api::V1::Businesses::AnalyticsController < Api::V1::ApiMasterController
   #       events << {
   #         "event_id" => event.id,
   #         "name" => event.title,
-  #         "start_date" => event.start_date,
-  #         "end_date" => event.end_date,
+  #         "start_date" => event.start_time,
+  #         "end_date" => event.end_time,
   #         "start_time" => ,
   #         "end_time" => ,
   #         "location" => location,
@@ -509,7 +509,7 @@ class Api::V1::Businesses::AnalyticsController < Api::V1::ApiMasterController
   #         event_location: pass.event.location,
   #         event_start_time: pass.,
   #         event_end_time: pass.,
-  #         event_date: pass.event.start_date,
+  #         event_date: pass.event.start_time,
   #         distributed_by: distributed_by(pass),
   #         validity: pass.validity + " " + pass.validity_time.strftime("%H:%M:%S").to_s,
   #         grabbers_count: pass.wallets.size,

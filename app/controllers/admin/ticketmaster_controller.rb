@@ -23,8 +23,8 @@
 #           event.title = key.name.to_s
 #           event.description = key.name.to_s
 #           event.remote_image_url = key.images[8].url
-#           event.start_date = key.dates['start']['localDate']
-#           event.end_date  = key.dates['start']['localDate']
+#           event.start_time = key.dates['start']['localDate']
+#           event.end_time  = key.dates['start']['localDate']
 #           event.event_type = 'ticketmaster'
 #            = key.dates['start']['localTime']
 #            = "Not specified"

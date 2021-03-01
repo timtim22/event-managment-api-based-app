@@ -62,7 +62,7 @@ end
       when e.price_type == "free_event" || e.price_type == "free"
         @event = {
           location: e.location,
-          start_date: e.start_date,
+          start_date: e.start_time,
           Impressions: get_time_slot_parent_total_views(params[:current_time_slot_dates], e),
           Comments: get_time_slot_parent_event_total_comments(params[:current_time_slot_dates], e),
           Ambassadors: get_time_slot_user_event_ambassadors(params[:current_time_slot_dates], e),
@@ -75,7 +75,7 @@ end
       when e.price_type == "paid"
         @event = {
           location: e.location,
-          start_date: e.start_date,
+          start_date: e.start_time,
           price: e.tickets.first.price,   
           Comments: get_time_slot_parent_event_total_comments(params[:current_time_slot_dates], e),
           New_followers: get_time_slot_user_event_followers(params[:current_time_slot_dates], e),
@@ -89,7 +89,7 @@ end
       when e.price_type == "pay_at_door"
           @event = {
           location: e.location,
-          start_date: e.start_date,
+          start_date: e.start_time,
           Impressions: get_time_slot_parent_total_views(params[:current_time_slot_dates], e),
           Comments: get_time_slot_parent_event_total_comments(params[:current_time_slot_dates], e),
           Ambassadors: get_time_slot_user_event_ambassadors(params[:current_time_slot_dates], e),
@@ -126,7 +126,7 @@ def get_live_event_data
     e = ChildEvent.find(params[:event_id])
     @attendees = []
     @event = []
-    if e.start_date.to_date == Date.today
+    if e.start_time.to_date == Date.today
       if e.price_type == "free_event" || e.price_type == "pay_at_door"
         e.going_interest_levels.each do |going|
         @attendees << {
@@ -164,7 +164,7 @@ def get_live_event_data
           @event << {
             time_remaning: "Live Now",
             location: jsonify_location(e.location),
-            date: e.start_date,
+            date: e.start_time,
             going: e.going_interest_levels.size,
             passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
             vip_pass: e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum,
@@ -204,7 +204,7 @@ def get_child_event_attendees_stats
         @event = []
         #extract attendees from ticket purchases       
         case
-        when e.start_date.to_date > Date.today
+        when e.start_time.to_date > Date.today
 
           if e.price_type == "free_event" || e.price_type == "pay_at_door"
             e.going_interest_levels.each do |going|
@@ -241,9 +241,9 @@ def get_child_event_attendees_stats
           end
 
           @event << {
-            time_remaning: (e.start_date.to_date - Date.today).to_i.to_s + " days remaning",
+            time_remaning: (e.start_time.to_date - Date.today).to_i.to_s + " days remaning",
             location: jsonify_location(e.location),
-            date: e.start_date,
+            date: e.start_time,
             going: e.going_interest_levels.size,
             passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
             vip_pass: e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum,
@@ -255,7 +255,7 @@ def get_child_event_attendees_stats
             vip_passes_percentage: (e.event.passes.where(pass_type: "vip").map {|e| e.redemptions}.size.to_i/(e.event.passes.where(pass_type: "vip").size.to_i.nonzero? || 1) * 100).to_i.to_s,
             attendees: @attendees 
           }
-        when e.start_date.to_date == Date.today
+        when e.start_time.to_date == Date.today
           if e.price_type == "free_event" || e.price_type == "pay_at_door"
             e.going_interest_levels.each do |going|
             @attendees << {
@@ -292,7 +292,7 @@ def get_child_event_attendees_stats
           @event << {
             time_remaning: "Live Now",
             location: jsonify_location(e.location),
-            date: e.start_date,
+            date: e.start_time,
             going: e.going_interest_levels.size,
             passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
             vip_pass: e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum,
@@ -306,7 +306,7 @@ def get_child_event_attendees_stats
           
           }
 
-        when e.start_date.to_date < Date.today
+        when e.start_time.to_date < Date.today
           if e.price_type == "free_event" || e.price_type == "pay_at_door"
             e.going_interest_levels.each do |going|
             @attendees << {
@@ -342,7 +342,7 @@ def get_child_event_attendees_stats
         @event << {
           time_remaning: "Event Over",
           location: jsonify_location(e.location),
-          date: e.start_date,
+          date: e.start_time,
           going: e.going_interest_levels.size,
           passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
           vip_pass: e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum,
@@ -384,7 +384,7 @@ def get_child_event_full_analytics
       e = ChildEvent.find(params[:event_id])
       case
 
-      when e.start_date == Time.now.to_date
+      when e.start_time == Time.now.to_date
         # if e.price_type == "free_event"
         #   @event << {
         #     title: "FREE EVENT"
@@ -414,7 +414,7 @@ def get_child_event_full_analytics
           # title: "FREE EVENT" if e.price_type == "free_event",
           # title: "FREE TICKET" if e.price_type == "free",
           location: e.location,
-          date: e.start_date,
+          date: e.start_time,
           going: e.going_interest_levels.size,
           passes_in_wallets: e.event.passes.map { |e| e.wallets }.size,
           vip_pass: e.event.passes.where(pass_type: "vip").map {|e| e.quantity}.sum,
@@ -443,7 +443,7 @@ def get_child_event_full_analytics
           # title: "FREE EVENT" if e.price_type == "free_event",
           # title: "FREE TICKET" if e.price_type == "free",
           location: e.location,
-          date: e.start_date,
+          date: e.start_time,
           Impressions: get_time_slot_child_total_views(params[:current_time_slot_dates], e),
           Comments: get_time_slot_child_total_comments(params[:current_time_slot_dates], e),
           Ambassadors: get_time_slot_user_event_ambassadors(params[:current_time_slot_dates], e),
@@ -455,7 +455,7 @@ def get_child_event_full_analytics
       when e.price_type == "paid"
         @event = {
           location: e.location,
-          start_date: e.start_date,
+          start_date: e.start_time,
           price: e.event.tickets.first.price,   
           Comments: get_time_slot_child_total_comments(params[:current_time_slot_dates], e),
           new_followers: get_time_slot_user_event_followers(params[:current_time_slot_dates], e),
@@ -468,7 +468,7 @@ def get_child_event_full_analytics
         when e.price_type == "pay_at_door"
           @event = {
           location: e.location,
-          start_date: e.start_date,
+          start_date: e.start_time,
           Impressions: get_time_slot_child_total_views(params[:current_time_slot_dates], e),
           Comments: get_time_slot_child_total_comments(params[:current_time_slot_dates], e),
           Ambassadors: get_time_slot_user_event_ambassadors(params[:current_time_slot_dates], e),

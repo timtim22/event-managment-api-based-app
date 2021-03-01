@@ -152,8 +152,8 @@ class Api::V1::ApiMasterController < ApplicationController
         "title" => event.title,
         "description" => event.description,
         'location' => jsonify_location(event.location),
-        "start_date" => event.end_date,
-        "end_date" => event.end_date,
+        "start_date" => event.end_time,
+        "end_date" => event.end_time,
         "over_18" => event.event.over_18,
         "price_type" => event.price_type,
         "price" => get_price(event.event).to_s,
@@ -171,7 +171,7 @@ class Api::V1::ApiMasterController < ApplicationController
 
 
     def event_expired?(event)
-      event.end_date < DateTime.now
+      event.end_time < DateTime.now
     end
 
 

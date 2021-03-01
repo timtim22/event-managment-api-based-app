@@ -119,8 +119,8 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
       "name" => event.title,
       "description" => event.description,
       "location" => jsonify_location(event.location),
-      "start_date" => event.end_date,
-      "end_date" => event.end_date,
+      "start_date" => event.end_time,
+      "end_date" => event.end_time,
       "over_18" => event.over_18,
       "price_type" => event.price_type,
       "price" => get_price(event).to_s,
@@ -138,7 +138,7 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
 
 
   def event_expired?(event)
-    event.end_date < DateTime.now
+    event.end_time < DateTime.now
   end
 
 
@@ -156,13 +156,13 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
  #       event.event.passes.map {|p| qr.push(p.qr_code) }
  #     end
  #  case
- #  when event.start_date.to_date == Date.today
+ #  when event.start_time.to_date == Date.today
  #  status =  "Now On"
- #  when event.start_date.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door" || event.price_type == "free_event"
+ #  when event.start_time.to_date > Date.today && event.price_type == "free_ticketed_event" || event.price_type == "pay_at_door" || event.price_type == "free_event"
  #    status =  event.going_interest_levels.size.to_s + " Going"  
- #  when event.start_date.to_date > Date.today && event.price_type == "buy"
+ #  when event.start_time.to_date > Date.today && event.price_type == "buy"
  #    status =  event.event.tickets.map { |e| e.wallets.size.to_s}.join(",") + " Tickets Gone"
- #  when event.start_date.to_date < Date.today
+ #  when event.start_time.to_date < Date.today
  #   status = "Event Over"
  #  end
  #  e = {
@@ -172,8 +172,8 @@ class Dashboard::Api::V1::ApiMasterController < ApplicationController
  #    "event_type"  => event.event_type,
  #    "price_type"  => event.price_type,
  #    "location"  => jsonify_location(event.location),
- #    "start_date"  => event.start_date,
- #    "end_date"  => event.end_date,
+ #    "start_date"  => event.start_time,
+ #    "end_date"  => event.end_time,
  #    "going"  => event.going_interest_levels.size,
  #    "maybe"  => event.interested_interest_levels.size,
  #    "get_demographics" => get_demographics(event),
