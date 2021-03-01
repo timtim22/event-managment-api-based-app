@@ -1,5 +1,20 @@
 require 'rails_helper'
 require "spec_helper"
+
+
+
+# describe "GET #index" do
+#     before do
+#       get :index
+#     end
+#     it "returns http success" do
+#       expect(response).to have_http_status(:success)
+#     end
+#     it "JSON body response contains expected recipe attributes" do
+#       json_response = JSON.parse(response.body)
+#       expect(hash_body.keys).to match_array([:id, :ingredients, :instructions])
+#     end
+#   end
  
 RSpec.describe Api::V1::Users::UsersController, type: :controller do
   describe "Mobile - User API - " do
@@ -8,11 +23,20 @@ RSpec.describe Api::V1::Users::UsersController, type: :controller do
       request.headers["Authorization"] = ENV["APP_LOGIN_TOKEN"]
     end
 
+
+
+    #api/v1/users/get-list
    it "should return all users" do
       get :index
+      hash_body = JSON.parse(response.body)
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)
+      expect(hash_body.keys).to match_array([:id, :ingredients, :instructions])
+      expect(hash_body.values).to_not be_a_kind_of(NilClass)
    end
+
+
+
 
    it "should create users" do
       post :create, params: {

@@ -58,7 +58,7 @@ class Api::V1::Events::Tickets::TicketsController < Api::V1::ApiMasterController
   param :event_id, String, :desc => "Event ID", :required => true
 
   def get_tickets
-    if !params[:event_id].blank?
+    if !params[:event_id].blank? 
        @event = Event.find(params[:event_id])
        @tickets = []
        @event.tickets.each do |ticket|

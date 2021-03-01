@@ -689,6 +689,8 @@
   end
 
 
+
+
   def publish_event
     if !params[:event_id].blank?
       @event = Event.find(params[:event_id])
@@ -768,8 +770,9 @@
     end
   end
 
-  def create_event
 
+
+  def create_event
     success = false
     # @error_messages = []
 
@@ -1329,6 +1332,9 @@
   end
 
   end
+
+
+  
 
  def delete_resource
     id = params[:id]
