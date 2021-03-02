@@ -705,24 +705,33 @@
   def publish_event
     if !params[:event_id].blank?
       @event = Event.find(params[:event_id])
-      @event.status = "active"
+      if @event.tickets.present?
+        @event.status = "active"
 
-      if @event.save
-        render json:  {
-          code: 200,
-          success: true,
-          message: 'Time succesfully added.',
-          data: {
-             event: @event
+        if @event.save
+          render json:  {
+            code: 200,
+            success: true,
+            message: 'Event successfully published.',
+            data: {
+               event: @event
+            }
           }
-        }
+        else
+          render json:  {
+            code: 400,
+            success: false,
+            message: @event.error_messages,
+            data: nil
+          }
+        end
       else
-        render json:  {
-          code: 400,
-          success: false,
-          message: @event.error_messages,
-          data: nil
-        }
+          render json:  {
+            code: 400,
+            success: false,
+            message: "Event cannot be published without resource/tickets. Kindly add tickets before publishing the event.",
+            data: nil
+          }
       end
     else
       render json: {
