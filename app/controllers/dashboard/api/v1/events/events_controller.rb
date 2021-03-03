@@ -724,6 +724,8 @@
   end
 
 
+
+
   def publish_event
     if !params[:event_id].blank?
       @event = Event.find(params[:event_id])
@@ -812,8 +814,9 @@
     end
   end
 
-  def create_event
 
+
+  def create_event
     success = false
     # @error_messages = []
 
@@ -1102,8 +1105,8 @@
   #   @event = Event.find(params[:id])
   #   @event.title = params[:name]
   #   @event.image = params[:image]
-  #   @event.start_date = params[:start_date]
-  #   @event.end_date = params[:end_date]
+  #   @event.start_time = params[:start_date]
+  #   @event.end_time = params[:end_date]
   #   @event.over_18 = params[:over_18]
   #   @event.description = params[:description]
   #   @event.allow_chat = params[:allow_chat]
@@ -1383,6 +1386,9 @@
       }
     end
   end
+
+
+  
 
  def delete_resource
     id = params[:id]

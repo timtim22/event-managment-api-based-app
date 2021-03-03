@@ -71,6 +71,10 @@ class User < ApplicationRecord
   has_many :remove_tickets, -> { where(name: 'remove_ticket', resource_type: 'Ticket') }, class_name: 'UserSetting', source_type: :pass, dependent: :destroy
   has_many :news_feeds, dependent: :destroy
   has_many :invoices, dependent: :destroy
+  # reservations available for a user to buy a ticket
+  has_many :reservations, foreign_key: :reserved_for_id, dependent: :destroy
+  #reservations created by a user for someone/self
+  has_many :own_reservations, foreign_key: :user_id, class_name: 'Reservation', dependent: :destroy
 
   has_many :password_resets, dependent: :destroy
   has_many :event_shares, dependent: :destroy

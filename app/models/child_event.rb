@@ -26,5 +26,6 @@ class ChildEvent < ApplicationRecord
  has_many :event_forwardings, dependent: :destroy
  has_many :reminders, dependent: :destroy
  has_many :notifications, dependent: :destroy, as: :resource
+ 
 
 end

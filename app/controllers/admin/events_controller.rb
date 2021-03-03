@@ -43,8 +43,8 @@ class Admin::EventsController < Admin::AdminMasterController
 
    if params[:start_date] == params[:end_date]
         @event.title = params[:name]
-        @event.start_date = params[:start_date].to_date
-        @event.end_date = params[:end_date].to_date
+        @event.start_time = params[:start_date].to_date
+        @event.end_time = params[:end_date].to_date
         @event.event_type = params[:event_type]
         @event.price_type = params[:price_type]
         @event.start_time = params[:start_time]
@@ -196,7 +196,7 @@ class Admin::EventsController < Admin::AdminMasterController
               "event_name": notification.resource.title,
               "event_id": notification.resource.id,
               "event_location": notification.resource.location,
-              "event_start_date": notification.resource.start_date
+              "event_start_date": notification.resource.start_time
             }
            }
           }
@@ -221,8 +221,8 @@ class Admin::EventsController < Admin::AdminMasterController
     dates.each_with_index do |date, index|
       @event = current_user.events.new
       @event.title = params[:name]
-      @event.start_date = date.to_date
-      @event.end_date = date.to_date
+      @event.start_time = date.to_date
+      @event.end_time = date.to_date
       @event.event_type = params[:event_type]
       @event.price_type = params[:price_type]
       @event.start_time = params[:start_time]
@@ -368,7 +368,7 @@ class Admin::EventsController < Admin::AdminMasterController
             "event_name": notification.resource.title,
             "event_id": notification.resource.id,
             "event_location": notification.resource.location,
-            "event_start_date": notification.resource.start_date
+            "event_start_date": notification.resource.start_time
           }
          }
         }
@@ -424,8 +424,8 @@ class Admin::EventsController < Admin::AdminMasterController
 
     @event = Event.find(params[:id])
     @event.title = params[:name]
-    @event.start_date = params[:start_date].to_date.to_s
-    @event.end_date = params[:end_date].to_date.to_s
+    @event.start_time = params[:start_date].to_date.to_s
+    @event.end_time = params[:end_date].to_date.to_s
     @event.price_range = price_range
     @event.price = price
     @event.start_price = start_price

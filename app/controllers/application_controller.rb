@@ -1266,6 +1266,21 @@ def jsonify_location(location)
 end
 
 
+def get_reservation_object(reservation)
+  reservation = {
+    id: reservation.id,
+    ticket_id: reservation.ticket_id,
+    ticket_title: reservation.ticket.title,
+    user_id: reservation.user_id,
+    username: User.get_full_name(reservation.user),
+    reserved_for_id: reservation.reserved_for_id,
+    reserverd_for_name: User.get_full_name(reservation.reserved_for),
+    start_time: reservation.start_time,
+    end_time: reservation.end_time
+  }
+end
+
+
   helper_method :SetJsVariables
   helper_method :is_admin_or_super_admin?
   helper_method :create_activity

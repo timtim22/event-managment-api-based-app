@@ -1,5 +1,7 @@
 class Api::V1::Events::Tickets::TicketsController < Api::V1::ApiMasterController
 
+  before_action :authorize_request
+
   api :POST, '/api/v1/events/tickets/redeem', 'Redeem Ticket'
   param :ticket_id, :number, :desc => "Event ID", :required => true
   param :qr_code, String, :desc => "Redeem code", :required => true
@@ -58,7 +60,7 @@ class Api::V1::Events::Tickets::TicketsController < Api::V1::ApiMasterController
   param :event_id, String, :desc => "Event ID", :required => true
 
   def get_tickets
-    if !params[:event_id].blank?
+    if !params[:event_id].blank? 
        @event = Event.find(params[:event_id])
        @tickets = []
        @event.tickets.each do |ticket|
@@ -78,12 +80,15 @@ class Api::V1::Events::Tickets::TicketsController < Api::V1::ApiMasterController
          }
        end
 
+       event_dates = @event.child_events.map {|ch| ch.start_time }
+
        render json: {
          code: 200,
          success: true,
          message: '',
          data: {
-           tickets: @tickets
+           tickets: @tickets,
+           event_dates: event_dates 
          }
        }
     else

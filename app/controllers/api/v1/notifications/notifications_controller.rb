@@ -274,7 +274,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
           "competition_id": notification.resource.event.id,
           "competition_name": notification.resource.event.title,
           "business_name": get_full_name(notification.resource.event.user),
-          "draw_date": notification.resource.event.end_date,
+          "draw_date": notification.resource.event.end_time,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,
@@ -615,7 +615,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
       #   subscribe_key: ENV['SUBSCRIBE_KEY']
       #   )
       #  interested_in_events.each do |event|
-      #   start_date = event.start_date
+      #   start_date = event.start_time
       #   start_date_yesterday = (start_date - 1.day).to_date
       #   now = Time.now.to_date
       #   if now  ==  start_date_yesterday
@@ -637,7 +637,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
       #                 "event_name": notification.resource.title,
       #                 "event_id": notification.resource.id,
       #                 "event_location": notification.resource.location,
-      #                 "event_start_date": notification.resource.start_date,
+      #                 "event_start_date": notification.resource.start_time,
       #                 "event_start_time": notification.resourc,
       #                 "event_end_time": notification.resourc,
       #                 "event_type": notification.resource.event_type,
@@ -655,7 +655,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
       #                 "event_name": notification.resource.title,
       #                 "event_id": notification.resource.id,
       #                 "event_location": notification.resource.location,
-      #                 "event_start_date": notification.resource.start_date,
+      #                 "event_start_date": notification.resource.start_time,
       #                 "event_start_time": notification.resourc,
       #                 "event_end_time": notification.resourc,
       #                 "event_type": notification.resource.event_type,
@@ -673,7 +673,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
       #                 "event_name": notification.resource.title,
       #                 "event_id": notification.resource.id,
       #                 "event_location": notification.resource.location,
-      #                 "event_start_date": notification.resource.start_date,
+      #                 "event_start_date": notification.resource.start_time,
       #                 "event_start_time": notification.resourc,
       #                 "event_end_time": notification.resourc,
       #                 "event_type": notification.resource.event_type,
@@ -691,7 +691,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
       #                 "event_name": notification.resource.title,
       #                 "event_id": notification.resource.id,
       #                 "event_location": notification.resource.location,
-      #                 "event_start_date": notification.resource.start_date,
+      #                 "event_start_date": notification.resource.start_time,
       #                 "event_start_time": notification.resourc,
       #                 "event_end_time": notification.resourc,
       #                 "event_type": notification.resource.event_type,
@@ -731,7 +731,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
       # end # each
 
       # request_user.events_to_attend.each do |event|
-      #   end_date = event.end_date
+      #   end_date = event.end_time
       #   end_date_yesterday = (end_date - 1.day).to_date
       #   now = Time.now.to_date
       #   if now  ==  end_date_yesterday
