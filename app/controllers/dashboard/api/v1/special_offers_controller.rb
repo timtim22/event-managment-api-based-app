@@ -73,20 +73,23 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
   end
 
   api :POST, 'dashboard/api/v1/special_offers', 'Create special offer'
-  param :title, String, :desc => "Title of the special offer", :required => true
-  param :description, String, :desc => "Description of the special offer", :required => true
-  param :date, String, :desc => "Date of the special offer", :required => true
-  param :validity, String, :desc => "Validity", :required => true
-  param :ambassador_rate, :decimal, :desc => "Ambassador rate of the special offer", :required => true
-  param :image, String, :desc => "Image of the special offer", :required => true
-  param :qr_code, :number, :desc => "Redeem Code", :required => true
-  param :terms_conditions, String, :desc => "Terms and condition of the special offer", :required => true
+  # param :title, String, :desc => "Title of the special offer", :required => true
+  # param :description, String, :desc => "Description of the special offer", :required => true
+  # param :date, String, :desc => "Date of the special offer", :required => true
+  # param :validity, String, :desc => "Validity", :required => true
+  # param :ambassador_rate, :decimal, :desc => "Ambassador rate of the special offer", :required => true
+  # param :image, String, :desc => "Image of the special offer", :required => true
+  # param :qr_code, :number, :desc => "Redeem Code", :required => true
+  # param :terms_conditions, String, :desc => "Terms and condition of the special offer", :required => true
 
   def create
-    @special_offer = SpecialOffer.new
+    @special_offer = request_user.special_offers.new
     @special_offer.title = params[:title]
+    @special_offer.sub_title = params[:sub_title]
     @special_offer.description = params[:description]
+    @special_offer.end_time = params[:end_time]
     @special_offer.date = params[:date]
+    @special_offer.time = params[:time]
     @special_offer.validity = params[:validity]
     @special_offer.ambassador_rate = params[:ambassador_rate]
     @special_offer.image = params[:image]
@@ -108,7 +111,7 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
           )
       request_user.followers.each do |follower|
    if follower.special_offers_notifications_setting.is_on == true
-      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event')
+      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_offer')
         @current_push_token = @pubnub.add_channels_to_push(
          push_token: follower.device_token,
          type: 'gcm',
@@ -168,15 +171,15 @@ def edit
 end
 
   api :POST, 'dashboard/api/v1/special_offers', 'Update special offer'
-  param :id, :number, :desc => "ID of the special offer", :required => true
-  param :title, String, :desc => "Title of the special offer", :required => true
-  param :description, String, :desc => "Description of the special offer", :required => true
-  param :date, String, :desc => "Date of the special offer", :required => true
-  param :validity, String, :desc => "Validity", :required => true
-  param :ambassador_rate, :number, :desc => "Ambassador rate of the special offer", :required => true
-  param :image, String, :desc => "Image of the special offer", :required => true
-  param :qr_code, String, :desc => "Redeem Code", :required => true
-  param :terms_conditions, String, :desc => "Terms and condition of the special offer", :required => true
+  # param :id, :number, :desc => "ID of the special offer", :required => true
+  # param :title, String, :desc => "Title of the special offer", :required => true
+  # param :description, String, :desc => "Description of the special offer", :required => true
+  # param :date, String, :desc => "Date of the special offer", :required => true
+  # param :validity, String, :desc => "Validity", :required => true
+  # param :ambassador_rate, :number, :desc => "Ambassador rate of the special offer", :required => true
+  # param :image, String, :desc => "Image of the special offer", :required => true
+  # param :qr_code, String, :desc => "Redeem Code", :required => true
+  # param :terms_conditions, String, :desc => "Terms and condition of the special offer", :required => true
  # param :id, :number, :desc => "Title of the competition", :required => true
 
 def update
@@ -185,6 +188,7 @@ def update
     @special_offer.title = params[:title]
     @special_offer.description = params[:description]
     @special_offer.date = params[:date]
+    @special_offer.time = params[:time]
     @special_offer.validity = params[:validity]
     @special_offer.ambassador_rate = params[:ambassador_rate]
     @special_offer.image = params[:image]
@@ -205,7 +209,7 @@ def update
           )
       request_user.followers.each do |follower|
   if follower.special_offers_notifications_setting.is_on == true
-      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_event')
+      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_offer')
 
         @current_push_token = @pubnub.add_channels_to_push(
         push_token: follower.device_token,

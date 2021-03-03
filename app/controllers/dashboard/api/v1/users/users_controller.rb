@@ -41,7 +41,7 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
               "phone_number" =>  @user.phone_number,
               "password" => @user.password,
               "followers_count" => @user.followers.size,
-              "address" => @user.location,
+              "address" => jsonify_location(@user.location),
               "is_subscribed" => @user.is_subscribed,
               "device_token" => @user.device_token,
               "about" => @user.about,
@@ -95,7 +95,7 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
   # param :password, String, :desc => "Password"
 
   def create_user
-    required_fields = ['profile_name', 'contact_name','location', 'display_name', 'phone_number', 'email', 'password','is_charity', 'about']
+    required_fields = ['profile_name', 'contact_name','location', 'display_name', 'phone_number', 'email', 'role_id', 'password','is_charity', 'about']
     errors = []
     required_fields.each do |field|
       if params[field.to_sym].blank?
@@ -188,7 +188,7 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
         "phone_number" =>  @user.phone_number,
         "is_subscribed" => @user.is_subscribed,
         "device_token" => @user.device_token,
-        "location" => @user.location,
+        "location" => jsonify_location(@user.location),
         "about" => @user.about,
         "profile_name" => @business.profile_name,
         "contact_name" =>  @business.contact_name,
@@ -286,7 +286,7 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
                end #each
 
               #create role
-              assignment = @user.assignments.create!(role_id: params[:role_id])
+              
             else
               @user.errors.full_messages.map { |m| user_and_profile_errors.push(m) }
 
@@ -335,7 +335,7 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
               "phone_number" =>  @user.phone_number,
               "is_subscribed" => @user.is_subscribed,
               "device_token" => @user.device_token,
-              "location" => @user.location,
+              "location" => jsonify_location(@user.location),
               "about" => @user.about,
               "profile_name" => @business.profile_name,
               "contact_name" =>  @business.contact_name,

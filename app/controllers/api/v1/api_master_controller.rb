@@ -86,7 +86,7 @@ class Api::V1::ApiMasterController < ApplicationController
       end
       end
 
-     def is_expired?(offer)
+     def offer_expired?(offer)
       if offer.validity > DateTime.now
         false
       else
@@ -94,8 +94,24 @@ class Api::V1::ApiMasterController < ApplicationController
       end
     end
 
+     def pass_expired?(offer)
+      if offer.event.end_time > DateTime.now
+        false
+      else
+        true
+      end
+    end
+
+     def competition_expired?(offer)
+      if offer.end_date > DateTime.now
+        false
+      else
+        true
+      end
+    end
+
     def is_competition_over?(competition)
-       competition.end_date < DateTime.now
+       competition.end_time < DateTime.now
     end
 
 
@@ -105,13 +121,13 @@ class Api::V1::ApiMasterController < ApplicationController
       @interested_followers_or_friends = []
       @interested_others = []
         @key = "interested_friends"
-      if request_user && request_user.app_user == true
+      if request_user && request_user.mobile_user == true
         @key = "interested_friends"
-      elsif request_user && request_user.web_user == true
+      elsif request_user && request_user.mobile_user == false
         @key = "interested_followers"
       end
       event.interested_users.uniq.each do |user|
-          if request_user && request_user.app_user == true
+          if request_user && is_mobile_user?(request_user)
             if request_user.friends.include? user
               @interested_followers_or_friends.push(get_user_object(user))
             else
@@ -119,7 +135,7 @@ class Api::V1::ApiMasterController < ApplicationController
                 @interested_others.push(get_user_object(user))
               end
           end
-          elsif request_user && request_user.web_user == true
+          elsif request_user && request_user.mobile_user == false
             if request_user.followers.include? user
               @interested_followers_or_friends.push(get_user_object(user))
             else
@@ -150,10 +166,13 @@ class Api::V1::ApiMasterController < ApplicationController
         "id" => event.id,
         "image" => event.event.image,
         "title" => event.title,
+        "venue" => event.venue,
         "description" => event.description,
         'location' => jsonify_location(event.location),
-        "start_date" => event.end_date,
-        "end_date" => event.end_date,
+        "start_date" => event.start_time,
+        "end_date" => event.end_time,
+        "start_time" => event.start_time,
+        "end_time" => event.end_time,
         "over_18" => event.event.over_18,
         "price_type" => event.price_type,
         "price" => get_price(event.event).to_s,
@@ -171,7 +190,7 @@ class Api::V1::ApiMasterController < ApplicationController
 
 
     def event_expired?(event)
-      event.end_date < DateTime.now
+      event.end_time < DateTime.now
     end
 
 

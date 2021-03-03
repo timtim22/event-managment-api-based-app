@@ -19,7 +19,7 @@ class Competition < ApplicationRecord
   validates :description, presence: true
  
 
-  scope :not_expired, -> { where(['end_date > ?', DateTime.now]) }
+  scope :upcoming, -> { where(['end_date > ?', DateTime.now]) }
   scope :expired, -> { where(['end_date < ?', DateTime.now]) }
   scope :sort_by_date, -> { order(end_date: 'ASC') }
 

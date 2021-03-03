@@ -267,12 +267,10 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     @social.facebook = if !params[:facebook].blank? then params[:facebook] else "" end
 
   if user.save && @social.save && profile.save
-    location = ""
     about = ""
     dob = ""
     gender  = ""
  if !user.about.blank? then about = user.about else  about = "" end
- if !user.location.blank? then location = user.location else location = "" end
  if !user.profile.dob.blank? then dob = user.profile.dob else dob =  "" end
  if !user.profile.gender.blank? then gender  = user.profile.gender else gender =  "" end
    # create_activity("updated profile.", profile, "Profile")
@@ -281,7 +279,7 @@ class Api::V1::Users::UsersController < Api::V1::ApiMasterController
     'first_name' => user.profile.first_name,
     'last_name' => user.profile.last_name,
     'avatar' => user.avatar,
-    "location" => location,
+    "location" => jsonify_location(user.location),
     'about' => about,
     'dob' =>  dob,
     'roles' => get_user_role_names(user),
@@ -486,17 +484,15 @@ def get_profile
   
     elsif is_business?(user)
       status = get_request_status(user.id)
-      location = ""
       about = ""
       social = []
       if !user.about.blank? then about = user.about else  about = "" end
-      if !user.location.blank? then location = user.location else location = "" end
       if !user.social_media.blank? then social = user.social_media else social = [] end
       profile = {
         'id' => user.id,
         'profile_name' => user.business_profile.profile_name,
         'avatar' => user.avatar,
-        'location' => jsonify_location(location),
+        'location' => jsonify_location(user.location),
         'about' => about,
         'roles' => get_user_role_names(user),
         'mobile' => user.phone_number,
@@ -546,7 +542,8 @@ end
        resource['name'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
        resource['location'] = jsonify_location(log.resource.location)
-       resource['start_date'] = log.resource.start_date
+       resource['start_date'] = log.resource.start_time
+       resource['venue'] = log.resource.venue
        resource['interested_people_count'] = log.resource.interest_levels.size
 
       when 'FriendRequest'
@@ -566,7 +563,7 @@ end
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
         resource['location'] = jsonify_location(log.resource.event.location)
-        resource['start_date'] = log.resource.event.start_date
+        resource['start_date'] = log.resource.event.start_time
         resource['grabbers_counts'] = log.resource.wallets.size
 
       when 'SpecialOffer'
@@ -579,8 +576,7 @@ end
       when 'Competition'
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
-        resource['location'] = jsonify_location(log.resource.location)
-        resource['validity'] = log.resource.validity_time
+        resource['validity'] = log.resource.end_date
 
       when 'OfferForwarding'
         resource['title'] = log.resource.offer.title
@@ -626,8 +622,8 @@ end
     property :title, String, desc: 'title of the event'
     property :description, String, desc: 'description'
     property :location, String, desc: 'location'
-    property :start_date, String, desc: 'start date and time'
-    property :end_date, String, desc: 'end date and time'
+    property :start_time, String, desc: 'start date and time'
+    property :end_time, String, desc: 'end date and time'
     property :over_18, String, desc: 'true or false'
     property :price_type, String, desc: 'price type of the event'
     property :price, String, desc: 'price of the event'
@@ -674,8 +670,8 @@ end
     property :event_type, String, desc: 'event type'
     property :additional_media, String, desc: 'additional_media'
     property :location, String, desc: 'location'
-    property :start_date, String, desc: 'start date and time'
-    property :end_date, String, desc: 'end date and time'
+    property :start_time, String, desc: 'start date and time'
+    property :end_time, String, desc: 'end date and time'
     property :over_18, String, desc: 'true or false'
     property :price_type, String, desc: 'price type of the event'
     property :price, String, desc: 'price of the event'
@@ -699,8 +695,9 @@ end
       attending << {
         "event_id" => event.id,
         "name" => event.title,
-        "start_date" => event.start_date,
-        "end_date" => event.end_date,
+        "venue" => event.venue,
+        "start_date" => event.start_time,
+        "end_date" => event.end_time,
         "location" => jsonify_location(event.location),
         "event_type" => event.event_type,
         "image" => event.image,
@@ -745,7 +742,8 @@ end
       resource['name'] = log.resource.title
       resource['host_name'] = get_full_name(log.resource.user)
       resource['location'] = jsonify_location(log.resource.location)
-      resource['start_date'] = log.resource.start_date
+      resource['start_date'] = log.resource.start_time
+      resource['venue'] = log.resource.venue
       resource['interested_people_count'] = log.resource.interest_levels.size
 
      when 'FriendRequest'
@@ -765,7 +763,7 @@ end
        resource['title'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
        resource['location'] = jsonify_location(log.resource.event.location)
-       resource['start_date'] = log.resource.event.start_date
+       resource['start_date'] = log.resource.event.start_time
        resource['grabbers_counts'] = log.resource.wallets.size
 
      when 'SpecialOffer'
@@ -1050,7 +1048,7 @@ private
   end
 
   def user_params
-    params.permit(:first_name,:last_name,:avatar, :email,:phone_number,:email, :dob, :app_user,:image_link)
+    params.permit(:first_name,:last_name,:avatar, :email,:phone_number,:email, :dob,:image_link)
   end
 
   def profile_params

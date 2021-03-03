@@ -116,6 +116,7 @@ class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMaster
     @competition.image = params[:image]
     @competition.terms_conditions = params[:terms_conditions]
     @competition.number_of_winner = params[:number_of_winner]
+    @competition.over_18 = params[:over_18]
     @competition.competition_forwarding = params[:competition_forwarding]
 
     if @competition.save

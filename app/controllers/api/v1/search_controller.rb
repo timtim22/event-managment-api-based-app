@@ -14,15 +14,18 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
       if !params[:search_term].blank? && !params[:resource_type].blank?
         case
           when params[:resource_type] == "Event"
-            e = ChildEvent.ransack(name_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC").each do |event|
+            e = ChildEvent.where(status: "active").ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).upcoming.order(created_at: "ASC").each do |event|
               @event << {
                   "id" => event.id,
                   "image" => event.event.image,
-                  "name" => event.title,
+                  "title" => event.title,
                   "description" => event.description,
                   "location" => jsonify_location(event.location),
-                  "start_date" => event.start_date,
-                  "end_date" => event.end_date,
+                  "venue" => event.venue,
+                  "start_date" => event.start_time,
+                  "end_date" => event.end_time,
+                  "start_time" => event.start_time,
+                  "end_time" => event.end_time,
                   "over_18" => event.over_18,
                   "price_type" => event.price_type,
                   "price" => get_price(event.event),
@@ -40,7 +43,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
             }
           when params[:resource_type] == "Competition"
           @competitions = []
-            Competition.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).not_expired.per(10).order(created_at: "ASC").each do |competition|
+            Competition.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).upcoming.per(10).order(created_at: "ASC").each do |competition|
               @competitions << {
                   id: competition.id,
                   title: competition.title,
@@ -49,7 +52,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                   image: competition.image.url,
                   is_added_to_wallet: added_to_wallet?(request_user, competition),
                   total_entries_count: get_entry_count(request_user, competition),
-                  validity: competition.validity.strftime(get_time_format)
+                  validity: competition.end_date
                   }
             end
               render json: {
@@ -60,36 +63,41 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
             }
           when params[:resource_type] == "Pass"
             @passes = []
-            passes = Pass.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).not_expired.per(10).order(created_at: "ASC")
+            passes = Pass.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).order(created_at: "ASC")
               if !passes.blank?
                       passes.each do |pass|
+                      if !pass_expired?(pass)
                        if request_user
                         if !is_removed_pass?(request_user, pass)
                           @passes << {
                             id: pass.id,
-                            event_name:pass.event.title,
-                            event_name:pass.title,
+                            event_title:pass.event.title,
+                            pass_title:pass.title,
                             pass_type: pass.pass_type,
                             host_image:pass.event.user.avatar,
                             event_image:pass.event.image,
                             is_added_to_wallet: added_to_wallet?(request_user, pass),
-                            validity: pass.validity.strftime(get_time_format),
-                            is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id)
+                            validity: pass.event.end_time,
+                            is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id),
+                            remaining_passes_count: get_redeem_remaining_count(pass)
                           }
                         end
                       else
                         @passes << {
                             id: pass.id,
-                            event_name:pass.event.title,
+                            event_title:pass.event.title,
+                            pass_title:pass.title,
                             pass_type: pass.pass_type,
                             host_image:pass.event.user.avatar,
                             event_image:pass.event.image,
                             is_added_to_wallet: added_to_wallet?(request_user, pass),
-                            validity: pass.validity.strftime(get_time_format),
-                            is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id)
+                            validity: pass.event.end_time,
+                            is_redeemed: is_redeemed(pass.id, 'Pass', request_user.id),
+                            remaining_passes_count: get_redeem_remaining_count(pass)
                         }
                        end
                       end#each
+                    end
                     end#if
                         render json: {
                         code: 200,
@@ -108,7 +116,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
           when params[:resource_type] == "Offer"
             @special_offers = []
             if request_user
-              SpecialOffer.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC").each do |offer|
+              SpecialOffer.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).upcoming.order(created_at: "ASC").each do |offer|
 
                 if !is_removed_offer?(request_user, offer) && !is_added_to_wallet?(offer.id)
                     @special_offers << {
@@ -121,11 +129,12 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                     validity: offer.validity.strftime(get_time_format),
                     is_added_to_wallet: added_to_wallet?(request_user, offer),
                     is_redeemed: is_redeemed(offer.id, 'SpecialOffer', request_user.id),
+                    remaining_offers_count: get_redeem_remaining_count(offer)
                   }
                 end
               end #if
             else
-              SpecialOffer.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).not_expired.order(created_at: "ASC").each do |offer|
+              SpecialOffer.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).per(10).upcoming.order(created_at: "ASC").each do |offer|
                     @special_offers << {
                     id: offer.id,
                     title: offer.title,
@@ -136,6 +145,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                     validity: offer.validity.strftime(get_time_format),
                     is_added_to_wallet: added_to_wallet?(request_user, offer),
                     is_redeemed: is_redeemed(offer.id, 'SpecialOffer', request_user.id),
+                    remaining_offers_count: get_redeem_remaining_count(offer)
                   }
               end
             end
@@ -169,7 +179,8 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                 dob: profile.dob,
                 gender: profile.gender,
                 is_request_sent: request_status(request_user, profile.user)['status'],
-                role: profile.user.role_ids,
+                role: profile.user.roles.map {|e| e.name} ,
+                is_ambassador: is_ambassador?(profile.user),
                 is_my_friend: is_my_friend?(profile.user),
                 mutual_friends_count: get_mutual_friends(request_user, profile.user).size
               }
@@ -199,7 +210,8 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
               is_charity: profile.is_charity,
               is_request_sent: false,
               is_my_following: is_my_following?(profile.user),
-              role: profile.user.role_ids,
+              role: profile.user.roles.map {|e| e.name},
+              is_ambassador: is_ambassador?(profile.user),
               is_my_friend: false,
               mutual_friends_count: 0,
               total_followers_count: profile.user.followers.size

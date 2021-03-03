@@ -207,13 +207,7 @@ def search_users
 
 end
 
-def check_invitation(profile, pass_id)
-    if profile.user.wallets.where(offer_id: pass_id).where(offer_type: 'Pass').first.blank?
-        false
-    else
-        true
-    end
-end
+
 
   def send_vip_pass
     if !params[:recipient_id].blank? && !params[:pass_id].blank? && !params[:quantity].blank?
@@ -360,7 +354,13 @@ end
 
   private
 
-
+def check_invitation(profile, pass_id)
+    if profile.user.wallets.where(offer_id: pass_id).where(offer_type: 'Pass').first.blank?
+        false
+    else
+        true
+    end
+end
   #  def pass_params
   #   params.permit(:title,:description, :validity)
   #  end

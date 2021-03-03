@@ -360,7 +360,7 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
               "friend_name": get_full_name(notification.resource.user),
               "friend_id": notification.resource.user.id,
               "event_name": notification.resource.child_event.title,
-              "event_start_date": notification.resource.child_event.start_date,
+              "event_start_date": notification.resource.child_event.start_time,
               "event_location": jsonify_location(notification.resource.child_event.location),
               "actor_image": notification.actor.avatar,
               "notifiable_id": notification.notifiable_id,
@@ -472,7 +472,7 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
                 "event_name": notification.resource.event.title,
                 "event_id": notification.resource.event.id,
                 "event_location": jsonify_location(notification.resource.event.location),
-                "event_start_date": notification.resource.event.start_date,
+                "event_start_date": notification.resource.event.start_time,
                 "friend_name": get_full_name(notification.resource.user)
                }
              }
@@ -678,7 +678,7 @@ class Api::V1::Share::ForwardingController < Api::V1::ApiMasterController
      
 
        api :POST, '/api/v1/share/send-location', 'Send location to list of users'
-       param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true
+       # param :askee_ids, :number, :desc => "askee_ids(1,2,3)", :required => true
        
 
      def send_location
