@@ -630,11 +630,7 @@ end
                 data = {
                   "id": notification.id,
                   "friend_name": get_full_name(notification.resource.user),
-<<<<<<< HEAD
-                  "event_name": notification.resource.offer.event.title,
-=======
                   "event_title": notification.resource.offer.event.title,
->>>>>>> event_change
                   "event_start_date": notification.resource.offer.event.start_time,
                   "pass_id": notification.resource.offer.id,
                   "event_location": jsonify_location(notification.resource.offer.event.location),

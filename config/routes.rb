@@ -59,6 +59,17 @@ Rails.application.routes.draw do
       end
 
 
+      namespace :bookings do
+        post '/create-interest' => "interest_levels#create_interest"
+        post '/create-going' => "interest_levels#create_going"
+        post '/purchase-ticket' => 'payments#purchase_ticket'
+        post '/create-payment-intent' => 'payments#create_payment_intent'
+        post '/confirm-payment' => 'payments#confirm_payment'
+        post '/place-refund-request' => 'payments#place_refund_request'
+       
+      end
+
+
       namespace :events do
           post "/get-list" => "events#index"
           post  "/get-map-events" =>  "events#get_map_events"
@@ -79,6 +90,7 @@ Rails.application.routes.draw do
           namespace :tickets do
             post '/redeem' => "tickets#redeem_it"
             post '/get-list' => 'tickets#get_tickets'
+            post '/create-reservation' => 'reservations#create'
           end
 
           namespace :comments do
@@ -91,15 +103,6 @@ Rails.application.routes.draw do
       
       end #events
 
-
-      namespace :bookings do
-        post '/create-interest' => "interest_levels#create_interest"
-        post '/create-going' => "interest_levels#create_going"
-        post '/purchase-ticket' => 'payments#purchase_ticket'
-        post '/create-payment-intent' => 'payments#create_payment_intent'
-        post '/confirm-payment' => 'payments#confirm_payment'
-        post '/place-refund-request' => 'payments#place_refund_request'
-      end
 
 
       namespace :special_offers do

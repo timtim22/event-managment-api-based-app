@@ -543,10 +543,7 @@ end
        resource['host_name'] = get_full_name(log.resource.user)
        resource['location'] = jsonify_location(log.resource.location)
        resource['start_date'] = log.resource.start_time
-<<<<<<< HEAD
-=======
        resource['venue'] = log.resource.venue
->>>>>>> event_change
        resource['interested_people_count'] = log.resource.interest_levels.size
 
       when 'FriendRequest'
@@ -698,10 +695,7 @@ end
       attending << {
         "event_id" => event.id,
         "name" => event.title,
-<<<<<<< HEAD
-=======
         "venue" => event.venue,
->>>>>>> event_change
         "start_date" => event.start_time,
         "end_date" => event.end_time,
         "location" => jsonify_location(event.location),
@@ -749,10 +743,7 @@ end
       resource['host_name'] = get_full_name(log.resource.user)
       resource['location'] = jsonify_location(log.resource.location)
       resource['start_date'] = log.resource.start_time
-<<<<<<< HEAD
-=======
       resource['venue'] = log.resource.venue
->>>>>>> event_change
       resource['interested_people_count'] = log.resource.interest_levels.size
 
      when 'FriendRequest'

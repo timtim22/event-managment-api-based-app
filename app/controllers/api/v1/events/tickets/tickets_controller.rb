@@ -1,5 +1,7 @@
 class Api::V1::Events::Tickets::TicketsController < Api::V1::ApiMasterController
 
+  before_action :authorize_request
+
   api :POST, '/api/v1/events/tickets/redeem', 'Redeem Ticket'
   param :ticket_id, :number, :desc => "Event ID", :required => true
   param :qr_code, String, :desc => "Redeem code", :required => true
