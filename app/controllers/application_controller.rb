@@ -1270,7 +1270,7 @@ def get_reservation_object(reservation)
   reservation = {
     id: reservation.id,
     ticket_id: reservation.ticket_id,
-    ticket_title: reservation.title,
+    ticket_title: reservation.ticket.title,
     user_id: reservation.user_id,
     username: User.get_full_name(reservation.user),
     reserved_for_id: reservation.reserved_for_id,
