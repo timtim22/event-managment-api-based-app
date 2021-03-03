@@ -10,7 +10,7 @@ class Api::V1::Events::Tickets::ReservationsController < Api::V1::ApiMasterContr
     
     
     def create
-        if !params[:ticket_id].blank? && !params[:user_id].blank?
+        if !params[:ticket_id].blank? && !params[:user_id].blank? && !params[:start_time].blank? && !params[:end_time].blank?
              user = User.find(params[:user_id])
              ticket = Ticket.find(params[:ticket_id])
             if reservation = user.reservations.create!(user: request_user, ticket: ticket, start_time: params[:start_time], end_time: params[:end_time])
@@ -34,7 +34,7 @@ class Api::V1::Events::Tickets::ReservationsController < Api::V1::ApiMasterContr
                 render json: {
                 code: 400,
                 success: false,
-                message: "ticket_id  and user_id are required fields",
+                message: "ticket_id  and user_id, start_time and end_time are required fields",
                 dat: nil
             } 
         end
