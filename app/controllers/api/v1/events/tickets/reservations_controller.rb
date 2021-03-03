@@ -34,7 +34,7 @@ class Api::V1::Events::Tickets::ReservationsController < Api::V1::ApiMasterContr
                 render json: {
                 code: 400,
                 success: false,
-                message: "ticket_id  and user_id, start_time and end_time are required fields",
+                message: "ticket_id, user_id, start_time and end_time are required fields",
                 dat: nil
             } 
         end
