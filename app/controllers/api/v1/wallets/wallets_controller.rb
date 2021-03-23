@@ -276,7 +276,7 @@ def get_competitions
       total_entries_count: get_entry_count(request_user, competition),
       issued_by: get_full_name(competition.user),
       is_followed: is_followed(competition.user),
-      validity: competition.validity.strftime(get_time_format),
+      validity: competition.end_date,
       terms_and_conditions: competition.terms_conditions
      }
     else

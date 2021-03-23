@@ -12,9 +12,6 @@
 
 ActiveRecord::Schema.define(version: 2021_03_03_061951) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
     t.string "browser"
@@ -46,19 +43,10 @@ ActiveRecord::Schema.define(version: 2021_03_03_061951) do
   end
 
   create_table "assignments", force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "role_id"
+    t.integer "user_id"
+    t.integer "role_id"
     t.index ["role_id"], name: "index_assignments_on_role_id"
     t.index ["user_id"], name: "index_assignments_on_user_id"
-  end
-
-  create_table "business_details", force: :cascade do |t|
-    t.string "name"
-    t.string "type"
-    t.bigint "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_business_details_on_user_id"
   end
 
   create_table "business_profiles", force: :cascade do |t|
@@ -87,8 +75,8 @@ ActiveRecord::Schema.define(version: 2021_03_03_061951) do
   end
 
   create_table "categorizations", force: :cascade do |t|
-    t.bigint "event_id"
-    t.bigint "category_id"
+    t.integer "event_id"
+    t.integer "category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["category_id"], name: "index_categorizations_on_category_id"
@@ -98,7 +86,7 @@ ActiveRecord::Schema.define(version: 2021_03_03_061951) do
   create_table "chat_channels", force: :cascade do |t|
     t.integer "recipient_id"
     t.string "name"
-    t.bigint "user_id"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "push_token"
@@ -106,7 +94,7 @@ ActiveRecord::Schema.define(version: 2021_03_03_061951) do
   end
 
   create_table "child_events", force: :cascade do |t|
-    t.bigint "event_id"
+    t.integer "event_id"
     t.string "title", default: ""
     t.datetime "terms_conditions"
     t.text "description", default: ""
@@ -139,8 +127,8 @@ ActiveRecord::Schema.define(version: 2021_03_03_061951) do
 
   create_table "comments", force: :cascade do |t|
     t.string "comment"
-    t.bigint "user_id"
-    t.bigint "event_id"
+    t.integer "user_id"
+    t.integer "event_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "from"
@@ -172,7 +160,9 @@ ActiveRecord::Schema.define(version: 2021_03_03_061951) do
     t.text "terms_conditions", default: ""
     t.boolean "over_18", default: true
     t.integer "number_of_winner"
-    t.boolean "competition_forwarding"
+    t.boolean "competition_forwarding", default: false
+    t.datetime "start_time"
+    t.datetime "end_time"
     t.index ["user_id"], name: "index_competitions_on_user_id"
   end
 
@@ -234,6 +224,7 @@ ActiveRecord::Schema.define(version: 2021_03_03_061951) do
     t.datetime "updated_at", null: false
     t.text "terms_conditions", default: ""
     t.boolean "price_range", default: false
+    t.boolean "has_passes", default: false
     t.string "pass", default: "false"
     t.integer "first_cat_id"
     t.string "video"
@@ -245,9 +236,9 @@ ActiveRecord::Schema.define(version: 2021_03_03_061951) do
     t.string "location_name", default: "no_location"
     t.string "redeem_code", default: ""
     t.string "venue", default: ""
-    t.string "qr_code", default: ""
     t.datetime "start_time"
     t.datetime "end_time"
+    t.string "qr_code", default: ""
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
@@ -277,8 +268,8 @@ ActiveRecord::Schema.define(version: 2021_03_03_061951) do
 
   create_table "friend_requests", force: :cascade do |t|
     t.string "status"
-    t.bigint "user_id"
-    t.bigint "friend_id"
+    t.integer "user_id"
+    t.integer "friend_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "read_at"
@@ -341,7 +332,7 @@ ActiveRecord::Schema.define(version: 2021_03_03_061951) do
     t.integer "recipient_id"
     t.text "message"
     t.datetime "read_at"
-    t.bigint "user_id"
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "from"
@@ -579,23 +570,13 @@ ActiveRecord::Schema.define(version: 2021_03_03_061951) do
     t.index ["event_id"], name: "index_sponsors_on_event_id"
   end
 
-  create_table "student_details", force: :cascade do |t|
-    t.string "university"
-    t.string "email"
-    t.string "student_id"
-    t.bigint "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_student_details_on_user_id"
-  end
-
   create_table "ticket_purchases", force: :cascade do |t|
     t.integer "user_id"
     t.integer "ticket_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "quantity"
-    t.string "price"
+    t.decimal "price", precision: 8, scale: 2, default: "0.0"
     t.index ["ticket_id"], name: "index_ticket_purchases_on_ticket_id"
     t.index ["user_id"], name: "index_ticket_purchases_on_user_id"
   end
@@ -669,6 +650,10 @@ ActiveRecord::Schema.define(version: 2021_03_03_061951) do
     t.datetime "updated_at", null: false
     t.integer "business_id"
     t.index ["resource_id", "resource_type"], name: "index_views_on_resource_id_and_resource_type"
+    t.index ["user_id"], name: "index_views_on_competition_id_and_user_id"
+    t.index ["user_id"], name: "index_views_on_event_id_and_user_id"
+    t.index ["user_id"], name: "index_views_on_pass_id_and_user_id"
+    t.index ["user_id"], name: "index_views_on_special_offer_id_and_user_id"
     t.index ["user_id"], name: "index_views_on_user_id"
   end
 
@@ -692,13 +677,8 @@ ActiveRecord::Schema.define(version: 2021_03_03_061951) do
     t.integer "quantity", default: 1
     t.index ["offer_id", "offer_type"], name: "index_wallets_on_offer_id_and_offer_type"
     t.index ["user_id"], name: "index_wallets_on_user_id"
+    t.index [nil, "user_id"], name: "index_wallets_on_pass_id_and_user_id"
+    t.index [nil, "user_id"], name: "index_wallets_on_special_offer_id_and_user_id"
   end
 
-  add_foreign_key "categorizations", "categories"
-  add_foreign_key "categorizations", "events"
-  add_foreign_key "chat_channels", "users"
-  add_foreign_key "comments", "events"
-  add_foreign_key "comments", "users"
-  add_foreign_key "friend_requests", "users"
-  add_foreign_key "messages", "users"
 end
