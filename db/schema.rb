@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_03_061951) do
+ActiveRecord::Schema.define(version: 2021_03_25_102907) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -28,6 +28,16 @@ ActiveRecord::Schema.define(version: 2021_03_03_061951) do
     t.string "action_type"
     t.index ["resource_id", "resource_type"], name: "index_activity_logs_on_resource_id_and_resource_type"
     t.index ["user_id"], name: "index_activity_logs_on_user_id"
+  end
+
+  create_table "admin_requests", force: :cascade do |t|
+    t.string "status", default: ""
+    t.integer "user_id"
+    t.integer "admin_id"
+  end
+
+  create_table "admins", force: :cascade do |t|
+    t.string "name", default: ""
   end
 
   create_table "ambassador_requests", force: :cascade do |t|
@@ -62,6 +72,7 @@ ActiveRecord::Schema.define(version: 2021_03_03_061951) do
     t.string "display_name"
     t.string "stripe_state", default: "rendom_string"
     t.string "connected_account_id", default: ""
+    t.string "description", default: ""
     t.index ["user_id"], name: "index_business_profiles_on_user_id"
   end
 
@@ -536,6 +547,7 @@ ActiveRecord::Schema.define(version: 2021_03_03_061951) do
     t.string "youtube", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "spotify", default: ""
   end
 
   create_table "special_offers", force: :cascade do |t|

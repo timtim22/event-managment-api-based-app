@@ -92,16 +92,16 @@ class User < ApplicationRecord
   scope :active, -> {where(status: "active")}
 
   # validates :is_subscribed, presence: true
-  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }, on: :create
+  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }, on: :add_login
 
-  validates :phone_number, presence: true, on: :create,
-  :length => { :minimum => 10, :maximum => 15 }, format: { with: /(^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0-9\-\s]{10}$)/ }
+  # validates :phone_number, presence: true, on: :create,
+  # :length => { :minimum => 10, :maximum => 15 }, format: { with: /(^\+[0-9]{2}|^\+[0-9]{2}\(0\)|^\(\+[0-9]{2}\)\(0\)|^00[0-9]{2}|^0)([0-9]{9}$|[0-9\-\s]{10}$)/ }
 
-  # validates :password,
-  #                      :confirmation => true,rak
-  #                      :on => :create,
-  #                      :length => {:within => 8..40},
-  #                      :format => {message: 'should contain at least one lower character and a special character.', with: /\A(?=.*[a-z])(?=.*[[:^alnum:]]) /x}
+  validates :password,
+                       :confirmation => true,
+                       :on => :add_login,
+                       :length => {:within => 8..40},
+                       :format => {message: 'should contain at least one lower character and a special character.', with: /\A(?=.*[a-z])(?=.*[[:^alnum:]]) /x}
 
 
 

@@ -79,20 +79,431 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
     # render json: @user, status: :ok
   end
 
+def business_type
+  if !params[:user_id].blank?
+    if User.where(id: params[:user_id]).exists?
+      @user = User.find(params[:user_id])
+      @business = @user.business_profile
+      @business.is_charity = params[:is_charity]
 
-  api :POST, 'dashboard/api/v1/users/create-user', 'Create new user'
-  # param :type, :number, :desc => "Role ID (1,2,3)", :required => true
-  # param :profile_name, String, :desc => "Profile Name", :required => true
-  # param :contact_name, String, :desc => "Contact Name", :required => true
-  # param :address, String, :desc => "Address", :required => true
-  # param :vat_number, :number, :desc => "Vat number", :required => true
-  # param :website, String, :desc => "website", :required => true
-  # param :is_charity, ['True', 'False'], :desc => "User ID", :required => true
-  # param :avatar, String, :desc => "Avatar"
-  # param :phone_number, String
-  # param :email, String, :desc => "Email"
-  # param :web_user, ['True', 'False']
-  # param :password, String, :desc => "Password"
+        if @business.save
+          render json: {
+            code: 200,
+            success: true,
+            message: "Business type updated",
+            data: {
+              "id" => @user.id, 
+              "is_charity" => @business.is_charity
+            }
+          }
+        else
+          render json: {
+            code: 400,
+            success: false,
+            message: @business.errors.full_messages,
+            data: nil
+          }
+        end
+    else
+          render json: {
+            code: 400,
+            success: false,
+            message: "User doesnt exist" ,
+            data: nil
+          }
+    end
+  else
+      @user = User.new
+      if @user.save
+        @business = BusinessProfile.new
+        @business.user = @user
+        @business.is_charity = params[:is_charity]
+
+        if @business.save
+          render json: {
+            code: 200,
+            success: true,
+            message: "Type of business added",
+            data: {
+              "id" => @user.id, 
+              "is_charity" => @business.is_charity
+            }
+          }
+        else
+          render json: {
+            code: 400,
+            success: false,
+            message: @business.errors.full_messages,
+            data: nil
+          }
+        end
+      else
+          render json: {
+            code: 400,
+            success: false,
+            message: @user.errors.full_messages,
+            data: nil
+          }
+      end
+  end
+end
+
+
+def add_image
+  if !params[:user_id].blank?
+    if User.where(id: params[:user_id]).exists?
+      @user = User.find(params[:user_id])
+      @user.avatar = params[:avatar]
+
+      if @user.save
+          render json: {
+            code: 200,
+            success: true,
+            message: "Image added",
+            data: {
+              "id" => @user.id,
+              "image" => @user.avatar 
+          }
+        }
+      else
+          render json: {
+            code: 400,
+            success: false,
+            message: @user.errors.full_messages,
+            data: nil
+          }
+      end
+    else
+          render json: {
+            code: 400,
+            success: false,
+            message: "User doesnt exist",
+            data: nil
+          }
+    end
+  else
+          render json: {
+            code: 400,
+            success: false,
+            message: "user_id is required",
+            data: nil
+          }
+  end
+end
+
+def add_details
+  if !params[:user_id].blank?
+    if User.where(id: params[:user_id]).exists?
+      @user = User.find(params[:user_id])
+      @user.location = params[:location]
+      if @user.save
+        if @user.business_profile.present?
+          @business = @user.business_profile
+          @business.profile_name = params[:profile_name]
+          @business.display_name = params[:display_name]
+          @business.contact_name = params[:contact_name]
+          @business.vat_number = params[:vat_number]
+          @business.description = params[:description]
+          if @business.is_charity == true
+            @business.charity_number = params[:charity_number] 
+          else
+            @business.charity_number = "" 
+          end
+        else
+          @business = BusinessProfile.new
+          @business.user = @user
+          @business.profile_name = params[:profile_name]
+          @business.display_name = params[:display_name]
+          @business.contact_name = params[:contact_name]
+          @business.vat_number = params[:vat_number]
+          if @business.is_charity == true
+            @business.charity_number = params[:charity_number] 
+          else
+            @business.charity_number = "" 
+          end
+        end
+
+        if @business.save
+          render json: {
+            code: 200,
+            success: true,
+            message: "Details added",
+            data: {
+              "id" => @user.id,
+              "profile_name" => @business.profile_name, 
+              "display_name" => @business.display_name, 
+              "contact_name" => @business.contact_name, 
+              "vat_number" => @business.vat_number, 
+              "charity_number" => @business.charity_number, 
+              "location" => @user.location 
+          }
+        }
+        else
+          render json: {
+            code: 400,
+            success: false,
+            message: @business.errors.full_messages,
+            data: nil
+          }
+        end
+      else
+          render json: {
+            code: 400,
+            success: false,
+            message: @user.errors.full_messages,
+            data: nil
+          }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "User doesnt exist",
+        data: nil
+      }
+    end
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "user_id is required",
+      data: nil
+    }
+  end
+end
+
+def add_login
+  if !params[:user_id].blank?
+    if User.where(id: params[:user_id]).exists?
+      @user = User.find(params[:user_id])
+      if !params[:email].blank? && !params[:password].blank?
+        @user.email = params[:email]
+        @user.password = params[:password]
+
+        if @user.save
+            render json: {
+              code: 200,
+              success: true,
+              message: "Login details added",
+              data: {
+                "id" => @user.id,
+                "email" => @user.email
+            }
+          }
+        else
+            render json: {
+              code: 400,
+              success: false,
+              message: @user.errors.full_messages,
+              data: nil
+            }
+        end
+      else
+          render json: {
+            code: 400,
+            success: false,
+            message: "email and password are required",
+            data: nil
+          }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "User doesnt exist",
+        data: nil
+      }
+    end
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "user_id is required",
+      data: nil
+    }
+  end
+end
+
+def add_social
+  if !params[:user_id].blank?
+    if User.where(id: params[:user_id]).exists?
+      @user = User.find(params[:user_id])
+      @business = @user.business_profile
+      @business.website = params[:website]
+      if @business.save
+        if @user.social_media.present?
+          @social = @user.social_media
+          @social.facebook = params[:facebook]
+          @social.youtube = params[:youtube]
+          @social.linkedin = params[:linkedin]
+          @social.twitter = params[:twitter]
+          @social.instagram = params[:instagram]
+          @social.spotify = params[:spotify]
+
+          if @social.save
+            render json: {
+              code: 200,
+              success: true,
+              message: "social media added successfully",
+              data: {
+                "id" => @user.id,
+                "website" => @user.business_profile.website,
+                "facebook" => @social.facebook, 
+                "youtube" => @social.youtube, 
+                "linkedin" => @social.linkedin, 
+                "twitter" => @social.twitter, 
+                "instagram" => @social.instagram, 
+                "spotify" => @social.spotify 
+            }
+          }
+          else
+            render json: {
+              code: 400,
+              success: false,
+              message: @social.errors.full_messages,
+              data: nil
+            }
+          end
+        else
+          @social = SocialMedia.new
+          @social.user = @user
+          @social.facebook = params[:facebook]
+          @social.youtube = params[:youtube]
+          @social.linkedin = params[:linkedin]
+          @social.twitter = params[:twitter]
+          @social.instagram = params[:instagram]
+          @social.spotify = params[:spotify]
+
+          if @social.save
+            render json: {
+              code: 200,
+              success: true,
+              message: "social media added successfully",
+              data: {
+                "id" => @user.id,
+                "website" => @user.business_profile.website,
+                "facebook" => @social.facebook, 
+                "youtube" => @social.youtube, 
+                "linkedin" => @social.linkedin, 
+                "twitter" => @social.twitter, 
+                "instagram" => @social.instagram, 
+                "spotify" => @social.spotify 
+            }
+          }
+          else
+            render json: {
+              code: 400,
+              success: false,
+              message: @social.errors.full_messages,
+              data: nil
+            }
+          end
+        end
+      else
+          render json: {
+            code: 400,
+            success: false,
+            message: @business.errors.full_messages,
+            data: nil
+          }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "User doesnt exist",
+        data: nil
+      }
+    end
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "user_id is required",
+      data: nil
+    }
+  end
+end
+
+def add_phone
+  if !params[:user_id].blank?
+    if User.where(id: params[:user_id]).exists?
+      @user = User.find(params[:user_id])
+      @user.phone_number = params[:phone_number]
+      if @user.save
+          render json: {
+            code: 200,
+            success: true,
+            message: "Phone number added",
+            data: {
+              "id" => @user.id,
+              "phone_number" => @user.phone_number
+          }
+        }
+      else
+          render json: {
+            code: 400,
+            success: false,
+            message: @user.errors.full_messages,
+            data: nil
+          }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "User doesnt exist",
+        data: nil
+      }
+    end
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "user_id is required",
+      data: nil
+    }
+  end
+end
+
+def link_accounts
+  if !params[:phone_number].blank?
+    if User.where(phone_number: params[:phone_number]).exists?
+      app = Assignment.where(role_id: 5).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number] } 
+      business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number] } 
+
+      render json: {
+        code: 200,
+        success: true,
+        data: {
+          users: {
+            "businesses" => business,
+            "app_users" => app
+          }
+        }
+      }
+
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "Users doesnt exist with the phone_number",
+        data: nil
+      }
+    end
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "phone_number is required",
+      data: nil
+    }
+  end
+end
+
+def invite_admin
+
+end
 
   def create_user
     required_fields = ['profile_name', 'contact_name','location', 'display_name', 'phone_number', 'email', 'role_id', 'password','is_charity', 'about']

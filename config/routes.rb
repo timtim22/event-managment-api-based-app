@@ -301,6 +301,13 @@ end
         get '/show-all-users' => 'users#show_all_users'
         post '/get-user' => 'users#get_user'
         post '/auth/login', to: 'authentication#login'
+        post '/business-type', to: 'users#business_type'
+        post '/add-image', to: 'users#add_image'
+        post '/add-details', to: 'users#add_details'
+        post '/add-login', to: 'users#add_login'
+        post '/add-social', to: 'users#add_social'
+        post '/add-phone', to: 'users#add_phone'
+        post '/link-accounts', to: 'users#link_accounts'
       end
 
 
