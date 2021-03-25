@@ -300,7 +300,6 @@ end
         post '/create-user' => 'users#create_user'
         get '/show-all-users' => 'users#show_all_users'
         post '/get-user' => 'users#get_user'
-        
         post '/business-type', to: 'users#business_type'
         post '/add-image', to: 'users#add_image'
         post '/add-details', to: 'users#add_details'
@@ -308,7 +307,7 @@ end
         post '/add-social', to: 'users#add_social'
         post '/add-phone', to: 'users#add_phone'
         post '/link-accounts', to: 'users#link_accounts'
-        
+
           namespace :auth do
             post '/login', to: 'authentication#login'
           end
