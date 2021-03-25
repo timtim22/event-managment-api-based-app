@@ -1,5 +1,5 @@
 class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMasterController
-  before_action :authorize_request, except: ['create_user']
+  before_action :authorize_request, except: ['create_user', "business_type"]
   before_action :checkout_logout, except: :create_user
   require 'action_view'
   require 'action_view/helpers'
@@ -123,7 +123,7 @@ def business_type
           render json: {
             code: 200,
             success: true,
-            message: "Type of business added",
+            message: "Business Type Added",
             data: {
               "id" => @user.id, 
               "is_charity" => @business.is_charity
@@ -235,7 +235,8 @@ def add_details
               "contact_name" => @business.contact_name, 
               "vat_number" => @business.vat_number, 
               "charity_number" => @business.charity_number, 
-              "location" => @user.location 
+              "location" => @user.location,
+              "description" => @user.description 
           }
         }
         else
@@ -277,27 +278,36 @@ def add_login
     if User.where(id: params[:user_id]).exists?
       @user = User.find(params[:user_id])
       if !params[:email].blank? && !params[:password].blank?
-        @user.email = params[:email]
-        @user.password = params[:password]
+        if !User.where(email: params[:email]).exists?
+          @user.email = params[:email]
+          @user.password = params[:password]
 
-        if @user.save
-            render json: {
-              code: 200,
-              success: true,
-              message: "Login details added",
-              data: {
-                "id" => @user.id,
-                "email" => @user.email
+          if @user.save
+              render json: {
+                code: 200,
+                success: true,
+                message: "Login details added",
+                data: {
+                  "id" => @user.id,
+                  "email" => @user.email
+              }
             }
-          }
+          else
+              render json: {
+                code: 400,
+                success: false,
+                message: @user.errors.full_messages,
+                data: nil
+              }
+          end
         else
             render json: {
               code: 400,
               success: false,
-              message: @user.errors.full_messages,
+              message: "User already exist with the '#{params[:email]}' email" ,
               data: nil
             }
-        end
+      end
       else
           render json: {
             code: 400,
