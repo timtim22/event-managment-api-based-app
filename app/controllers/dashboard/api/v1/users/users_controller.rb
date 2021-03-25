@@ -1,6 +1,6 @@
 class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMasterController
-  before_action :authorize_request, except: ['create_user', "business_type"]
-  before_action :checkout_logout, except: ['create_user', "business_type"]
+  before_action :authorize_request, except: ['create_user', 'business_type', 'add_image', 'add_details', 'add_login', 'add_social', 'add_phone', 'link_accounts' ]
+  before_action :checkout_logout, except: ['create_user', "business_type", 'add_image', 'add_details', 'add_login', 'add_social', 'add_phone', 'link_accounts']
   require 'action_view'
   require 'action_view/helpers'
   require 'json'
