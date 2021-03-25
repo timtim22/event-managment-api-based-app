@@ -1,4 +1,4 @@
-class Dashboard::Api::V1::Users::AuthenticationController < Dashboard::Api::V1::ApiMasterController
+class Dashboard::Api::V1::Users::Auth::AuthenticationController < Dashboard::Api::V1::ApiMasterController
   before_action :authorize_request, only: [:update_password]
 
    # POST /auth/login
