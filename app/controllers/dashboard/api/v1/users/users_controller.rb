@@ -1,6 +1,7 @@
 class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMasterController
   before_action :authorize_request, except: ['create_user', 'business_type', 'add_image', 'add_details', 'add_login', 'add_social', 'add_phone', 'link_accounts' ]
-  before_action :checkout_logout, except: ['create_user', "business_type", 'add_image', 'add_details', 'add_login', 'add_social', 'add_phone', 'link_accounts']
+  before_action :checkout_logout, except: ['create_user', 'business_type', 'add_image', 'add_details', 'add_login', 'add_social', 'add_phone', 'link_accounts']
+  require "pubnub"
   require 'action_view'
   require 'action_view/helpers'
   require 'json'
@@ -512,7 +513,197 @@ def link_accounts
 end
 
 def invite_admin
+  if !params[:admin_id].blank?
+    @admin = User.find(params[:admin_id])
+    @sender = request_user
+    if(request_status(@sender, @admin)['status'] == false)
+      @admin_request = @sender.admin_requests.new(admin: @admin)
+      @admin_request.status = "pending"
+      if @admin_request.save
+        if notification = Notification.create(recipient: @admin, actor: @sender, action: get_full_name(@sender) + " sent you an admin request", notifiable: @admin_request, resource: @admin_request, url: '/admin/admin-requests', notification_type: 'web', action_type: 'admin_request')
 
+          @pubnub = Pubnub.new(
+          publish_key: ENV['PUBLISH_KEY'],
+          subscribe_key: ENV['SUBSCRIBE_KEY']
+          )
+
+          @current_push_token = @pubnub.add_channels_to_push(
+            push_token: @admin.device_token,
+            type: 'gcm',
+            add: @admin.device_token
+            ).value
+
+          payload = {
+          "pn_gcm":{
+            "notification": {
+              "title": get_full_name(@admin),
+              "body": notification.action
+            },
+            data: {
+
+              "id": notification.id,
+              "admin_name": get_full_name(notification.resource.user),
+              "admin_id": notification.resource.user.id,
+              "request_id": notification.resource.id,
+              "actor_image": notification.actor.avatar,
+              "notifiable_id": notification.notifiable_id,
+              "notifiable_type": notification.notifiable_type,
+              "action": notification.action,
+              "action_type": notification.action_type,
+              "created_at": notification.created_at,
+              "is_read": !notification.read_at.nil?
+                  }
+                }
+            }
+        end
+          render json:  {
+            code: 200,
+            success: true,
+            message: "Admin request sent.",
+            data:nil
+          }
+      else
+        render json:  {
+          code: 400,
+          success: false,
+          message: "Admin request sending failed.",
+          data:nil
+        }
+      end
+    else
+        render json:  {
+          code: 400,
+          success: false,
+          message: request_status(@sender, @admin)['message'],
+          data:nil
+       }
+    end
+  else
+    render json:  {
+      code: 400,
+      success: false,
+      message: "admin_id is required",
+      data:nil
+   }
+  end
+end
+
+def admin_requests
+  if !params[:user_id].blank?
+    if User.where(id: params[:user_id]).exists?
+      requests = AdminRequest.where(user_id: params[:user_id])
+      @requests = []
+      requests.each do |request|
+        sender  = User.find(request.user_id)
+        @requests << {
+          "id": request.id,
+          "full_name" => sender.business_profile.profile_name,
+          "avatar" => sender.avatar,
+          "status" => request.status,
+          "user_id" => request.user_id,
+          "friend_id" => request.admin_id
+        }
+      end
+      render json: {
+        code: 200,
+        success: true,
+        message: '',
+        data: {
+          requests: @requests
+        }
+      }
+    else
+      render json:  {
+        code: 400,
+        success: false,
+        message: "user doesnt exist",
+        data:nil
+        }
+    end
+  else
+    render json:  {
+      code: 400,
+      success: false,
+      message: "user_id is required",
+      data:nil
+   }
+  end
+end
+
+def accept_admin_request
+  if !params[:request_id].blank?
+    request = AdminRequest.find(params[:request_id])
+    request.status = 'accepted'
+      if request.save
+        new_request = AdminRequest.new
+        new_request.user_id = request.admin_id
+        new_request.admin_id = request.user_id
+        new_request.status = 'accepted'
+          if new_request.save
+            @notification =  Notification.where(notifiable_id: request.id).where(notifiable_type: 'AdminRequest').first
+            if !@notification.blank?
+             @notification.destroy
+            end
+              if notification = Notification.create(recipient: request.user, actor: request_user, action: get_full_name(request_user) + " accepted your admin request", notifiable: request, resource: request, url: '/admin/my-admins', notification_type: 'web', action_type: 'accept_admin_request')
+
+                @pubnub = Pubnub.new(
+                  publish_key: ENV['PUBLISH_KEY'],
+                  subscribe_key: ENV['SUBSCRIBE_KEY']
+                )
+                @current_push_token = @pubnub.add_channels_to_push(
+                  push_token: request.user.device_token,
+                  type: 'gcm',
+                  add: request.user.device_token
+                  ).value
+
+                  payload = {
+                    "pn_gcm":{
+                      "notification":{
+                        "title": get_full_name(request_user),
+                        "body": notification.action
+                      },
+                      data: {
+                        "id": notification.id,
+                        "admin_name": get_full_name(notification.resource.admin),
+                        "admin_id": notification.resource.admin.id,
+                        "actor_image": notification.actor.avatar,
+                        "notifiable_id": notification.notifiable_id,
+                        "notifiable_type": notification.notifiable_type,
+                        "action": notification.action,
+                        "action_type": notification.action_type,
+                        "created_at": notification.created_at,
+                        "is_read": !notification.read_at.nil?
+                      }
+                    }
+                  }
+              end
+               render json: {
+                 code: 200,
+                 success: true,
+                 message: "Admin request accepted.",
+                 data: {
+                  friend_id: request.user.id,
+                  full_name: request.user.business_profile.profile_name,
+                  avatar: request.user.avatar
+                    }
+                  }
+          else
+            render json: {
+              code: 400,
+              success: false,
+              message: "Friend request acceptance failed.",
+              data:nil
+            }
+          end
+      end
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "request_id is required field.",
+      data: nil
+    }
+  end
 end
 
   def create_user
@@ -811,4 +1002,35 @@ end
 
   end
 end
+
+private
+
+# def admin_requests
+#   @requests = User.admin_requests(current_user)
+#   #@outgoing = current_user.friend_requests
+#   render :admin_requests  
+# end
+
+    def request_status(sender,recipient)
+      admin_request = AdminRequest.where(user_id: sender.id).where(admin_id: recipient.id).first
+      if admin_request
+       if admin_request.status == 'pending' || admin_request.status == 'accepted'
+        status = {
+          "message" => "You have already sent admin request to #{get_full_name(recipient)} ",
+          "status" => true
+         }
+       end
+      elsif AdminRequest.where(user_id: recipient.id).where(admin_id: sender.id).first
+        status = {
+           "message" => "#{get_full_name(recipient)} already sent you an admin request ",
+           "status" => true
+         }
+      else
+          status = {
+            "message" => "",
+            "status" => false
+          }
+      end
+      status
+  end
 end #class

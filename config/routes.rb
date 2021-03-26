@@ -307,6 +307,9 @@ end
         post '/add-social', to: 'users#add_social'
         post '/add-phone', to: 'users#add_phone'
         post '/link-accounts', to: 'users#link_accounts'
+        post '/invite-admin', to: 'users#invite_admin'
+        post '/accept-admin-request', to: 'users#accept_admin_request'
+        post '/admin-requests', to: 'users#admin_requests'
 
           namespace :auth do
             post '/login', to: 'authentication#login'

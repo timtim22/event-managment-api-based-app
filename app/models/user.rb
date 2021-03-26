@@ -9,10 +9,15 @@ class User < ApplicationRecord
   has_many :child_events, dependent: :destroy
   has_one :profile, dependent: :destroy
   has_many :friend_requests, dependent: :destroy
+  has_many :admin_requests, dependent: :destroy
   has_many :redemptions, dependent: :destroy
 
   has_many :accepted_friend_requests, -> {where(status: 'accepted') }, foreign_key: :friend_id, class_name: 'FriendRequest',dependent: :destroy
   has_many :friends, through: :accepted_friend_requests, source: :user
+
+  has_many :accepted_admin_requests, -> {where(status: 'accepted') }, foreign_key: :admin_id, class_name: 'AdminRequest', dependent: :destroy
+  has_many :admins, through: :accepted_admin_requests, source: :user
+  
   has_many :chat_channels, dependent: :destroy
   has_many :notifications, foreign_key: :recipient_id, dependent: :destroy
   has_many :outgoing_notifications, foreign_key: :actor_id, class_name: 'Notification', dependent: :destroy
