@@ -72,7 +72,7 @@ RSpec.describe Dashboard::Api::V1::Users::UsersController, type: :controller do
         linkedin: "timtime linkedin",
         twitter: "timtime twitter",
         spotify: "timtime spotify"
-        # password: "Xerography2!"
+ 
       }
       expect(response).to have_http_status(200)
       expect(JSON.parse(response.body)["success"]).to eq(true)

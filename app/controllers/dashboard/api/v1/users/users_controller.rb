@@ -1,6 +1,6 @@
 class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMasterController
-  before_action :authorize_request, except: ['create_user', 'business_type', 'add_image', 'add_details', 'add_login', 'add_social', 'add_phone', 'link_accounts', 'invite_admin', 'admin_requests', 'accept_admin_request', 'get_device_token' ]
-  before_action :checkout_logout, except: ['create_user', 'business_type', 'add_image', 'add_details', 'add_login', 'add_social', 'add_phone', 'link_accounts', 'invite_admin', 'admin_requests', 'accept_admin_request', 'get_device_token']
+  before_action :authorize_request, except: ['create_user', 'business_type', 'add_image', 'add_details', 'add_login', 'add_social', 'add_phone', 'link_accounts', 'invite_admin', 'admin_requests', 'accept_admin_request', 'get_device_token', 'get_user' ]
+  before_action :checkout_logout, except: ['create_user', 'business_type', 'add_image', 'add_details', 'add_login', 'add_social', 'add_phone', 'link_accounts', 'invite_admin', 'admin_requests', 'accept_admin_request', 'get_device_token', 'get_user']
   require "pubnub"
   require 'action_view'
   require 'action_view/helpers'
@@ -441,6 +441,10 @@ def add_phone
     if User.where(id: params[:user_id]).exists?
       @user = User.find(params[:user_id])
       @user.phone_number = params[:phone_number]
+
+      app = Assignment.where(role_id: 5).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number]} 
+      business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number]} 
+
       if @user.save
           render json: {
             code: 200,
@@ -448,7 +452,11 @@ def add_phone
             message: "Phone number added",
             data: {
               "id" => @user.id,
-              "phone_number" => @user.phone_number
+              "phone_number" => @user.phone_number,
+              user: {
+                "businesses" => business,
+                "app_users" => app
+              }
           }
         }
       else
