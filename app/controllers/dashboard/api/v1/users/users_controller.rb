@@ -513,9 +513,9 @@ def link_accounts
 end
 
 def invite_admin
-  if !params[:admin_id].blank?
+  if !params[:admin_id].blank? && !params[:user_id].blank?
     @admin = User.find(params[:admin_id])
-    @sender = request_user
+    @sender = User.find(params[:user_id])
     if(request_status(@sender, @admin)['status'] == false)
       @admin_request = @sender.admin_requests.new(admin: @admin)
       @admin_request.status = "pending"
@@ -582,7 +582,7 @@ def invite_admin
     render json:  {
       code: 400,
       success: false,
-      message: "admin_id is required",
+      message: "admin_id and user_id are required",
       data:nil
    }
   end
@@ -631,7 +631,8 @@ def admin_requests
 end
 
 def accept_admin_request
-  if !params[:request_id].blank?
+  if !params[:request_id].blank? && !params[:user_id].blank?
+    @user = User.find(params[:user_id])
     request = AdminRequest.find(params[:request_id])
     request.status = 'accepted'
       if request.save
@@ -644,7 +645,7 @@ def accept_admin_request
             if !@notification.blank?
              @notification.destroy
             end
-              if notification = Notification.create(recipient: request.user, actor: request_user, action: get_full_name(request_user) + " accepted your admin request", notifiable: request, resource: request, url: '/admin/my-admins', notification_type: 'web', action_type: 'accept_admin_request')
+              if notification = Notification.create(recipient: request.user, actor: @user, action: get_full_name(@user) + " accepted your admin request", notifiable: request, resource: request, url: '/admin/my-admins', notification_type: 'web', action_type: 'accept_admin_request')
 
                 @pubnub = Pubnub.new(
                   publish_key: ENV['PUBLISH_KEY'],
@@ -659,7 +660,7 @@ def accept_admin_request
                   payload = {
                     "pn_gcm":{
                       "notification":{
-                        "title": get_full_name(request_user),
+                        "title": get_full_name(@user),
                         "body": notification.action
                       },
                       data: {
