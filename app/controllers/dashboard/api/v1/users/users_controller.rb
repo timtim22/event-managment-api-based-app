@@ -35,6 +35,10 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
   def get_user
     if !params[:user_id].blank?
           @user = User.find(params[:user_id])
+
+          app = Assignment.where(role_id: 5).map {|assignment| assignment.user }.select { |e| e.id == params[:user_id]} 
+          business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.id == params[:user_id]} 
+
           profile = {
               "user_id" => @user.id,
               "email" =>  @user.email,
@@ -57,7 +61,11 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
               "instagram" => @user.social_media.instagram,
               "linkedin" => @user.social_media.linkedin,
               "facebook" => @user.social_media.facebook,
-              "twitter" => @user.social_media.twitter
+              "twitter" => @user.social_media.twitter,
+              "link_accounts" => {
+                "app_users" => app,
+                "business" => business
+              }
               }
 
           render json: {
@@ -718,6 +726,10 @@ end
 def get_device_token
   if !params[:user_id].blank?
     if User.where(id: params[:user_id]).exists?
+
+      app = Assignment.where(role_id: 5).map {|assignment| assignment.user }.select { |e| e.id == params[:user_id]} 
+      business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.id == params[:user_id]} 
+
       @user = User.find(params[:user_id])
       @business = @user.business_profile
       @social = @user.social_media
@@ -744,12 +756,16 @@ def get_device_token
         "facebook" => @social.facebook,
         "snapchat" => @social.snapchat,
         "spotify" => @social.spotify,
-        "token" =>   encode(user_id: @user.id)
+        "token" =>   encode(user_id: @user.id),
+        "link_accounts" => {
+          "app_users" => app,
+          "business" => business
+        }
       }
 
       render json:  {
         code: 200,
-        success: false,
+        success: true,
         message: "Device Token",
         data: device_token
         }
