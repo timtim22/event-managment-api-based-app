@@ -310,6 +310,7 @@ end
         post '/invite-admin', to: 'users#invite_admin'
         post '/accept-admin-request', to: 'users#accept_admin_request'
         post '/admin-requests', to: 'users#admin_requests'
+        post '/get-device-token', to: 'users#get_device_token'
 
           namespace :auth do
             post '/login', to: 'authentication#login'

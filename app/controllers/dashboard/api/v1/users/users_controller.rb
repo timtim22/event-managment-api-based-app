@@ -706,6 +706,62 @@ def accept_admin_request
   end
 end
 
+def get_device_token
+  if !params[:user_id].blank?
+    if User.where(id: params[:user_id]).exists?
+      @user = User.find(params[:user_id])
+      @business = @user.business_profile
+      @social = @user.social_media
+      device_token = {
+        "user_id" => @user.id,
+        "email" =>  @user.email,
+        "avatar" => @user.avatar,
+        "phone_number" =>  @user.phone_number,
+        "is_subscribed" => @user.is_subscribed,
+        "device_token" => @user.device_token,
+        "location" => jsonify_location(@user.location),
+        "about" => @user.about,
+        "profile_name" => @business.profile_name,
+        "contact_name" =>  @business.contact_name,
+        "display_name" =>  @business.display_name,
+        "website" => @business.website,
+        "vat_number" =>  @business.vat_number,
+        "charity_number" =>  @business.charity_number,
+        "is_charity" =>  @business.is_charity,
+        "youtube" =>  @social.youtube,
+        "instagram" =>  @social.instagram,
+        "twitter" =>  @social.twitter,
+        "linkedin" =>  @social.linkedin,
+        "facebook" => @social.facebook,
+        "snapchat" => @social.snapchat,
+        "spotify" => @social.spotify,
+        "token" =>   encode(user_id: @user.id)
+      }
+
+      render json:  {
+        code: 200,
+        success: false,
+        message: "Device Token",
+        data: device_token
+        }
+    else
+      render json:  {
+        code: 400,
+        success: false,
+        message: "user doesnt exist",
+        data:nil
+        }
+    end
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "user is required.",
+      data: nil
+    }
+  end
+end
+
   def create_user
     required_fields = ['profile_name', 'contact_name','location', 'display_name', 'phone_number', 'email', 'role_id', 'password','is_charity', 'about']
     errors = []
