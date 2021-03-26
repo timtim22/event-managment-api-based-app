@@ -237,7 +237,7 @@ def add_details
               "vat_number" => @business.vat_number, 
               "charity_number" => @business.charity_number, 
               "location" => @user.location,
-              "description" => @user.description 
+              "description" => @business.description 
           }
         }
         else
@@ -480,8 +480,8 @@ end
 def link_accounts
   if !params[:phone_number].blank?
     if User.where(phone_number: params[:phone_number]).exists?
-      app = Assignment.where(role_id: 5).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number] } 
-      business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number] } 
+      app = Assignment.where(role_id: 5).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number]} 
+      business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number]} 
 
       render json: {
         code: 200,
@@ -498,7 +498,7 @@ def link_accounts
       render json: {
         code: 400,
         success: false,
-        message: "Users doesnt exist with the phone_number",
+        message: "Users doesnt exist with the phone_number #{params[:phone_number]} ",
         data: nil
       }
     end

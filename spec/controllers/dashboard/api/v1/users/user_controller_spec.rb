@@ -21,6 +21,63 @@ RSpec.describe Dashboard::Api::V1::Users::UsersController, type: :controller do
       expect(JSON.parse(response.body)["success"]).to eq(true)
     end
 
+    it "should create new user and add select business_type" do
+      post :business_type, params: {
+        is_charity: false
+      }
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)["success"]).to eq(true)
+    end
+
+    it "should add image to new user" do
+      post :add_image, params: {
+        user_id: User.last,
+        image: "asdsd"
+      }
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)["success"]).to eq(true)
+    end
+
+    it "should add details to new user" do
+      post :add_image, params: {
+        user_id: User.last,
+        location: "Islamabad, Pakistan",
+        profile_name: "timtime - profile_name",
+        contact_name: "timtime - comtact name",
+        display_name: "timtime - display_name",
+        vat_number: "timtime - vat_number",
+        describe: "timtime - describe"
+      }
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)["success"]).to eq(true)
+    end
+
+    it "should add login details to new user" do
+      post :add_image, params: {
+        user_id: User.last,
+        email: "test@test.com",
+        password: "Xerography2!"
+      }
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)["success"]).to eq(true)
+    end
+
+    it "should add social media details to new user" do
+      post :add_social, params: {
+        user_id: User.last,
+        website: "test@test.com",
+        facebook: "timtim facebook",
+        youtube: "timtime youtube",
+        instagram: "timtime instagram",
+        linkedin: "timtime linkedin",
+        twitter: "timtime twitter",
+        spotify: "timtime spotify"
+        # password: "Xerography2!"
+      }
+      expect(response).to have_http_status(200)
+      expect(JSON.parse(response.body)["success"]).to eq(true)
+    end
+
     it "should create a user" do
       post :create_user, params: {
         profile_name: "timtim",
