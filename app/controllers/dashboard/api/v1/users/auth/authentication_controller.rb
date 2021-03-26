@@ -6,6 +6,8 @@ class Dashboard::Api::V1::Users::Auth::AuthenticationController < Dashboard::Api
 
     if !params[:email].blank? && !params[:password].blank?
      @user = User.authenticate(params[:email], params[:password])
+          app = Assignment.where(role_id: 5).map {|assignment| assignment.user }.select { |e| e.id == params[:email]} 
+          business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.id == params[:email]} 
       if @user
           profile = {
               "user_id" => @user.id,
@@ -27,7 +29,11 @@ class Dashboard::Api::V1::Users::Auth::AuthenticationController < Dashboard::Api
               "facebook" => @user.social_media.facebook,
               "instagram" => @user.social_media.instagram,
               "twitter" => @user.social_media.twitter,
-              "linkedin" => @user.social_media.linkedin
+              "linkedin" => @user.social_media.linkedin,
+              "link_accounts" => {
+                "app_users" => app,
+                "business" => business
+              }
           }
 
         token = encode(user_id: @user.id)
