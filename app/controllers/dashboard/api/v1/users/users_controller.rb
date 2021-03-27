@@ -46,7 +46,7 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
               "phone_number" =>  @user.phone_number,
               "password" => @user.password,
               "followers_count" => @user.followers.size,
-              "address" => jsonify_location(@user.location),
+              "location" => jsonify_location(@user.location),
               "is_subscribed" => @user.is_subscribed,
               "device_token" => @user.device_token,
               "about" => @user.about,
@@ -54,6 +54,7 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
               "contact_name" => @user.business_profile.contact_name,
               "display_name" => @user.business_profile.display_name,
               "website" => @user.business_profile.website,
+              "description" => @user.business_profile.description,
               "vat_number" => @user.business_profile.vat_number,
               "charity_number" => @user.business_profile.charity_number,
               "is_charity" => @user.business_profile.is_charity,
@@ -62,6 +63,7 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
               "linkedin" => @user.social_media.linkedin,
               "facebook" => @user.social_media.facebook,
               "twitter" => @user.social_media.twitter,
+              "snapchat" => @user.social_media.snapchat,
               "link_accounts" => {
                 "app_users" => app,
                 "business" => business
@@ -92,6 +94,7 @@ def business_type
   if !params[:user_id].blank?
     if User.where(id: params[:user_id]).exists?
       @user = User.find(params[:user_id])
+
       @business = @user.business_profile
       @business.is_charity = params[:is_charity]
 
@@ -123,8 +126,11 @@ def business_type
     end
   else
       @user = User.new
+
       if @user.save
+        @user.assignments.create!(role_id: 2)
         @business = BusinessProfile.new
+
         @business.user = @user
         @business.is_charity = params[:is_charity]
 
@@ -449,11 +455,9 @@ def add_phone
     if User.where(id: params[:user_id]).exists?
       @user = User.find(params[:user_id])
       @user.phone_number = params[:phone_number]
-
+      if @user.save
       app = Assignment.where(role_id: 5).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number]} 
       business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number]} 
-
-      if @user.save
           render json: {
             code: 200,
             success: true,
@@ -746,6 +750,7 @@ def get_device_token
         "contact_name" =>  @business.contact_name,
         "display_name" =>  @business.display_name,
         "website" => @business.website,
+        "description" => @business.description,
         "vat_number" =>  @business.vat_number,
         "charity_number" =>  @business.charity_number,
         "is_charity" =>  @business.is_charity,
