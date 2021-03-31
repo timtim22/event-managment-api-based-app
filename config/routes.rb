@@ -357,13 +357,23 @@ end
          post "/publish-offer" => "special_offers#publish_offer"
         end
 
+        namespace :competitions do 
+          get '/get-past-competitions' => 'competitions#get_past_competitions'
+        end
+
+        namespace :payments do
+          post '/create-intant' => 'payments#create_intant'
+          post '/confirm-payment' => 'payments#confirm_payment'
+          post '/get-invoice' => 'payments#get_invoice'
+        end
+
         get "/get-my-events" => "events#get_my_events"
         post "/delete-resource" => "events#delete_resource"
         post '/send-verification-code', to: 'users#send_verification_code'
         get  '/get-followers' => 'users#get_followers'
         get '/get-past-events' => 'events#get_past_events'
         get '/get-past-offers' => 'special_offers#get_past_offers'
-        get '/get-past-competitions' => 'competitions#get_past_competitions'
+        
         post '/passes/send-vip-pass' => 'passes#send_vip_pass'
         get '/passes/vip-people' => 'passes#vip_people'
         post '/passes/remove-vip-pass' => 'passes#remove_vip_pass'
@@ -371,15 +381,21 @@ end
         post '/get-user' => 'users#get_user'
         
         
+        namespace :analytics do 
+          post '/get-dashboard-stats' => 'dashboard#get_dashboard_stats'
+          post '/get-parent-event-stats' => 'dashboard#get_parent_event_stats'
+          post '/attendees-live-stats' => 'dashboard#get_live_event_data'
+          post '/attendees-stats' => 'dashboard#get_child_event_attendees_stats'
+          post '/get-child-event-full-analytics' => 'dashboard#get_child_event_full_analytics'
+        end
+
+
+
         
-        post '/payments/create-intant' => 'payments#create_intant'
-        post '/payments/confirm-payment' => 'payments#confirm_payment'
-        post '/payments/get-invoice' => 'payments#get_invoice'
-        post '/get-dashboard-stats' => 'dashboard#get_dashboard_stats'
-        post '/get-parent-event-stats' => 'dashboard#get_parent_event_stats'
-        post '/get-child-event-stats' => 'dashboard#get_child_event_stats'
-        post '/attendees-stats' => 'dashboard#get_child_event_attendees_stats'
-        post '/attendees-live-stats' => 'dashboard#get_live_event_data'
+        
+        
+        
+        
         post '/vip-pass-users' => 'passes#vip_pass_users'
         post '/search-users' => 'passes#search_users'
         post '/delete-vip-pass' => 'passes#delete_vip_pass'

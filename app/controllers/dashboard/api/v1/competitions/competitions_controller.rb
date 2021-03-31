@@ -1,4 +1,4 @@
-class Dashboard::Api::V1::CompetitionsController < Dashboard::Api::V1::ApiMasterController
+class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api::V1::ApiMasterController
     before_action :authorize_request, except:  ['index']
 
     require 'json'

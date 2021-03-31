@@ -1,4 +1,4 @@
-class Dashboard::Api::V1::NewsFeedsController < Dashboard::Api::V1::ApiMasterController
+class Dashboard::Api::V1::NewsFeeds::NewsFeedsController < Dashboard::Api::V1::ApiMasterController
 
   before_action :set_news_feed, only: ['show','edit', 'destroy']
 

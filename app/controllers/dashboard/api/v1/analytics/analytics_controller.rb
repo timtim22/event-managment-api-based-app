@@ -1,4 +1,4 @@
-class Dashboard::Api::V1::DashboardController < Dashboard::Api::V1::ApiMasterController
+class Dashboard::Api::V1::Analytics::AnalyticsController < Dashboard::Api::V1::ApiMasterController
   before_action :authorize_request
   before_action :checkout_logout
   before_action :business
