@@ -37,7 +37,7 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
           @user = User.find(params[:user_id])
 
           app = Assignment.where(role_id: 5).map {|assignment| assignment.user }.select { |e| e.id == params[:user_id]} 
-          business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.id == params[:user_id]} 
+          business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.id == params[:user_id]}.select {|e| e.status == "active"}
 
           profile = {
               "user_id" => @user.id,
@@ -94,7 +94,6 @@ def business_type
   if !params[:user_id].blank?
     if User.where(id: params[:user_id]).exists?
       @user = User.find(params[:user_id])
-
       @business = @user.business_profile
       @business.is_charity = params[:is_charity]
 
@@ -126,7 +125,8 @@ def business_type
     end
   else
       @user = User.new
-
+      @user.status = "draft"
+      @user.save
       if @user.save
         @user.assignments.create!(role_id: 2)
         @business = BusinessProfile.new
@@ -250,7 +250,7 @@ def add_details
               "contact_name" => @business.contact_name, 
               "vat_number" => @business.vat_number, 
               "charity_number" => @business.charity_number, 
-              "location" => @user.location,
+              "location" => jsonify_location(@user.location),
               "description" => @business.description 
           }
         }
@@ -293,7 +293,7 @@ def add_login
     if User.where(id: params[:user_id]).exists?
       @user = User.find(params[:user_id])
       if !params[:email].blank? && !params[:password].blank?
-        if !User.where(email: params[:email]).exists?
+        if !User.where(email: params[:email]).where(status: "active").exists?
           @user.email = params[:email]
           @user.password = params[:password]
 
@@ -457,7 +457,7 @@ def add_phone
       @user.phone_number = params[:phone_number]
       if @user.save
       app = Assignment.where(role_id: 5).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number]} 
-      business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number]} 
+      business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number]}.select {|e| e.status == "active"}
           render json: {
             code: 200,
             success: true,
@@ -501,7 +501,7 @@ def link_accounts
   if !params[:phone_number].blank?
     if User.where(phone_number: params[:phone_number]).exists?
       app = Assignment.where(role_id: 5).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number]} 
-      business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number]} 
+      business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number]}.select {|e| e.status == "active"}
 
       render json: {
         code: 200,
@@ -731,10 +731,13 @@ def get_device_token
   if !params[:user_id].blank?
     if User.where(id: params[:user_id]).exists?
 
-      app = Assignment.where(role_id: 5).map {|assignment| assignment.user }.select { |e| e.id == params[:user_id]} 
-      business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.id == params[:user_id]} 
-
       @user = User.find(params[:user_id])
+      @user.status = "active"
+      @user.save
+
+      app = Assignment.where(role_id: 5).map {|assignment| assignment.user }.select { |e| e.id == params[:user_id]} 
+      business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.id == params[:user_id]}.select {|e| e.status == "active"}
+
       @business = @user.business_profile
       @social = @user.social_media
       device_token = {

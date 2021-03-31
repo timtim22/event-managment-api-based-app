@@ -82,6 +82,335 @@ class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMaste
   # param :qr_code, :number, :desc => "Redeem Code", :required => true
   # param :terms_conditions, String, :desc => "Terms and condition of the special offer", :required => true
 
+  def add_image
+    if params[:offer_id].blank?
+      @special_offer = request_user.special_offers.new
+      @special_offer.image = params[:image]
+      @special_offer.status = "draft"
+        if @special_offer.save
+            render json: {
+              code: 200,
+              success: true,
+              message: 'Special offer created and image added successfully',
+              data: {
+                id: @special_offer.id,
+                image: @special_offer.image 
+              }
+            }
+        else
+            render json: {
+              code: 400,
+              success: false,
+              message: 'Special offer creation failed',
+              data: nil
+            }
+        end
+    else
+      if SpecialOffer.where(id: params[:offer_id]).exists?
+        @special_offer = SpecialOffer.find(params[:offer_id])
+        @special_offer.image = params[:image]
+        if @special_offer.save
+            render json: {
+              code: 200,
+              success: true,
+              message: 'Image updated successfully',
+              data: {
+                id: @special_offer.id,
+                image: @special_offer.image 
+              }
+            }
+        else
+            render json: {
+              code: 400,
+              success: false,
+              message: 'Special updation failed',
+              data: nil
+            }
+        end
+      else
+          render json: {
+            code: 400,
+            success: false,
+            message: "Special Offer doesnt exist" ,
+            data: nil
+          }
+      end
+    end
+  end
+
+  def add_details
+    if !params[:offer_id].blank?
+      if SpecialOffer.where(id: params[:offer_id]).exists?
+        @special_offer = SpecialOffer.find(params[:offer_id])
+        @special_offer.title = params[:title]
+        @special_offer.description = params[:description]
+        @special_offer.over_18 = params[:over_18]
+        if params[:limited] == "true"
+          @special_offer.limited = true
+          @special_offer.quantity = params[:quantity]
+        else
+          @special_offer.limited = false
+          @special_offer.quantity = 0
+        end
+
+        @special_offer.save
+
+            render json: {
+              code: 200,
+              success: true,
+              message: 'Details added successfully',
+              data: {
+                id: @special_offer.id,
+                title: @special_offer.title, 
+                description: @special_offer.description, 
+                over_18: @special_offer.over_18, 
+                limited: @special_offer.limited, 
+                quantity: @special_offer.quantity 
+              }
+            }
+      else
+          render json: {
+            code: 400,
+            success: false,
+            message: "Special Offer doesnt exist" ,
+            data: nil
+          }
+      end
+    else
+          render json: {
+            code: 400,
+            success: false,
+            message: "offer_id is required" ,
+            data: nil
+          }
+    end
+  end
+
+  def add_time
+    if !params[:offer_id].blank?
+      if SpecialOffer.where(id: params[:offer_id]).exists?
+        @special_offer = SpecialOffer.find(params[:offer_id])
+        @special_offer.start_time = get_date_time(params[:start_date].to_date, params[:start_time])
+        @special_offer.end_time = get_date_time(params[:end_date].to_date, params[:end_time])
+        @special_offer.save
+            render json: {
+              code: 200,
+              success: true,
+              message: 'Time added successfully',
+              data: {
+                id: @special_offer.id,
+                start_time: @special_offer.start_time, 
+                end_time: @special_offer.end_time
+              }
+            }
+
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: "Special Offer doesnt exist" ,
+          data: nil
+        }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "offer_id is required" ,
+        data: nil
+      }
+    end
+  end
+
+  def add_outlets
+    if !params[:offer_id].blank?
+      if SpecialOffer.where(id: params[:offer_id]).exists?
+        @special_offer = SpecialOffer.find(params[:offer_id])
+
+        params[:outlets].each do |f|
+          if f.include? "id"
+            @special_offer.outlets.find(f[:id]).update!(outlet_address: f[:outlet_address])
+          else
+            @special_offer.outlets.create!(outlet_address: f[:outlet_address])
+          end
+        end
+
+        @special_offer.save
+            render json: {
+              code: 200,
+              success: true,
+              message: 'outlets added successfully',
+              data: {
+                id: @special_offer.id,
+                outlets: @special_offer.outlets
+              }
+            }
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: "Special Offer doesnt exist" ,
+          data: nil
+        }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "offer_id is required" ,
+        data: nil
+      }
+    end
+  end
+
+  def remove_outlet
+    if !params[:outlet_id].blank?
+      if Outlet.where(id: params[:outlet_id]).exists?
+          @outlet = Outlet.find(params[:outlet_id])
+          if @outlet.destroy
+            render json: {
+              code: 200,
+              success: true,
+              message: "Outlet deleted successfully" ,
+              data: nil
+            }
+          else
+            render json: {
+              code: 400,
+              success: false,
+              message: "outlet deletion failed" ,
+              data: nil
+            }
+          end
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: "Outlet doesnt exist with the following ID" ,
+          data: nil
+        }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "outlet_id is required" ,
+        data: nil
+      }
+    end
+  end
+
+  def terms_conditions
+    if !params[:offer_id].blank?
+      if SpecialOffer.where(id: params[:offer_id]).exists?
+        @special_offer = SpecialOffer.find(params[:offer_id])
+        @special_offer.terms_conditions = params[:terms_conditions]
+        @special_offer.save
+            render json: {
+              code: 200,
+              success: true,
+              message: 'Terms and condition added successfully',
+              data: {
+                id: @special_offer.id,
+                terms_conditions: @special_offer.terms_conditions
+              }
+            }
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: "Special Offer doesnt exist" ,
+          data: nil
+        }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "offer_id is required" ,
+        data: nil
+      }
+    end
+  end
+
+  def ambassador_rate
+    if !params[:offer_id].blank?
+      if SpecialOffer.where(id: params[:offer_id]).exists?
+        @special_offer = SpecialOffer.find(params[:offer_id])
+        @special_offer.ambassador_rate = params[:ambassador_rate]
+        @special_offer.save
+            render json: {
+              code: 200,
+              success: true,
+              message: 'Ambassador rate added successfully',
+              data: {
+                id: @special_offer.id,
+                ambassador_rate: @special_offer.ambassador_rate
+              }
+            }
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: "Special Offer doesnt exist" ,
+          data: nil
+        }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "offer_id is required" ,
+        data: nil
+      }
+    end
+  end
+
+  def publish_offer
+    if !params[:offer_id].blank?
+      if SpecialOffer.where(id: params[:offer_id]).exists?
+        @special_offer = SpecialOffer.find(params[:offer_id])
+        @special_offer.status = "active"
+        @special_offer.save
+            render json: {
+              code: 200,
+              success: true,
+              message: 'SpecialOffer successfully published',
+              data: {
+                id: @special_offer.id,
+                image: @special_offer.image,
+                title: @special_offer.title,
+                description: @special_offer.description,
+                over_18: @special_offer.over_18,
+                limited: @special_offer.limited,
+                quantity: @special_offer.quantity,
+                start_time: @special_offer.start_time,
+                end_time: @special_offer.end_time,
+                terms_conditions: @special_offer.terms_conditions,
+                ambassador_rate: @special_offer.ambassador_rate,
+                status: @special_offer.status,
+                outlets: @special_offer.outlets
+                
+              }
+            }
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: "Special Offer doesnt exist" ,
+          data: nil
+        }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "offer_id is required" ,
+        data: nil
+      }
+    end
+  end
+
   def create
     @special_offer = request_user.special_offers.new
     @special_offer.title = params[:title]
@@ -301,6 +630,12 @@ end
 
 
  private
+
+  def get_date_time(date, time)
+    d = date.strftime("%Y-%b-%d")
+    t = time.to_time.strftime("%H:%M:%S")
+    datetime = d + " " + t
+ end
 
   def get_redeem_count(offer)
      if offer.redemptions

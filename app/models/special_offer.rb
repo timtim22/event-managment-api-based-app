@@ -10,22 +10,22 @@ class SpecialOffer < ApplicationRecord
   has_many :offer_forwardings, dependent: :destroy, as: :offer
   has_many :activity_logs, dependent: :destroy, as: :resource
   has_many :notifications, dependent: :destroy, as: :resource
+  has_many :outlets, dependent: :destroy
 
-  validates :title, presence: true
-  validates :description, presence: true
-  validates :validity, presence: true
-  validates :ambassador_rate, presence: true
-  validates :image, presence: true, on: :create
-  validates :location, presence: true
-  validates :terms_conditions, presence: false
+  # validates :title, presence: true
+  # validates :description, presence: true
+  # validates :validity, presence: true
+  # validates :ambassador_rate, presence: true
+  # validates :image, presence: true, on: :create
+  # validates :location, presence: true
+  # validates :terms_conditions, presence: false
 
   mount_uploader :image, ImageUploader
   mount_base64_uploader :image, ImageUploader
 
-  scope :upcoming, -> { where(['validity > ?', Date.today]) }
-  scope :expired, -> { where(['validity < ?', Date.today]) }
-  scope :sort_by_date, -> { order(validity: 'ASC') }
-
-
+  scope :active, -> { where(['status == ?', 'active']) }
+  scope :upcoming, -> { where(['end_time > ?', Date.today]) }
+  scope :expired, -> { where(['end_time < ?', Date.today]) }
+  scope :sort_by_date, -> { order(start_time: 'ASC')}
 
 end

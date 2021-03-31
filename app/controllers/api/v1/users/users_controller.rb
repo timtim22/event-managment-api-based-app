@@ -569,7 +569,7 @@ end
       when 'SpecialOffer'
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
-        resource['location'] = jsonify_location(log.resource.location)
+        resource['outlets'] = log.resource.outlets.map { |e| jsonify_location(e.outlet_address) }
         resource['start_date'] = log.resource.date
         resource['grabbers_counts'] = log.resource.wallets.size
 

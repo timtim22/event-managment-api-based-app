@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_25_102907) do
+ActiveRecord::Schema.define(version: 2021_03_31_063325) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -408,6 +408,14 @@ ActiveRecord::Schema.define(version: 2021_03_25_102907) do
     t.index ["user_id"], name: "index_offer_shares_on_user_id"
   end
 
+  create_table "outlets", force: :cascade do |t|
+    t.integer "special_offer_id"
+    t.string "outlet_address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["special_offer_id"], name: "index_outlets_on_special_offer_id"
+  end
+
   create_table "passes", force: :cascade do |t|
     t.integer "event_id"
     t.integer "user_id"
@@ -555,8 +563,6 @@ ActiveRecord::Schema.define(version: 2021_03_25_102907) do
     t.string "title", default: ""
     t.string "sub_title", default: ""
     t.string "image", default: ""
-    t.datetime "date"
-    t.datetime "time"
     t.datetime "end_time"
     t.date "validity"
     t.text "description", default: ""
@@ -570,6 +576,10 @@ ActiveRecord::Schema.define(version: 2021_03_25_102907) do
     t.datetime "updated_at", null: false
     t.integer "quantity", default: 0
     t.string "qr_code", default: ""
+    t.boolean "over_18", default: true
+    t.boolean "limited", default: true
+    t.datetime "start_time"
+    t.string "status", default: ""
     t.index ["user_id"], name: "index_special_offers_on_user_id"
   end
 
@@ -652,6 +662,7 @@ ActiveRecord::Schema.define(version: 2021_03_25_102907) do
     t.string "uuid", default: ""
     t.boolean "mobile_user", default: true
     t.boolean "location_enabled", default: false
+    t.string "status", default: ""
   end
 
   create_table "views", force: :cascade do |t|
