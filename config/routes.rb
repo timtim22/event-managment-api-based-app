@@ -318,10 +318,6 @@ end
           end
       end
 
-
-
-
-
       namespace :events do
         post '/create-event' => 'events#create_event'
         post '/add-time' => 'events#add_times'
@@ -350,15 +346,16 @@ end
         
         resources :special_offers
 
-
-         post "special-offers/add-image" => "special_offers#add_image"
-         post "special-offers/add-details" => "special_offers#add_details"
-         post "special-offers/add-time" => "special_offers#add_time"
-         post "special-offers/add-outlets" => "special_offers#add_outlets"
-         post "special-offers/remove-outlet" => "special_offers#remove_outlet"
-         post "special-offers/terms-conditions" => "special_offers#terms_conditions"
-         post "special-offers/ambassador-rate" => "special_offers#ambassador_rate"
-         post "special-offers/publish-offer" => "special_offers#publish_offer"
+        namespace :special_offers do
+         post "/add-image" => "special_offers#add_image"
+         post "/add-details" => "special_offers#add_details"
+         post "/add-time" => "special_offers#add_time"
+         post "/add-outlets" => "special_offers#add_outlets"
+         post "/remove-outlet" => "special_offers#remove_outlet"
+         post "/terms-conditions" => "special_offers#terms_conditions"
+         post "/ambassador-rate" => "special_offers#ambassador_rate"
+         post "/publish-offer" => "special_offers#publish_offer"
+        end
 
         get "/get-my-events" => "events#get_my_events"
         post "/delete-resource" => "events#delete_resource"

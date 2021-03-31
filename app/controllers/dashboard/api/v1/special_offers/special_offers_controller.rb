@@ -1,4 +1,4 @@
-class Dashboard::Api::V1::SpecialOffersController < Dashboard::Api::V1::ApiMasterController
+class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Api::V1::ApiMasterController
   before_action :authorize_request
 
     resource_description do
