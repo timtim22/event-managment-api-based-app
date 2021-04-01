@@ -817,7 +817,7 @@
 
 
   def create_event
-    success = false
+    # success = false
     # @error_messages = []
 
     # if params[:price_type] != "free_event"
@@ -916,25 +916,25 @@
           )
 
         @event.save
-        success = true
+        # success = true
 
-       if success
+       # if success
           render json:  {
             code: 200,
             success: true,
-            message: 'Event successfully created.',
+            message: 'Event successfully updated.',
             data: {
                event: (@event)
             }
           }
-        else
-          render json: {
-            code: 400,
-            success: false,
-            message: @event.errors.full_messages,
-            data: nil
-          }
-        end
+        # else
+        #   render json: {
+        #     code: 400,
+        #     success: false,
+        #     message: @event.errors.full_messages,
+        #     data: nil
+        #   }
+        # end
       else
           render json: {
             code: 400,
@@ -968,7 +968,7 @@
       @event.save
       success = true
 
-     if success
+     # if success
         render json:  {
           code: 200,
           success: true,
@@ -977,18 +977,15 @@
              event: (@event)
           }
         }
-      else
-        render json: {
-          code: 400,
-          success: false,
-          message: @event.errors.full_messages,
-          data: nil
-        }
-      end
+      # else
+      #   render json: {
+      #     code: 400,
+      #     success: false,
+      #     message: @event.errors.full_messages,
+      #     data: nil
+      #   }
+      # end
     end
-
-
-
   end
 
 

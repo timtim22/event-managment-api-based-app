@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_01_071825) do
+ActiveRecord::Schema.define(version: 2021_04_01_074436) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -164,16 +164,14 @@ ActiveRecord::Schema.define(version: 2021_04_01_071825) do
     t.string "title", default: ""
     t.text "description", default: ""
     t.string "image", default: ""
-    t.datetime "start_date"
-    t.datetime "end_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "terms_conditions", default: ""
     t.boolean "over_18", default: true
     t.integer "number_of_winner"
     t.boolean "competition_forwarding", default: false
-    t.datetime "start_time"
-    t.datetime "end_time"
+    t.string "status", default: ""
+    t.datetime "draw_time"
     t.index ["user_id"], name: "index_competitions_on_user_id"
   end
 

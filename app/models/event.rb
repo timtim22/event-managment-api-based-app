@@ -1,15 +1,15 @@
 
 class Event < ApplicationRecord
-validates :title, presence: true, on: :create
-validates :image, presence: true, on: :create
-validates :venue, presence: true, on: :create
-# validates :start_date, presence: true, on: :create
-# validates :end_date, presence: true, on: :create
+# validates :title, presence: true, on: :create
+# validates :image, presence: true, on: :create
+# validates :venue, presence: true, on: :create
+# # validates :start_date, presence: true, on: :create
+# # validates :end_date, presence: true, on: :create
 
-validates :description, presence: true, on: :create
-validates :location, presence: true, on: :create
-validate  :has_one_category_at_least, on: :create
-validates :image, file_size: { less_than: 3.megabytes }
+# validates :description, presence: true, on: :create
+# validates :location, presence: true, on: :create
+# validate  :has_one_category_at_least, on: :create
+# validates :image, file_size: { less_than: 3.megabytes }
 
 belongs_to :user
 has_many :comments, dependent: :destroy

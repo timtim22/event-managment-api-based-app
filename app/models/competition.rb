@@ -12,11 +12,11 @@ class Competition < ApplicationRecord
   has_many :notifications, dependent: :destroy, as: :resource
   has_many :offer_shares, dependent: :destroy, as: :offer
   has_many :offer_forwardings, dependent: :destroy, as: :offer
-  validates :title, presence: true
-  validates :start_date, presence: true
-  validates :end_date, presence: true
+  # validates :title, presence: true
+  # validates :start_date, presence: true
+  # validates :end_date, presence: true
 
-  validates :description, presence: true
+  # validates :description, presence: true
  
 
   scope :upcoming, -> { where(['end_date > ?', DateTime.now]) }

@@ -92,19 +92,94 @@ class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api:
 
   end
 
-  api :POST, '/dashboard/api/v1/competitions', 'To create competition'
-  # param :title, String, :desc => "Title of the competition", :required => true
-  # param :description, String, :desc => "Description of the competition", :required => true
-  # param :start_date, String, :desc => "Start Date of the competition", :required => true
-  # param :end_date, String, :desc => "End Date of the competition", :required => true
-  # param :start_time, String, :desc => "Start time of the competition", :required => true
-  # param :end_time, String, :desc => "End time of the competition", :required => true
-  # param :validity, String, :desc => "Validity", :required => true
-  # param :validity_time, String, :desc => "Validity Time", :required => true
-  # param :image, String, :desc => "Image of the competition", :required => true
-  # param :price, :decimal, :desc => "Price of the competition", :required => true
-  # param :terms_conditions, String, :desc => "Terms and Condition of the competition", :required => true
- # param :location, String, :desc => "Location of the competition", :required => true
+
+def add_image
+  if params[:competition_id].blank?
+    @competition = request_user.competitions.new
+    @competition.image = params[:image]
+    @competition.status = "draft"
+      if @competition.save
+          render json: {
+            code: 200,
+            success: true,
+            message: 'Competition created and image added successfully',
+            data: {
+              id: @competition.id,
+              image: @competition.image 
+            }
+          }
+      else
+          render json: {
+            code: 400,
+            success: false,
+            message: 'Competition creation failed',
+            data: nil
+          }
+      end
+  else
+    if Competition.where(id: params[:competition_id]).exists?
+      @competition = Competition.find(params[:competition_id])
+      @competition.image = params[:image]
+      @competition.save
+          render json: {
+            code: 200,
+            success: true,
+            message: 'Image updated successfully',
+            data: {
+              id: @competition.id,
+              image: @competition.image 
+            }
+          }
+    else
+        render json: {
+          code: 400,
+          success: false,
+          message: "competition doesnt exist" ,
+          data: nil
+        }
+    end
+  end
+end
+
+  def add_details
+    if !params[:competition_id].blank?
+      if Competition.where(id: params[:competition_id]).exists?
+        @competition = Competition.find(params[:competition_id])
+        @competition.title = params[:title]
+        @competition.description = params[:description]
+        @competition.over_18 = params[:over_18]
+        @competition.number_of_winner = params[:number_of_winner]
+
+        @competition.save
+          render json: {
+            code: 200,
+            success: true,
+            message: 'Details added successfully',
+            data: {
+              id: @competition.id,
+              title: @competition.title, 
+              description: @competition.description, 
+              over_18: @competition.over_18, 
+              limited: @competition.number_of_winner
+            }
+          }
+      else
+          render json: {
+            code: 400,
+            success: false,
+            message: "Competition doesnt exist" ,
+            data: nil
+          }
+      end
+    else
+          render json: {
+            code: 400,
+            success: false,
+            message: "competition_id is required" ,
+            data: nil
+          }
+    end
+  end
 
 
   def create

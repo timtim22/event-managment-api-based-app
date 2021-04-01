@@ -346,6 +346,11 @@ end
         
         resources :special_offers
 
+        namespace :competitions do
+          post "/add-image" => "competitions#add_image"
+          post "/add-details" => "competitions#add_details"
+        end
+
         namespace :special_offers do
          post "/add-image" => "special_offers#add_image"
          post "/add-details" => "special_offers#add_details"
