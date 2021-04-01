@@ -455,6 +455,7 @@ def add_phone
     if User.where(id: params[:user_id]).exists?
       @user = User.find(params[:user_id])
       @user.phone_number = params[:phone_number]
+      @user.phone_details = params[:phone_details]
       if @user.save
       app = Assignment.where(role_id: 5).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number]} 
       business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number]}.select {|e| e.status == "active"}
@@ -465,6 +466,7 @@ def add_phone
             data: {
               "id" => @user.id,
               "phone_number" => @user.phone_number,
+              "phone_details" => @user.phone_details,
               user: {
                 "businesses" => business,
                 "app_users" => app

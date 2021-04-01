@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_31_063325) do
+ActiveRecord::Schema.define(version: 2021_04_01_071825) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -663,6 +663,7 @@ ActiveRecord::Schema.define(version: 2021_03_31_063325) do
     t.boolean "mobile_user", default: true
     t.boolean "location_enabled", default: false
     t.string "status", default: ""
+    t.string "phone_details", default: ""
   end
 
   create_table "views", force: :cascade do |t|
