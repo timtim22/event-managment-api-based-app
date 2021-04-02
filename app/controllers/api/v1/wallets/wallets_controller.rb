@@ -262,10 +262,7 @@ def get_competitions
       id: competition.id,
       title: competition.title,
       description: competition.description,
-      start_date: competition.start_date,
-      end_date: competition.end_date,
-      start_time: competition.start_date,
-      end_time: competition.end_date,
+      draw_time: competition.start_date,
       image: competition.image,
       is_entered: is_entered_competition?(competition.id),
       participants_stats: get_participants_stats(competition),
@@ -276,7 +273,7 @@ def get_competitions
       total_entries_count: get_entry_count(request_user, competition),
       issued_by: get_full_name(competition.user),
       is_followed: is_followed(competition.user),
-      validity: competition.end_date,
+      validity: competition.draw_time,
       terms_and_conditions: competition.terms_conditions
      }
     else
@@ -284,10 +281,7 @@ def get_competitions
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        start_date: competition.start_date,
-        end_date: competition.end_date,
-        start_time: competition.start_date,
-        end_time: competition.end_date,
+        draw_time: competition.start_date,
         image: competition.image,
         is_entered: is_entered_competition?(competition.id),
         participants_stats: get_participants_stats(competition),
@@ -298,7 +292,7 @@ def get_competitions
         total_entries_count: get_entry_count(request_user, competition),
         issued_by: get_full_name(competition.user),
         is_followed: is_followed(competition.user),
-        validity: competition.end_date,
+        validity: competition.draw_time,
         terms_and_conditions: competition.terms_conditions
        }
     end
@@ -478,7 +472,7 @@ end
                   "competition_id": notification.resource.offer.id,
                   "competition_name": notification.resource.offer.title,
                   "competition_host": get_full_name(notification.resource.offer.user),
-                  "competition_draw_date": notification.resource.offer.end_time,
+                  "competition_draw_date": notification.resource.offer.draw_time,
                   "user_id": notification.resource.user.id,
                   "actor_image": notification.actor.avatar,
                   "notifiable_id": notification.notifiable_id,
@@ -615,7 +609,7 @@ end
                   "competition_id": notification.resource.offer.id,
                   "competition_name": notification.resource.offer.title,
                   "competition_host": get_full_name(notification.resource.offer.user),
-                  "competition_draw_date": notification.resource.offer.end_time,
+                  "competition_draw_date": notification.resource.offer.draw_time,
                   "user_id": notification.resource.user.id,
                   "actor_image": notification.actor.avatar,
                   "notifiable_id": notification.notifiable_id,

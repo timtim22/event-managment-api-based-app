@@ -19,9 +19,9 @@ class Competition < ApplicationRecord
   # validates :description, presence: true
  
 
-  scope :upcoming, -> { where(['end_date > ?', DateTime.now]) }
-  scope :expired, -> { where(['end_date < ?', DateTime.now]) }
-  scope :sort_by_date, -> { order(end_date: 'ASC') }
+  scope :upcoming, -> { where(['draw_time > ?', DateTime.now]) }
+  scope :expired, -> { where(['draw_time < ?', DateTime.now]) }
+  scope :sort_by_date, -> { order(draw_time: 'ASC') }
 
   #will automatically format price but db key and fuc name should be same
 def price

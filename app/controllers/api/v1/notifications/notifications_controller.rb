@@ -47,7 +47,6 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
             "notifiable_type": notification.notifiable_type,
             "action": notification.action,
             "action_type": notification.action_type,
-            "location": location,
             "created_at": notification.created_at,
             "is_read": !notification.read_at.nil?,
             "competition_name": notification.resource.title,
