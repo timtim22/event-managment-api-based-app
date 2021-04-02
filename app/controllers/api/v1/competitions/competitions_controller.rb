@@ -18,10 +18,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        start_date: competition.start_date,
-        end_date: competition.end_date,
-        start_time: competition.start_date,
-        end_time: competition.end_date,
+        draw_time: competition.draw_time,
         image: competition.image,
         is_entered: is_entered_competition?(competition.id),
         participants_stats: get_participants_stats(competition),
@@ -31,7 +28,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
         total_entries_count: get_entry_count(request_user, competition),
         issued_by: get_full_name(competition.user),
         is_followed: is_followed(competition.user),
-        validity: competition.end_date.strftime(get_time_format),
+        validity: competition.draw_time,
         terms_and_conditions: competition.terms_conditions
         }
      end
@@ -42,10 +39,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
       id: competition.id,
       title: competition.title,
       description: competition.description,
-      start_date: competition.start_date,
-      end_date: competition.end_date,
-      start_time: competition.start_date,
-      end_time: competition.end_date,
+      draw_time: competition.start_date,
       image: competition.image,
       is_entered: is_entered_competition?(competition.id),
       participants_stats: get_participants_stats(competition),
@@ -55,7 +49,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
       total_entries_count: 0,
       issued_by: get_full_name(competition.user),
       is_followed: is_followed(competition.user),
-      validity: competition.end_date.strftime(get_time_format),
+      validity: competition.draw_time,
       terms_and_conditions: competition.terms_conditions
       }
     end #each
@@ -81,11 +75,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
         id: competition.id,
         title: competition.title,
         description: competition.description,
-        start_date: competition.start_date,
-        end_date: competition.end_date,
-        start_time: competition.start_date,
-        end_time: competition.end_date,
-   
+        draw_time: competition.draw_time,
         image: competition.image,
         is_entered: is_entered_competition?(competition.id),
         participants_stats: get_participants_stats(competition),
@@ -95,7 +85,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
         total_entries_count: 0,
         issued_by: get_full_name(competition.user),
         is_followed: is_followed(competition.user),
-        validity: competition.end_date.strftime(get_time_format),
+        validity: competition.draw_time,
         terms_and_conditions: competition.terms_conditions
       }
 
@@ -175,7 +165,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
                       "competition_id": notification.resource.event.id,
                       "competition_name": notification.resource.event.title,
                       "business_name": get_full_name(notification.resource.event.user),
-                      "draw_date": notification.resource.event.end_time,
+                      "draw_date": notification.resource.event.draw_time,
                       "actor_image": notification.actor.avatar,
                       "notifiable_id": notification.notifiable_id,
                       "notifiable_type": notification.notifiable_type,
@@ -260,7 +250,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
                   "competition_id": notification.resource.event.id,
                   "competition_name": notification.resource.event.title,
                   "business_name": get_full_name(notification.resource.event.user),
-                  "draw_date": notification.resource.event.end_time,
+                  "draw_date": notification.resource.event.draw_time,
                   "actor_image": notification.actor.avatar,
                   "notifiable_id": notification.notifiable_id,
                   "notifiable_type": notification.notifiable_type,

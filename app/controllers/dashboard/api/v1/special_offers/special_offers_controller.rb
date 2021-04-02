@@ -629,13 +629,13 @@ end
 
 
 
- private
+private
 
-  def get_date_time(date, time)
+def get_date_time(date, time)
     d = date.strftime("%Y-%b-%d")
     t = time.to_time.strftime("%H:%M:%S")
     datetime = d + " " + t
- end
+end
 
   def get_redeem_count(offer)
      if offer.redemptions

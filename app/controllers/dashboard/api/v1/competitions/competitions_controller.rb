@@ -30,8 +30,7 @@ class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api:
        id: competition.id,
        title: competition.title,
        image: competition.image.url,
-       location: competition.location,
-       draw_date: competition.end_date.strftime("%a %d %b %y%:z "),
+       draw_time: competition.draw_time,
        views: 0,
        entries: competition.registrations.size,
        winners: winners
@@ -178,6 +177,113 @@ end
             message: "competition_id is required" ,
             data: nil
           }
+    end
+  end
+
+  def draw_time
+    if !params[:competition_id].blank?
+      if Competition.where(id: params[:competition_id]).exists?
+        @competition = Competition.find(params[:competition_id])
+        @competition.draw_time = get_date_time(params[:draw_date].to_date, params[:draw_time])
+        @competition.save
+          render json: {
+            code: 200,
+            success: true,
+            message: 'Draw time added successfully',
+            data: {
+              id: @competition.id,
+              draw_time: @competition.draw_time
+            }
+          }
+
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: "Competition doesnt exist" ,
+          data: nil
+        }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "competition_id is required" ,
+        data: nil
+      }
+    end
+  end
+
+  def terms_conditions
+    if !params[:competition_id].blank?
+      if Competition.where(id: params[:competition_id]).exists?
+        @competition = Competition.find(params[:competition_id])
+        @competition.terms_conditions = params[:terms_conditions]
+        @competition.save
+          render json: {
+            code: 200,
+            success: true,
+            message: 'Terms and Condition added successfully',
+            data: {
+              id: @competition.id,
+
+              draw_time: @competition.terms_conditions
+            }
+          }
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: "Competition doesnt exist" ,
+          data: nil
+        }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "competition_id is required" ,
+        data: nil
+      }
+    end
+  end
+
+  def publish_competition
+    if !params[:competition_id].blank?
+      if Competition.where(id: params[:competition_id]).exists?
+        @competition = Competition.find(params[:competition_id])
+        @competition.status = "active"
+        @competition.save
+          render json: {
+            code: 200,
+            success: true,
+            message: 'Competition successfully published',
+            data: {
+              id: @competition.id,
+              image: @competition.image,
+              title: @competition.title,
+              description: @competition.description,
+              over_18: @competition.over_18,
+              number_of_winner: @competition.number_of_winner,
+              draw_time: @competition.draw_time,
+              draw_time: @competition.terms_conditions
+            }
+          }
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: "Competition doesnt exist" ,
+          data: nil
+        }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "competition_id is required" ,
+        data: nil
+      }
     end
   end
 
@@ -381,7 +487,7 @@ end
     end
    end
 
-  private
+private
 
 
  def get_date_time(date, time)

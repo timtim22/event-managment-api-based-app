@@ -52,7 +52,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
             "is_read": !notification.read_at.nil?,
             "competition_name": notification.resource.title,
             "business_name": get_full_name(notification.resource.user),
-            "draw_date": notification.resource.end_date
+            "draw_time": notification.resource.draw_time
           }
         when "create_offer"
           @notifications << {
@@ -184,7 +184,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
           "competition_id": notification.resource.offer.id,
           "competition_name": notification.resource.offer.title,
           "competition_host": get_full_name(notification.resource.offer.user),
-          "competition_draw_date": notification.resource.offer.end_time,
+          "competition_draw_time": notification.resource.offer.end_time,
           "user_id": notification.resource.user.id,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
@@ -274,7 +274,7 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
           "competition_id": notification.resource.event.id,
           "competition_name": notification.resource.event.title,
           "business_name": get_full_name(notification.resource.event.user),
-          "draw_date": notification.resource.event.end_time,
+          "draw_time": notification.resource.event.draw_time,
           "actor_image": notification.actor.avatar,
           "notifiable_id": notification.notifiable_id,
           "notifiable_type": notification.notifiable_type,

@@ -35,7 +35,7 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
     end #if
     end #each
     else
-      SpecialOffer.upcoming.order(created_at: "DESC").each do |offer|
+      SpecialOffer.upcoming.active.order(created_at: "DESC").each do |offer|
         @special_offers << {
         id: offer.id,
         title: offer.title,

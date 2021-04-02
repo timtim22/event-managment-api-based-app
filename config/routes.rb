@@ -347,8 +347,12 @@ end
         resources :special_offers
 
         namespace :competitions do
+          get '/get-past-competitions' => 'competitions#get_past_competitions'
           post "/add-image" => "competitions#add_image"
           post "/add-details" => "competitions#add_details"
+          post "/draw-time" => "competitions#draw_time"
+          post "/terms-conditions" => "competitions#terms_conditions"
+          post "/publish-competition" => "competitions#publish_competition"
         end
 
         namespace :special_offers do
@@ -360,10 +364,6 @@ end
          post "/terms-conditions" => "special_offers#terms_conditions"
          post "/ambassador-rate" => "special_offers#ambassador_rate"
          post "/publish-offer" => "special_offers#publish_offer"
-        end
-
-        namespace :competitions do 
-          get '/get-past-competitions' => 'competitions#get_past_competitions'
         end
 
         namespace :payments do

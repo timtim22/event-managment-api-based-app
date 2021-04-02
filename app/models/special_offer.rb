@@ -23,9 +23,9 @@ class SpecialOffer < ApplicationRecord
   mount_uploader :image, ImageUploader
   mount_base64_uploader :image, ImageUploader
 
-  scope :active, -> { where(['status = ?', 'active']) }
-  scope :upcoming, -> { where(['start_time > ?', Date.today]) }
-  scope :expired, -> { where(['end_time < ?', Date.today]) }
-  scope :sort_by_date, -> { order(start_time: 'ASC')}
+  scope :active, -> {where(['status = ?', 'active'])}
+  scope :upcoming, -> {where(['start_time > ?', Date.today])}
+  scope :expired, -> {where(['end_time < ?', Date.today])}
+  scope :sort_by_date, -> {order(start_time: 'ASC')}
 
 end
