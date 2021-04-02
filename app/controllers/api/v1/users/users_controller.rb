@@ -776,7 +776,6 @@ end
      when 'Competition'
        resource['title'] = log.resource.title
        resource['host_name'] = get_full_name(log.resource.user)
-       resource['location'] = jsonify_location(log.resource.location)
        resource['validity'] = log.resource.draw_time
 
      when 'OfferForwarding'
