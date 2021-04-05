@@ -22,11 +22,12 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
         id: offer.id,
         title: offer.title,
         image: offer.image.url,
-        location: location,
-        validity: offer.validity,
+        start_time: offer.start_time,
+        end_time: offer.end_time,
         description: offer.description,
         ambassador_rate: offer.ambassador_rate,
-        terms_conditions: offer.terms_conditions
+        terms_conditions: offer.terms_conditions,
+        outlets: offer.outlets.map { |e| {id: e.id, outlet_address: jsonify_location(e.outlet_address)}}
       }
     end
     render json: {
@@ -39,7 +40,42 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
     }
   end
 
-  api :GET, 'dashboard/api/v1/get-past-offers', 'Get all expired special offers'
+  def show
+    if !params[:offer_id].blank?
+      if SpecialOffer.where(id: params[:offer_id]).exists?
+        @special_offer = SpecialOffer.find(params[:offer_id])
+        render json: {
+          code: 200,
+          success: true,
+          message: "single Special Offer",
+          data: {
+            id: @special_offer.id,
+            title: @special_offer.title,
+            image: @special_offer.image.url,
+            end_time: @special_offer.end_time,
+            description: @special_offer.description,
+            terms_conditions: @special_offer.terms_conditions,
+            ambassador_rate: @special_offer.ambassador_rate,
+            outlets: @special_offer.outlets.map { |e| {id: e.id, outlet_address: jsonify_location(e.outlet_address)}}
+          }
+        }
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: 'Special offer doesnt exist',
+          data: nil
+        }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: 'Offer id is required',
+        data: nil
+      }
+    end
+  end
 
   def get_past_offers
     @special_offers = []
@@ -71,16 +107,6 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
       }
     }
   end
-
-  api :POST, 'dashboard/api/v1/special_offers', 'Create special offer'
-  # param :title, String, :desc => "Title of the special offer", :required => true
-  # param :description, String, :desc => "Description of the special offer", :required => true
-  # param :date, String, :desc => "Date of the special offer", :required => true
-  # param :validity, String, :desc => "Validity", :required => true
-  # param :ambassador_rate, :decimal, :desc => "Ambassador rate of the special offer", :required => true
-  # param :image, String, :desc => "Image of the special offer", :required => true
-  # param :qr_code, :number, :desc => "Redeem Code", :required => true
-  # param :terms_conditions, String, :desc => "Terms and condition of the special offer", :required => true
 
   def add_image
     if params[:offer_id].blank?
@@ -159,7 +185,7 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
   def add_details
     if !params[:offer_id].blank?
       if SpecialOffer.where(id: params[:offer_id]).exists?
-        if !params[:title].blank? && !params[:description].blank? && !params[:over_18].blank? && !params[:limited].blank? && !params[:quantity].blank?
+        if !params[:title].blank? && !params[:description].blank? && !params[:over_18].blank?
         @special_offer = SpecialOffer.find(params[:offer_id])
 
           @special_offer.title = params[:title]
@@ -192,7 +218,7 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
           render json: {
             code: 400,
             success: false,
-            message: "Title, Description, over_18, limited and quantity cant be blank" ,
+            message: "Title, Description and over_18 cant be blank" ,
             data: nil
           }
         end
@@ -277,7 +303,7 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
               message: 'outlets added successfully',
               data: {
                 id: @special_offer.id,
-                outlets: @special_offer.outlets
+                outlets: @special_offer.outlets.map { |e| {id: e.id, outlet_address: jsonify_location(e.outlet_address)}}
               }
             }
       else
@@ -442,7 +468,7 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
                 terms_conditions: @special_offer.terms_conditions,
                 ambassador_rate: @special_offer.ambassador_rate,
                 status: @special_offer.status,
-                outlets: @special_offer.outlets
+                outlets: @special_offer.outlets.map { |e| {id: e.id, outlet_address: jsonify_location(e.outlet_address)}}
                 
               }
             }
@@ -464,217 +490,122 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
     end
   end
 
-  def create
-    @special_offer = request_user.special_offers.new
-    @special_offer.title = params[:title]
-    @special_offer.sub_title = params[:sub_title]
-    @special_offer.description = params[:description]
-    @special_offer.end_time = params[:end_time]
-    @special_offer.date = params[:date]
-    @special_offer.time = params[:time]
-    @special_offer.validity = params[:validity]
-    @special_offer.ambassador_rate = params[:ambassador_rate]
-    @special_offer.image = params[:image]
-    @special_offer.qr_code = generate_code
-    @special_offer.terms_conditions = params[:terms_conditions]
-    if !params[:location].blank?
-      @special_offer.location = params[:location][:name]
-      @special_offer.lat = params[:location][:geometry][:lat]
-      @special_offer.lng = params[:location][:geometry][:lng]
-    end
+#   def create
+#     @special_offer = request_user.special_offers.new
+#     @special_offer.title = params[:title]
+#     @special_offer.sub_title = params[:sub_title]
+#     @special_offer.description = params[:description]
+#     @special_offer.end_time = params[:end_time]
+#     @special_offer.date = params[:date]
+#     @special_offer.time = params[:time]
+#     @special_offer.validity = params[:validity]
+#     @special_offer.ambassador_rate = params[:ambassador_rate]
+#     @special_offer.image = params[:image]
+#     @special_offer.qr_code = generate_code
+#     @special_offer.terms_conditions = params[:terms_conditions]
+#     if !params[:location].blank?
+#       @special_offer.location = params[:location][:name]
+#       @special_offer.lat = params[:location][:geometry][:lat]
+#       @special_offer.lng = params[:location][:geometry][:lng]
+#     end
 
-    if @special_offer.save
-     # create_activity(request_user, "created special offer", @special_offer, "SpecialOffer", admin_special_offer_path(@special_offer),@special_offer.title, 'post', 'created_special_offer')
-      if !request_user.followers.blank?
-        @pubnub = Pubnub.new(
-          publish_key: ENV['PUBLISH_KEY'],
-          subscribe_key: ENV['SUBSCRIBE_KEY'],
-          uuid: @username
-          )
-      request_user.followers.each do |follower|
-   if follower.special_offers_notifications_setting.is_on == true
-      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_offer')
-        @current_push_token = @pubnub.add_channels_to_push(
-         push_token: follower.device_token,
-         type: 'gcm',
-         add: follower.device_token
-         ).value
+#     if @special_offer.save
+#      # create_activity(request_user, "created special offer", @special_offer, "SpecialOffer", admin_special_offer_path(@special_offer),@special_offer.title, 'post', 'created_special_offer')
+#       if !request_user.followers.blank?
+#         @pubnub = Pubnub.new(
+#           publish_key: ENV['PUBLISH_KEY'],
+#           subscribe_key: ENV['SUBSCRIBE_KEY'],
+#           uuid: @username
+#           )
+#       request_user.followers.each do |follower|
+#    if follower.special_offers_notifications_setting.is_on == true
+#       if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_offer')
+#         @current_push_token = @pubnub.add_channels_to_push(
+#          push_token: follower.device_token,
+#          type: 'gcm',
+#          add: follower.device_token
+#          ).value
 
-         payload = {
-          "pn_gcm":{
-           "notification":{
-             "title": get_full_name(request_user),
-             "body": @notification.action
-           },
-           data: {
-            "id": @notification.id,
-            "actor_id": @notification.actor_id,
-            "actor_image": @notification.actor.avatar,
-            "notifiable_id": @notification.notifiable_id,
-            "notifiable_type": @notification.notifiable_type,
-            "action": @notification.action,
-            "action_type": @notification.action_type,
-            "created_at": @notification.created_at,
-            "body": ''
-           }
-          }
-         }
+#          payload = {
+#           "pn_gcm":{
+#            "notification":{
+#              "title": get_full_name(request_user),
+#              "body": @notification.action
+#            },
+#            data: {
+#             "id": @notification.id,
+#             "actor_id": @notification.actor_id,
+#             "actor_image": @notification.actor.avatar,
+#             "notifiable_id": @notification.notifiable_id,
+#             "notifiable_type": @notification.notifiable_type,
+#             "action": @notification.action,
+#             "action_type": @notification.action_type,
+#             "created_at": @notification.created_at,
+#             "body": ''
+#            }
+#           }
+#          }
 
-       @pubnub.publish(
-         channel: follower.device_token,
-         message: payload
-         ) do |envelope|
-             puts envelope.status
-        end
-       end # notificatiob end
-      end #special offer setting end
-      end #each
-      end # not blank
-      render json: {
-        code: 200,
-        success: true,
-        message: 'Special offer created successfully.',
-        data: nil
-      }
+#        @pubnub.publish(
+#          channel: follower.device_token,
+#          message: payload
+#          ) do |envelope|
+#              puts envelope.status
+#         end
+#        end # notificatiob end
+#       end #special offer setting end
+#       end #each
+#       end # not blank
+#       render json: {
+#         code: 200,
+#         success: true,
+#         message: 'Special offer created successfully.',
+#         data: nil
+#       }
 
-    else
-      render json: {
-        code: 400,
-        success: false,
-        message: @special_offer.errors.full_messages,
-        data: nil
+#     else
+#       render json: {
+#         code: 400,
+#         success: false,
+#         message: @special_offer.errors.full_messages,
+#         data: nil
 
-      }
-    end
-end
-
-def edit
-
-end
-
-  api :POST, 'dashboard/api/v1/special_offers', 'Update special offer'
-  # param :id, :number, :desc => "ID of the special offer", :required => true
-  # param :title, String, :desc => "Title of the special offer", :required => true
-  # param :description, String, :desc => "Description of the special offer", :required => true
-  # param :date, String, :desc => "Date of the special offer", :required => true
-  # param :validity, String, :desc => "Validity", :required => true
-  # param :ambassador_rate, :number, :desc => "Ambassador rate of the special offer", :required => true
-  # param :image, String, :desc => "Image of the special offer", :required => true
-  # param :qr_code, String, :desc => "Redeem Code", :required => true
-  # param :terms_conditions, String, :desc => "Terms and condition of the special offer", :required => true
- # param :id, :number, :desc => "Title of the competition", :required => true
-
-def update
-  if !params[:id].blank?
-    @special_offer = SpecialOffer.find(params[:id])
-    @special_offer.title = params[:title]
-    @special_offer.description = params[:description]
-    @special_offer.date = params[:date]
-    @special_offer.time = params[:time]
-    @special_offer.validity = params[:validity]
-    @special_offer.ambassador_rate = params[:ambassador_rate]
-    @special_offer.image = params[:image]
-    @special_offer.terms_conditions = params[:terms_conditions]
-    if !params[:location].blank?
-      @special_offer.location = params[:location][:name]
-      @special_offer.lat = params[:location][:geometry][:lat]
-      @special_offer.lng = params[:location][:geometry][:lng]
-    end
-
-    if @special_offer.save
-      # create_activity(request_user, "updated special offer", @special_offer, "SpecialOffer", admin_special_offer_path(@special_offer),@special_offer.title, 'put', 'updated_special_offer')
-      if !request_user.followers.blank?
-        @pubnub = Pubnub.new(
-          publish_key: ENV['PUBLISH_KEY'],
-          subscribe_key: ENV['SUBSCRIBE_KEY'],
-          uuid: @username
-          )
-      request_user.followers.each do |follower|
-  if follower.special_offers_notifications_setting.is_on == true
-      if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " updated special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_offer')
-
-        @current_push_token = @pubnub.add_channels_to_push(
-        push_token: follower.device_token,
-        type: 'gcm',
-        add: follower.device_token
-        ).value
-
-        payload = {
-          "pn_gcm":{
-          "notification":{
-            "title": get_full_name(request_user),
-            "body": @notification.action
-          },
-          data: {
-            "id": @notification.id,
-            "actor_id": @notification.actor_id,
-            "actor_image": @notification.actor.avatar,
-            "notifiable_id": @notification.notifiable_id,
-            "notifiable_type": @notification.notifiable_type,
-            "action": @notification.action,
-            "action_type": @notification.action_type,
-            "created_at": @notification.created_at,
-            "body": ''
-          }
-          }
-        }
-
-      @pubnub.publish(
-        channel: follower.device_token,
-        message: payload
-        ) do |envelope|
-            puts envelope.status
-        end
-      end # notificatiob end
-      end #special offer setting end
-      end #each
-      end # not blank
-      render json: {
-        code: 200,
-        success: true,
-        message: 'Special offer updated successfully.',
-        data: {
-          special_offer: @special_offer
-        }
-      }
-
-    else
-      render json: {
-        code: 400,
-        success: false,
-        message: @special_offer.errors.full_messages,
-        data: nil
-
-      }
-    end
-  else
-    render json: {
-      code: 400,
-      success: false,
-      message: "id is required.",
-      data: nil
-
-    }
-  end
-end
-
-  api :DELETE, 'dashboard/api/v1/special_offers', 'Delete special offer'
-  param :id, :number, :desc => "ID of the special offer", :required => true
+#       }
+#     end
+# end
 
  def destroy
-  special_offer = SpecialOffer.find(params[:id])
-  if special_offer.destroy
-    render json: {
-      code: 200,
-      success: true,
-      message: 'Special offer successfully deleted.',
-      data: nil
-    }
+  if !params[:offer_id].blank?
+    if SpecialOffer.where(id: params[:offer_id]).exists?
+      @special_offer = SpecialOffer.find(params[:offer_id])
+      if @special_offer.destroy
+        render json: {
+          code: 200,
+          success: true,
+          message: 'Special offer successfully deleted.',
+          data: nil
+        }
+      else
+        render json:  {
+          code: 400,
+          success: false,
+          message: 'Special offer deletion failed.',
+          data: nil
+        }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "special_offer doesnt exist",
+        data: nil
+      }
+    end
   else
-    render json:  {
+    render json: {
       code: 400,
       success: false,
-      message: 'Special offer deletion failed.',
+      message: "offer_id is required",
       data: nil
     }
   end

@@ -344,8 +344,6 @@ end
         resources :competitions
         patch 'dashboard/api/v1/competitions/:id', to: 'competition#update'
         
-        resources :special_offers
-
         namespace :competitions do
           get '/get-past-competitions' => 'competitions#get_past_competitions'
           post "/add-image" => "competitions#add_image"
@@ -356,6 +354,9 @@ end
         end
 
         namespace :special_offers do
+         get "/listing" => "special_offers#index"
+         post "/get-single" => "special_offers#show"
+         post "/delete-offer" => "special_offers#destroy"
          post "/add-image" => "special_offers#add_image"
          post "/add-details" => "special_offers#add_details"
          post "/add-time" => "special_offers#add_time"
