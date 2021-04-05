@@ -97,7 +97,7 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
       terms_and_conditions: offer.terms_conditions,
       issued_by: get_full_name(offer.user),
       redeem_count: get_redeem_count(offer),
-      quantity: offer.quantity,
+      quantity: offer.quantity
     }
 
     render json: {

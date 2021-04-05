@@ -85,47 +85,65 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
   def add_image
     if params[:offer_id].blank?
       @special_offer = request_user.special_offers.new
-      @special_offer.image = params[:image]
-      @special_offer.status = "draft"
-        if @special_offer.save
-            render json: {
-              code: 200,
-              success: true,
-              message: 'Special offer created and image added successfully',
-              data: {
-                id: @special_offer.id,
-                image: @special_offer.image 
+      if !params[:image].blank?
+        @special_offer.image = params[:image]
+        @special_offer.status = "draft"
+          if @special_offer.save
+              render json: {
+                code: 200,
+                success: true,
+                message: 'Special offer created and image added successfully',
+                data: {
+                  id: @special_offer.id,
+                  image: @special_offer.image 
+                }
               }
-            }
-        else
-            render json: {
-              code: 400,
-              success: false,
-              message: 'Special offer creation failed',
-              data: nil
-            }
-        end
+          else
+              render json: {
+                code: 400,
+                success: false,
+                message: 'Special offer creation failed',
+                data: nil
+              }
+          end
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: "Image can't be blank",
+          data: nil
+        }
+      end
     else
       if SpecialOffer.where(id: params[:offer_id]).exists?
         @special_offer = SpecialOffer.find(params[:offer_id])
-        @special_offer.image = params[:image]
-        if @special_offer.save
-            render json: {
-              code: 200,
-              success: true,
-              message: 'Image updated successfully',
-              data: {
-                id: @special_offer.id,
-                image: @special_offer.image 
+        if !params[:image].blank?
+          @special_offer.image = params[:image]
+          if @special_offer.save
+              render json: {
+                code: 200,
+                success: true,
+                message: 'Image updated successfully',
+                data: {
+                  id: @special_offer.id,
+                  image: @special_offer.image 
+                }
               }
-            }
+          else
+              render json: {
+                code: 400,
+                success: false,
+                message: 'Special updation failed',
+                data: nil
+              }
+          end
         else
-            render json: {
-              code: 400,
-              success: false,
-              message: 'Special updation failed',
-              data: nil
-            }
+          render json: {
+            code: 400,
+            success: false,
+            message: 'Image cant be blank',
+            data: nil
+          }
         end
       else
           render json: {
@@ -141,33 +159,43 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
   def add_details
     if !params[:offer_id].blank?
       if SpecialOffer.where(id: params[:offer_id]).exists?
+        if !params[:title].blank? && !params[:description].blank? && !params[:over_18].blank? && !params[:limited].blank? && !params[:quantity].blank?
         @special_offer = SpecialOffer.find(params[:offer_id])
-        @special_offer.title = params[:title]
-        @special_offer.description = params[:description]
-        @special_offer.over_18 = params[:over_18]
-        if params[:limited] == "true"
-          @special_offer.limited = true
-          @special_offer.quantity = params[:quantity]
-        else
-          @special_offer.limited = false
-          @special_offer.quantity = 0
-        end
 
-        @special_offer.save
+          @special_offer.title = params[:title]
+          @special_offer.description = params[:description]
+          @special_offer.over_18 = params[:over_18]
+          if params[:limited] == "true"
+            @special_offer.limited = true
+            @special_offer.quantity = params[:quantity]
+          else
+            @special_offer.limited = false
+            @special_offer.quantity = 0
+          end
 
-            render json: {
-              code: 200,
-              success: true,
-              message: 'Details added successfully',
-              data: {
-                id: @special_offer.id,
-                title: @special_offer.title, 
-                description: @special_offer.description, 
-                over_18: @special_offer.over_18, 
-                limited: @special_offer.limited, 
-                quantity: @special_offer.quantity 
+          @special_offer.save
+
+              render json: {
+                code: 200,
+                success: true,
+                message: 'Details added successfully',
+                data: {
+                  id: @special_offer.id,
+                  title: @special_offer.title, 
+                  description: @special_offer.description, 
+                  over_18: @special_offer.over_18, 
+                  limited: @special_offer.limited, 
+                  quantity: @special_offer.quantity 
+                }
               }
-            }
+        else
+          render json: {
+            code: 400,
+            success: false,
+            message: "Title, Description, over_18, limited and quantity cant be blank" ,
+            data: nil
+          }
+        end
       else
           render json: {
             code: 400,
@@ -190,20 +218,28 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
     if !params[:offer_id].blank?
       if SpecialOffer.where(id: params[:offer_id]).exists?
         @special_offer = SpecialOffer.find(params[:offer_id])
-        @special_offer.start_time = get_date_time(params[:start_date].to_date, params[:start_time])
-        @special_offer.end_time = get_date_time(params[:end_date].to_date, params[:end_time])
-        @special_offer.save
-            render json: {
-              code: 200,
-              success: true,
-              message: 'Time added successfully',
-              data: {
-                id: @special_offer.id,
-                start_time: @special_offer.start_time, 
-                end_time: @special_offer.end_time
+        if !params[:start_date].blank? && !params[:start_time].blank? && !params[:end_date].blank? && !params[:end_time].blank?
+          @special_offer.start_time = get_date_time(params[:start_date].to_date, params[:start_time])
+          @special_offer.end_time = get_date_time(params[:end_date].to_date, params[:end_time])
+          @special_offer.save
+              render json: {
+                code: 200,
+                success: true,
+                message: 'Time added successfully',
+                data: {
+                  id: @special_offer.id,
+                  start_time: @special_offer.start_time, 
+                  end_time: @special_offer.end_time
+                }
               }
-            }
-
+        else
+        render json: {
+          code: 400,
+          success: false,
+          message: "start_date, start_time, end_date and end_time are required " ,
+          data: nil
+        }
+        end
       else
         render json: {
           code: 400,
@@ -226,7 +262,6 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
     if !params[:offer_id].blank?
       if SpecialOffer.where(id: params[:offer_id]).exists?
         @special_offer = SpecialOffer.find(params[:offer_id])
-
         params[:outlets].each do |f|
           if f.include? "id"
             @special_offer.outlets.find(f[:id]).update!(outlet_address: f[:outlet_address])
@@ -304,17 +339,26 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
     if !params[:offer_id].blank?
       if SpecialOffer.where(id: params[:offer_id]).exists?
         @special_offer = SpecialOffer.find(params[:offer_id])
-        @special_offer.terms_conditions = params[:terms_conditions]
-        @special_offer.save
-            render json: {
-              code: 200,
-              success: true,
-              message: 'Terms and condition added successfully',
-              data: {
-                id: @special_offer.id,
-                terms_conditions: @special_offer.terms_conditions
+        if !params[:terms_conditions].blank?
+          @special_offer.terms_conditions = params[:terms_conditions]
+          @special_offer.save
+              render json: {
+                code: 200,
+                success: true,
+                message: 'Terms and condition added successfully',
+                data: {
+                  id: @special_offer.id,
+                  terms_conditions: @special_offer.terms_conditions
+                }
               }
-            }
+        else
+          render json: {
+            code: 400,
+            success: false,
+            message: "terms_conditions cant be blank" ,
+            data: nil
+          }
+        end
       else
         render json: {
           code: 400,
@@ -337,17 +381,26 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
     if !params[:offer_id].blank?
       if SpecialOffer.where(id: params[:offer_id]).exists?
         @special_offer = SpecialOffer.find(params[:offer_id])
-        @special_offer.ambassador_rate = params[:ambassador_rate]
-        @special_offer.save
-            render json: {
-              code: 200,
-              success: true,
-              message: 'Ambassador rate added successfully',
-              data: {
-                id: @special_offer.id,
-                ambassador_rate: @special_offer.ambassador_rate
+        if !params[:ambassador_rate].blank?
+          @special_offer.ambassador_rate = params[:ambassador_rate]
+          @special_offer.save
+              render json: {
+                code: 200,
+                success: true,
+                message: 'Ambassador rate added successfully',
+                data: {
+                  id: @special_offer.id,
+                  ambassador_rate: @special_offer.ambassador_rate
+                }
               }
-            }
+        else
+          render json: {
+            code: 400,
+            success: false,
+            message: "ambassador_rate cant be blank" ,
+            data: nil
+          }
+        end
       else
         render json: {
           code: 400,

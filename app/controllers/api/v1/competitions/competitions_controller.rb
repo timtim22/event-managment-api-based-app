@@ -39,7 +39,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
       id: competition.id,
       title: competition.title,
       description: competition.description,
-      draw_time: competition.start_date,
+      draw_time: competition.draw_time,
       image: competition.image,
       is_entered: is_entered_competition?(competition.id),
       participants_stats: get_participants_stats(competition),

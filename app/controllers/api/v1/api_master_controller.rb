@@ -87,7 +87,7 @@ class Api::V1::ApiMasterController < ApplicationController
       end
 
      def offer_expired?(offer)
-      if offer.validity > DateTime.now
+      if offer.end_time > DateTime.now
         false
       else
         true
