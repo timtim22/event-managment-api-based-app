@@ -66,6 +66,8 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
             description: @special_offer.description,
             terms_conditions: @special_offer.terms_conditions,
             ambassador_rate: @special_offer.ambassador_rate,
+            redeem_count: @special_offer.redemptions.size.to_s + " Redeemed",
+            get_demographics: get_offer_demographics(@special_offer),
             outlets: @special_offer.outlets.map { |e| {id: e.id, outlet_address: jsonify_location(e.outlet_address)}}
           }
         }
