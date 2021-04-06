@@ -1136,6 +1136,56 @@ end
      end
 
 
+      def get_offer_demographics(offer)
+        males = []
+        females = []
+        gays = []
+        demographics = {}
+        total_count = offer.redemptions.size
+        offer.redemptions.each do |level|
+         case level.user.profile.gender
+           when 'male'
+             males.push(level.user)
+           when 'female'
+             females.push(level.user)
+           when 'other'
+             gays.push(level.user)
+           else
+              'No users'
+            end
+         end #each
+  
+         if males.size > 0 
+            percentage = males.uniq.size.to_f / total_count.to_f * 100.0 
+            males_percentage = percentage.round(2)
+          else 
+            males_percentage = 0 
+          end
+  
+         if females.size > 0  
+            percentage = females.uniq.size.to_f / total_count.to_f * 100.0
+            female_percentage = percentage.round(2)  
+          else
+            female_percentage = 0 
+           end
+  
+          if gays.size > 0 
+             percentage = gays.uniq.size.to_f / total_count.to_f * 100.0  
+             gays_percentage = percentage.round(2) 
+            else
+             gays_percentage = 0 
+            end
+  
+          demographics['males_percentage'] = males_percentage
+  
+          demographics['females_percentage'] = female_percentage
+  
+          demographics['gays_percentage'] = gays_percentage
+  
+          demographics
+     end
+
+
   def get_price_type(event)
     price_type = ''
     if !event.tickets.blank?

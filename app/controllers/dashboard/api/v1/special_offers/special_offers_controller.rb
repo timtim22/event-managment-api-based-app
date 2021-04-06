@@ -8,7 +8,7 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
   api :GET, 'dashboard/api/v1/special_offers', 'Get all special offers'
 
   def index
-    @special_offers = request_user.special_offers.page(params[:page]).per(20).order(id: 'DESC')
+    @special_offers = request_user.special_offers.page(params[:page]).order(start_time: 'ASC')
     @offers = []
     @special_offers.each do |offer|
       location = {
@@ -18,6 +18,13 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
           lng: offer.lng
         }
       }
+        case
+        when offer.end_time < Time.now
+          redeem_count =  get_redeem_count(offer)
+        when offer.end_time > Time.now
+          redeem_count =  "Finished"
+        end
+
       @offers << {
         id: offer.id,
         title: offer.title,
@@ -27,6 +34,9 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
         description: offer.description,
         ambassador_rate: offer.ambassador_rate,
         terms_conditions: offer.terms_conditions,
+        redeem_count: redeem_count.to_s + " Redeemed",
+        offer_publish_status: offer.status,
+        get_demographics: get_offer_demographics(offer),
         outlets: offer.outlets.map { |e| {id: e.id, outlet_address: jsonify_location(e.outlet_address)}}
       }
     end
@@ -185,7 +195,7 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
   def add_details
     if !params[:offer_id].blank?
       if SpecialOffer.where(id: params[:offer_id]).exists?
-        if !params[:title].blank? && !params[:description].blank? && !params[:over_18].blank?
+        if !params[:title].blank? && !params[:description].blank?
         @special_offer = SpecialOffer.find(params[:offer_id])
 
           @special_offer.title = params[:title]
@@ -218,7 +228,7 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
           render json: {
             code: 400,
             success: false,
-            message: "Title, Description and over_18 cant be blank" ,
+            message: "Title, and Description cant be blank" ,
             data: nil
           }
         end
