@@ -15,7 +15,6 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
       title: offer.title,
       description: offer.description,
       sub_title: offer.sub_title,
-      outlets: offer.outlets.map { |e| jsonify_location(e.outlet_address)},
       start_time: offer.start_time,
       end_time: offer.end_time,
       lat: offer.lat,
@@ -23,14 +22,18 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
       image: offer.image.url,
       creator_name: get_full_name(offer.user),
       creator_image: offer.user.avatar,
-      validity: offer.end_time.strftime(get_time_format),
+      validity: offer.end_time,
       grabbers_count: offer.wallets.size,
       is_added_to_wallet: is_added_to_wallet?(offer.id),
       grabbers_friends_count: get_grabbers_friends_count(offer),
       terms_and_conditions: offer.terms_conditions,
+      ambassador_rate: offer.ambassador_rate,
       issued_by: get_full_name(offer.user),
       redeem_count: get_redeem_count(offer),
+      participating_locations: offer.redemptions.map { |e| jsonify_location(e.user.location)},
       quantity: offer.quantity,
+      over_18: offer.over_18,
+      outlets: offer.outlets.map { |e| jsonify_location(e.outlet_address)}
     }
     end #if
     end #each
@@ -41,7 +44,6 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
         title: offer.title,
         description: offer.description,
         sub_title: offer.sub_title,
-        outlets: offer.outlets.map { |e| jsonify_location(e.outlet_address)},
         start_time: offer.start_time,
         end_time: offer.end_time,
         lat: offer.lat,
@@ -54,9 +56,13 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
         is_added_to_wallet: is_added_to_wallet?(offer.id),
         grabbers_friends_count: get_grabbers_friends_count(offer),
         terms_and_conditions: offer.terms_conditions,
+        ambassador_rate: offer.ambassador_rate,
         issued_by: get_full_name(offer.user),
         redeem_count: get_redeem_count(offer),
+        participating_locations: offer.redemptions.map { |e| jsonify_location(e.user.location)},
         quantity: offer.quantity,
+        over_18: offer.over_18,
+        outlets: offer.outlets.map { |e| jsonify_location(e.outlet_address)},
       }
       end #each
     end#if
@@ -96,8 +102,11 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
       grabbers_friends_count: get_grabbers_friends_count(offer),
       terms_and_conditions: offer.terms_conditions,
       issued_by: get_full_name(offer.user),
+      participating_locations: offer.redemptions.map { |e| jsonify_location(e.user.location)},
+      ambassador_rate: offer.ambassador_rate,
       redeem_count: get_redeem_count(offer),
-      quantity: offer.quantity
+      quantity: offer.quantity,
+      over_18: offer.over_18
     }
 
     render json: {

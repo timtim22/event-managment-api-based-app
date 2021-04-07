@@ -119,7 +119,7 @@ returns array_of: :get_special_offers, code: 200, desc: 'This api will return th
 
   def get_special_offers
     if !params[:business_id].blank?
-      business = User.find(params[:business_id])
+    business = User.find(params[:business_id])
     @special_offers = business.special_offers.page(params[:page]).per(20).order(id: 'DESC')
     @offers = []
     @special_offers.each do |offer|
@@ -127,19 +127,20 @@ returns array_of: :get_special_offers, code: 200, desc: 'This api will return th
         id: offer.id,
         title: offer.title,
         image: offer.image,
-        outlets: offer.outlets.map { |e| jsonify_location(e.outlet_address)},
-        validity: offer.validity.strftime(get_time_format),
+        validity: offer.end_time,
         description: offer.description,
         ambassador_rate: offer.ambassador_rate,
         terms_conditions: offer.terms_conditions, 
         creator_name: get_full_name(offer.user), 
         creator_image: offer.user.avatar, 
-        start_time: offer.time,
         creation_date: offer.created_at,
-        end_date: offer.validity, 
+        start_time: offer.start_time, 
         end_time: offer.end_time,
         quantity: offer.quantity,
-        redeem_count: get_redeem_count(offer)
+        over_18: offer.over_18,
+        redeem_count: get_redeem_count(offer),
+        outlets: offer.outlets.map { |e| jsonify_location(e.outlet_address)},
+        participating_locations: offer.redemptions.map { |e| jsonify_location(e.user.location)}
       }
     end
     render json: {

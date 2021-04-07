@@ -101,7 +101,7 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
           quantity: pass.quantity,
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: pass.created_at,
-          terms_and_conditions: pass.terms_conditions,
+          terms_conditions: pass.terms_conditions,
           redeem_count: get_redeem_count(pass),
           issued_by: get_full_name(business),
           business: get_business_object(business)
@@ -118,15 +118,14 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
           title: offer.title,
           description: offer.description,
           sub_title: offer.sub_title,
-          location: jsonify_location(offer.location),
-          date: offer.date,
-          time: offer.time,
+          start_time: offer.start_time,
+          end_time: offer.end_time,
           lat: offer.lat,
           lng: offer.lng,
           image: offer.image.url,
           creator_name: get_full_name(offer.user),
           creator_image: offer.user.avatar,
-          validity: offer.validity.strftime(get_time_format),
+          validity: offer.end_time,
           grabbers_count: offer.wallets.size,
           is_added_to_wallet: is_added_to_wallet?(offer.id),
           grabbers_friends_count: get_friend_grabbers(request_user, offer).size,
@@ -134,10 +133,13 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: offer.created_at,
           business: get_business_object(business),
-          terms_and_conditions: offer.terms_conditions,
+          terms_conditions: offer.terms_conditions,
           issued_by: get_full_name(offer.user),
           redeem_count: get_redeem_count(offer),
-          quantity: offer.quantity
+          quantity: offer.quantity,
+          over_18: offer.over_18,
+          outlets: offer.outlets.map { |e| jsonify_location(e.outlet_address)},
+          participating_locations: offer.redemptions.map { |e| jsonify_location(e.user.location)}
 
         }
         end
@@ -213,16 +215,14 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
           title: offer.title,
           description: offer.description,
           sub_title: offer.sub_title,
-          location: jsonify_location(offer.location),
-          date: offer.date,
-          time: offer.time,
+          start_time: offer.start_time,
+          end_time: offer.end_time,
           lat: offer.lat,
           lng: offer.lng,
           image: offer.image.url,
           creator_name: offer.user.business_profile.profile_name,
           creator_image: offer.user.avatar,
-          validity: offer.validity.strftime(get_time_format),
-          end_time: offer.validity,
+          validity: offer.end_time,
           grabbers_count: offer.wallets.size,
           ambassador_stats: ambassador_stats(offer, request_user),
           is_added_to_wallet: is_added_to_wallet?(offer.id),
@@ -231,10 +231,13 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
           "ambassador_request_status" =>  get_request_status(business.id),
           created_at: offer.created_at,
           business: get_business_object(business),
-          terms_and_conditions: offer.terms_conditions,
+          terms_conditions: offer.terms_conditions,
           issued_by: get_full_name(offer.user),
           redeem_count: get_redeem_count(offer),
-          quantity: offer.quantity
+          quantity: offer.quantity,
+          over_18: offer.over_18,
+          outlets: offer.outlets.map { |e| jsonify_location(e.outlet_address)},
+          participating_locations: offer.redemptions.map { |e| jsonify_location(e.user.location)}
         }
         end #each
       end #not empty
