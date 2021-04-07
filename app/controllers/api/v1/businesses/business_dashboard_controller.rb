@@ -94,27 +94,27 @@ class Api::V1::Businesses::BusinessDashboardController < Api::V1::ApiMasterContr
 
 
 
- def_param_group :get_special_offers do
-  property :id, String, desc: 'Primary key'
-  property :title, String, desc: 'Offer title'
-  property :validity, String, desc: 'Offer validity'
-  property :description, String, desc: 'Offer description'
-  property :ambassador_rate, String, desc: 'Offer ambassador rate per share'
-  property :location, String, desc: 'Offer location'
-  property :terms_conditions, String, desc: 'Offer terms and conditions'
-  property :creator_name, String, desc: 'Offer business name'
-  property :start_date, String, desc: 'The time at which the Offer starts'
-  property :creation_date, String, desc: 'Offer created at date'
-  property :end_date, String, desc: 'Offer end date'
-  property :end_time, String, desc: 'Offer end time'
-  property :quantity, String, desc: 'Offer total quantity'
-  property :redeem_count, String, desc: 'Total number of people who redeemed the offer'
-end  
+#  def_param_group :get_special_offers do
+#   property :id, String, desc: 'Primary key'
+#   property :title, String, desc: 'Offer title'
+#   property :validity, String, desc: 'Offer validity'
+#   property :description, String, desc: 'Offer description'
+#   property :ambassador_rate, String, desc: 'Offer ambassador rate per share'
+#   property :location, String, desc: 'Offer location'
+#   property :terms_conditions, String, desc: 'Offer terms and conditions'
+#   property :creator_name, String, desc: 'Offer business name'
+#   property :start_date, String, desc: 'The time at which the Offer starts'
+#   property :creation_date, String, desc: 'Offer created at date'
+#   property :end_date, String, desc: 'Offer end date'
+#   property :end_time, String, desc: 'Offer end time'
+#   property :quantity, String, desc: 'Offer total quantity'
+#   property :redeem_count, String, desc: 'Total number of people who redeemed the offer'
+# end  
 
 
-api :POST, '/api/v1/businesses/get-special-offers', 'To get a business special offers'
-param :business_id, String, :desc => "User ID", :required => true
-returns array_of: :get_special_offers, code: 200, desc: 'This api will return the following response.' 
+# api :POST, '/api/v1/businesses/get-special-offers', 'To get a business special offers'
+# param :business_id, String, :desc => "User ID", :required => true
+# returns array_of: :get_special_offers, code: 200, desc: 'This api will return the following response.' 
 
 
   def get_special_offers
@@ -138,6 +138,7 @@ returns array_of: :get_special_offers, code: 200, desc: 'This api will return th
         end_time: offer.end_time,
         quantity: offer.quantity,
         over_18: offer.over_18,
+        limited: offer.limited,
         redeem_count: get_redeem_count(offer),
         outlets: offer.outlets.map { |e| jsonify_location(e.outlet_address)},
         participating_locations: offer.redemptions.map { |e| jsonify_location(e.user.location)}
@@ -165,24 +166,24 @@ returns array_of: :get_special_offers, code: 200, desc: 'This api will return th
 
 
 
- def_param_group :get_competitions do
-  property :id, String, desc: 'Primary key'
-  property :title, String, desc: 'Competition title'
-  property :validity, String, desc: 'Competition validity'
-  property :description, String, desc: 'Competition description'
-  property :start_time, String, desc: 'Competition start date'
-  property :creation_date, String, desc: 'Competition created at'
-  property :image, String, desc: 'Competition image'
-  property :creator_name, String, desc: 'Competition business name'
-  property :creator_image, String, desc: 'Competition business avatar'
-  property :end_date, String, desc: 'Competition end date'
-  property :terms_conditions, String, desc: 'Competition terms and conditions'
-end  
+#  def_param_group :get_competitions do
+#   property :id, String, desc: 'Primary key'
+#   property :title, String, desc: 'Competition title'
+#   property :validity, String, desc: 'Competition validity'
+#   property :description, String, desc: 'Competition description'
+#   property :start_time, String, desc: 'Competition start date'
+#   property :creation_date, String, desc: 'Competition created at'
+#   property :image, String, desc: 'Competition image'
+#   property :creator_name, String, desc: 'Competition business name'
+#   property :creator_image, String, desc: 'Competition business avatar'
+#   property :end_date, String, desc: 'Competition end date'
+#   property :terms_conditions, String, desc: 'Competition terms and conditions'
+# end  
 
 
-api :POST, '/api/v1/businesses/get-competitions', 'To get a business competitions list'
-param :business_id, String, :desc => "User ID", :required => true
-returns array_of: :get_competitions, code: 200, desc: 'This api will return the following response.' 
+# api :POST, '/api/v1/businesses/get-competitions', 'To get a business competitions list'
+# param :business_id, String, :desc => "User ID", :required => true
+# returns array_of: :get_competitions, code: 200, desc: 'This api will return the following response.' 
 
 
   def get_competitions

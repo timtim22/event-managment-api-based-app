@@ -138,6 +138,7 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
           redeem_count: get_redeem_count(offer),
           quantity: offer.quantity,
           over_18: offer.over_18,
+          limited: offer.limited,
           outlets: offer.outlets.map { |e| jsonify_location(e.outlet_address)},
           participating_locations: offer.redemptions.map { |e| jsonify_location(e.user.location)}
 
@@ -236,6 +237,7 @@ class Api::V1::Ambassadors::AmbassadorsController < Api::V1::ApiMasterController
           redeem_count: get_redeem_count(offer),
           quantity: offer.quantity,
           over_18: offer.over_18,
+          limited: offer.limited,
           outlets: offer.outlets.map { |e| jsonify_location(e.outlet_address)},
           participating_locations: offer.redemptions.map { |e| jsonify_location(e.user.location)}
         }

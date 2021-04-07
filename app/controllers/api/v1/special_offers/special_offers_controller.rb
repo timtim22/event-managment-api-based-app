@@ -32,6 +32,7 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
       redeem_count: get_redeem_count(offer),
       participating_locations: offer.redemptions.map { |e| jsonify_location(e.user.location)},
       quantity: offer.quantity,
+      limited: offer.limited,
       over_18: offer.over_18,
       outlets: offer.outlets.map { |e| jsonify_location(e.outlet_address)}
     }
@@ -61,6 +62,7 @@ class Api::V1::SpecialOffers::SpecialOffersController < Api::V1::ApiMasterContro
         redeem_count: get_redeem_count(offer),
         participating_locations: offer.redemptions.map { |e| jsonify_location(e.user.location)},
         quantity: offer.quantity,
+        limited: offer.limited,
         over_18: offer.over_18,
         outlets: offer.outlets.map { |e| jsonify_location(e.outlet_address)},
       }
