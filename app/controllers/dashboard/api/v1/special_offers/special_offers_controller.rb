@@ -29,10 +29,10 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
         id: offer.id,
         title: offer.title,
         image: offer.image.url,
-        start_date: @special_offer.start_time.strftime("%Y-%m-%d"),
-        end_date: @special_offer.end_time.strftime("%Y-%m-%d"),
-        start_time: @special_offer.start_time.strftime("%H:%M:%S"),
-        end_time: @special_offer.end_time.strftime("%H:%M:%S"),
+        start_date: offer.start_time.strftime("%Y-%m-%d"),
+        end_date: offer.end_time.strftime("%Y-%m-%d"),
+        start_time: offer.start_time.strftime("%H:%M:%S"),
+        end_time: offer.end_time.strftime("%H:%M:%S"),
         description: offer.description,
         ambassador_rate: offer.ambassador_rate,
         terms_conditions: offer.terms_conditions,
@@ -146,6 +146,8 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
       if !params[:image].blank?
         @special_offer.image = params[:image]
         @special_offer.status = "draft"
+        @special_offer.start_time = "00:00:00"
+        @special_offer.end_time = "00:00:00"
           if @special_offer.save
               render json: {
                 code: 200,
@@ -223,7 +225,7 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
           @special_offer.title = params[:title]
           @special_offer.description = params[:description]
           @special_offer.over_18 = params[:over_18]
-          if params[:limited] == "true"
+          if params[:limited] == true
             @special_offer.limited = true
             @special_offer.quantity = params[:quantity]
           else

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_01_074436) do
+ActiveRecord::Schema.define(version: 2021_04_08_130934) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -561,7 +561,6 @@ ActiveRecord::Schema.define(version: 2021_04_01_074436) do
     t.string "title", default: ""
     t.string "sub_title", default: ""
     t.string "image", default: ""
-    t.datetime "end_time"
     t.date "validity"
     t.text "description", default: ""
     t.string "location", default: ""
@@ -576,8 +575,9 @@ ActiveRecord::Schema.define(version: 2021_04_01_074436) do
     t.string "qr_code", default: ""
     t.boolean "over_18", default: true
     t.boolean "limited", default: true
-    t.datetime "start_time"
     t.string "status", default: ""
+    t.datetime "start_time"
+    t.datetime "end_time"
     t.index ["user_id"], name: "index_special_offers_on_user_id"
   end
 
