@@ -483,6 +483,52 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
         @special_offer = SpecialOffer.find(params[:offer_id])
         @special_offer.status = "active"
         @special_offer.save
+
+          if !request_user.followers.blank?
+            @pubnub = Pubnub.new(
+              publish_key: ENV['PUBLISH_KEY'],
+              subscribe_key: ENV['SUBSCRIBE_KEY'],
+              uuid: @username
+              )
+            request_user.followers.each do |follower|
+             if follower.special_offers_notifications_setting.is_on == true
+                if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created new special offer '#{@special_offer.title}'.", notifiable: @special_offer, resource: @special_offer, url: "/admin/events/#{@special_offer.id}", notification_type: 'mobile', action_type: 'create_offer')
+                  @current_push_token = @pubnub.add_channels_to_push(
+                   push_token: follower.device_token,
+                   type: 'gcm',
+                   add: follower.device_token
+                   ).value
+
+                   payload = {
+                    "pn_gcm":{
+                     "notification":{
+                       "title": get_full_name(request_user),
+                       "body": @notification.action
+                     },
+                     data: {
+                      "id": @notification.id,
+                      "actor_id": @notification.actor_id,
+                      "actor_image": @notification.actor.avatar,
+                      "notifiable_id": @notification.notifiable_id,
+                      "notifiable_type": @notification.notifiable_type,
+                      "action": @notification.action,
+                      "action_type": @notification.action_type,
+                      "created_at": @notification.created_at,
+                      "body": ''
+                     }
+                    }
+                   }
+
+                 @pubnub.publish(
+                   channel: follower.device_token,
+                   message: payload
+                   ) do |envelope|
+                       puts envelope.status
+                  end
+                 end # notificatiob end
+                end #special offer setting end
+            end #each
+          end # not blank
             render json: {
               code: 200,
               success: true,

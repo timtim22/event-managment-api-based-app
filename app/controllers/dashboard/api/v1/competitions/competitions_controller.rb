@@ -254,6 +254,47 @@ end
         @competition = Competition.find(params[:competition_id])
         @competition.status = "active"
         @competition.save
+          if !request_user.followers.blank?
+            request_user.followers.each do |follower|
+           if follower.competitions_notifications_setting.is_on == true
+              if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, resource: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
+
+                @current_push_token = @pubnub.add_channels_to_push(
+                 push_token: follower.device_token,
+                 type: 'gcm',
+                 add: follower.device_token
+                 ).value
+
+                 payload = {
+                  "pn_gcm":{
+                   "notification":{
+                     "title": get_full_name(request_user),
+                     "body": @notification.action
+                   },
+                   data: {
+                    "id": @notification.id,
+                    "actor_id": @notification.actor_id,
+                    "actor_image": @notification.actor.avatar,
+                    "notifiable_id": @notification.notifiable_id,
+                    "notifiable_type": @notification.notifiable_type,
+                    "action": @notification.action,
+                    "action_type": @notification.action_type,
+                    "created_at": @notification.created_at,
+                    "body": ''
+                   }
+                  }
+                 }
+
+           @pubnub.publish(
+             channel: follower.device_token,
+             message: payload
+             ) do |envelope|
+                 puts envelope.status
+               end
+              end # notification end
+          end #competition setting
+          end #each
+          end # not blank
           render json: {
             code: 200,
             success: true,
