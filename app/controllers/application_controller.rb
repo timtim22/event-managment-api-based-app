@@ -1315,6 +1315,20 @@ def jsonify_location(location)
   l
 end
 
+def jsonify_phone_details(phone)
+   l = {
+       "name" => "",
+       "flag" => "",
+       "callingCodes" => ""
+     }
+  if phone.include? "=>" 
+    l = JSON.parse(phone.gsub("=>", ":").gsub(":nil,", ":null,"))
+  elsif phone.include? '":'
+    l = JSON.parse(phone)
+  end
+  l
+end
+
 
 def get_reservation_object(reservation)
   reservation = {

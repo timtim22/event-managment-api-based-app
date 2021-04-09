@@ -35,7 +35,7 @@ class Dashboard::Api::V1::Users::Auth::AuthenticationController < Dashboard::Api
               "twitter" => @user.social_media.twitter,
               "linkedin" => @user.social_media.linkedin,
               "spotify" => @user.social_media.spotify,
-              "phone_details" => @user.phone_details,
+              "phone_details" => jsonify_phone_details(@user.phone_details),
               "link_accounts" => {
                 "app_users" => app,
                 "business" => business

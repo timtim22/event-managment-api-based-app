@@ -64,7 +64,7 @@ class Dashboard::Api::V1::Users::UsersController < Dashboard::Api::V1::ApiMaster
               "facebook" => @user.social_media.facebook,
               "twitter" => @user.social_media.twitter,
               "snapchat" => @user.social_media.snapchat,
-              "phone_details" => @user.phone_details,
+              "phone_details" => jsonify_phone_details(@user.phone_details),
               "link_accounts" => {
                 "app_users" => app,
                 "business" => business
@@ -467,7 +467,7 @@ def add_phone
             data: {
               "id" => @user.id,
               "phone_number" => @user.phone_number,
-              "phone_details" => @user.phone_details,
+              "phone_details" => jsonify_phone_details(@user.phone_details),
               user: {
                 "businesses" => business,
                 "app_users" => app
@@ -768,7 +768,7 @@ def get_device_token
         "snapchat" => @social.snapchat,
         "spotify" => @social.spotify,
         "token" =>   encode(user_id: @user.id),
-        "phone_details" =>   @user.phone_details,
+        "phone_details" => jsonify_phone_details(@user.phone_details),
         "link_accounts" => {
           "app_users" => app,
           "business" => business

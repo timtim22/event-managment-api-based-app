@@ -306,16 +306,14 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
       success = false;
       registrations.each do |reg|
         competition = reg.event
-          if competition.end_date.to_date == Time.now.to_date
+          if competition.draw_time.to_date == Time.now.to_date
               user_ids = []
               user_ids.push(reg.user_id)
               winner_ids = CompetitionWinner.all.map {|w| w.user_id }
-              if !winner_ids.blank?
-                user_ids = winner_ids - user_ids
-              end
+              
               winner = User.find(user_ids.sample) # .sample will pick an id randomly
               participants = User.where(id: [user_ids])
-
+              
               cometition_winner = CompetitionWinner.create!(user_id: winner.id, competition_id: competition.id)
                participants.each do |participant|
                  if participant.id != request_user.id
@@ -357,7 +355,6 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
                         "action_type": notification.action_type,
                         "created_at": notification.created_at,
                         "is_read": !notification.read_at.nil?,
-                        "location": jsonify_location(notification.resource.location),
                          "competition_id": notification.resource.id
                        }
 
