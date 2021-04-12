@@ -341,8 +341,8 @@ end
           resources :comments
         end
 
-        resources :competitions
-        patch 'dashboard/api/v1/competitions/:id', to: 'competition#update'
+        # resources :competitions
+        # patch 'dashboard/api/v1/competitions/:id', to: 'competition#update'
         
         namespace :competitions do
           get '/get-past-competitions' => 'competitions#get_past_competitions'
@@ -351,6 +351,9 @@ end
           post "/draw-time" => "competitions#draw_time"
           post "/terms-conditions" => "competitions#terms_conditions"
           post "/publish-competition" => "competitions#publish_competition"
+          get "/listing" => "competitions#index"
+          post "/get-single" => "competitions#show"
+          post "/delete-competition" => "competitions#destroy"
         end
 
         namespace :special_offers do

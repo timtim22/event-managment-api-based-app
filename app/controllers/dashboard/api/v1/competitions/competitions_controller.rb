@@ -47,7 +47,7 @@ class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api:
     }
   end
 
-  api :POST, 'dashboard/api/v1/competitions', 'Get competitions by list'
+  # api :POST, 'dashboard/api/v1/competitions', 'Get competitions by list'
   #param :location, String, :desc => "Location of the event", :required => true
 
   def index
@@ -62,32 +62,50 @@ class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api:
     }
   end
 
-  api :GET, '/dashboard/api/v1/competitions/:id', 'Shows a competition'
-  param :id, :number, desc: "id of the competition"
+  # api :GET, '/dashboard/api/v1/competitions/:id', 'Shows a competition'
+  # param :id, :number, desc: "id of the competition"
   def show
-   comp = Competition.find(params[:id])
+    if !params[:competition_id].blank?
+      if Competition.where(id: params[:competition_id]).exists?
+        comp = Competition.find(params[:competition_id])
+         @competition = {
+           'id' => comp.id,
+           'title' => comp.title,
+           'description' => comp.description,
+           'image' => comp.image,
+           'draw_time' => comp.draw_time,
+           'over_18' => comp.over_18,
+           'terms_conditions' => comp.terms_conditions,
+           'number_of_winner' => comp.number_of_winner,
+           'status' => comp.status,
+           'winner' => comp.competition_winners.size
 
-     @competition = {
-       'id' => comp.id,
-       'title' => comp.title,
-       'description' => comp.description,
-       'image' => comp.image,
-       'start_date' => comp.start_date,
-       'location' => comp.location,
-       'end_date' => comp.end_date,
-       'terms_conditions' => comp.terms_conditions,
-       'winner' => comp.competition_winners.size
+          }
 
+         render json: {
+           code: 200,
+           success: true,
+           message: '',
+           data: {
+             competition: @competition
+           }
+         }
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: "competition doesnt exist" ,
+          data: nil
+        }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "competition_id is required" ,
+        data: nil
       }
-
-     render json: {
-       code: 200,
-       success: true,
-       message: '',
-       data: {
-         competition: @competition
-       }
-     }
+    end
 
   end
 
@@ -307,7 +325,7 @@ end
               over_18: @competition.over_18,
               number_of_winner: @competition.number_of_winner,
               draw_time: @competition.draw_time,
-              draw_time: @competition.terms_conditions
+              terms_conditions: @competition.terms_conditions
             }
           }
       else
@@ -506,27 +524,45 @@ end
   end
 end
 
-  api :DELETE, 'dashboard/api/v1/competitions', 'To Delete a competition'
-  param :id, :number, :desc => "ID of the competition", :required => true
+  # api :DELETE, 'dashboard/api/v1/competitions', 'To Delete a competition'
+  # param :id, :number, :desc => "ID of the competition", :required => true
 
   def destroy
-    @competition = Competition.find(params[:id])
-    if @competition.destroy
-       render json: {
-      code: 200,
-      success: true,
-      message: 'Competition successfully deleted.',
-      data: nil
-      }
+    if !params[:competition_id].blank?
+      if Competition.where(id: params[:competition_id]).exists?
+        @competition = Competition.find(params[:competition_id])
+        if @competition.destroy
+           render json: {
+          code: 200,
+          success: true,
+          message: 'Competition successfully deleted.',
+          data: nil
+          }
+        else
+          render json:  {
+            code: 400,
+            success: false,
+            message: 'Competition deletion failed.',
+            data: nil
+          }
+        end
+      else
+        render json: {
+          code: 400,
+          success: false,
+          message: "Competition doesnt exist" ,
+          data: nil
+        }
+      end
     else
-      render json:  {
+      render json: {
         code: 400,
         success: false,
-        message: 'Competition deletion failed.',
+        message: "competition_id is required" ,
         data: nil
       }
     end
-   end
+  end
 
 private
 

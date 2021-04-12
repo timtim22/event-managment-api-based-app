@@ -570,7 +570,7 @@ end
         resource['title'] = log.resource.title
         resource['host_name'] = get_full_name(log.resource.user)
         resource['outlets'] = log.resource.outlets.map { |e| jsonify_location(e.outlet_address) }
-        resource['start_date'] = log.resource.date
+        resource['start_date'] = log.resource.start_time
         resource['grabbers_counts'] = log.resource.wallets.size
 
       when 'Competition'

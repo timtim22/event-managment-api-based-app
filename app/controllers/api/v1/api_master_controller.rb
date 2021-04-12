@@ -103,7 +103,7 @@ class Api::V1::ApiMasterController < ApplicationController
     end
 
      def competition_expired?(offer)
-      if offer.end_date > DateTime.now
+      if offer.draw_time > DateTime.now
         false
       else
         true
