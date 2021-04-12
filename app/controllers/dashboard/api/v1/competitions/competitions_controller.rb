@@ -47,17 +47,36 @@ class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api:
     }
   end
 
-  # api :POST, 'dashboard/api/v1/competitions', 'Get competitions by list'
-  #param :location, String, :desc => "Location of the event", :required => true
-
   def index
     @competitions = request_user.competitions.page(params[:page]).per(20).order(created_at: "DESC")
+    @comp = []
+    @competitions.each do |comp|
+
+      case
+      when comp.draw_time > Time.now
+        entries =  comp.registrations.size.to_s + " Entries"
+      when comp.draw_time < Time.now
+        entries =  "Draw Over"
+      end
+
+      @comp << {
+        id: comp.id,
+        title: comp.title,
+        description: comp.description,
+        image: comp.image,
+        terms_conditions: comp.terms_conditions,
+        over_18: comp.over_18,
+        number_of_winner: comp.number_of_winner,
+        status: comp.status,
+        entries: entries
+      }
+    end
     render json: {
       code: 200,
       success: true,
       message:'',
       data: {
-        competitions: @competitions
+        competitions: @comp
       }
     }
   end
@@ -114,6 +133,7 @@ def add_image
   if params[:competition_id].blank?
     @competition = request_user.competitions.new
     @competition.image = params[:image]
+    @competition.draw_time = "00:00:00"
     @competition.status = "draft"
       if @competition.save
           render json: {
