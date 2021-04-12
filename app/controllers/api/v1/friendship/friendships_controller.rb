@@ -274,7 +274,7 @@ def remove_request
   end
 end
 
-  api :GET, '/api/v1/friendship/my-friends', 'To view all your friends - Token is required'
+  # api :GET, '/api/v1/friendship/my-friends', 'To view all your friends - Token is required'
 def my_friends
   requests = FriendRequest.where(user_id: request_user.id).where(status: 'accepted')
   friends_array = []
@@ -291,7 +291,7 @@ def my_friends
     success: true,
     message: '',
     data: {
-      friends: friends_array
+      friends: paginate_array(friends_array)
     }
 }.to_json
 end
@@ -414,7 +414,7 @@ end
    success: true,
    message: "",
    data:  {
-     suggested_friends: @all_suggessions
+     suggested_friends: paginate_array(@all_suggessions)
    }
  }
 

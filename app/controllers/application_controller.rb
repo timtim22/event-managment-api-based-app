@@ -1202,7 +1202,7 @@ end
 
 
   def paginate_array(array)
-    Kaminari.paginate_array(array)
+    Kaminari.paginate_array(array).page(params[:page]).per(10)
   end
 
   def array_sort_by_date(array)

@@ -186,7 +186,7 @@ end
 
 
 
-  api :POST, '/api/v1/follows/my-followings', 'Get Following List - Token is required'
+  # api :POST, '/api/v1/follows/my-followings', 'Get Following List - Token is required'
   def my_followings
     @followings = []
     request_user.followings.each do |following|
@@ -201,7 +201,7 @@ end
       success: true,
       message: '',
       data: {
-           followings: @followings
+           followings: paginate_array(@followings)
        }
     }
   end
@@ -339,7 +339,7 @@ end
     success: true,
     message: "",
     data:  {
-      suggested_businesses: @businesses,
+      suggested_businesses: paginate_array(@businesses),
       user: request_user
     }
   }
