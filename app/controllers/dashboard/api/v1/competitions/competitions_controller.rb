@@ -68,6 +68,7 @@ class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api:
         over_18: comp.over_18,
         number_of_winner: comp.number_of_winner,
         status: comp.status,
+        draw_time: comp.draw_time,
         entries: entries
       }
     end
@@ -87,6 +88,13 @@ class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api:
     if !params[:competition_id].blank?
       if Competition.where(id: params[:competition_id]).exists?
         comp = Competition.find(params[:competition_id])
+
+          case
+          when comp.draw_time > Time.now
+            entries =  comp.registrations.size.to_s + " Entries"
+          when comp.draw_time < Time.now
+            entries =  "Draw Over"
+          end
          @competition = {
            'id' => comp.id,
            'title' => comp.title,
@@ -97,7 +105,8 @@ class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api:
            'terms_conditions' => comp.terms_conditions,
            'number_of_winner' => comp.number_of_winner,
            'status' => comp.status,
-           'winner' => comp.competition_winners.size
+           'winner' => comp.competition_winners.size,
+           'entries' => entries
 
           }
 
@@ -293,6 +302,11 @@ end
         @competition.status = "active"
         @competition.save
           if !request_user.followers.blank?
+            @pubnub = Pubnub.new(
+              publish_key: ENV['PUBLISH_KEY'],
+              subscribe_key: ENV['SUBSCRIBE_KEY'],
+              uuid: @username
+              )
             request_user.followers.each do |follower|
            if follower.competitions_notifications_setting.is_on == true
               if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, resource: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
@@ -367,182 +381,168 @@ end
   end
 
 
-  def create
-    @competition = request_user.competitions.new
-    @competition.title = params[:title]
-    @competition.description = params[:description]
-    @competition.start_date = get_date_time(params[:start_date].to_date, params[:start_time])
-    @competition.end_date = get_date_time(params[:end_date].to_date, params[:end_time])
-    @competition.image = params[:image]
-    @competition.terms_conditions = params[:terms_conditions]
-    @competition.number_of_winner = params[:number_of_winner]
-    @competition.over_18 = params[:over_18]
-    @competition.competition_forwarding = params[:competition_forwarding]
+  # def create
+  #   @competition = request_user.competitions.new
+  #   @competition.title = params[:title]
+  #   @competition.description = params[:description]
+  #   @competition.start_date = get_date_time(params[:start_date].to_date, params[:start_time])
+  #   @competition.end_date = get_date_time(params[:end_date].to_date, params[:end_time])
+  #   @competition.image = params[:image]
+  #   @competition.terms_conditions = params[:terms_conditions]
+  #   @competition.number_of_winner = params[:number_of_winner]
+  #   @competition.over_18 = params[:over_18]
+  #   @competition.competition_forwarding = params[:competition_forwarding]
 
-    if @competition.save
-      @pubnub = Pubnub.new(
-        publish_key: ENV['PUBLISH_KEY'],
-        subscribe_key: ENV['SUBSCRIBE_KEY']
-       )
-      # create_activity("created competition", @competition, "Competition", admin_competition_path(@competition),@competition.title, 'post')
-      if !request_user.followers.blank?
-        request_user.followers.each do |follower|
-       if follower.competitions_notifications_setting.is_on == true
-          if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, resource: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
+  #   if @competition.save
+  #     @pubnub = Pubnub.new(
+  #       publish_key: ENV['PUBLISH_KEY'],
+  #       subscribe_key: ENV['SUBSCRIBE_KEY']
+  #      )
+  #     # create_activity("created competition", @competition, "Competition", admin_competition_path(@competition),@competition.title, 'post')
+  #     if !request_user.followers.blank?
+  #       request_user.followers.each do |follower|
+  #      if follower.competitions_notifications_setting.is_on == true
+  #         if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " created a new competition '#{@competition.title}'.", notifiable: @competition, resource: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
 
-            @current_push_token = @pubnub.add_channels_to_push(
-             push_token: follower.device_token,
-             type: 'gcm',
-             add: follower.device_token
-             ).value
+  #           @current_push_token = @pubnub.add_channels_to_push(
+  #            push_token: follower.device_token,
+  #            type: 'gcm',
+  #            add: follower.device_token
+  #            ).value
 
-             payload = {
-              "pn_gcm":{
-               "notification":{
-                 "title": get_full_name(request_user),
-                 "body": @notification.action
-               },
-               data: {
-                "id": @notification.id,
-                "actor_id": @notification.actor_id,
-                "actor_image": @notification.actor.avatar,
-                "notifiable_id": @notification.notifiable_id,
-                "notifiable_type": @notification.notifiable_type,
-                "action": @notification.action,
-                "action_type": @notification.action_type,
-                "created_at": @notification.created_at,
-                "body": ''
-               }
-              }
-             }
+  #            payload = {
+  #             "pn_gcm":{
+  #              "notification":{
+  #                "title": get_full_name(request_user),
+  #                "body": @notification.action
+  #              },
+  #              data: {
+  #               "id": @notification.id,
+  #               "actor_id": @notification.actor_id,
+  #               "actor_image": @notification.actor.avatar,
+  #               "notifiable_id": @notification.notifiable_id,
+  #               "notifiable_type": @notification.notifiable_type,
+  #               "action": @notification.action,
+  #               "action_type": @notification.action_type,
+  #               "created_at": @notification.created_at,
+  #               "body": ''
+  #              }
+  #             }
+  #            }
 
-       @pubnub.publish(
-         channel: follower.device_token,
-         message: payload
-         ) do |envelope|
-             puts envelope.status
-           end
-          end # notification end
-      end #competition setting
-      end #each
-      end # not blank
-    render json: {
-            code: 200,
-            success: true,
-            message: 'Competition created successfully.',
-            data: @competition
-          }
-    else
-    render json: {
-            code: 400,
-            success: false,
-            message: @competition.errors.full_messages,
-            data: nil
+  #      @pubnub.publish(
+  #        channel: follower.device_token,
+  #        message: payload
+  #        ) do |envelope|
+  #            puts envelope.status
+  #          end
+  #         end # notification end
+  #     end #competition setting
+  #     end #each
+  #     end # not blank
+  #   render json: {
+  #           code: 200,
+  #           success: true,
+  #           message: 'Competition created successfully.',
+  #           data: @competition
+  #         }
+  #   else
+  #   render json: {
+  #           code: 400,
+  #           success: false,
+  #           message: @competition.errors.full_messages,
+  #           data: nil
 
-          }
-    end
-  end
+  #         }
+  #   end
+  # end
 
-  api :PUT, '/dashboard/api/v1/competitions', 'To update competition'
-  # param :id, String, :desc => "ID of the competition", :required => true
-  # param :title, String, :desc => "Title of the competition", :required => true
-  # param :description, String, :desc => "Description of the competition", :required => true
-  # param :start_date, String, :desc => "Start Date of the competition", :required => true
-  # param :end_date, String, :desc => "End Date of the competition", :required => true
-  # param :start_time, String, :desc => "Start time of the competition", :required => true
-  # param :end_time, String, :desc => "End time of the competition", :required => true
-  # param :validity, String, :desc => "Validity", :required => true
-  # param :validity_time, String, :desc => "Validity Time", :required => true
-  # param :image, String, :desc => "Image of the competition", :required => true
-  # param :price, :decimal, :desc => "Price of the competition", :required => true
-  # param :terms_conditions, String, :desc => "Terms and Condition of the competition", :required => true
-  #param :location, String, :desc => "Location of the competition", :required => true
 
-  def update
-    if !params[:id].blank?
-    @competition = Competition.find(params[:id])
-    @competition.title = params[:title]
-    @competition.description = params[:description]
-    @competition.start_date = get_date_time(params[:start_date].to_date, params[:start_time])
-    @competition.end_date = get_date_time(params[:end_date].to_date, params[:end_time])
-    @competition.image = params[:image]
-    @competition.terms_conditions = params[:terms_conditions]
-    @competition.number_of_winner = params[:number_of_winner]
-    @competition.competition_forwarding = params[:competition_forwarding]
+#   def update
+#     if !params[:id].blank?
+#     @competition = Competition.find(params[:id])
+#     @competition.title = params[:title]
+#     @competition.description = params[:description]
+#     @competition.start_date = get_date_time(params[:start_date].to_date, params[:start_time])
+#     @competition.end_date = get_date_time(params[:end_date].to_date, params[:end_time])
+#     @competition.image = params[:image]
+#     @competition.terms_conditions = params[:terms_conditions]
+#     @competition.number_of_winner = params[:number_of_winner]
+#     @competition.competition_forwarding = params[:competition_forwarding]
 
-    if @competition.save
-      @pubnub = Pubnub.new(
-        publish_key: ENV['PUBLISH_KEY'],
-        subscribe_key: ENV['SUBSCRIBE_KEY']
-       )
-      # create_activity("created competition", @competition, "Competition", admin_competition_path(@competition),@competition.title, 'post')
-      if !request_user.followers.blank?
-        request_user.followers.each do |follower|
-       if follower.competitions_notifications_setting.is_on == true
-          if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " Updated new competition '#{@competition.title}'.", notifiable: @competition, resource: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
+#     if @competition.save
+#       @pubnub = Pubnub.new(
+#         publish_key: ENV['PUBLISH_KEY'],
+#         subscribe_key: ENV['SUBSCRIBE_KEY']
+#        )
+#       # create_activity("created competition", @competition, "Competition", admin_competition_path(@competition),@competition.title, 'post')
+#       if !request_user.followers.blank?
+#         request_user.followers.each do |follower|
+#        if follower.competitions_notifications_setting.is_on == true
+#           if @notification = Notification.create!(recipient: follower, actor: request_user, action: get_full_name(request_user) + " Updated new competition '#{@competition.title}'.", notifiable: @competition, resource: @competition, url: "/admin/competitions/#{@competition.id}", notification_type: 'mobile', action_type: 'create_competition')
 
-            @current_push_token = @pubnub.add_channels_to_push(
-             push_token: follower.device_token,
-             type: 'gcm',
-             add: follower.device_token
-             ).value
+#             @current_push_token = @pubnub.add_channels_to_push(
+#              push_token: follower.device_token,
+#              type: 'gcm',
+#              add: follower.device_token
+#              ).value
 
-             payload = {
-              "pn_gcm":{
-               "notification":{
-                 "title": get_full_name(request_user),
-                 "body": @notification.action
-               },
-               data: {
-                "id": @notification.id,
-                "actor_id": @notification.actor_id,
-                "actor_image": @notification.actor.avatar,
-                "notifiable_id": @notification.notifiable_id,
-                "notifiable_type": @notification.notifiable_type,
-                "action": @notification.action,
-                "action_type": @notification.action_type,
-                "created_at": @notification.created_at,
-                "body": ''
-               }
-              }
-             }
+#              payload = {
+#               "pn_gcm":{
+#                "notification":{
+#                  "title": get_full_name(request_user),
+#                  "body": @notification.action
+#                },
+#                data: {
+#                 "id": @notification.id,
+#                 "actor_id": @notification.actor_id,
+#                 "actor_image": @notification.actor.avatar,
+#                 "notifiable_id": @notification.notifiable_id,
+#                 "notifiable_type": @notification.notifiable_type,
+#                 "action": @notification.action,
+#                 "action_type": @notification.action_type,
+#                 "created_at": @notification.created_at,
+#                 "body": ''
+#                }
+#               }
+#              }
 
-             @pubnub.publish(
-               channel: follower.device_token,
-               message: payload
-               ) do |envelope|
-                   puts envelope.status
-              end
-          end # notification end
-        end #competition setting
-      end #each
-    end # not blank
-        render json: {
-                code: 200,
-                success: true,
-                message: 'Competition updated successfully.',
-                data: @competition
-              }
-    else
-        render json: {
-                code: 400,
-                success: false,
-                message: @competition.errors.full_messages,
-                data: nil
+#              @pubnub.publish(
+#                channel: follower.device_token,
+#                message: payload
+#                ) do |envelope|
+#                    puts envelope.status
+#               end
+#           end # notification end
+#         end #competition setting
+#       end #each
+#     end # not blank
+#         render json: {
+#                 code: 200,
+#                 success: true,
+#                 message: 'Competition updated successfully.',
+#                 data: @competition
+#               }
+#     else
+#         render json: {
+#                 code: 400,
+#                 success: false,
+#                 message: @competition.errors.full_messages,
+#                 data: nil
 
-              }
-    end
+#               }
+#     end
 
-  else
-    render json: {
-      code: 400,
-      success: false,
-      message: "id is required.",
-      data: nil
+#   else
+#     render json: {
+#       code: 400,
+#       success: false,
+#       message: "id is required.",
+#       data: nil
 
-    }
-  end
-end
+#     }
+#   end
+# end
 
   # api :DELETE, 'dashboard/api/v1/competitions', 'To Delete a competition'
   # param :id, :number, :desc => "ID of the competition", :required => true
