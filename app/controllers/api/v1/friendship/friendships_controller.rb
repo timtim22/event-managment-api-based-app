@@ -143,7 +143,7 @@ def friend_requests
     success: true,
     message: '',
     data: {
-      requests: @requests
+      requests: paginate_array(@requests)
     }
   }
 end
