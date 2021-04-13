@@ -70,7 +70,11 @@ class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api:
         status: comp.status,
         draw_date: comp.draw_time.strftime("%Y-%m-%d"),
         draw_time: comp.draw_time.strftime("%H:%M"),
-        entries: entries
+        entries: entries,
+        registrations: comp.registrations.size,
+        get_demographics: get_competition_demographics(comp)
+
+
       }
     end
     render json: {
@@ -108,7 +112,8 @@ class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api:
            'number_of_winner' => comp.number_of_winner,
            'status' => comp.status,
            'winner' => comp.competition_winners.size,
-           'entries' => entries
+           'entries' => entries,
+           'registrations' => comp.registrations.size
 
           }
 

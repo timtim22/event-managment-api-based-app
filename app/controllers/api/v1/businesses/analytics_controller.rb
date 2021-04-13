@@ -158,7 +158,7 @@ class Api::V1::Businesses::AnalyticsController < Api::V1::ApiMasterController
         @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
       when  "overall"
           start_date = offer.created_at.to_date.to_s
-          end_date = offer.validity.to_date.to_s
+          end_date = offer.end_time.to_date.to_s
          @current_time_slot_dates = generate_date_range(start_date, end_date)
          # in case of overall there should be no comparison between time slots
          @before_current_time_slot_dates = generate_date_range(start_date, end_date)
@@ -256,7 +256,7 @@ class Api::V1::Businesses::AnalyticsController < Api::V1::ApiMasterController
         @before_current_time_slot_dates = generate_date_range(before_start_date_to_string, before_end_date_to_string)
       when  "overall"
           start_date = competition.created_at.to_date.to_s
-          end_date = competition.end_date.to_date.to_s
+          end_date = competition.draw_time.to_date.to_s
          @current_time_slot_dates = generate_date_range(start_date, end_date)
          # in case of overall there should be no comparison between time slots
          @before_current_time_slot_dates = generate_date_range(start_date, end_date)
