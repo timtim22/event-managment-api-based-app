@@ -68,7 +68,8 @@ class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api:
         over_18: comp.over_18,
         number_of_winner: comp.number_of_winner,
         status: comp.status,
-        draw_time: comp.draw_time,
+        draw_date: comp.draw_time.strftime("%Y-%m-%d"),
+        draw_time: comp.draw_time.strftime("%H:%M"),
         entries: entries
       }
     end
@@ -100,7 +101,8 @@ class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api:
            'title' => comp.title,
            'description' => comp.description,
            'image' => comp.image,
-           'draw_time' => comp.draw_time,
+           'draw_date' => comp.draw_time.strftime("%Y-%m-%d"),
+           'draw_time' => comp.draw_time.strftime("%H:%M"),
            'over_18' => comp.over_18,
            'terms_conditions' => comp.terms_conditions,
            'number_of_winner' => comp.number_of_winner,
