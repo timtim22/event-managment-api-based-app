@@ -19,7 +19,8 @@ class Competition < ApplicationRecord
   # validates :description, presence: true
  
 
-  scope :upcoming, -> { where(['draw_time > ?', DateTime.now]) }
+  # scope :upcoming, -> { where(['draw_time > ?', DateTime.now]) }
+  scope :week_ago, -> { where(['draw_time > ?', Time.now.to_date - 1.week]) }
   scope :expired, -> { where(['draw_time < ?', DateTime.now]) }
   scope :sort_by_date, -> { order(draw_time: 'ASC') }
 

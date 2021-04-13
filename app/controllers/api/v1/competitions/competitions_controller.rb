@@ -12,7 +12,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
     @competitions = []
     if request_user
 
-    Competition.page(params[:page]).per(20).upcoming.order(created_at: 'DESC').each do |competition|
+    Competition.page(params[:page]).per(20).week_ago.order(created_at: 'DESC').each do |competition|
       if !is_removed_competition?(request_user, competition) && showability?(request_user, competition) == true
         @competitions << {
         id: competition.id,
@@ -34,7 +34,7 @@ class Api::V1::Competitions::CompetitionsController < Api::V1::ApiMasterControll
      end
     end #each
   else
-    Competition.upcoming.order(created_at: 'DESC').each do |competition|
+    Competition.week_ago.order(created_at: 'DESC').each do |competition|
       @competitions << {
       id: competition.id,
       title: competition.title,
