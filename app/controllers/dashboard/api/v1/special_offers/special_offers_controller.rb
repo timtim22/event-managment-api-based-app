@@ -146,8 +146,8 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
       if !params[:image].blank?
         @special_offer.image = params[:image]
         @special_offer.status = "draft"
-        @special_offer.start_time = "00:00:00"
-        @special_offer.end_time = "00:00:00"
+        @special_offer.start_time = "1970-01-01 00:00:00"
+        @special_offer.end_time = "1970-01-01 00:00:00"
           if @special_offer.save
               render json: {
                 code: 200,
