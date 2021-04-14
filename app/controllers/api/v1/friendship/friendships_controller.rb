@@ -492,7 +492,7 @@ end
       success: true,
       message: '',
       data: {
-        details: details
+        details: paginate_array(details)
       }
     }
     else

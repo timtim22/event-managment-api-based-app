@@ -149,7 +149,7 @@ def add_image
   if params[:competition_id].blank?
     @competition = request_user.competitions.new
     @competition.image = params[:image]
-    @competition.draw_time = "00:00:00"
+    @competition.draw_time = "1970-01-01 00:00:00"
     @competition.status = "draft"
       if @competition.save
           render json: {
