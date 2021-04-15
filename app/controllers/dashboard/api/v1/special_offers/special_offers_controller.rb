@@ -18,21 +18,37 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
           lng: offer.lng
         }
       }
-        case
-        when offer.end_time > Time.now
-          redeem_count =  get_redeem_count(offer).to_s + " Redeemed"
-        when offer.end_time < Time.now
-          redeem_count =  "Finished"
-        end
+
+      case
+      when offer.end_time == nil
+        redeem_count =  ""
+      when offer.end_time > Time.now
+        redeem_count =  get_redeem_count(offer).to_s + " Redeemed"
+      when offer.end_time < Time.now
+        redeem_count =  "Finished"
+      end
+
+      case 
+      when offer.end_time == nil
+        start_date = ""
+        end_date = ""
+        start_time = ""
+        end_time = ""
+      else
+        start_date = offer.start_time.strftime("%Y-%m-%d")
+        end_date = offer.end_time.strftime("%Y-%m-%d")
+        start_time = offer.start_time.strftime("%H:%M")
+        end_time = offer.end_time.strftime("%H:%M")
+      end
 
       @offers << {
         id: offer.id,
         title: offer.title,
         image: offer.image.url,
-        start_date: offer.start_time.strftime("%Y-%m-%d"),
-        end_date: offer.end_time.strftime("%Y-%m-%d"),
-        start_time: offer.start_time.strftime("%H:%M"),
-        end_time: offer.end_time.strftime("%H:%M"),
+        start_date: start_date,
+        end_date: end_date,
+        start_time: start_time,
+        end_time: end_time,
         description: offer.description,
         ambassador_rate: offer.ambassador_rate,
         terms_conditions: offer.terms_conditions,
@@ -61,12 +77,29 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
     if !params[:offer_id].blank?
       if SpecialOffer.where(id: params[:offer_id]).exists?
         @special_offer = SpecialOffer.find(params[:offer_id])
+
         case
+        when @special_offer.end_time == nil
+          redeem_count =  ""
         when @special_offer.end_time > Time.now
           redeem_count =  get_redeem_count(@special_offer).to_s + " Redeemed"
         when @special_offer.end_time < Time.now
           redeem_count =  "Finished"
         end
+
+        case 
+        when @special_offer.end_time == nil
+          start_date = ""
+          end_date = ""
+          start_time = ""
+          end_time = ""
+        else
+          start_date = @special_offer.start_time.strftime("%Y-%m-%d")
+          end_date = @special_offer.end_time.strftime("%Y-%m-%d")
+          start_time = @special_offer.start_time.strftime("%H:%M")
+          end_time = @special_offer.end_time.strftime("%H:%M")
+        end
+
         render json: {
           code: 200,
           success: true,
@@ -75,10 +108,10 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
             id: @special_offer.id,
             title: @special_offer.title,
             image: @special_offer.image.url,
-            start_date: @special_offer.start_time.strftime("%Y-%m-%d"),
-            end_date: @special_offer.end_time.strftime("%Y-%m-%d"),
-            start_time: @special_offer.start_time.strftime("%H:%M"),
-            end_time: @special_offer.end_time.strftime("%H:%M"),
+            start_date: start_date,
+            end_date: end_date,
+            start_time: start_time,
+            end_time: end_time,
             description: @special_offer.description,
             terms_conditions: @special_offer.terms_conditions,
             ambassador_rate: @special_offer.ambassador_rate,
@@ -86,6 +119,7 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
             quantity: @special_offer.quantity,
             over_18: @special_offer.over_18,
             redeem_count: redeem_count.to_s,
+            offer_publish_status: offer.status,
             redemptions: @special_offer.redemptions.size,
             get_demographics: get_offer_demographics(@special_offer),
             outlets: @special_offer.outlets.map { |e| {id: e.id, outlet_address: jsonify_location(e.outlet_address)}}
@@ -146,8 +180,6 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
       if !params[:image].blank?
         @special_offer.image = params[:image]
         @special_offer.status = "draft"
-        @special_offer.start_time = "1970-01-01 00:00:00"
-        @special_offer.end_time = "1970-01-01 00:00:00"
           if @special_offer.save
               render json: {
                 code: 200,

@@ -43,7 +43,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
             }
           when params[:resource_type] == "Competition"
           @competitions = []
-            Competition.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).upcoming.per(10).order(created_at: "ASC").each do |competition|
+            Competition.ransack(title_start: params[:search_term]).result(distinct:true).page(params[:page]).week_ago.per(10).order(created_at: "ASC").each do |competition|
               @competitions << {
                   id: competition.id,
                   title: competition.title,

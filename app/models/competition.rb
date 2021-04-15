@@ -21,7 +21,7 @@ class Competition < ApplicationRecord
 
   # scope :upcoming, -> { where(['draw_time > ?', DateTime.now]) }
   scope :active, -> {where(['status = ?', 'active'])}
-  scope :week_ago, -> { where(['draw_time >= ? AND draw_time <= ?', Time.now.to_date - 1.week, Time.now.to_date]) }
+  scope :week_ago, -> { where(['draw_time >= ? AND draw_time <= ?', Time.now.to_date, Time.now.to_date + 1.week]) }
   scope :expired, -> { where(['draw_time < ?', DateTime.now]) }
   scope :sort_by_date, -> { order(draw_time: 'ASC') }
 

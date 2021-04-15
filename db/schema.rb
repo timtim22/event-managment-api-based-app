@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_14_074226) do
+ActiveRecord::Schema.define(version: 2021_04_15_113825) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -171,7 +171,7 @@ ActiveRecord::Schema.define(version: 2021_04_14_074226) do
     t.integer "number_of_winner"
     t.boolean "competition_forwarding", default: false
     t.string "status", default: ""
-    t.datetime "draw_time", null: false
+    t.datetime "draw_time"
     t.index ["user_id"], name: "index_competitions_on_user_id"
   end
 

@@ -53,11 +53,24 @@ class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api:
     @competitions.each do |comp|
 
       case
+      when comp.draw_time == nil
+        entries =  ""
       when comp.draw_time > Time.now
         entries =  comp.registrations.size.to_s + " Entries"
       when comp.draw_time < Time.now
         entries =  "Draw Over"
       end
+
+
+      case 
+      when comp.draw_time == nil
+        draw_date = ""
+        draw_time = ""
+      else
+        draw_date = comp.draw_time.to_date.strftime("%Y-%m-%d")
+        draw_time = comp.draw_time.to_time.strftime("%H:%M")
+      end
+      
 
       @comp << {
         id: comp.id,
@@ -68,8 +81,8 @@ class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api:
         over_18: comp.over_18,
         number_of_winner: comp.number_of_winner,
         status: comp.status,
-        draw_date: comp.draw_time.strftime("%Y-%m-%d"),
-        draw_time: comp.draw_time.strftime("%H:%M"),
+        draw_date: draw_date,
+        draw_time: draw_time,
         entries: entries,
         registrations: comp.registrations.size,
         get_demographics: get_competition_demographics(comp)
@@ -95,18 +108,30 @@ class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api:
         comp = Competition.find(params[:competition_id])
 
           case
+          when comp.draw_time == nil
+            entries =  ""
           when comp.draw_time > Time.now
             entries =  comp.registrations.size.to_s + " Entries"
           when comp.draw_time < Time.now
             entries =  "Draw Over"
           end
+
+          case 
+          when comp.draw_time == nil
+            draw_date = ""
+            draw_time = ""
+          else
+            draw_date = comp.draw_time.to_date.strftime("%Y-%m-%d")
+            draw_time = comp.draw_time.to_time.strftime("%H:%M")
+          end
+
          @competition = {
            'id' => comp.id,
            'title' => comp.title,
            'description' => comp.description,
            'image' => comp.image,
-           'draw_date' => comp.draw_time.strftime("%Y-%m-%d"),
-           'draw_time' => comp.draw_time.strftime("%H:%M"),
+           'draw_date' => draw_date,
+           'draw_time' => draw_time,
            'over_18' => comp.over_18,
            'terms_conditions' => comp.terms_conditions,
            'number_of_winner' => comp.number_of_winner,
@@ -149,7 +174,6 @@ def add_image
   if params[:competition_id].blank?
     @competition = request_user.competitions.new
     @competition.image = params[:image]
-    @competition.draw_time = "1970-01-01 00:00:00"
     @competition.status = "draft"
       if @competition.save
           render json: {
@@ -597,7 +621,7 @@ private
  def get_date_time(date, time)
     d = date.strftime("%Y-%b-%d")
     t = time.to_time.strftime("%H:%M:%S")
-    datetime = d + " " + t
+    datetime = d + "T" + t + ".000Z"
  end
 
   def competition_params
