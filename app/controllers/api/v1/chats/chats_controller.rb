@@ -5,7 +5,8 @@ class Api::V1::Chats::ChatsController < Api::V1::ApiMasterController
 
 def send_message
 
- if !params[:recipient_id].blank? && !params[:message].blank? && !params[:message_type].blank?
+ if !params[:recipient_id].blank? && !params[:message_type] == "image"
+  
  @recipient = User.find(params[:recipient_id])
   if !blocked_user?(request_user, @recipient)
  if !params[:recipient_id].blank?
@@ -148,11 +149,20 @@ else
   }
 end
 
+# else
+#   render json: {
+#     code: 400,
+#     success: false,
+#     message: "message is not required field when message_type is 'image'.",
+#     data: nil
+#   }
+# end
+
 else
   render json: {
     code: 400,
     success: false,
-    message: "recipient_id, message and message_type are required fields.",
+    message: "recipient_id and message_type are required fields.",
     data: nil
   }
 end
