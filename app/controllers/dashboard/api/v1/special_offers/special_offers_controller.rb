@@ -119,7 +119,7 @@ class Dashboard::Api::V1::SpecialOffers::SpecialOffersController < Dashboard::Ap
             quantity: @special_offer.quantity,
             over_18: @special_offer.over_18,
             redeem_count: redeem_count.to_s,
-            offer_publish_status: offer.status,
+            offer_publish_status: @special_offer.status,
             redemptions: @special_offer.redemptions.size,
             get_demographics: get_offer_demographics(@special_offer),
             outlets: @special_offer.outlets.map { |e| {id: e.id, outlet_address: jsonify_location(e.outlet_address)}}

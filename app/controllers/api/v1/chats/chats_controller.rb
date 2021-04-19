@@ -3,13 +3,9 @@ class Api::V1::Chats::ChatsController < Api::V1::ApiMasterController
   require 'pubnub'
   require 'json'
 
-  api :POST, '/api/v1/chat/send-message', 'To send a message'
-  param :recipient_id, :number, :desc => "Recipient ID", :required => true
-  param :message, String, :desc => "Message", :required => true
-
 def send_message
 
- if !params[:recipient_id].blank? && !params[:message].blank?
+ if !params[:recipient_id].blank? && !params[:message].blank? && !params[:message_type].blank?
  @recipient = User.find(params[:recipient_id])
   if !blocked_user?(request_user, @recipient)
  if !params[:recipient_id].blank?
@@ -38,7 +34,18 @@ def send_message
   @channel = @chat_channel.name
   end
 
- @message = @sender.messages.new(recipient_id: @recipient.id, message: params[:message], from: get_full_name(@sender), user_avatar: @sender.avatar)
+ @message = @sender.messages.new
+  @message.recipient_id = @recipient.id
+  @message.message = params[:message]
+  @message.message_type = params[:message_type]
+  if @message.message_type == "image"
+    @message.image = params[:image]
+  else
+    @message.image = ""
+  end
+  @message.from = get_full_name(@sender)
+  @message.user_avatar = @sender.avatar
+  
 
 if @message.save
 
@@ -89,6 +96,8 @@ if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipie
         "id" => msg.id,
         "recipient_id" =>  msg.recipient_id,
         "message" => msg.message,
+        "message_type" => msg.message_type,
+        "image" => msg.image,
         "read_at" => msg.read_at,
         "sender_id" => msg.user_id,
         "created_at" => msg.created_at,
@@ -138,14 +147,12 @@ else
   render json: {
     code: 400,
     success: false,
-    message: "recipient_id and message are required fields.",
+    message: "recipient_id, message and message_type are required fields.",
     data: nil
   }
 end
 end
 
-  api :POST, '/api/v1/chat/chat-history', 'Get chat history for specific user'
-  param :sender_id, :number, :desc => "Sender ID", :required => true
 
 def chat_history
     if params[:sender_id].blank?
@@ -162,6 +169,8 @@ def chat_history
         "id" => history.id,
         "recipient_id" => history.recipient_id,
         "message" =>  history.message,
+        "message_type" =>  history.message_type,
+        "image" =>  history.image,
         "read_at" => history.read_at,
         "user_id" => history.user_id,
         "created_at" =>  history.created_at,

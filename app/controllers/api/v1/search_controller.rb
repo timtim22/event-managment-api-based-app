@@ -126,7 +126,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                     offer_remaining_count: get_offer_remaining_quantity(offer),
                     image: offer.image.url,
                     host_image: offer.user.avatar,
-                    validity: offer.validity.strftime(get_time_format),
+                    validity: offer.end_time.strftime(get_time_format),
                     is_added_to_wallet: added_to_wallet?(request_user, offer),
                     is_redeemed: is_redeemed(offer.id, 'SpecialOffer', request_user.id),
                     remaining_offers_count: get_redeem_remaining_count(offer)
@@ -142,7 +142,7 @@ class  Api::V1::SearchController < Api::V1::ApiMasterController
                     offer_remaining_count: get_offer_remaining_quantity(offer),
                     image: offer.image.url,
                     host_image: offer.user.avatar,
-                    validity: offer.validity.strftime(get_time_format),
+                    validity: offer.end_time.strftime(get_time_format),
                     is_added_to_wallet: added_to_wallet?(request_user, offer),
                     is_redeemed: is_redeemed(offer.id, 'SpecialOffer', request_user.id),
                     remaining_offers_count: get_redeem_remaining_count(offer)

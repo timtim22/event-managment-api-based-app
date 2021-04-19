@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_15_113825) do
+ActiveRecord::Schema.define(version: 2021_04_19_085630) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -346,6 +346,8 @@ ActiveRecord::Schema.define(version: 2021_04_15_113825) do
     t.datetime "updated_at", null: false
     t.string "from"
     t.string "user_avatar"
+    t.string "message_type", default: "text"
+    t.string "image", default: ""
     t.index ["recipient_id"], name: "index_messages_on_recipient_id"
     t.index ["user_id"], name: "index_messages_on_user_id"
   end
