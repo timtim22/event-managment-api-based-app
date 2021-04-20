@@ -5,7 +5,7 @@ class Api::V1::Chats::ChatsController < Api::V1::ApiMasterController
 
 def send_message
 
- if !params[:recipient_id].blank? && !params[:message_type] == "image"
+ if !params[:recipient_id].blank? && !params[:message_type].blank?
   
  @recipient = User.find(params[:recipient_id])
   if !blocked_user?(request_user, @recipient)
@@ -187,6 +187,7 @@ def chat_history
         "message_type" =>  history.message_type,
         "image" =>  history.image,
         "read_at" => history.read_at,
+        "is_seen" => !history.read_at.nil?,
         "user_id" => history.user_id,
         "created_at" =>  history.created_at,
         "updated_at" => history.updated_at,
