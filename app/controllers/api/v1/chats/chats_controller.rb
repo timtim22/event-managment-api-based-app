@@ -117,14 +117,14 @@ if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipie
      message: 'Message sent successfully.',
      mute_chat: user_chat_muted?(request_user, @recipient),
      current_user: request_user,
-     data: {
+     data: { chat: {
        recipient_id: @message.recipient_id,
        message: @message.message,
        message_type: @message.message_type,
        image: @message.image,
        from: @message.from,
        user_avatar: @message.user_avatar
-   }
+   }}
   }
 
 else
@@ -203,7 +203,7 @@ def chat_history
      success: true,
      message: '',
      data:  {
-       chat_history: Kaminari.paginate_array(@chat_history).page(params[:page]).per(10)
+       chat_history: @chat_history
      }
     }
 end
