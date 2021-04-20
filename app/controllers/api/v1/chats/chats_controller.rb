@@ -50,46 +50,53 @@ def send_message
 
 if @message.save
 
- @current_push_token = @pubnub.add_channels_to_push(
-   push_token: @recipient.device_token,
-   type: 'gcm',
-   add: @recipient.device_token
-   ).value
+  @pubnub = Pubnub.new(
+    publish_key: ENV['PUBLISH_KEY'],
+    subscribe_key: ENV['SUBSCRIBE_KEY'],
+    uuid: @username
+    )
+  if @recipient.all_chat_notifications_setting.is_on == true
+    Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " sent you a message.", notifiable: @message, resource: @message, url: "/admin/messages/#{@message.id}", notification_type: 'mobile', action_type: 'send_competition')
 
-payload = {
-  "pn_gcm":{
-   "notification":{
-     "title": @username,
-     "body": params[:message]
-   },
-   data: {
-    "id": @message.id,
-    "actor_id": request_user.id,
-    "actor_image": request_user.avatar,
-    "sender_name": get_full_name(request_user),
-    "notifiable_id": '',
-    "notifiable_type": 'chat',
-    "action": '',
-    "action_type": 'chat',
-    "created_at": @message.created_at,
-    "message_type": @message.message_type,
-    "image": @message.image,
-    "body": params[:message] ,
-    "last_message": @message
-   }
-  }
- }
+   @current_push_token = @pubnub.add_channels_to_push(
+     push_token: @recipient.device_token,
+     type: 'gcm',
+     add: @recipient.device_token
+     ).value
 
+    payload = {
+      "pn_gcm":{
+       "notification":{
+         "title": @username,
+         "body": params[:message]
+       },
+       data: {
+        "id": @message.id,
+        "actor_id": request_user.id,
+        "actor_image": request_user.avatar,
+        "sender_name": get_full_name(request_user),
+        "notifiable_id": '',
+        "notifiable_type": 'chat',
+        "action": '',
+        "action_type": 'chat',
+        "created_at": @message.created_at,
+        "message_type": @message.message_type,
+        "image": @message.image,
+        "body": params[:message] ,
+        "last_message": @message
+       }
+      }
+     }
 
-if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipient, request_user)
-  @pubnub.publish(
-    channel: @recipient.device_token,
-    message: payload
-    ) do |envelope|
-        puts envelope.status
-   end #publish
-  end #all chat and event chat true
-
+    if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipient, request_user)
+      @pubnub.publish(
+        channel: @recipient.device_token,
+        message: payload
+        ) do |envelope|
+            puts envelope.status
+       end #publish
+      end #all chat and event chat true
+    end
 
    # chat = []
    # messages = Message.get_messages(@sender.id,@recipient.id).order(id: 'ASC')
@@ -117,14 +124,16 @@ if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipie
      message: 'Message sent successfully.',
      mute_chat: user_chat_muted?(request_user, @recipient),
      current_user: request_user,
-     data: { chat: {
+     data: { 
+      chat: {
        recipient_id: @message.recipient_id,
        message: @message.message,
        message_type: @message.message_type,
        image: @message.image,
        from: @message.from,
        user_avatar: @message.user_avatar
-   }}
+   }
+ }
   }
 
 else
