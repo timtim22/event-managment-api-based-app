@@ -203,7 +203,7 @@ def chat_history
      success: true,
      message: '',
      data:  {
-       chat_history: @chat_history
+       chat_history: Kaminari.paginate_array(@chat_history).page(params[:page]).per(10)
      }
     }
 end
