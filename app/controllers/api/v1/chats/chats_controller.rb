@@ -72,6 +72,8 @@ payload = {
     "action": '',
     "action_type": 'chat',
     "created_at": @message.created_at,
+    "message_type": @message.message_type,
+    "image": @message.image,
     "body": params[:message] ,
     "last_message": @message
    }
