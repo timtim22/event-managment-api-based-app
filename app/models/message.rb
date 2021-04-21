@@ -10,5 +10,7 @@ class Message < ApplicationRecord
 
     scope :unread, -> { where(read_at: nil) }
 
+    scope :ascending, -> { reorder(created_at: :desc) }
+
     scope :last_message, -> (sender, recipient) { where(user_id: sender.id).where(recipient_id: recipient.id).or(where(user_id: recipient.id).where(recipient_id: sender.id)).order(created_at: 'DESC').first }
 end

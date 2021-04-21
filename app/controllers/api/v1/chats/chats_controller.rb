@@ -17,7 +17,7 @@ def send_message
 
   @sender  = request_user
 
-  @username = @sender.profile.first_name + " " + @sender.profile.last_name
+  
   @has_mutual_channel = ChatChannel.check_for_mutual_channel(@sender,@recipient)
   if !@has_mutual_channel.blank?
     @chat_channel = @has_mutual_channel.first
@@ -59,7 +59,7 @@ if @message.save
 payload = {
   "pn_gcm":{
    "notification":{
-     "title": @username,
+     "title": @sender,
      "body": params[:message]
    },
    data: {
@@ -175,7 +175,7 @@ def chat_history
    @chat_history = []
    @recipient = request_user
    @sender = User::find(params[:sender_id])
-   Message.chat_history(@sender,@recipient).order(id: 'ASC').each do |history|
+   Message.chat_history(@sender,@recipient).ascending.each do |history|
       @chat_history << {
         "id" => history.id,
         "recipient_id" => history.recipient_id,
@@ -197,7 +197,7 @@ def chat_history
      success: true,
      message: '',
      data:  {
-       chat_history: @chat_history
+       chat_history: Kaminari.paginate_array(@chat_history).page(params[:page]).per(10)
      }
     }
 end
