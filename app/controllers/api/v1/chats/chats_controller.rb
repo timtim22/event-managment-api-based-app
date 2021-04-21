@@ -72,7 +72,7 @@ payload = {
     "action": '',
     "action_type": 'chat',
     "created_at": @message.created_at,
-    "body": params[:message] ,
+    "body": params[:message],
     "last_message": @message
    }
   }
@@ -122,7 +122,9 @@ if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipie
        message_type: @message.message_type,
        image: @message.image,
        from: @message.from,
-       user_avatar: @message.user_avatar
+       user_avatar: @message.user_avatar,
+       message_type: @message.message_type,
+       image: @message.image
    }
  }
   }

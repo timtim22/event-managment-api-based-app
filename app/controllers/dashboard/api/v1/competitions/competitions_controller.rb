@@ -1,5 +1,5 @@
 class Dashboard::Api::V1::Competitions::CompetitionsController < Dashboard::Api::V1::ApiMasterController
-    before_action :authorize_request, except:  ['index']
+    before_action :authorize_request
 
     require 'json'
     require 'pubnub'
@@ -630,42 +630,3 @@ private
 
 
 end
-
-
-   # chat = []
-   # messages = Message.get_messages(@sender.id,@recipient.id).order(id: 'ASC')
-   # if !messages.blank?
-   #  messages.each do |msg|
-   #    chat << {
-   #      "id" => msg.id,
-   #      "recipient_id" =>  msg.recipient_id,
-   #      "message" => msg.message,
-   #      "message_type" => msg.message_type,
-   #      "image" => msg.image,
-   #      "read_at" => msg.read_at,
-   #      "sender_id" => msg.user_id,
-   #      "created_at" => msg.created_at,
-   #      "updated_at" => msg.updated_at,
-   #      "from" => msg.from,
-   #      "user_avatar": msg.user_avatar
-   #    }
-   #  end #each
-   # end
-
-   render json: {
-     code: 200,
-     success: true,
-     message: 'Message sent successfully.',
-     mute_chat: user_chat_muted?(request_user, @recipient),
-     current_user: request_user,
-     data: { 
-      chat: {
-       recipient_id: @message.recipient_id,
-       message: @message.message,
-       message_type: @message.message_type,
-       image: @message.image,
-       from: @message.from,
-       user_avatar: @message.user_avatar
-   }
- }
-  }
