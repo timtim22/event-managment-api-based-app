@@ -50,54 +50,44 @@ def send_message
 
 if @message.save
 
-  @pubnub = Pubnub.new(
-    publish_key: ENV['PUBLISH_KEY'],
-    subscribe_key: ENV['SUBSCRIBE_KEY'],
-    uuid: @username
-    )
-  if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipient, request_user)
-    if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " sent you a message.", notifiable: @message, resource: @message, url: "/admin/messages/#{@message.id}", notification_type: 'mobile', action_type: 'send_message')
+ @current_push_token = @pubnub.add_channels_to_push(
+   push_token: @recipient.device_token,
+   type: 'gcm',
+   add: @recipient.device_token
+   ).value
 
-   @current_push_token = @pubnub.add_channels_to_push(
-     push_token: @recipient.device_token,
-     type: 'gcm',
-     add: @recipient.device_token
-     ).value
+payload = {
+  "pn_gcm":{
+   "notification":{
+     "title": @username,
+     "body": params[:message]
+   },
+   data: {
+    "id": @message.id,
+    "actor_id": request_user.id,
+    "actor_image": request_user.avatar,
+    "sender_name": get_full_name(request_user),
+    "notifiable_id": '',
+    "notifiable_type": 'chat',
+    "action": '',
+    "action_type": 'chat',
+    "created_at": @message.created_at,
+    "body": params[:message] ,
+    "last_message": @message
+   }
+  }
+ }
 
-    payload = {
-      "pn_gcm":{
-       "notification":{
-         "title": @username,
-         "body": notification.action
-       },
-       data: {
-        "id": @message.id,
-        "actor_id": request_user.id,
-        "actor_image": request_user.avatar,
-        "sender_name": get_full_name(request_user),
-        "notifiable_id": '',
-        "notifiable_type": 'chat',
-        "action": '',
-        "action_type": 'chat',
-        "created_at": @message.created_at,
-        "message_type": @message.message_type,
-        "image": @message.image,
-        "body": params[:message] ,
-        "last_message": @message
-       }
-      }
-     }
 
-    
-      @pubnub.publish(
-        channel: @recipient.device_token,
-        message: payload
-        ) do |envelope|
-            puts envelope.status
-       end #publish
-      end #all chat and event chat true
-      end
-    end
+if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipient, request_user)
+  @pubnub.publish(
+    channel: @recipient.device_token,
+    message: payload
+    ) do |envelope|
+        puts envelope.status
+   end #publish
+  end #all chat and event chat true
+
 
    # chat = []
    # messages = Message.get_messages(@sender.id,@recipient.id).order(id: 'ASC')
@@ -137,6 +127,7 @@ if @message.save
  }
   }
 
+
 else
   render json: {
     code: 400,
@@ -161,20 +152,11 @@ else
   }
 end
 
-# else
-#   render json: {
-#     code: 400,
-#     success: false,
-#     message: "message is not required field when message_type is 'image'.",
-#     data: nil
-#   }
-# end
-
 else
   render json: {
     code: 400,
     success: false,
-    message: "recipient_id and message_type are required fields.",
+    message: "recipient_id and message are required fields.",
     data: nil
   }
 end
