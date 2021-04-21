@@ -55,8 +55,8 @@ if @message.save
     subscribe_key: ENV['SUBSCRIBE_KEY'],
     uuid: @username
     )
-  if @recipient.all_chat_notifications_setting.is_on == true
-    Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " sent you a message.", notifiable: @message, resource: @message, url: "/admin/messages/#{@message.id}", notification_type: 'mobile', action_type: 'send_competition')
+  if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipient, request_user)
+    if notification = Notification.create!(recipient: @recipient, actor: request_user, action: get_full_name(request_user) + " sent you a message.", notifiable: @message, resource: @message, url: "/admin/messages/#{@message.id}", notification_type: 'mobile', action_type: 'send_message')
 
    @current_push_token = @pubnub.add_channels_to_push(
      push_token: @recipient.device_token,
@@ -68,7 +68,7 @@ if @message.save
       "pn_gcm":{
        "notification":{
          "title": @username,
-         "body": params[:message]
+         "body": notification.action
        },
        data: {
         "id": @message.id,
@@ -88,7 +88,7 @@ if @message.save
       }
      }
 
-    if @recipient.all_chat_notifications_setting.is_on && !user_chat_muted?(@recipient, request_user)
+    
       @pubnub.publish(
         channel: @recipient.device_token,
         message: payload
@@ -96,6 +96,7 @@ if @message.save
             puts envelope.status
        end #publish
       end #all chat and event chat true
+      end
     end
 
    # chat = []

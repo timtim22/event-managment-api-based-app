@@ -563,6 +563,22 @@ class Api::V1::Notifications::NotificationsController < Api::V1::ApiMasterContro
                           "friend_name": get_full_name(notification.resource.user)
                         }
 
+                      when "send_message"
+                        @notifications << {
+                          "id": notification.id,
+                          "actor_id": notification.actor_id,
+                          "actor_image": notification.actor.avatar,
+                          "notifiable_id": notification.notifiable_id,
+                          "notifiable_type": notification.notifiable_type,
+                          "action": notification.action,
+                          "action_type": notification.action_type,
+                          "created_at": notification.created_at,
+                          "message_type": notification.resource.message_type,
+                          "message": notification.resource.message,
+                          "image": notification.resource.image
+
+                        }
+
                       else
                         "do nothing"
                       end #switch
