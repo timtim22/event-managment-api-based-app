@@ -197,26 +197,12 @@ def chat_history
      success: true,
      message: '',
      data:  {
-       chat_history: Kaminari.paginate_array(@chat_history).page(params[:page]).per(10)
+       chat_history: Kaminari.paginate_array(@chat_history).page(params[:page]).per(15)
      }
     }
 end
 end
 
-
-
-# chat history from pub nub
-# def chat_history
-# channel = params[:channel]
-# @pubnub.history[]
-#  channel: channel ,
-#  count: 20,
-#  http_sync: true
-# ) do |envelope|
-# @history_messages = envelope.result[:data][:messages]
-# end
-
-# end
 
 def unsubscribe
 @pubnub.unsubscribe(
