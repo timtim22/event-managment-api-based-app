@@ -506,12 +506,36 @@ def link_accounts
       app = Assignment.where(role_id: 5).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number]} 
       business = Assignment.where(role_id: 2).map {|assignment| assignment.user }.select { |e| e.phone_number == params[:phone_number]}.select {|e| e.status == "active"}
 
+      @business = []
+      # @business << business
+
+      business.map { |e| 
+        @business << {
+          id: e.id,
+          email: e.email,
+          avatar: e.avatar,
+          password_digest: e.password_digest,
+          created_at: e.created_at,
+          updated_at: e.updated_at,
+          phone_number: e.phone_number,
+          is_subscribed: e.is_subscribed,
+          device_token: e.device_token,
+          about: e.about,
+          location: e.location,
+          uuid: e.uuid,
+          mobile_user: e.mobile_user,
+          location_enabled: e.location_enabled,
+          status: e.status,
+          phone_details: e.phone_details,
+          display_name: e.business_profile.display_name
+        }
+      }
       render json: {
         code: 200,
         success: true,
         data: {
           users: {
-            "businesses" => business,
+            "businesses" => @business,
             "app_users" => app
           }
         }
