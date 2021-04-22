@@ -218,11 +218,19 @@ def check_presence_status
   if !params[:user_id].blank?
     if User.where(id: params[:user_id]).exists?
       @user = User.find(params[:user_id])
+      if @user.profile.is_online == true
+        last_seen = ""
+      else
+        last_seen = @user.profile.last_seen
+      end
         render json: {
           code: 200,
           success: true,
           message: "User is online.",
-          data: {is_online: @user.profile.is_online, last_seen: @user.profile.last_seen}
+          data: {
+            is_online: @user.profile.is_online, 
+            last_seen: last_seen
+          }
         }
     else
       render json: {
