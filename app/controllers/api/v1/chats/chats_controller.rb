@@ -187,7 +187,7 @@ end
 def presence_status
   if !params[:presence_status].blank?
     @user = request_user
-    @user.profile.update(is_online: params[:presence_status])
+    @user.profile.update(is_online: params[:presence_status], last_seen: Time.now)
     if @user.profile.is_online == true
       render json: {
         code: 200,
@@ -200,7 +200,7 @@ def presence_status
         code: 200,
         success: true,
         message: "User status set to offline",
-        data: {is_online: @user.profile.is_online, last_seen: Time.now}
+        data: {is_online: @user.profile.is_online, last_seen: @user.profile.last_seen}
         }
     end
   else
@@ -218,21 +218,12 @@ def check_presence_status
   if !params[:user_id].blank?
     if User.where(id: params[:user_id]).exists?
       @user = User.find(params[:user_id])
-      if @user.profile.is_online == true
         render json: {
           code: 200,
           success: true,
           message: "User is online.",
-          data: {is_online: @user.profile.is_online}
+          data: {is_online: @user.profile.is_online, last_seen: @user.profile.last_seen}
         }
-      else
-        render json: {
-          code: 200,
-          success: true,
-          message: "User is offline.",
-          data: {is_online: @user.profile.is_online}
-        }
-      end
     else
       render json: {
         code: 400,
