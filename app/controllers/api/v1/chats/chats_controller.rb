@@ -165,24 +165,122 @@ end
 end
 
 
-def check_online
-  @recipient = User.find(params[:recipient_id])
+# def check_online
+#   @recipient = User.find(params[:recipient_id])
   
-  @pubnub = Pubnub.new(
-    publish_key: ENV['PUBLISH_KEY'],
-    subscribe_key: ENV['SUBSCRIBE_KEY'],
-    )
+#   @pubnub = Pubnub.new(
+#     publish_key: ENV['PUBLISH_KEY'],
+#     subscribe_key: ENV['SUBSCRIBE_KEY'],
+#     )
 
-  @pubnub.here_now(
-      channel: @recipient.device_token,
-      callback: lambda { |event_data| puts(event_data) }
-  )
+#   @pubnub.here_now(
+#       channel: @recipient.device_token,
+#       callback: lambda { |event_data| puts(event_data) }
+#   )
 
-  render json: {
-    message: "online"
-  }
+#   render json: {
+#     message: "online"
+#   }
+# end
+
+
+def set_online_status
+  if !params[:friend_id].blank?
+    if User.where(id: params[:friend_id]).exists?
+      @user = User.find(params[:friend_id])
+      @user.profile.update(is_online: true)
+      @user.save
+        render json: {
+          code: 200,
+          success: true,
+          message: "User status set to online",
+          data: {is_online: @user.profile.is_online}
+        }
+    else
+        render json: {
+          code: 400,
+          success: false,
+          message: "User does not exist.",
+          data: nil
+        }
+    end
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "friend_id is required fields.",
+      data: nil
+    }
+  end
 end
 
+def set_offline_status
+  if !params[:friend_id].blank?
+    if User.where(id: params[:friend_id]).exists?
+      @user = User.find(params[:friend_id])
+      @user.profile.update(is_online: false)
+      @user.save
+        render json: {
+          code: 200,
+          success: true,
+          message: "User status set to offline",
+          data: {is_online: @user.profile.is_online, last_seen: Time.now}
+        }
+    else
+        render json: {
+          code: 400,
+          success: false,
+          message: "User does not exist.",
+          data: nil
+        }
+    end
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "friend_id is required fields.",
+      data: nil
+    }
+  end
+end
+
+
+def check_online_status
+  if !params[:friend_id].blank?
+    if User.where(id: params[:friend_id]).exists?
+      @user = User.find(params[:friend_id])
+      if @user.profile.is_online == true
+        render json: {
+          code: 200,
+          success: true,
+          message: "User is online.",
+          data: {is_online: @user.profile.is_online}
+        }
+      else
+        render json: {
+          code: 200,
+          success: true,
+          message: "User is offline.",
+          data: {is_online: @user.profile.is_online}
+        }
+      end
+    else
+      render json: {
+        code: 400,
+        success: false,
+        message: "User does not exist.",
+        data: nil
+      }
+    end
+  else
+    render json: {
+      code: 400,
+      success: false,
+      message: "friend_id is required.",
+      data: nil
+    }
+  end
+end
 
 def chat_history
     if params[:sender_id].blank?

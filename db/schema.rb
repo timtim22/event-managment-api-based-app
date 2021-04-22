@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_19_085630) do
+ActiveRecord::Schema.define(version: 2021_04_22_082043) do
 
   create_table "activity_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -448,6 +448,7 @@ ActiveRecord::Schema.define(version: 2021_04_19_085630) do
     t.string "gender", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "is_online", default: false
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 

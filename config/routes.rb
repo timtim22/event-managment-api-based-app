@@ -130,6 +130,9 @@ Rails.application.routes.draw do
       post '/clear-conversation' => 'chats#clear_conversation'
       post '/clear-chat' => 'chats#clear_chat'
       post '/check-online' => 'chats#check_online'
+      post '/go-online' => 'chats#set_online_status'
+      post '/go-offline' => 'chats#set_offline_status'
+      post '/check-online-status' => 'chats#check_online_status'
     end
 
 
