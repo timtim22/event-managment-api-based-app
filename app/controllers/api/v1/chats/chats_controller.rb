@@ -165,6 +165,25 @@ end
 end
 
 
+def check_online
+  @recipient = User.find(params[:recipient_id])
+  
+  @pubnub = Pubnub.new(
+    publish_key: ENV['PUBLISH_KEY'],
+    subscribe_key: ENV['SUBSCRIBE_KEY'],
+    )
+
+  @pubnub.here_now(
+      channel: @recipient.device_token,
+      callback: lambda { |event_data| puts(event_data) }
+  )
+
+  render json: {
+    message: "online"
+  }
+end
+
+
 def chat_history
     if params[:sender_id].blank?
      render json: {
@@ -197,7 +216,7 @@ def chat_history
      success: true,
      message: '',
      data:  {
-       chat_history: Kaminari.paginate_array(@chat_history).page(params[:page]).per(15)
+       chat_history: Kaminari.paginate_array(@chat_history).page(params[:page]).per(25)
      }
     }
 end

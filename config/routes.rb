@@ -129,6 +129,7 @@ Rails.application.routes.draw do
       post '/mark-as-read' => "chats#mark_as_read"
       post '/clear-conversation' => 'chats#clear_conversation'
       post '/clear-chat' => 'chats#clear_chat'
+      post '/check-online' => 'chats#check_online'
     end
 
 
