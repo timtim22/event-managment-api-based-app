@@ -1,24 +1,19 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+API based Event Management Mobile and Web Dashboard Application.
 
-Things you may want to cover:
+Here are some features of the application:
 
-* Ruby version
+* Allows Dashboard/Business users to create Events, Competitions, Special Offers, News Feeds etc
 
-* System dependencies
+* Shows end user analytics and reports for the dashboard users.
 
-* Configuration
+* Allows mobile users to pay for the events, opt-in for competition and special offers.
 
-* Database creation
+* A complete social media platform for mobile user to add friends, chat with friends, comments, notifications, etc.
 
-* Database initialization
+* Integrations with third party Apps like Stripe, PubNub, etc.
 
-* How to run the test suite
+* Full Payment integrations for the mobile end user to purchase event tickets.
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* Implemented Rspec for Unit testing.
